@@ -5,8 +5,13 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { lazy, Suspense } from "react";
 
 import appCss from "../index.css?url";
+
+const DialKitPanel = import.meta.env.DEV
+	? lazy(() => import("../components/dialkit-panel"))
+	: null;
 
 export type RouterAppContext = Record<string, never>;
 
@@ -51,6 +56,11 @@ function RootDocument() {
 			</head>
 			<body className="min-w-80 font-sans">
 				<Outlet />
+				{DialKitPanel ? (
+					<Suspense fallback={null}>
+						<DialKitPanel />
+					</Suspense>
+				) : null}
 				{import.meta.env.DEV ? (
 					<TanStackRouterDevtools position="bottom-left" />
 				) : null}

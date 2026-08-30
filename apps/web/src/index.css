@@ -2,33 +2,26 @@
 @import "@fontsource-variable/instrument-sans/wght.css";
 
 @theme {
-    --font-sans: "Instrument Sans Variable", Arial, sans-serif;
-    --breakpoint-hero: 56.25rem;
-    --color-anyway-blue: #4f59b6;
-    --color-anyway-coral: #b94d32;
-    --color-anyway-coral-bright: #dc6846;
-    --color-anyway-green: #2c765a;
-    --color-anyway-ink: #171717;
-    --color-anyway-paper: #f5f2ec;
-    --color-anyway-state-blue: #6671e5;
-    --color-anyway-state-green: #70c9a2;
-    --text-hero-copy: clamp(2.25rem, 3.2vw, 3.5rem);
-    --text-hero-copy--letter-spacing: -0.035em;
-    --text-hero-copy--line-height: 1.04;
-    --text-hero-copy-mobile: clamp(2rem, 4.25vw, 2.5rem);
-    --text-hero-copy-mobile--letter-spacing: -0.035em;
-    --text-hero-copy-mobile--line-height: 1.04;
-    --animate-state-progress: state-progress 3.2s ease-in-out infinite;
+	--font-sans: "Instrument Sans Variable", Arial, sans-serif;
+	--breakpoint-hero: 56.25rem;
+	--color-anyway-blue: #4f59b6;
+	--color-anyway-coral: #b94d32;
+	--color-anyway-coral-bright: #dc6846;
+	--color-anyway-green: #2c765a;
+	--color-anyway-ink: #171717;
+	--color-anyway-paper: #f5f2ec;
+	--color-anyway-state-blue: #6671e5;
+	--color-anyway-state-green: #70c9a2;
+	--animate-state-progress: state-progress 3.2s ease-in-out infinite;
 
-    @keyframes state-progress {
+	@keyframes state-progress {
+		0%,
+		100% {
+			transform: scaleX(0.28);
+		}
 
-        0%,
-        100% {
-            transform: scaleX(0.28);
-        }
-
-        50% {
-            transform: scaleX(1);
-        }
-    }
+		50% {
+			transform: scaleX(1);
+		}
+	}
 }
