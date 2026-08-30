@@ -45,11 +45,11 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 
 function RootDocument() {
 	return (
-		<html lang="en">
+		<html className="[color-scheme:light]" lang="en">
 			<head>
 				<HeadContent />
 			</head>
-			<body>
+			<body className="min-w-80 font-sans">
 				<Outlet />
 				{import.meta.env.DEV ? (
 					<TanStackRouterDevtools position="bottom-left" />
