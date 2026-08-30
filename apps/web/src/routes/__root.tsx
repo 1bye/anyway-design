@@ -1,53 +1,61 @@
-import { Toaster } from "@anyway-design/ui/components/sonner";
-import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from "@tanstack/react-router";
+import {
+	createRootRouteWithContext,
+	HeadContent,
+	Outlet,
+	Scripts,
+} from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-
-import Header from "../components/header";
 
 import appCss from "../index.css?url";
 
-export interface RouterAppContext {}
+export type RouterAppContext = Record<string, never>;
 
 export const Route = createRootRouteWithContext<RouterAppContext>()({
-  head: () => ({
-    meta: [
-      {
-        charSet: "utf-8",
-      },
-      {
-        name: "viewport",
-        content: "width=device-width, initial-scale=1",
-      },
-      {
-        title: "My App",
-      },
-    ],
-    links: [
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-    ],
-  }),
-
-  component: RootDocument,
+	component: RootDocument,
+	head: () => ({
+		links: [
+			{
+				href: appCss,
+				rel: "stylesheet",
+			},
+		],
+		meta: [
+			{
+				charSet: "utf-8",
+			},
+			{
+				content: "width=device-width, initial-scale=1",
+				name: "viewport",
+			},
+			{
+				content:
+					"A personal design-engineering lab for the small states between loading and done.",
+				name: "description",
+			},
+			{
+				content: "#f5f2ec",
+				name: "theme-color",
+			},
+			{
+				title: "Anyway — small interfaces, overthought",
+			},
+		],
+	}),
 });
 
 function RootDocument() {
-  return (
-    <html lang="en" className="dark">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <div className="grid h-svh grid-rows-[auto_1fr]">
-          <Header />
-          <Outlet />
-        </div>
-        <Toaster richColors />
-        <TanStackRouterDevtools position="bottom-left" />
-        <Scripts />
-      </body>
-    </html>
-  );
+	return (
+		<html lang="en">
+			<head>
+				<HeadContent />
+			</head>
+			<body>
+				<Outlet />
+				{import.meta.env.DEV ? (
+					<TanStackRouterDevtools position="bottom-left" />
+				) : null}
+				<Scripts />
+			</body>
+		</html>
+	);
 }
