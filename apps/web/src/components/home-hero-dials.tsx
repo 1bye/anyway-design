@@ -27,15 +27,6 @@ const HERO_DIAL_CONFIG = {
 		pagePadding: [HERO_DEFAULTS.layout.pagePadding, 1.5, 6, 0.1],
 		verticalPadding: [HERO_DEFAULTS.layout.verticalPadding, 0, 15, 0.25],
 	},
-	media: {
-		animationDuration: [HERO_DEFAULTS.media.animationDuration, 0.5, 10, 0.1],
-		height: [HERO_DEFAULTS.media.height, 0.5, 1.1, 0.01],
-		hoverLift: [HERO_DEFAULTS.media.hoverLift, 0, 0.5, 0.01],
-		hoverRotation: [HERO_DEFAULTS.media.hoverRotation, -8, 8, 0.25],
-		loadingWidth: [HERO_DEFAULTS.media.loadingWidth, 1.2, 2.4, 0.01],
-		portraitWidth: [HERO_DEFAULTS.media.portraitWidth, 0.8, 1.6, 0.01],
-		radius: [HERO_DEFAULTS.media.radius, 0.05, 0.5, 0.01],
-	},
 	rhythm: {
 		actionsGap: [HERO_DEFAULTS.rhythm.actionsGap, 0, 32, 1],
 		actionsOffset: [HERO_DEFAULTS.rhythm.actionsOffset, 0, 12, 0.25],
@@ -62,7 +53,7 @@ const HERO_DIAL_CONFIG = {
 
 export default function DialedHomeHero() {
 	const dials = useDialKit("Hero", HERO_DIAL_CONFIG, {
-		id: "anyway-hero",
+		id: "anyway-hero-v2",
 		persist: true,
 	});
 
