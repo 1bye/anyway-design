@@ -1,4 +1,4 @@
-import { lazy, Suspense, type CSSProperties } from "react";
+import { type CSSProperties, lazy, Suspense } from "react";
 
 const REPOSITORY_URL = "https://github.com/1bye/anyway-design";
 const BRIEF_URL = "https://github.com/1bye/anyway-design/blob/master/design.md";
@@ -38,11 +38,11 @@ export const HERO_DEFAULTS = {
 		columnRatio: 1.5,
 		contentMaxWidth: 1088,
 		gap: 6,
-		pagePadding: 3.2,
+		pagePadding: 1.5,
 		verticalPadding: 6,
 	},
 	media: {
-		animationDuration: 3.2,
+		animationDuration: 3.1,
 		height: 0.78,
 		hoverLift: 0.14,
 		hoverRotation: -1,
@@ -51,18 +51,19 @@ export const HERO_DEFAULTS = {
 		radius: 0.22,
 	},
 	rhythm: {
-		actionsGap: 8,
-		actionsOffset: 4,
-		mobileWordmarkWidth: 40,
-		wordmarkGap: 7,
+		actionsGap: 11,
+		actionsOffset: 3.5,
+		logoTextGap: 7,
+		mobileWordmarkWidth: 38,
 		wordmarkWidth: 16,
 	},
 	type: {
-		copyMaxWidth: 1040,
-		desktopSize: 3.2,
+		copyMaxWidth: 592,
+		desktopSize: 2.2,
 		letterSpacing: -0.035,
 		lineHeight: 1.04,
 		mobileSize: 4.25,
+		unhighlightedTextOpacity: 0.72,
 		weight: 400,
 	},
 	visibility: {
@@ -177,7 +178,7 @@ function HeroWordmark({ centered }: { centered: boolean }) {
 			alt="Anyway"
 			className={classNames(
 				"block h-auto w-[clamp(10rem,var(--hero-wordmark-width),25rem)]",
-				"mb-[clamp(1rem,var(--hero-wordmark-gap),10rem)]",
+				"mb-[clamp(1rem,var(--hero-logo-text-gap),10rem)]",
 				"max-hero:w-[clamp(9.5rem,var(--hero-mobile-wordmark-width),20rem)]",
 				centered ? "mx-auto" : ""
 			)}
@@ -204,7 +205,7 @@ function HeroStatement({
 	return (
 		<h1
 			className={classNames(
-				"m-0 max-w-[var(--hero-copy-max-width)] text-pretty",
+				"m-0 max-w-[var(--hero-copy-max-width)] text-pretty text-[var(--hero-copy-color)]",
 				"text-[clamp(2.25rem,var(--hero-font-size),3.5rem)]",
 				"leading-[var(--hero-line-height)] tracking-[var(--hero-letter-spacing)] [font-weight:var(--hero-font-weight)]",
 				"max-hero:text-[clamp(2rem,var(--hero-mobile-font-size),2.5rem)]",
@@ -338,6 +339,7 @@ const createHeroStyle = (dials: HeroDials): HeroStyle => ({
 	"--hero-blue": dials.colors.blue,
 	"--hero-column-ratio": `${dials.layout.columnRatio}fr`,
 	"--hero-content-max-width": `${dials.layout.contentMaxWidth}px`,
+	"--hero-copy-color": `color-mix(in srgb, ${dials.colors.ink} ${dials.type.unhighlightedTextOpacity * 100}%, transparent)`,
 	"--hero-copy-max-width": `${dials.type.copyMaxWidth}px`,
 	"--hero-coral": dials.colors.coral,
 	"--hero-coral-bright": dials.colors.coralBright,
@@ -349,6 +351,7 @@ const createHeroStyle = (dials: HeroDials): HeroStyle => ({
 	"--hero-letter-spacing": `${dials.type.letterSpacing}em`,
 	"--hero-line-height": dials.type.lineHeight,
 	"--hero-loading-width": `${dials.media.loadingWidth}em`,
+	"--hero-logo-text-gap": `${dials.rhythm.logoTextGap}vh`,
 	"--hero-media-height": `${dials.media.height}em`,
 	"--hero-media-hover-rotation": `${dials.media.hoverRotation}deg`,
 	"--hero-media-hover-y": `${-dials.media.hoverLift}em`,
@@ -362,6 +365,5 @@ const createHeroStyle = (dials: HeroDials): HeroStyle => ({
 	"--hero-state-blue": dials.colors.stateBlue,
 	"--hero-state-green": dials.colors.stateGreen,
 	"--hero-vertical-padding": `${dials.layout.verticalPadding}vh`,
-	"--hero-wordmark-gap": `${dials.rhythm.wordmarkGap}vh`,
 	"--hero-wordmark-width": `${dials.rhythm.wordmarkWidth}vw`,
 });

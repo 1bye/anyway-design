@@ -6,12 +6,7 @@ const HERO_DIAL_CONFIG = {
 	actions: {
 		fontSize: [HERO_DEFAULTS.actions.fontSize, 10, 20, 0.5],
 		height: [HERO_DEFAULTS.actions.height, 32, 64, 1],
-		horizontalPadding: [
-			HERO_DEFAULTS.actions.horizontalPadding,
-			8,
-			32,
-			1,
-		],
+		horizontalPadding: [HERO_DEFAULTS.actions.horizontalPadding, 8, 32, 1],
 		hoverLift: [HERO_DEFAULTS.actions.hoverLift, 0, 8, 0.25],
 		roundness: [HERO_DEFAULTS.actions.roundness, 0, 1, 0.01],
 	},
@@ -33,12 +28,7 @@ const HERO_DIAL_CONFIG = {
 		verticalPadding: [HERO_DEFAULTS.layout.verticalPadding, 0, 15, 0.25],
 	},
 	media: {
-		animationDuration: [
-			HERO_DEFAULTS.media.animationDuration,
-			0.5,
-			10,
-			0.1,
-		],
+		animationDuration: [HERO_DEFAULTS.media.animationDuration, 0.5, 10, 0.1],
 		height: [HERO_DEFAULTS.media.height, 0.5, 1.1, 0.01],
 		hoverLift: [HERO_DEFAULTS.media.hoverLift, 0, 0.5, 0.01],
 		hoverRotation: [HERO_DEFAULTS.media.hoverRotation, -8, 8, 0.25],
@@ -49,13 +39,8 @@ const HERO_DIAL_CONFIG = {
 	rhythm: {
 		actionsGap: [HERO_DEFAULTS.rhythm.actionsGap, 0, 32, 1],
 		actionsOffset: [HERO_DEFAULTS.rhythm.actionsOffset, 0, 12, 0.25],
-		mobileWordmarkWidth: [
-			HERO_DEFAULTS.rhythm.mobileWordmarkWidth,
-			20,
-			70,
-			1,
-		],
-		wordmarkGap: [HERO_DEFAULTS.rhythm.wordmarkGap, 1, 15, 0.25],
+		logoTextGap: [HERO_DEFAULTS.rhythm.logoTextGap, 1, 15, 0.25],
+		mobileWordmarkWidth: [HERO_DEFAULTS.rhythm.mobileWordmarkWidth, 20, 70, 1],
 		wordmarkWidth: [HERO_DEFAULTS.rhythm.wordmarkWidth, 8, 30, 0.25],
 	},
 	type: {
@@ -64,6 +49,12 @@ const HERO_DIAL_CONFIG = {
 		letterSpacing: [HERO_DEFAULTS.type.letterSpacing, -0.1, 0.05, 0.005],
 		lineHeight: [HERO_DEFAULTS.type.lineHeight, 0.85, 1.35, 0.01],
 		mobileSize: [HERO_DEFAULTS.type.mobileSize, 3, 10, 0.05],
+		unhighlightedTextOpacity: [
+			HERO_DEFAULTS.type.unhighlightedTextOpacity,
+			0.45,
+			1,
+			0.01,
+		],
 		weight: [HERO_DEFAULTS.type.weight, 400, 700, 25],
 	},
 	visibility: { ...HERO_DEFAULTS.visibility },
