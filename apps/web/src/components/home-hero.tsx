@@ -5,30 +5,18 @@ const BRIEF_URL = "https://github.com/1bye/anyway-design/blob/master/design.md";
 
 export const HERO_DEFAULTS = {
 	actions: {
-		fontSize: 13,
-		height: 40,
-		horizontalPadding: 16,
-		hoverLift: 2,
-		roundness: 1,
+		fontSize: 22.5,
 	},
 	colors: {
-		blue: "#323130",
-		coral: "#323130",
-		green: "#323130",
+		accent: "#323130",
 		ink: "#171717",
 		paper: "#f5f2ec",
 	},
 	copy: {
-		done: "and done: experiments, notes, and code for",
-		feelRight: "feel right",
-		intro: "I’m the software engineer behind Anyway",
-		lab: "This is my lab for the",
-		loading: "between loading",
-		making: "and I like making interfaces",
-		people: "people who ship",
+		description: "A design lab exploring how software",
+		emphasis: "looks, behaves, and feels",
 		primaryAction: "Follow the build",
 		secondaryAction: "Read the brief",
-		smallStates: "small states",
 	},
 	layout: {
 		alignment: "left",
@@ -70,13 +58,15 @@ const DialedHomeHero = import.meta.env.DEV
 
 const classNames = (...values: string[]): string => values.join(" ");
 
-const ACTION_STYLES = classNames(
-	"inline-flex items-center justify-center",
-	"min-h-[var(--hero-action-height)] rounded-[var(--hero-action-radius)] px-[var(--hero-action-padding-x)]",
-	"font-medium [font-size:var(--hero-action-font-size)] leading-none no-underline",
-	"transition-[translate,background-color] duration-200 ease-[ease]",
-	"hover:translate-y-[var(--hero-action-hover-y)]",
-	"focus-visible:outline-2 focus-visible:outline-[var(--hero-ink)] focus-visible:outline-offset-[3px]",
+const TEXT_LINK_STYLES = classNames(
+	"group inline-flex text-[var(--hero-ink)] no-underline",
+	" [font-size:var(--hero-action-font-size)] tracking-[-0.02em]",
+	"focus-visible:rounded-xs focus-visible:outline-2 focus-visible:outline-[var(--hero-ink)] focus-visible:outline-offset-4"
+);
+
+const TEXT_REVEAL_STYLES = classNames(
+	"block transition-transform duration-500 ease-[cubic-bezier(0.34,1.3,0.64,1)]",
+	"motion-safe:group-hover:-translate-y-1/2 motion-safe:group-focus:-translate-y-1/2",
 	"motion-reduce:transition-none"
 );
 
@@ -178,12 +168,8 @@ function HeroStatement({ centered, copy }: HeroStatementProps) {
 			)}
 			id="hero-title"
 		>
-			{copy.intro}, {copy.making}{" "}
-			<span className="text-[var(--hero-coral)]">{copy.feelRight}</span>.{" "}
-			{copy.lab}{" "}
-			<span className="text-[var(--hero-blue)]">{copy.smallStates}</span>{" "}
-			{copy.loading} {copy.done}{" "}
-			<span className="text-[var(--hero-green)]">{copy.people}</span>.
+			{copy.description}{" "}
+			<span className="text-[var(--hero-accent)]">{copy.emphasis}</span>.
 		</h1>
 	);
 }
@@ -203,55 +189,55 @@ function HeroActions({
 		<nav
 			aria-label="Project links"
 			className={classNames(
-				"mt-[var(--hero-actions-offset)] flex flex-wrap gap-[var(--hero-actions-gap)]",
+				"mt-[var(--hero-actions-offset)] flex flex-wrap gap-4",
 				centered ? "justify-center" : ""
 			)}
 		>
-			<a
-				className={classNames(
-					ACTION_STYLES,
-					"border border-[var(--hero-ink)] bg-[var(--hero-ink)] text-[var(--hero-paper)]",
-					"hover:bg-[color-mix(in_srgb,var(--hero-ink)_88%,white)]"
-				)}
-				href={REPOSITORY_URL}
-				rel="noopener noreferrer"
-				target="_blank"
-			>
-				{primaryLabel}
-			</a>
-			<a
-				className={classNames(
-					ACTION_STYLES,
-					"bg-[color-mix(in_srgb,white_42%,transparent)] text-[var(--hero-ink)]",
-					"hover:bg-[color-mix(in_srgb,white_70%,transparent)]"
-				)}
-				href={BRIEF_URL}
-				rel="noopener noreferrer"
-				target="_blank"
-			>
-				{secondaryLabel}
-			</a>
+			<TextRevealLink href={REPOSITORY_URL}>{primaryLabel}</TextRevealLink>
+			<TextRevealLink href={BRIEF_URL}>{secondaryLabel}</TextRevealLink>
 		</nav>
 	);
 }
 
+interface TextRevealLinkProps {
+	children: string;
+	href: string;
+}
+
+function TextRevealLink({ children, href }: TextRevealLinkProps) {
+	return (
+		<a
+			className={TEXT_LINK_STYLES}
+			href={href}
+			rel="noopener noreferrer"
+			target="_blank"
+		>
+			<span className="block h-[1.4em] overflow-hidden leading-[1.4em]">
+				<span className={TEXT_REVEAL_STYLES}>
+					<span className="block h-[1.4em] whitespace-nowrap">{children}</span>
+					<span
+						aria-hidden="true"
+						className="block h-[1.4em] whitespace-nowrap"
+					>
+						{children}
+					</span>
+				</span>
+			</span>
+		</a>
+	);
+}
+
 const createHeroStyle = (dials: HeroDials): HeroStyle => ({
+	"--hero-accent": dials.colors.accent,
 	"--hero-action-font-size": `${dials.actions.fontSize}px`,
-	"--hero-action-height": `${dials.actions.height}px`,
-	"--hero-action-hover-y": `${-dials.actions.hoverLift}px`,
-	"--hero-action-padding-x": `${dials.actions.horizontalPadding}px`,
-	"--hero-action-radius": `${dials.actions.roundness * 999}px`,
 	"--hero-actions-gap": `${dials.rhythm.actionsGap}px`,
 	"--hero-actions-offset": `${dials.rhythm.actionsOffset}vh`,
-	"--hero-blue": dials.colors.blue,
 	"--hero-column-ratio": `${dials.layout.columnRatio}fr`,
 	"--hero-content-max-width": `${dials.layout.contentMaxWidth}px`,
 	"--hero-copy-color": `color-mix(in srgb, ${dials.colors.ink} ${dials.type.unhighlightedTextOpacity * 100}%, transparent)`,
 	"--hero-copy-max-width": `${dials.type.copyMaxWidth}px`,
-	"--hero-coral": dials.colors.coral,
 	"--hero-font-size": `${dials.type.desktopSize}vw`,
 	"--hero-font-weight": dials.type.weight,
-	"--hero-green": dials.colors.green,
 	"--hero-grid-gap": `${dials.layout.gap}vw`,
 	"--hero-ink": dials.colors.ink,
 	"--hero-letter-spacing": `${dials.type.letterSpacing}em`,

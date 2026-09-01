@@ -4,11 +4,7 @@ import { HERO_DEFAULTS, HomeHeroView } from "./home-hero";
 
 const HERO_DIAL_CONFIG = {
 	actions: {
-		fontSize: [HERO_DEFAULTS.actions.fontSize, 10, 20, 0.5],
-		height: [HERO_DEFAULTS.actions.height, 32, 64, 1],
-		horizontalPadding: [HERO_DEFAULTS.actions.horizontalPadding, 8, 32, 1],
-		hoverLift: [HERO_DEFAULTS.actions.hoverLift, 0, 8, 0.25],
-		roundness: [HERO_DEFAULTS.actions.roundness, 0, 1, 0.01],
+		fontSize: [HERO_DEFAULTS.actions.fontSize, 10, 50, 0.5],
 	},
 	colors: { ...HERO_DEFAULTS.colors },
 	copy: {
