@@ -4,9 +4,10 @@
   "type": "module",
   "scripts": {
     "check-types": "tsc --noEmit",
-    "dev": "alchemy dev",
     "deploy": "alchemy deploy",
-    "destroy": "alchemy destroy"
+    "destroy": "alchemy destroy",
+    "dev": "portless",
+    "dev:bare": "alchemy dev"
   },
   "dependencies": {
     "dotenv": "catalog:",
@@ -18,6 +19,11 @@
     "@effect/platform-node": "4.0.0-rc.108",
     "alchemy": "2.0.0-beta.72",
     "effect": "4.0.0-rc.108",
+    "portless": "^0.15.6",
     "typescript": "catalog:"
+  },
+  "portless": {
+    "appPort": 3001,
+    "script": "dev:bare"
   }
 }

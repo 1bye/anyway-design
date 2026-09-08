@@ -25,7 +25,7 @@ Then, run the development server:
 bun run dev
 ```
 
-Open [http://localhost:3001](http://localhost:3001) in your browser to see the web application.
+Open the URL printed by Portless (for example, `https://infra.localhost`) in your browser.
 
 ## UI Customization
 

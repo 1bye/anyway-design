@@ -1,6 +1,7 @@
 {
   "name": "anyway-design",
   "private": true,
+  "type": "module",
   "workspaces": {
     "packages": [
       "apps/*",
@@ -21,15 +22,14 @@
       "@types/react-dom": "^19.2.3"
     }
   },
-  "type": "module",
   "scripts": {
-    "dev": "turbo run dev",
     "build": "turbo run build",
+    "check": "ultracite check",
     "check-types": "turbo run check-types",
-    "dev:web": "turbo run dev -F web --",
     "deploy": "turbo run deploy -F @anyway-design/infra --",
     "destroy": "turbo run destroy -F @anyway-design/infra --",
-    "check": "ultracite check",
+    "dev": "turbo run dev",
+    "dev:web": "turbo run dev -F web --",
     "fix": "ultracite fix"
   },
   "dependencies": {
