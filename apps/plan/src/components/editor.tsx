@@ -38,9 +38,8 @@ import {
 } from "react";
 import {
 	addToPlan,
-	BLOCK_KINDS,
 	BLOCK_SIZE,
-	type BlockKind,
+	blockDataSchema,
 	errorMessage,
 	INITIAL_PLAN,
 	NODE_APPEARANCES,
@@ -50,10 +49,10 @@ import {
 } from "../lib/plan";
 import { SERVICE_IDS, SERVICES } from "../lib/services";
 import { getModelContext, registerPlanTools } from "../lib/webmcp";
+import { BLOCK_DRAG_TYPE, BlockDock } from "./block-dock";
 import { BLOCKS, BlockIcon, BlockNode, blockColor } from "./block-node";
 
 const STORAGE_KEY = "anyway-plan:v1";
-const BLOCK_DRAG_TYPE = "application/x-anyway-plan-block";
 const nodeTypes = { block: BlockNode };
 const defaultEdgeOptions = {
 	markerEnd: { height: 16, type: MarkerType.ArrowClosed, width: 16 },
@@ -228,7 +227,7 @@ function Editor() {
 		[update]
 	);
 
-	function addBlock(kind: BlockKind, dropPoint?: XYPosition) {
+	function addBlock(data: PlanNode["data"], dropPoint?: XYPosition) {
 		const bounds = canvasRef.current?.getBoundingClientRect();
 		if (!bounds) {
 			return;
@@ -261,7 +260,7 @@ function Editor() {
 			nodes: [
 				...current.nodes.map((node) => ({ ...node, selected: false })),
 				{
-					data: { detail: "", kind, label: BLOCKS[kind].label },
+					data,
 					id: crypto.randomUUID(),
 					position,
 					selected: true,
@@ -272,13 +271,20 @@ function Editor() {
 	}
 
 	function onDrop(event: DragEvent<HTMLDivElement>) {
-		const draggedKind = event.dataTransfer.getData(BLOCK_DRAG_TYPE);
-		const kind = BLOCK_KINDS.find((item) => item === draggedKind);
-		if (!kind) {
+		const raw = event.dataTransfer.getData(BLOCK_DRAG_TYPE);
+		if (!raw || raw.length > 8192) {
 			return;
 		}
-		event.preventDefault();
-		addBlock(kind, { x: event.clientX, y: event.clientY });
+		try {
+			const result = blockDataSchema.safeParse(JSON.parse(raw));
+			if (!result.success) {
+				return;
+			}
+			event.preventDefault();
+			addBlock(result.data, { x: event.clientX, y: event.clientY });
+		} catch {
+			// Ignore unrelated or malformed drag payloads.
+		}
 	}
 
 	function editNode(data: Partial<PlanNode["data"]>) {
@@ -487,7 +493,9 @@ function Editor() {
 							</p>
 							<button
 								className="pill-button pointer-events-auto mt-5"
-								onClick={() => addBlock("app")}
+								onClick={() =>
+									addBlock({ detail: "", kind: "app", label: "App" })
+								}
 								type="button"
 							>
 								<Plus size={14} />
@@ -560,57 +568,6 @@ function Editor() {
 	);
 }
 
-function BlockDock({ addBlock }: { addBlock: (kind: BlockKind) => void }) {
-	const [dragging, setDragging] = useState(false);
-	return (
-		<aside
-			aria-label="Block library"
-			className="block-dock"
-			data-dragging={dragging}
-		>
-			<button
-				aria-controls="block-palette"
-				aria-label="Show blocks"
-				className="dock-trigger"
-				type="button"
-			>
-				<span />
-			</button>
-			<div className="block-palette" id="block-palette">
-				{BLOCK_KINDS.map((kind) => {
-					const { icon: Icon, label, detail } = BLOCKS[kind];
-					return (
-						<button
-							aria-label={`Add ${label} block`}
-							className="palette-item"
-							draggable
-							key={kind}
-							onClick={(event) => {
-								addBlock(kind);
-								if (event.detail > 0) {
-									event.currentTarget.blur();
-								}
-							}}
-							onDragEnd={() => setDragging(false)}
-							onDragStart={(event) => {
-								event.dataTransfer.setData(BLOCK_DRAG_TYPE, kind);
-								event.dataTransfer.effectAllowed = "copy";
-								setDragging(true);
-								event.currentTarget.blur();
-							}}
-							title={detail}
-							type="button"
-						>
-							<Icon aria-hidden="true" size={20} />
-							<span>{label}</span>
-						</button>
-					);
-				})}
-			</div>
-		</aside>
-	);
-}
-
 function Inspector({
 	node,
 	edge,
@@ -674,14 +631,18 @@ function Inspector({
 						id="block-service"
 						onChange={(event) =>
 							editNode({
+								icon: undefined,
 								service: SERVICE_IDS.find(
 									(service) => service === event.target.value
 								),
 							})
 						}
-						value={node.data.service ?? ""}
+						value={node.data.icon ? "catalog" : (node.data.service ?? "")}
 					>
 						<option value="">{BLOCKS[node.data.kind].label} icon</option>
+						{node.data.icon ? (
+							<option value="catalog">{node.data.icon.label}</option>
+						) : null}
 						{SERVICE_IDS.map((service) => (
 							<option key={service} value={service}>
 								{SERVICES[service].label}

@@ -145,6 +145,7 @@ test("WebMCP handlers validate additions, read current state, and stop after dis
 	expect(registered.map((tool) => tool.name)).toEqual([
 		"plan_read",
 		"plan_add",
+		"plan_search_icons",
 	]);
 	expect(
 		JSON.parse(

@@ -169,7 +169,7 @@ svg {
 	display: flex;
 	align-items: flex-end;
 	justify-content: center;
-	height: 112px;
+	height: 240px;
 	padding-bottom: max(24px, env(safe-area-inset-bottom));
 	pointer-events: none;
 }
@@ -203,17 +203,14 @@ svg {
 }
 .block-palette {
 	position: relative;
-	display: flex;
 	visibility: hidden;
-	gap: 4px;
+	width: 800px;
 	max-width: 100%;
-	padding: 8px;
-	overflow-x: auto;
-	overscroll-behavior-x: contain;
+	padding: 10px 12px 6px;
 	pointer-events: auto;
-	background: rgb(255 255 255 / 0.96);
+	background: rgb(255 255 255 / 0.97);
 	border: 1px solid var(--color-line);
-	border-radius: 20px;
+	border-radius: 18px;
 	box-shadow: 0 8px 32px rgb(0 0 0 / 0.06);
 	opacity: 0;
 	transform: translateY(12px);
@@ -222,34 +219,132 @@ svg {
 		transform 180ms ease,
 		visibility 180ms;
 }
-.block-dock:hover .block-palette,
-.block-dock:focus-within .block-palette,
+.block-dock:not([data-dismissed="true"]):hover .block-palette,
+.block-dock:not([data-dismissed="true"]):focus-within .block-palette,
 .block-dock[data-dragging="true"] .block-palette {
 	visibility: visible;
 	opacity: 1;
 	transform: translateY(0);
 }
-.palette-item {
+.palette-search {
 	display: flex;
-	flex-shrink: 0;
-	flex-direction: column;
-	gap: 8px;
+	gap: 9px;
 	align-items: center;
-	justify-content: center;
-	min-width: 72px;
-	min-height: 68px;
-	padding: 10px 12px;
-	font-size: 11px;
+	color: var(--color-muted);
+}
+.palette-search input {
+	width: 100%;
+	min-width: 0;
+	height: 32px;
+	font-size: 12px;
+	color: var(--color-ink);
+	background: transparent;
+	border: 0;
+}
+.palette-close,
+.palette-pages button {
+	display: grid;
+	flex-shrink: 0;
+	place-items: center;
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	background: transparent;
+	border: 0;
+	border-radius: 7px;
+}
+.palette-filters,
+.palette-results {
+	min-width: 0;
+	padding: 0;
+	border: 0;
+}
+.palette-filters {
+	display: flex;
+	gap: 4px;
+	margin: 6px 0 10px;
+	overflow-x: auto;
+	scrollbar-width: thin;
+}
+.palette-filters button {
+	flex-shrink: 0;
+	padding: 5px 9px;
+	font-size: 10px;
+	color: var(--color-muted);
+	background: transparent;
+	border: 0;
+	border-radius: 7px;
+}
+.palette-filters button[aria-pressed="true"] {
+	color: var(--color-ink);
+	background: #ededed;
+}
+.palette-results {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+	gap: 4px;
+	align-content: start;
+	height: 92px;
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	scrollbar-width: thin;
+}
+.palette-item {
+	display: grid;
+	place-items: center;
+	min-width: 44px;
+	height: 44px;
+	padding: 8px;
+	color: var(--block-color);
 	cursor: grab;
 	background: transparent;
 	border: 0;
-	border-radius: 12px;
+	border-radius: 10px;
 }
-.palette-item:hover {
+.palette-item:hover,
+.palette-close:hover,
+.palette-pages button:hover:not(:disabled),
+.palette-filters button:hover {
 	background: #f2f2f2;
 }
 .palette-item:active {
 	cursor: grabbing;
+}
+.palette-empty {
+	grid-column: 1 / -1;
+	margin: 26px 0;
+	font-size: 12px;
+	color: var(--color-muted);
+	text-align: center;
+}
+.palette-footer,
+.palette-pages {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+.palette-footer {
+	justify-content: space-between;
+	min-height: 30px;
+	margin-top: 5px;
+	font-size: 10px;
+	color: var(--color-muted);
+}
+.palette-footer > button {
+	font-size: 10px;
+	background: transparent;
+	border: 0;
+}
+.palette-footer a:hover {
+	color: var(--color-ink);
+}
+.palette-pages {
+	gap: 2px;
+	font-variant-numeric: tabular-nums;
+}
+.palette-pages button:disabled {
+	cursor: default;
+	opacity: 0.3;
 }
 .canvas {
 	position: relative;
@@ -531,9 +626,9 @@ svg {
 	.inspector {
 		top: auto;
 		right: 8px;
-		bottom: 124px;
+		bottom: 248px;
 		width: min(256px, calc(100% - 60px));
-		max-height: calc(100% - 144px);
+		max-height: calc(100% - 268px);
 	}
 	.help-panel {
 		top: 8px;
@@ -545,7 +640,7 @@ svg {
 		height: 42px;
 	}
 	.canvas .react-flow__controls {
-		bottom: 112px;
+		bottom: 240px;
 	}
 }
 @media (max-width: 379px) {
@@ -561,13 +656,13 @@ svg {
 	}
 }
 @media (hover: none) {
-	.block-palette {
+	.block-dock:not([data-dismissed="true"]) .block-palette {
 		visibility: visible;
 		opacity: 1;
 		transform: none;
 	}
-	.dock-trigger {
-		display: none;
+	.palette-search input {
+		font-size: 16px;
 	}
 }
 @media (prefers-reduced-motion: reduce) {

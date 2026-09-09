@@ -1,5 +1,6 @@
 import type { Edge, Node } from "@xyflow/react";
 import { z } from "zod";
+import { type IconReference, iconSchema } from "./icons";
 import { SERVICE_IDS, type ServiceId } from "./services";
 
 export const NODE_APPEARANCES = ["bare", "white", "tinted"] as const;
@@ -25,6 +26,7 @@ export type PlanNode = Node<
 		detail: string;
 		appearance?: NodeAppearance;
 		service?: ServiceId;
+		icon?: IconReference;
 	},
 	"block"
 >;
@@ -36,14 +38,16 @@ export interface Plan {
 }
 
 const idSchema = z.string().min(1).max(100);
+export const blockDataSchema = z.object({
+	appearance: z.enum(NODE_APPEARANCES).optional(),
+	detail: z.string().max(500),
+	icon: iconSchema.optional(),
+	kind: z.enum(BLOCK_KINDS),
+	label: z.string().min(1).max(100),
+	service: z.enum(SERVICE_IDS).optional(),
+});
 const nodeSchema = z.object({
-	data: z.object({
-		appearance: z.enum(NODE_APPEARANCES).optional(),
-		detail: z.string().max(500),
-		kind: z.enum(BLOCK_KINDS),
-		label: z.string().min(1).max(100),
-		service: z.enum(SERVICE_IDS).optional(),
-	}),
+	data: blockDataSchema,
 	id: idSchema,
 	position: z.object({
 		x: z.number().min(-100_000).max(100_000),

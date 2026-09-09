@@ -9,7 +9,8 @@ import {
 	StickyNote,
 	Workflow,
 } from "lucide-react";
-import { type CSSProperties, memo } from "react";
+import { type CSSProperties, memo, useCallback, useState } from "react";
+import { iconSource } from "../lib/icons";
 import { BLOCK_SIZE, type BlockKind, type PlanNode } from "../lib/plan";
 import { SERVICES } from "../lib/services";
 
@@ -71,9 +72,9 @@ const handles = [Position.Left, Position.Top, Position.Right, Position.Bottom];
 
 export function blockColor(data: PlanNode["data"]): CSSProperties {
 	return {
-		"--block-color": data.service
-			? SERVICES[data.service].color
-			: BLOCKS[data.kind].color,
+		"--block-color":
+			data.icon?.color ??
+			(data.service ? SERVICES[data.service].color : BLOCKS[data.kind].color),
 	} as CSSProperties;
 }
 
@@ -84,6 +85,27 @@ export function BlockIcon({
 	data: PlanNode["data"];
 	size?: number;
 }) {
+	const [failedSource, setFailedSource] = useState("");
+	const catalogSource = data.icon ? iconSource(data.icon) : "";
+	const handleIconError = useCallback(
+		() => setFailedSource(catalogSource),
+		[catalogSource]
+	);
+	if (catalogSource && catalogSource !== failedSource) {
+		return (
+			// biome-ignore lint/a11y/noNoninteractiveElementInteractions: onError handles an image load failure, not user interaction.
+			<img
+				alt=""
+				className="service-icon"
+				draggable={false}
+				height={size}
+				loading="lazy"
+				onError={handleIconError}
+				src={catalogSource}
+				width={size}
+			/>
+		);
+	}
 	if (data.service) {
 		const src = `/icons/services/${data.service}.svg`;
 		if (SERVICES[data.service].mask) {
@@ -123,7 +145,7 @@ export const BlockNode = memo(function BlockCard({
 			title={data.detail || data.label}
 		>
 			<div className="block-tile">
-				<BlockIcon data={data} size={data.service ? 42 : 32} />
+				<BlockIcon data={data} size={data.service || data.icon ? 42 : 32} />
 			</div>
 			<div className="block-label">{data.label}</div>
 			{handles.map((position) => (
