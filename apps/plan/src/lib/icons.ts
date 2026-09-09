@@ -52,12 +52,11 @@ async function fetchCatalog(): Promise<CatalogEntry[]> {
 }
 
 const WORD_SEPARATOR = /[\s-]+/;
-export function matchesIconSearch(keywords: string, query: string): boolean {
-	return query
-		.toLowerCase()
-		.trim()
-		.split(WORD_SEPARATOR)
-		.every((word) => keywords.includes(word));
+export function createIconMatcher(
+	query: string
+): (keywords: string) => boolean {
+	const words = query.toLowerCase().trim().split(WORD_SEPARATOR);
+	return (keywords) => words.every((word) => keywords.includes(word));
 }
 
 export function searchIcons(
@@ -65,12 +64,16 @@ export function searchIcons(
 	query: string,
 	filter: IconFilter = "All"
 ): CatalogEntry[] {
+	const exact = query.trim().toLowerCase();
+	if (!exact && filter === "All") {
+		return catalog;
+	}
+	const matchesQuery = createIconMatcher(query);
 	const matches = catalog.filter(
 		(entry) =>
 			(filter === "All" || entry.groups.includes(filter)) &&
-			matchesIconSearch(entry.keywords, query)
+			matchesQuery(entry.keywords)
 	);
-	const exact = query.trim().toLowerCase();
 	if (!exact) {
 		return matches;
 	}

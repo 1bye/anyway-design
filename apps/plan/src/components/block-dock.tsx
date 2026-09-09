@@ -1,19 +1,19 @@
 // biome-ignore-all lint/performance/noJsxPropsBind: Small palette controls capture the current item and filter.
 import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
 	type CatalogEntry,
+	createIconMatcher,
 	ICON_FILTERS,
 	type IconFilter,
 	loadIconCatalog,
-	matchesIconSearch,
 	searchIcons,
 } from "../lib/icons";
+import { createPageScroll, PALETTE_ROWS, paletteColumns } from "../lib/palette";
 import { BLOCK_KINDS, type PlanNode } from "../lib/plan";
 import { BLOCKS, BlockIcon, blockColor } from "./block-node";
 
 export const BLOCK_DRAG_TYPE = "application/x-anyway-plan-block";
-const PAGE_SIZE = 32;
 const basics: PlanNode["data"][] = BLOCK_KINDS.map((kind) => ({
 	detail: "",
 	kind,
@@ -56,11 +56,25 @@ export function BlockDock({
 	const [catalog, setCatalog] = useState<CatalogEntry[]>([]);
 	const [error, setError] = useState(false);
 	const [retry, setRetry] = useState(0);
-	// biome-ignore lint/correctness/useExhaustiveDependencies: retry explicitly reruns a failed catalog request.
+	const [columns, setColumns] = useState(1);
+	const resultsRef = useRef<HTMLFieldSetElement>(null);
+	const paletteRef = useRef<HTMLDivElement>(null);
 	useEffect(() => {
-		if (!active) {
+		const results = resultsRef.current;
+		// biome-ignore lint/suspicious/noUnnecessaryConditions: React populates this nullable DOM ref after rendering.
+		if (!results) {
 			return;
 		}
+		const observer = new ResizeObserver(([entry]) => {
+			if (entry) {
+				setColumns(paletteColumns(entry.contentRect.width));
+			}
+		});
+		observer.observe(results);
+		return () => observer.disconnect();
+	}, []);
+	// biome-ignore lint/correctness/useExhaustiveDependencies: retry explicitly reruns a failed catalog request.
+	useEffect(() => {
 		let cancelled = false;
 		async function load() {
 			setError(false);
@@ -75,36 +89,71 @@ export function BlockDock({
 				}
 			}
 		}
-		load();
+		// Warm the library shortly after mount; opening the dock loads it immediately.
+		const timer = window.setTimeout(load, active ? 0 : 200);
 		return () => {
 			cancelled = true;
+			window.clearTimeout(timer);
 		};
 	}, [active, retry]);
 	const items = useMemo(() => {
+		const matchesQuery = createIconMatcher(query);
 		const local = filter === "All" ? basics : [];
 		const filtered = local.filter((item) =>
-			matchesIconSearch(
-				`${item.label} ${BLOCKS[item.kind].detail}`.toLowerCase(),
-				query
-			)
+			matchesQuery(`${item.label} ${BLOCKS[item.kind].detail}`.toLowerCase())
 		);
 		if (
 			(filter === "All" || filter === "Cloudflare") &&
-			matchesIconSearch("cloudflare r2 object storage bucket", query)
+			matchesQuery("cloudflare r2 object storage bucket")
 		) {
 			filtered.push(r2);
 		}
-		return [
-			...filtered,
-			...searchIcons(catalog, query, filter).map(catalogBlock),
-		];
+		return [...filtered, ...searchIcons(catalog, query, filter)];
 	}, [catalog, query, filter]);
-	const pageCount = Math.max(1, Math.ceil(items.length / PAGE_SIZE));
+	const pageSize = columns * PALETTE_ROWS;
+	const pageCount = Math.max(1, Math.ceil(items.length / pageSize));
 	const currentPage = Math.min(page, pageCount - 1);
-	const visible = items.slice(
-		currentPage * PAGE_SIZE,
-		(currentPage + 1) * PAGE_SIZE
+	const visible = useMemo(
+		() =>
+			items
+				.slice(currentPage * pageSize, (currentPage + 1) * pageSize)
+				.map((item) => ("slug" in item ? catalogBlock(item) : item)),
+		[items, currentPage, pageSize]
 	);
+	useEffect(() => {
+		const palette = paletteRef.current;
+		// biome-ignore lint/suspicious/noUnnecessaryConditions: React populates this nullable DOM ref after rendering.
+		if (!palette) {
+			return;
+		}
+		const pageScroll = createPageScroll();
+		function handleWheel(event: WheelEvent) {
+			if (
+				event.ctrlKey ||
+				(event.target instanceof Element &&
+					event.target.closest(".palette-filters") &&
+					Math.abs(event.deltaX) > Math.abs(event.deltaY))
+			) {
+				return;
+			}
+			event.preventDefault();
+			event.stopPropagation();
+			const direction = pageScroll(event);
+			if (direction) {
+				setPage((previous) =>
+					Math.max(
+						0,
+						Math.min(
+							pageCount - 1,
+							Math.min(previous, pageCount - 1) + direction
+						)
+					)
+				);
+			}
+		}
+		palette.addEventListener("wheel", handleWheel, { passive: false });
+		return () => palette.removeEventListener("wheel", handleWheel);
+	}, [pageCount]);
 	function activate() {
 		setActive(true);
 		setDismissed(false);
@@ -139,7 +188,7 @@ export function BlockDock({
 			>
 				<span />
 			</button>
-			<div className="block-palette" id="block-palette">
+			<div className="block-palette" id="block-palette" ref={paletteRef}>
 				<div className="palette-search">
 					<Search aria-hidden="true" size={15} />
 					<input
@@ -180,7 +229,8 @@ export function BlockDock({
 				<fieldset
 					aria-label="Icon results"
 					className="palette-results"
-					key={`${query}:${filter}:${currentPage}`}
+					ref={resultsRef}
+					style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
 				>
 					{visible.map((data) => (
 						<button
@@ -208,7 +258,7 @@ export function BlockDock({
 							title={data.label}
 							type="button"
 						>
-							<BlockIcon data={data} size={26} />
+							<BlockIcon data={data} loading="eager" size={26} />
 							<span className="sr-only">{data.label}</span>
 						</button>
 					))}
@@ -248,7 +298,7 @@ export function BlockDock({
 						>
 							<ChevronLeft aria-hidden="true" size={14} />
 						</button>
-						<span>
+						<span aria-atomic="true" aria-live="polite">
 							{currentPage + 1} / {pageCount}
 						</span>
 						<button

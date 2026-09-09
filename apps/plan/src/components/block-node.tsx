@@ -80,9 +80,11 @@ export function blockColor(data: PlanNode["data"]): CSSProperties {
 
 export function BlockIcon({
 	data,
+	loading = "lazy",
 	size = 32,
 }: {
 	data: PlanNode["data"];
+	loading?: "eager" | "lazy";
 	size?: number;
 }) {
 	const [failedSource, setFailedSource] = useState("");
@@ -99,7 +101,7 @@ export function BlockIcon({
 				className="service-icon"
 				draggable={false}
 				height={size}
-				loading="lazy"
+				loading={loading}
 				onError={handleIconError}
 				src={catalogSource}
 				width={size}

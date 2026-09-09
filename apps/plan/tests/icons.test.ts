@@ -20,6 +20,7 @@ test("the full catalog validates, searches by provider and alias, and saves port
 	);
 	expect(catalog.length).toBeGreaterThan(6000);
 	expect(new Set(catalog.map((entry) => entry.slug)).size).toBe(catalog.length);
+	expect(searchIcons(catalog, "  ")).toBe(catalog);
 	for (const query of [
 		"neon",
 		"planetscale",
