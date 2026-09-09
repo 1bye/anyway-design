@@ -1,10 +1,8 @@
 // biome-ignore-all lint/performance/noJsxPropsBind: Small palette controls capture the current item and filter.
-import { ChevronLeft, ChevronRight, Search, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
 	type CatalogEntry,
 	createIconMatcher,
-	ICON_FILTERS,
 	type IconFilter,
 	loadIconCatalog,
 	searchIcons,
@@ -12,6 +10,7 @@ import {
 import { createPageScroll, PALETTE_ROWS, paletteColumns } from "../lib/palette";
 import { BLOCK_KINDS, type PlanNode } from "../lib/plan";
 import { BLOCKS, BlockIcon, blockColor } from "./block-node";
+import { PaletteHeader } from "./palette-header";
 
 export const BLOCK_DRAG_TYPE = "application/x-anyway-plan-block";
 const basics: PlanNode["data"][] = BLOCK_KINDS.map((kind) => ({
@@ -130,6 +129,7 @@ export function BlockDock({
 		function handleWheel(event: WheelEvent) {
 			if (
 				event.ctrlKey ||
+				(event.target instanceof Element && event.target.closest("dialog")) ||
 				(event.target instanceof Element &&
 					event.target.closest(".palette-filters") &&
 					Math.abs(event.deltaX) > Math.abs(event.deltaY))
@@ -189,43 +189,18 @@ export function BlockDock({
 				<span />
 			</button>
 			<div className="block-palette" id="block-palette" ref={paletteRef}>
-				<div className="palette-search">
-					<Search aria-hidden="true" size={15} />
-					<input
-						aria-label="Search icons"
-						autoComplete="off"
-						onChange={(event) => {
-							setQuery(event.target.value);
-							setPage(0);
-						}}
-						placeholder="Search services, brands, icons…"
-						type="search"
-						value={query}
-					/>
-					<button
-						aria-label="Close icon library"
-						className="palette-close"
-						onClick={dismiss}
-						type="button"
-					>
-						<X aria-hidden="true" size={14} />
-					</button>
-				</div>
-				<fieldset aria-label="Icon providers" className="palette-filters">
-					{ICON_FILTERS.map((group) => (
-						<button
-							aria-pressed={filter === group}
-							key={group}
-							onClick={() => {
-								setFilter(group);
-								setPage(0);
-							}}
-							type="button"
-						>
-							{group}
-						</button>
-					))}
-				</fieldset>
+				<PaletteHeader
+					catalogCount={catalog.length}
+					error={error}
+					filter={filter}
+					onFilterChange={setFilter}
+					onPageChange={setPage}
+					onQueryChange={setQuery}
+					onRetry={() => setRetry(retry + 1)}
+					page={currentPage}
+					pageCount={pageCount}
+					query={query}
+				/>
 				<fieldset
 					aria-label="Icon results"
 					className="palette-results"
@@ -270,47 +245,6 @@ export function BlockDock({
 						</p>
 					) : null}
 				</fieldset>
-				<div className="palette-footer">
-					<span aria-live="polite">
-						{catalog.length || error
-							? `${items.length.toLocaleString()} icons`
-							: "Loading library…"}
-					</span>
-					{error ? (
-						<button onClick={() => setRetry(retry + 1)} type="button">
-							Couldn't load icons. Retry
-						</button>
-					) : (
-						<a
-							href="https://github.com/glincker/thesvg"
-							rel="noopener noreferrer"
-							target="_blank"
-						>
-							Icons by theSVG
-						</a>
-					)}
-					<div className="palette-pages">
-						<button
-							aria-label="Previous icons"
-							disabled={currentPage === 0}
-							onClick={() => setPage(currentPage - 1)}
-							type="button"
-						>
-							<ChevronLeft aria-hidden="true" size={14} />
-						</button>
-						<span aria-atomic="true" aria-live="polite">
-							{currentPage + 1} / {pageCount}
-						</span>
-						<button
-							aria-label="Next icons"
-							disabled={currentPage + 1 === pageCount}
-							onClick={() => setPage(currentPage + 1)}
-							type="button"
-						>
-							<ChevronRight aria-hidden="true" size={14} />
-						</button>
-					</div>
-				</div>
 			</div>
 		</aside>
 	);

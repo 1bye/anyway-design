@@ -169,7 +169,7 @@ svg {
 	display: flex;
 	align-items: flex-end;
 	justify-content: center;
-	height: 288px;
+	height: 232px;
 	padding-bottom: max(24px, env(safe-area-inset-bottom));
 	pointer-events: none;
 }
@@ -206,7 +206,7 @@ svg {
 	visibility: hidden;
 	width: 800px;
 	max-width: 100%;
-	padding: 10px 12px 6px;
+	padding: 10px 12px 12px;
 	pointer-events: auto;
 	background: rgb(255 255 255 / 0.97);
 	border: 1px solid var(--color-line);
@@ -221,25 +221,50 @@ svg {
 }
 .block-dock:not([data-dismissed="true"]):hover .block-palette,
 .block-dock:not([data-dismissed="true"]):focus-within .block-palette,
+.block-dock:has(.palette-info[data-active="true"]) .block-palette,
+.block-dock:not([data-dismissed="true"]):has(.palette-search[data-open="true"])
+	.block-palette,
 .block-dock[data-dragging="true"] .block-palette {
 	visibility: visible;
 	opacity: 1;
 	transform: translateY(0);
 }
-.palette-search {
+.palette-header {
 	display: flex;
-	gap: 9px;
+	gap: 8px;
 	align-items: center;
-	padding: 0 8px;
-	color: var(--color-muted);
-	border-radius: 10px;
-	transition:
-		background-color 150ms ease,
-		box-shadow 150ms ease;
+	height: 32px;
+	margin-bottom: 10px;
+}
+.palette-header-content {
+	position: relative;
+	flex: 1;
+	min-width: 0;
+	height: 32px;
+	overflow: hidden;
+}
+.palette-header-actions {
+	display: flex;
+	flex-shrink: 0;
+	gap: 6px;
+	align-items: center;
+}
+.palette-search {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	padding: 0 10px;
+	pointer-events: none;
+	background: #f5f5f5;
+	border-radius: 9px;
+	opacity: 0;
+	clip-path: inset(0% 100% 0% 0% round 9px);
+}
+.palette-search[data-open="true"] {
+	pointer-events: auto;
 }
 .palette-search:focus-within {
-	color: var(--color-ink);
-	background: #f5f5f5;
 	box-shadow: inset 0 0 0 1px #b8b8b8;
 }
 .palette-search input {
@@ -254,7 +279,10 @@ svg {
 .palette-search input:focus-visible {
 	outline: none;
 }
-.palette-close,
+.palette-search input::-webkit-search-cancel-button {
+	appearance: none;
+}
+.palette-icon-button,
 .palette-pages button {
 	display: grid;
 	flex-shrink: 0;
@@ -262,9 +290,18 @@ svg {
 	width: 28px;
 	height: 28px;
 	padding: 0;
+	color: var(--color-muted);
 	background: transparent;
 	border: 0;
-	border-radius: 7px;
+	border-radius: 8px;
+}
+.palette-search-toggle {
+	width: 32px;
+	height: 32px;
+}
+.palette-header button:focus-visible {
+	outline: 1px solid #999;
+	outline-offset: -1px;
 }
 .palette-filters,
 .palette-results {
@@ -275,9 +312,11 @@ svg {
 .palette-filters {
 	display: flex;
 	gap: 4px;
-	margin: 6px 0 10px;
+	align-items: center;
+	height: 32px;
+	margin: 0;
 	overflow-x: auto;
-	scrollbar-width: thin;
+	scrollbar-width: none;
 }
 .palette-filters button {
 	flex-shrink: 0;
@@ -314,7 +353,7 @@ svg {
 	border-radius: 10px;
 }
 .palette-item:hover,
-.palette-close:hover,
+.palette-icon-button:hover,
 .palette-pages button:hover:not(:disabled),
 .palette-filters button:hover {
 	background: #f2f2f2;
@@ -329,34 +368,106 @@ svg {
 	color: var(--color-muted);
 	text-align: center;
 }
-.palette-footer,
 .palette-pages {
 	display: flex;
-	gap: 8px;
-	align-items: center;
-}
-.palette-footer {
-	justify-content: space-between;
-	min-height: 30px;
-	margin-top: 5px;
-	font-size: 10px;
-	color: var(--color-muted);
-}
-.palette-footer > button {
-	font-size: 10px;
-	background: transparent;
-	border: 0;
-}
-.palette-footer a:hover {
-	color: var(--color-ink);
-}
-.palette-pages {
 	gap: 2px;
+	align-items: center;
+	font-size: 10px;
 	font-variant-numeric: tabular-nums;
+	color: var(--color-muted);
+	white-space: nowrap;
+}
+.palette-pages span {
+	min-width: 48px;
+	text-align: center;
 }
 .palette-pages button:disabled {
 	cursor: default;
 	opacity: 0.3;
+}
+.palette-info {
+	width: min(360px, calc(100vw - 32px));
+	max-height: calc(100dvh - 48px);
+	padding: 24px;
+	margin: auto;
+	overflow-y: auto;
+	color: var(--color-ink);
+	background: #fff;
+	border: 1px solid var(--color-line);
+	border-radius: 22px;
+	box-shadow: 0 24px 80px rgb(0 0 0 / 0.12);
+}
+.palette-info::backdrop {
+	background: rgb(20 20 20 / 0.18);
+}
+.palette-info h2 {
+	margin: 0 0 20px;
+	font-size: 13px;
+	font-weight: 500;
+}
+.palette-info-count {
+	margin: 0;
+	font-size: 36px;
+	font-weight: 500;
+	letter-spacing: -0.06em;
+}
+.palette-info-count span {
+	font-size: 16px;
+	font-weight: 400;
+	color: var(--color-muted);
+	letter-spacing: -0.02em;
+}
+.palette-info-description,
+.palette-info-note,
+.palette-info-error {
+	font-size: 12px;
+	line-height: 1.6;
+	color: var(--color-muted);
+}
+.palette-info-description {
+	margin: 6px 0 20px;
+}
+.palette-info-sources {
+	display: grid;
+	gap: 4px;
+}
+.palette-info-sources a {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 10px 12px;
+	font-size: 13px;
+	background: #f7f7f7;
+	border-radius: 10px;
+}
+.palette-info-sources a:hover {
+	background: #ededed;
+}
+.palette-info-sources small {
+	display: block;
+	margin-top: 2px;
+	font-size: 11px;
+	color: var(--color-muted);
+}
+.palette-info-note {
+	margin: 20px 0;
+	font-size: 10px;
+}
+.palette-info-note a,
+.palette-info-error button {
+	text-decoration: underline;
+	text-underline-offset: 3px;
+}
+.palette-info-done {
+	width: 100%;
+	padding: 9px 12px;
+	font-size: 12px;
+	background: #f0f0f0;
+	border: 0;
+	border-radius: 10px;
+}
+.palette-info-done:hover {
+	background: #e6e6e6;
 }
 .canvas {
 	position: relative;
@@ -638,9 +749,9 @@ svg {
 	.inspector {
 		top: auto;
 		right: 8px;
-		bottom: 296px;
+		bottom: 240px;
 		width: min(256px, calc(100% - 60px));
-		max-height: calc(100% - 316px);
+		max-height: calc(100% - 260px);
 	}
 	.help-panel {
 		top: 8px;
@@ -652,7 +763,7 @@ svg {
 		height: 42px;
 	}
 	.canvas .react-flow__controls {
-		bottom: 288px;
+		bottom: 232px;
 	}
 }
 @media (max-width: 379px) {
