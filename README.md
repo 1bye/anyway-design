@@ -4,6 +4,8 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 
 ## Features
 
+The agent setup builder lives in [`apps/md`](apps/md/README.md). Run `bun run --cwd apps/md db:local`, then `bun run dev:md` to open it at `http://127.0.0.1:3002`.
+
 - **TypeScript** - For type safety and improved developer experience
 - **TanStack Start** - SSR framework with TanStack Router
 - **TailwindCSS** - Utility-first CSS for rapid UI development
@@ -68,7 +70,7 @@ If you want to add app-specific blocks instead of shared primitives, run the sha
 Deploys are staged and default to a personal `dev_<username>` stage. For production, run the deploy with an explicit stage from `packages/infra`:
 
 ```bash
-cd packages/infra && bunx alchemy deploy --stage production
+cd packages/infra && bun run deploy --stage production
 ```
 
 ## Git Hooks and Formatting
@@ -81,8 +83,10 @@ cd packages/infra && bunx alchemy deploy --stage production
 anyway-design/
 ├── apps/
 │   ├── web/         # Frontend application (React + TanStack Start)
+│   ├── md/          # Skills and AGENTS.md builder, anonymous D1 saves
 ├── packages/
 │   ├── ui/          # Shared shadcn/ui components and styles
+│   ├── md-cli/      # Dependency-free installer, packaged by apps/md
 ```
 
 ## Available Scripts

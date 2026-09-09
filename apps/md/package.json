@@ -1,0 +1,36 @@
+{
+  "name": "md",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun run prepare:cli && vite build",
+    "check-types": "tsc --noEmit",
+    "db:local": "wrangler d1 migrations apply md-presets --local",
+    "dev": "bun run prepare:cli && vite dev --host 127.0.0.1",
+    "prepare:cli": "bun scripts/pack-cli.ts",
+    "preview": "vite preview --host 127.0.0.1",
+    "refresh:catalog": "bun scripts/refresh-catalog.ts",
+    "test": "bun test tests"
+  },
+  "dependencies": {
+    "@tanstack/react-router": "^1.170.18",
+    "@tanstack/react-start": "^1.168.32",
+    "lucide-react": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.54.5",
+    "@cloudflare/workers-types": "^5.20260728.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "^6.0.4",
+    "tailwindcss": "catalog:",
+    "typescript": "catalog:",
+    "vite": "^8.1.5",
+    "wrangler": "^4.129.1"
+  }
+}

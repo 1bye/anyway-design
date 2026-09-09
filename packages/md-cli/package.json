@@ -1,0 +1,17 @@
+{
+  "name": "@anyway-design/md",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Apply a saved Anyway MD setup to a new project.",
+  "type": "module",
+  "bin": {
+    "anyway-md": "bin.mjs"
+  },
+  "files": [
+    "bin.mjs",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=22"
+  }
+}

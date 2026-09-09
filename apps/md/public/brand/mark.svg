@@ -1,0 +1,11 @@
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+	<title>Anyway</title>
+	<rect fill="#141414" height="48" rx="15" width="48" />
+	<path
+		d="M11 35C15 24 22 11 26 11C31 11 28 29 33 36M17 28C22 25 29 23 37 24M11 35C18 36 30 35 37 31"
+		stroke="#fff"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+		stroke-width="2.4"
+	/>
+</svg>

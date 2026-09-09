@@ -4,10 +4,10 @@
   "type": "module",
   "scripts": {
     "check-types": "tsc --noEmit",
-    "deploy": "alchemy deploy",
+    "deploy": "bun run --cwd ../../apps/md prepare:cli && alchemy deploy",
     "destroy": "alchemy destroy",
     "dev": "portless",
-    "dev:bare": "alchemy dev"
+    "dev:bare": "bun run --cwd ../../apps/md prepare:cli && alchemy dev"
   },
   "dependencies": {
     "dotenv": "catalog:",
