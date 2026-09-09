@@ -1,5 +1,11 @@
 import type { Edge, Node } from "@xyflow/react";
 import { z } from "zod";
+import { SERVICE_IDS, type ServiceId } from "./services";
+
+export const NODE_APPEARANCES = ["bare", "white", "tinted"] as const;
+export type NodeAppearance = (typeof NODE_APPEARANCES)[number];
+export const BLOCK_SIZE = 64;
+export const HANDLE_IDS = ["left", "top", "right", "bottom"] as const;
 
 export const BLOCK_KINDS = [
 	"app",
@@ -13,7 +19,13 @@ export const BLOCK_KINDS = [
 ] as const;
 export type BlockKind = (typeof BLOCK_KINDS)[number];
 export type PlanNode = Node<
-	{ kind: BlockKind; label: string; detail: string },
+	{
+		kind: BlockKind;
+		label: string;
+		detail: string;
+		appearance?: NodeAppearance;
+		service?: ServiceId;
+	},
 	"block"
 >;
 export interface Plan {
@@ -26,9 +38,11 @@ export interface Plan {
 const idSchema = z.string().min(1).max(100);
 const nodeSchema = z.object({
 	data: z.object({
+		appearance: z.enum(NODE_APPEARANCES).optional(),
 		detail: z.string().max(500),
 		kind: z.enum(BLOCK_KINDS),
 		label: z.string().min(1).max(100),
+		service: z.enum(SERVICE_IDS).optional(),
 	}),
 	id: idSchema,
 	position: z.object({
@@ -41,7 +55,9 @@ const edgeSchema = z.object({
 	id: idSchema,
 	label: z.string().max(100).optional(),
 	source: idSchema,
+	sourceHandle: z.enum(HANDLE_IDS).optional(),
 	target: idSchema,
+	targetHandle: z.enum(HANDLE_IDS).optional(),
 });
 
 // Parsing also removes React Flow's transient selection and measurement fields.

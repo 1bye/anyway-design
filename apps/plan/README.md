@@ -7,7 +7,9 @@ bun install
 bun run dev:plan
 ```
 
-Open <http://127.0.0.1:3004>. Move to the bottom edge to reveal the block dock. Drag a premade block onto the canvas to place it, or click to add it. The dock also opens when its bottom handle receives keyboard focus, and stays visible on touch devices. Drag existing blocks to arrange them, and connect their handles by dragging or clicking each endpoint. Select blocks or connections to edit them; Delete removes selections. React Flow provides keyboard selection, movement, pan, zoom, and fit controls.
+Open <http://127.0.0.1:3004>. Move to the bottom edge to reveal the block dock. Drag a premade block onto the canvas to place it, or click to add it. The dock also opens when its bottom handle receives keyboard focus, and stays visible on touch devices. Drag the center of a block to arrange it. Move near an edge to reveal its connection outline, then drag to another block (or click both edges). Select blocks or connections to edit them; Delete removes selections. React Flow provides keyboard selection, movement, pan, zoom, and fit controls.
+
+Each block has three appearances: **A · Bare**, **B · White**, and **C · Tinted**. Change the style or service icon in the selection panel; names, details, positions, and connections stay intact. Existing plans open with the bare style. Styles, icons, and connection sides are included in local saves and JSON exports. The six reviewed service icons are bundled locally; their sources are listed in `public/icons/services/SOURCES.md`.
 
 One draft is saved in this browser. Download/Open transfers a JSON plan. Browser storage can be cleared; keep a downloaded copy of work you want to retain. Multiple tabs are independent editors; use one tab per browser draft.
 
@@ -15,7 +17,7 @@ One draft is saved in this browser. Download/Open transfers a JSON plan. Browser
 
 Choose **Use AI → Enable AI tools** in a browser with native WebMCP support. The app registers:
 
-- `plan_read`: returns the current graph and available block kinds.
+- `plan_read`: returns the current graph, block kinds, node appearances, and service icons.
 - `plan_add`: adds blocks and connections in one validated call, preserving existing content. Read the canvas first and choose unused IDs.
 
 Example instruction for your browser agent: “Read this plan. Add a worker below the API and connect the API to it with a jobs connection.”

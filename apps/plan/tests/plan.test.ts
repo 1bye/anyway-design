@@ -1,5 +1,10 @@
 import { expect, test } from "bun:test";
-import { addToPlan, INITIAL_PLAN, planSchema } from "../src/lib/plan";
+import {
+	addToPlan,
+	INITIAL_PLAN,
+	NODE_APPEARANCES,
+	planSchema,
+} from "../src/lib/plan";
 import { type ModelContext, registerPlanTools } from "../src/lib/webmcp";
 
 test("AI additions connect new and existing blocks atomically; invalid additions preserve the canvas", () => {
@@ -45,6 +50,76 @@ test("portable plans retain content but discard transient canvas state and rejec
 		INITIAL_PLAN
 	);
 	expect(() => planSchema.parse({ ...plan, version: 2 })).toThrow();
+});
+
+test("node appearances, service icons, and connection sides survive a portable round trip", () => {
+	const nodes = INITIAL_PLAN.nodes.map((node, index) => ({
+		...node,
+		data: {
+			...node.data,
+			appearance: NODE_APPEARANCES[index],
+			service: "lambda",
+		},
+	}));
+	const edges = INITIAL_PLAN.edges.map((edge) => ({
+		...edge,
+		sourceHandle: "bottom",
+		targetHandle: "top",
+	}));
+	const saved = planSchema.parse({ ...INITIAL_PLAN, edges, nodes });
+	const reopened = planSchema.parse(JSON.parse(JSON.stringify(saved)));
+	expect(reopened.nodes.map((node) => node.data.appearance)).toEqual(
+		NODE_APPEARANCES
+	);
+	expect(reopened.nodes.map((node) => node.position)).toEqual(
+		INITIAL_PLAN.nodes.map((node) => node.position)
+	);
+	expect(
+		reopened.nodes.map((node) => [node.data.label, node.data.detail])
+	).toEqual(
+		INITIAL_PLAN.nodes.map((node) => [node.data.label, node.data.detail])
+	);
+	expect(reopened.edges).toEqual(edges);
+	expect(reopened).toEqual(saved);
+	for (const data of [{ appearance: "chip" }, { service: "unknown" }]) {
+		expect(() =>
+			planSchema.parse({
+				...saved,
+				nodes: [{ ...nodes[0], data: { ...nodes[0].data, ...data } }],
+			})
+		).toThrow();
+	}
+});
+
+test("AI additions accept styled service nodes and validate connection sides", () => {
+	const node = {
+		...INITIAL_PLAN.nodes[0],
+		data: {
+			appearance: "tinted",
+			detail: "Work",
+			kind: "worker",
+			label: "Lambda",
+			service: "lambda",
+		},
+		id: "lambda",
+	};
+	const edge = {
+		id: "invoke",
+		source: "api",
+		sourceHandle: "bottom",
+		target: "lambda",
+		targetHandle: "top",
+	};
+	const next = addToPlan(INITIAL_PLAN, { edges: [edge], nodes: [node] });
+	expect(next.nodes.at(-1)?.data).toEqual(node.data);
+	expect(next.edges.at(-1)).toEqual(edge);
+	expect(() =>
+		addToPlan(INITIAL_PLAN, {
+			edges: [{ ...edge, targetHandle: "invalid" }],
+			nodes: [node],
+		})
+	).toThrow();
+	expect(INITIAL_PLAN.nodes).toHaveLength(3);
 });
 
 test("WebMCP handlers validate additions, read current state, and stop after disconnect", async () => {

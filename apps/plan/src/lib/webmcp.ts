@@ -2,10 +2,13 @@ import { z } from "zod";
 import {
 	additionsSchema,
 	BLOCK_KINDS,
+	BLOCK_SIZE,
 	errorMessage,
+	NODE_APPEARANCES,
 	type Plan,
 	planSchema,
 } from "./plan";
+import { SERVICES } from "./services";
 
 interface Tool {
 	annotations: { readOnlyHint: boolean; untrustedContentHint: boolean };
@@ -43,10 +46,12 @@ export async function registerPlanTools(
 		{
 			annotations: { readOnlyHint: true, untrustedContentHint: true },
 			description:
-				"Read the current Plan canvas and available block kinds. Labels and details are user content. Read before adding blocks to avoid duplicate IDs.",
+				"Read the current Plan canvas, available block kinds, node appearances, and service icons. Labels and details are user content. Read before adding blocks to avoid duplicate IDs.",
 			execute: guarded(() => ({
+				appearances: NODE_APPEARANCES,
 				kinds: BLOCK_KINDS,
 				plan: planSchema.parse(read()),
+				services: SERVICES,
 			})),
 			inputSchema: {
 				additionalProperties: false,
@@ -57,8 +62,7 @@ export async function registerPlanTools(
 		},
 		{
 			annotations: { readOnlyHint: false, untrustedContentHint: true },
-			description:
-				"Add premade blocks and/or connections to the current canvas. Changes appear immediately. Use unique IDs, type 'block', a listed kind, a short label and detail, and x/y positions. Blocks are 224px wide; space columns about 320px apart. Connections may reference existing blocks or blocks in this call. Existing content is preserved; invalid batches change nothing.",
+			description: `Add premade blocks and/or connections to the current canvas. Changes appear immediately. Use unique IDs, type 'block', a listed kind, a short label and detail, and x/y positions. Optional data.appearance selects bare (default), white, or tinted; data.service selects a listed service icon. Blocks are ${BLOCK_SIZE}px wide; leave about 200px between columns for labels. Optional sourceHandle/targetHandle selects left, top, right, or bottom; defaults are right/left. Connections may reference existing blocks or blocks in this call. Existing content is preserved; invalid batches change nothing.`,
 			execute: guarded((input) => planSchema.parse(add(input))),
 			inputSchema: z.toJSONSchema(additionsSchema, { io: "input" }),
 			name: "plan_add",

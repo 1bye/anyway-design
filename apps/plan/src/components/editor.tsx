@@ -4,6 +4,7 @@ import {
 	applyEdgeChanges,
 	applyNodeChanges,
 	Background,
+	ConnectionMode,
 	Controls,
 	type Edge,
 	MarkerType,
@@ -31,21 +32,25 @@ import {
 	type DragEvent,
 	useCallback,
 	useEffect,
+	useMemo,
 	useRef,
 	useState,
 } from "react";
 import {
 	addToPlan,
 	BLOCK_KINDS,
+	BLOCK_SIZE,
 	type BlockKind,
 	errorMessage,
 	INITIAL_PLAN,
+	NODE_APPEARANCES,
 	type Plan,
 	type PlanNode,
 	planSchema,
 } from "../lib/plan";
+import { SERVICE_IDS, SERVICES } from "../lib/services";
 import { getModelContext, registerPlanTools } from "../lib/webmcp";
-import { BLOCKS, BlockNode } from "./block-node";
+import { BLOCKS, BlockIcon, BlockNode, blockColor } from "./block-node";
 
 const STORAGE_KEY = "anyway-plan:v1";
 const BLOCK_DRAG_TYPE = "application/x-anyway-plan-block";
@@ -56,6 +61,11 @@ const defaultEdgeOptions = {
 };
 const fitViewOptions = { maxZoom: 1, padding: 0.2 };
 const deleteKeyCode = ["Backspace", "Delete"];
+const appearanceLabels = {
+	bare: "A · Bare",
+	tinted: "C · Tinted",
+	white: "B · White",
+};
 
 function readDraft(): { plan: Plan; error: string } {
 	try {
@@ -98,6 +108,15 @@ function Editor() {
 	const { screenToFlowPosition, fitView } = useReactFlow<PlanNode>();
 	const selectedNode = plan.nodes.find((node) => node.selected);
 	const selectedEdge = plan.edges.find((edge) => edge.selected);
+	const edges = useMemo(
+		() =>
+			plan.edges.map((edge) => ({
+				...edge,
+				sourceHandle: edge.sourceHandle ?? "right",
+				targetHandle: edge.targetHandle ?? "left",
+			})),
+		[plan.edges]
+	);
 
 	const update = useCallback((change: (current: Plan) => Plan) => {
 		const next = change(planRef.current);
@@ -111,7 +130,7 @@ function Editor() {
 		[update]
 	);
 	useEffect(() => {
-		// biome-ignore lint/suspicious/noUnnecessaryConditions: A drop sets this mutable ref before the next effect runs.
+		// biome-ignore lint/suspicious/noUnnecessaryConditions: addBlock updates this ref before the effect runs.
 		if (preserveViewport.current) {
 			preserveViewport.current = false;
 			return;
@@ -220,17 +239,19 @@ function Editor() {
 				y: bounds.top + bounds.height / 2,
 			}
 		);
-		const position = { x: center.x - 112, y: center.y - 64 };
+		const position = {
+			x: center.x - BLOCK_SIZE / 2,
+			y: center.y - BLOCK_SIZE / 2,
+		};
 		while (
 			!dropPoint &&
 			planRef.current.nodes.some(
 				(node) =>
-					Math.abs(node.position.x - position.x) < 248 &&
-					Math.abs(node.position.y - position.y) <
-						(node.measured?.height ?? 128) + 24
+					Math.abs(node.position.x - position.x) < BLOCK_SIZE + 96 &&
+					Math.abs(node.position.y - position.y) < BLOCK_SIZE + 48
 			)
 		) {
-			position.y += 160;
+			position.y += BLOCK_SIZE + 64;
 		}
 		// Keep a dropped block under the cursor at the current pan and zoom.
 		preserveViewport.current = Boolean(dropPoint);
@@ -430,9 +451,11 @@ function Editor() {
 				) : null}
 				<div className="canvas" ref={canvasRef}>
 					<ReactFlow
+						connectionMode={ConnectionMode.Loose}
+						connectionRadius={40}
 						defaultEdgeOptions={defaultEdgeOptions}
 						deleteKeyCode={deleteKeyCode}
-						edges={plan.edges}
+						edges={edges}
 						fitView
 						fitViewOptions={fitViewOptions}
 						maxZoom={1.75}
@@ -496,7 +519,8 @@ function Editor() {
 							</div>
 							<p>
 								Move to the bottom edge to reveal the blocks. Drag one onto the
-								canvas, or click to add it. Connect the dots to join blocks.
+								canvas, or click to add it. Drag from a block's highlighted edge
+								to another block to connect them.
 							</p>
 							<p className="mt-3">
 								Select a block or connection to edit it. Press Delete to remove
@@ -618,6 +642,52 @@ function Inspector({
 			</div>
 			{node ? (
 				<>
+					<fieldset
+						className="node-style-picker mb-4"
+						style={blockColor(node.data)}
+					>
+						<legend className="field-label">Node style</legend>
+						<div className="node-style-options">
+							{NODE_APPEARANCES.map((appearance) => (
+								<button
+									aria-label={appearanceLabels[appearance]}
+									aria-pressed={(node.data.appearance ?? "bare") === appearance}
+									className="node-style-option"
+									data-appearance={appearance}
+									key={appearance}
+									onClick={() => editNode({ appearance })}
+									type="button"
+								>
+									<span className="block-tile style-preview">
+										<BlockIcon data={node.data} size={22} />
+									</span>
+									<span>{appearanceLabels[appearance]}</span>
+								</button>
+							))}
+						</div>
+					</fieldset>
+					<label className="field-label" htmlFor="block-service">
+						Service icon
+					</label>
+					<select
+						className="mb-4 text-field"
+						id="block-service"
+						onChange={(event) =>
+							editNode({
+								service: SERVICE_IDS.find(
+									(service) => service === event.target.value
+								),
+							})
+						}
+						value={node.data.service ?? ""}
+					>
+						<option value="">{BLOCKS[node.data.kind].label} icon</option>
+						{SERVICE_IDS.map((service) => (
+							<option key={service} value={service}>
+								{SERVICES[service].label}
+							</option>
+						))}
+					</select>
 					<label className="field-label" htmlFor="block-name">
 						Name
 					</label>
