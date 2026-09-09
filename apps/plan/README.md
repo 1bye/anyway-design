@@ -7,7 +7,7 @@ bun install
 bun run dev:plan
 ```
 
-Open <http://127.0.0.1:3004>. Click premade blocks to add them, drag to arrange, and connect their handles by dragging or clicking each endpoint. Select blocks or connections to edit them; Delete removes selections. React Flow provides keyboard selection, movement, pan, zoom, and fit controls.
+Open <http://127.0.0.1:3004>. Move to the bottom edge to reveal the block dock. Drag a premade block onto the canvas to place it, or click to add it. The dock also opens when its bottom handle receives keyboard focus, and stays visible on touch devices. Drag existing blocks to arrange them, and connect their handles by dragging or clicking each endpoint. Select blocks or connections to edit them; Delete removes selections. React Flow provides keyboard selection, movement, pan, zoom, and fit controls.
 
 One draft is saved in this browser. Download/Open transfers a JSON plan. Browser storage can be cleared; keep a downloaded copy of work you want to retain. Multiple tabs are independent editors; use one tab per browser draft.
 

@@ -13,6 +13,7 @@ import {
 	ReactFlow,
 	ReactFlowProvider,
 	useReactFlow,
+	type XYPosition,
 } from "@xyflow/react";
 import {
 	ArrowDownToLine,
@@ -27,6 +28,7 @@ import {
 } from "lucide-react";
 import {
 	type ChangeEvent,
+	type DragEvent,
 	useCallback,
 	useEffect,
 	useRef,
@@ -46,6 +48,7 @@ import { getModelContext, registerPlanTools } from "../lib/webmcp";
 import { BLOCKS, BlockNode } from "./block-node";
 
 const STORAGE_KEY = "anyway-plan:v1";
+const BLOCK_DRAG_TYPE = "application/x-anyway-plan-block";
 const nodeTypes = { block: BlockNode };
 const defaultEdgeOptions = {
 	markerEnd: { height: 16, type: MarkerType.ArrowClosed, width: 16 },
@@ -91,6 +94,7 @@ function Editor() {
 	);
 	const importRef = useRef<HTMLInputElement>(null);
 	const canvasRef = useRef<HTMLDivElement>(null);
+	const preserveViewport = useRef(false);
 	const { screenToFlowPosition, fitView } = useReactFlow<PlanNode>();
 	const selectedNode = plan.nodes.find((node) => node.selected);
 	const selectedEdge = plan.edges.find((edge) => edge.selected);
@@ -107,6 +111,11 @@ function Editor() {
 		[update]
 	);
 	useEffect(() => {
+		// biome-ignore lint/suspicious/noUnnecessaryConditions: A drop sets this mutable ref before the next effect runs.
+		if (preserveViewport.current) {
+			preserveViewport.current = false;
+			return;
+		}
 		if (plan.nodes.length > 0) {
 			fitView(fitViewOptions).catch(() =>
 				setNotice("Use Fit view to center your blocks.")
@@ -200,16 +209,20 @@ function Editor() {
 		[update]
 	);
 
-	function addBlock(kind: BlockKind) {
+	function addBlock(kind: BlockKind, dropPoint?: XYPosition) {
 		const bounds = canvasRef.current?.getBoundingClientRect();
 		if (!bounds) {
 			return;
 		}
-		const position = screenToFlowPosition({
-			x: bounds.left + bounds.width / 2 - 112,
-			y: bounds.top + bounds.height / 2 - 65,
-		});
+		const center = screenToFlowPosition(
+			dropPoint ?? {
+				x: bounds.left + bounds.width / 2,
+				y: bounds.top + bounds.height / 2,
+			}
+		);
+		const position = { x: center.x - 112, y: center.y - 64 };
 		while (
+			!dropPoint &&
 			planRef.current.nodes.some(
 				(node) =>
 					Math.abs(node.position.x - position.x) < 248 &&
@@ -219,6 +232,8 @@ function Editor() {
 		) {
 			position.y += 160;
 		}
+		// Keep a dropped block under the cursor at the current pan and zoom.
+		preserveViewport.current = Boolean(dropPoint);
 		update((current) => ({
 			...current,
 			edges: current.edges.map((edge) => ({ ...edge, selected: false })),
@@ -233,6 +248,16 @@ function Editor() {
 				},
 			],
 		}));
+	}
+
+	function onDrop(event: DragEvent<HTMLDivElement>) {
+		const draggedKind = event.dataTransfer.getData(BLOCK_DRAG_TYPE);
+		const kind = BLOCK_KINDS.find((item) => item === draggedKind);
+		if (!kind) {
+			return;
+		}
+		event.preventDefault();
+		addBlock(kind, { x: event.clientX, y: event.clientY });
 	}
 
 	function editNode(data: Partial<PlanNode["data"]>) {
@@ -415,6 +440,13 @@ function Editor() {
 						nodes={plan.nodes}
 						nodeTypes={nodeTypes}
 						onConnect={onConnect}
+						onDragOver={(event) => {
+							if (event.dataTransfer.types.includes(BLOCK_DRAG_TYPE)) {
+								event.preventDefault();
+								event.dataTransfer.dropEffect = "copy";
+							}
+						}}
+						onDrop={onDrop}
 						onEdgesChange={onEdgesChange}
 						onNodesChange={onNodesChange}
 					>
@@ -463,8 +495,8 @@ function Editor() {
 								</button>
 							</div>
 							<p>
-								Click a block to add it. Drag to arrange. Drag between the
-								dots—or click one, then another—to connect.
+								Move to the bottom edge to reveal the blocks. Drag one onto the
+								canvas, or click to add it. Connect the dots to join blocks.
 							</p>
 							<p className="mt-3">
 								Select a block or connection to edit it. Press Delete to remove
@@ -505,8 +537,13 @@ function Editor() {
 }
 
 function BlockDock({ addBlock }: { addBlock: (kind: BlockKind) => void }) {
+	const [dragging, setDragging] = useState(false);
 	return (
-		<aside aria-label="Block library" className="block-dock">
+		<aside
+			aria-label="Block library"
+			className="block-dock"
+			data-dragging={dragging}
+		>
 			<button
 				aria-controls="block-palette"
 				aria-label="Show blocks"
@@ -522,12 +559,20 @@ function BlockDock({ addBlock }: { addBlock: (kind: BlockKind) => void }) {
 						<button
 							aria-label={`Add ${label} block`}
 							className="palette-item"
+							draggable
 							key={kind}
 							onClick={(event) => {
 								addBlock(kind);
 								if (event.detail > 0) {
 									event.currentTarget.blur();
 								}
+							}}
+							onDragEnd={() => setDragging(false)}
+							onDragStart={(event) => {
+								event.dataTransfer.setData(BLOCK_DRAG_TYPE, kind);
+								event.dataTransfer.effectAllowed = "copy";
+								setDragging(true);
+								event.currentTarget.blur();
 							}}
 							title={detail}
 							type="button"
