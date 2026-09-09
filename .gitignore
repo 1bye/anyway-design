@@ -11,6 +11,7 @@ build
 # Generated files
 apps/web/src/routeTree.gen.ts
 apps/md/src/routeTree.gen.ts
+apps/plan/src/routeTree.gen.ts
 .wrangler
 .dev.vars
 local.db

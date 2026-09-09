@@ -6,6 +6,8 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 
 The agent setup builder lives in [`apps/md`](apps/md/README.md). Run `bun run --cwd apps/md db:local`, then `bun run dev:md` to open it at `http://127.0.0.1:3002`.
 
+The minimal planning canvas lives in [`apps/plan`](apps/plan/README.md). Run `bun run dev:plan` to open it at `http://127.0.0.1:3004`.
+
 - **TypeScript** - For type safety and improved developer experience
 - **TanStack Start** - SSR framework with TanStack Router
 - **TailwindCSS** - Utility-first CSS for rapid UI development
@@ -84,6 +86,7 @@ anyway-design/
 ├── apps/
 │   ├── web/         # Frontend application (React + TanStack Start)
 │   ├── md/          # Skills and AGENTS.md builder, anonymous D1 saves
+│   ├── plan/        # Premade blocks, connections, and optional WebMCP tools
 ├── packages/
 │   ├── ui/          # Shared shadcn/ui components and styles
 │   ├── md-cli/      # Dependency-free installer, packaged by apps/md

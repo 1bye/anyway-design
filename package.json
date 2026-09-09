@@ -25,15 +25,18 @@
   "scripts": {
     "build": "turbo run build",
     "build:md": "bun run --cwd apps/md build",
+    "build:plan": "bun run --cwd apps/plan build",
     "check": "ultracite check",
     "check-types": "turbo run check-types",
     "deploy": "turbo run deploy -F @anyway-design/infra --",
     "destroy": "turbo run destroy -F @anyway-design/infra --",
     "dev": "turbo run dev",
     "dev:md": "bun run --cwd apps/md dev",
+    "dev:plan": "bun run --cwd apps/plan dev",
     "dev:web": "turbo run dev -F web --",
     "fix": "ultracite fix",
-    "test:md": "bun run --cwd apps/md test"
+    "test:md": "bun run --cwd apps/md test",
+    "test:plan": "bun run --cwd apps/plan test"
   },
   "dependencies": {
     "@anyway-design/env": "workspace:*",
