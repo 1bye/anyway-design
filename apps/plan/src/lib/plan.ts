@@ -27,6 +27,8 @@ export type PlanNode = Node<
 		appearance?: NodeAppearance;
 		service?: ServiceId;
 		icon?: IconReference;
+		/** Animation state only; omitted from saved plans and WebMCP payloads. */
+		aiReveal?: true;
 	},
 	"block"
 >;
@@ -104,7 +106,13 @@ export function addToPlan(plan: Plan, input: unknown): Plan {
 	const next = {
 		...plan,
 		edges: [...plan.edges, ...additions.edges],
-		nodes: [...plan.nodes, ...additions.nodes],
+		nodes: [
+			...plan.nodes,
+			...additions.nodes.map((node) => ({
+				...node,
+				data: { ...node.data, aiReveal: true as const },
+			})),
+		],
 	};
 	planSchema.parse(next);
 	return next;

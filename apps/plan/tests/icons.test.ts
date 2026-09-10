@@ -47,24 +47,21 @@ test("the full catalog validates, searches by provider and alias, and saves port
 	const [chatgpt] = searchIcons(catalog, "chatgpt");
 	const icon = iconSchema.parse(chatgpt);
 	expect(iconSource(icon)).toEndWith("/openai-chatgpt/mono.svg");
-	const plan = addToPlan(INITIAL_PLAN, {
-		nodes: [
-			{
-				data: {
-					appearance: "tinted",
-					detail: "My service",
-					icon,
-					kind: "external",
-					label: "Assistant",
-				},
-				id: "chatgpt",
-				position: { x: 123, y: 456 },
-				type: "block",
-			},
-		],
-	});
+	const node = {
+		data: {
+			appearance: "tinted",
+			detail: "My service",
+			icon,
+			kind: "external",
+			label: "Assistant",
+		},
+		id: "chatgpt",
+		position: { x: 123, y: 456 },
+		type: "block",
+	};
+	const plan = addToPlan(INITIAL_PLAN, { nodes: [node] });
 	const reopened = planSchema.parse(JSON.parse(JSON.stringify(plan)));
-	expect(reopened.nodes.at(-1)).toEqual(plan.nodes.at(-1));
+	expect(reopened.nodes.at(-1)).toEqual(node);
 	for (const patch of [
 		{ slug: "../secret" },
 		{ slug: "https://example.com/icon" },

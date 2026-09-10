@@ -1,4 +1,5 @@
 import { Handle, type NodeProps, Position } from "@xyflow/react";
+import { createTimeline } from "animejs";
 import {
 	AppWindow,
 	Braces,
@@ -9,7 +10,14 @@ import {
 	StickyNote,
 	Workflow,
 } from "lucide-react";
-import { type CSSProperties, memo, useCallback, useState } from "react";
+import {
+	type CSSProperties,
+	memo,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import { iconSource } from "../lib/icons";
 import { BLOCK_SIZE, type BlockKind, type PlanNode } from "../lib/plan";
 import { SERVICES } from "../lib/services";
@@ -139,16 +147,81 @@ export const BlockNode = memo(function BlockCard({
 	isConnectable,
 	selected,
 }: NodeProps<PlanNode>) {
+	const blockRef = useRef<HTMLDivElement>(null);
+	const [revealing, setRevealing] = useState(Boolean(data.aiReveal));
+	useEffect(() => {
+		const block = blockRef.current;
+		if (!(revealing && block)) {
+			return;
+		}
+		if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+			setRevealing(false);
+			return;
+		}
+		const motion = createTimeline({
+			defaults: { ease: "out(3)" },
+			onComplete: () => setRevealing(false),
+		})
+			.add(
+				block.querySelectorAll(".block-arrival"),
+				{ duration: 180, opacity: [0, 1] },
+				0
+			)
+			.add(
+				block.querySelectorAll(".block-arrival-fill"),
+				{
+					clipPath: ["inset(100% 0% 0% 0%)", "inset(0% 0% 0% 0%)"],
+					duration: 560,
+				},
+				140
+			)
+			.add(
+				block.querySelectorAll(".block-tile"),
+				{
+					clipPath: [
+						"inset(100% 0% 0% 0% round 18px)",
+						"inset(0% 0% 0% 0% round 18px)",
+					],
+					duration: 540,
+					opacity: [0, 1],
+				},
+				320
+			)
+			.add(
+				block.querySelectorAll(".block-label"),
+				{ duration: 200, opacity: [0, 1] },
+				650
+			)
+			.add(
+				block.querySelectorAll(".block-arrival"),
+				{ duration: 240, opacity: 0 },
+				780
+			);
+		return () => {
+			motion.revert();
+		};
+	}, [revealing]);
 	return (
 		<div
 			className={`plan-block ${selected ? "is-selected" : ""}`}
 			data-appearance={data.appearance ?? "bare"}
+			data-revealing={revealing}
+			ref={blockRef}
 			style={{ ...blockColor(data), height: BLOCK_SIZE, width: BLOCK_SIZE }}
 			title={data.detail || data.label}
 		>
 			<div className="block-tile">
-				<BlockIcon data={data} size={data.service || data.icon ? 42 : 32} />
+				<BlockIcon
+					data={data}
+					loading={revealing ? "eager" : "lazy"}
+					size={data.service || data.icon ? 42 : 32}
+				/>
 			</div>
+			{revealing ? (
+				<div aria-hidden="true" className="block-arrival">
+					<div className="block-arrival-fill" />
+				</div>
+			) : null}
 			<div className="block-label">{data.label}</div>
 			{handles.map((position) => (
 				<Handle

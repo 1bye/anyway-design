@@ -20,6 +20,9 @@ test("AI additions connect new and existing blocks atomically; invalid additions
 	});
 	expect(next.nodes).toHaveLength(4);
 	expect(next.edges).toHaveLength(3);
+	expect(next.nodes.at(-1)?.data.aiReveal).toBe(true);
+	expect(next.nodes[0]).toBe(INITIAL_PLAN.nodes[0]);
+	expect(planSchema.parse(next).nodes.at(-1)).toEqual(worker);
 	expect(INITIAL_PLAN.nodes).toHaveLength(3);
 	expect(() =>
 		addToPlan(INITIAL_PLAN, {
@@ -41,6 +44,7 @@ test("portable plans retain content but discard transient canvas state and rejec
 		...INITIAL_PLAN,
 		nodes: INITIAL_PLAN.nodes.map((node) => ({
 			...node,
+			data: { ...node.data, aiReveal: true },
 			measured: { height: 128, width: 224 },
 			selected: true,
 		})),
@@ -111,7 +115,7 @@ test("AI additions accept styled service nodes and validate connection sides", (
 		targetHandle: "top",
 	};
 	const next = addToPlan(INITIAL_PLAN, { edges: [edge], nodes: [node] });
-	expect(next.nodes.at(-1)?.data).toEqual(node.data);
+	expect(planSchema.parse(next).nodes.at(-1)?.data).toEqual(node.data);
 	expect(next.edges.at(-1)).toEqual(edge);
 	expect(() =>
 		addToPlan(INITIAL_PLAN, {

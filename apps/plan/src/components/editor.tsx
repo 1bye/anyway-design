@@ -402,7 +402,7 @@ function Editor() {
 					>
 						<CircleHelp size={17} />
 					</button>
-					<span className="webmcp-status" data-supported={webmcpSupported}>
+					<span className="webmcp-status">
 						{webmcpSupported
 							? "WebMCP is supported"
 							: "WebMCP is not supported"}
