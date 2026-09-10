@@ -151,14 +151,26 @@ svg {
 .pill-button:hover {
 	background: #f5f5f5;
 }
-.header-actions .pill-button {
-	border: 0;
+.webmcp-status {
+	display: inline-flex;
+	gap: 6px;
+	align-items: center;
+	padding: 6px 10px;
+	font-size: 11px;
+	color: #666;
+	white-space: nowrap;
+	background: rgb(255 255 255 / 0.6);
+	border-radius: 999px;
 }
-.ai-active {
-	background: #f0fbf5;
+.webmcp-status::before {
+	width: 5px;
+	height: 5px;
+	content: "";
+	background: #999;
+	border-radius: 50%;
 }
-.ai-active svg {
-	fill: #16d981;
+.webmcp-status[data-supported="true"]::before {
+	background: #16d981;
 }
 .block-dock {
 	position: absolute;
@@ -721,7 +733,15 @@ svg {
 		padding: 0 12px;
 	}
 	.header-actions {
+		display: grid;
+		grid-template-columns: repeat(3, 44px);
 		gap: 0;
+		justify-items: end;
+	}
+	.webmcp-status {
+		grid-column: 1 / -1;
+		padding: 1px 6px;
+		font-size: 10px;
 	}
 	.brand-wordmark {
 		width: 90px;

@@ -18,7 +18,6 @@ import {
 } from "@xyflow/react";
 import {
 	ArrowDownToLine,
-	ArrowUpRight,
 	CircleHelp,
 	FolderOpen,
 	MousePointer2,
@@ -96,9 +95,7 @@ function Editor() {
 	const planRef = useRef(plan);
 	const [notice, setNotice] = useState(draft.error);
 	const [help, setHelp] = useState(false);
-	const [aiEnabled, setAiEnabled] = useState(false);
-	const [aiStatus, setAiStatus] = useState("disabled");
-	const [aiAvailable] = useState(() =>
+	const [webmcpSupported] = useState(() =>
 		Boolean(getModelContext()?.registerTool)
 	);
 	const importRef = useRef<HTMLInputElement>(null);
@@ -162,35 +159,21 @@ function Editor() {
 
 	useEffect(() => {
 		const context = getModelContext();
-		if (!(aiEnabled && context)) {
-			setAiStatus("disabled");
+		if (!context?.registerTool) {
 			return;
 		}
 		const controller = new AbortController();
 		let active = true;
-		setAiStatus("enabling");
-		async function enable() {
-			try {
-				if (!context) {
-					return;
-				}
-				await registerPlanTools(context, controller, read, add);
-				if (!controller.signal.aborted) {
-					setAiStatus("enabled");
-				}
-			} catch (error) {
-				if (active) {
-					setAiStatus("error");
-					setNotice(`AI tools couldn't start. ${errorMessage(error)}`);
-				}
+		registerPlanTools(context, controller, read, add).catch((error) => {
+			if (active) {
+				setNotice(`WebMCP tools couldn't start. ${errorMessage(error)}`);
 			}
-		}
-		enable().catch(() => setAiStatus("error"));
+		});
 		return () => {
 			active = false;
 			controller.abort();
 		};
-	}, [aiEnabled, read, add]);
+	}, [read, add]);
 
 	const onNodesChange: OnNodesChange<PlanNode> = useCallback(
 		(changes) => {
@@ -351,7 +334,6 @@ function Editor() {
 			) {
 				return;
 			}
-			setAiEnabled(false);
 			update(() => imported);
 			setNotice("");
 			requestAnimationFrame(() => {
@@ -420,24 +402,11 @@ function Editor() {
 					>
 						<CircleHelp size={17} />
 					</button>
-					<button
-						aria-label={aiStatus === "enabled" ? "Disable AI tools" : "Use AI"}
-						aria-pressed={aiEnabled}
-						className={`pill-button ${aiStatus === "enabled" ? "ai-active" : ""}`}
-						onClick={() => {
-							if (aiEnabled) {
-								setAiEnabled(false);
-							} else {
-								setHelp(true);
-							}
-						}}
-						type="button"
-					>
-						<Zap aria-hidden="true" size={14} />
-						<span className="hidden sm:inline">
-							{aiStatus === "enabled" ? "AI enabled" : "Use AI"}
-						</span>
-					</button>
+					<span className="webmcp-status" data-supported={webmcpSupported}>
+						{webmcpSupported
+							? "WebMCP is supported"
+							: "WebMCP is not supported"}
+					</span>
 				</div>
 			</header>
 			<main className="workspace">
@@ -540,24 +509,10 @@ function Editor() {
 									Build with your AI
 								</h3>
 								<p>
-									{aiAvailable
-										? "Enable WebMCP to let your browser agent read this canvas and add blocks and connections directly. Your agent may process this data in the cloud."
+									{webmcpSupported
+										? "WebMCP tools are available automatically. Ask your browser agent to read this canvas, find service icons, or add blocks and connections."
 										: "WebMCP isn't available in this browser. Open Plan in a browser with WebMCP enabled to let your agent build on the canvas."}
 								</p>
-								{aiAvailable ? (
-									<button
-										className="pill-button mt-4"
-										disabled={aiStatus === "enabling"}
-										onClick={() => {
-											setAiEnabled(!aiEnabled);
-											setHelp(false);
-										}}
-										type="button"
-									>
-										{aiEnabled ? "Disable AI tools" : "Enable AI tools"}
-										<ArrowUpRight size={14} />
-									</button>
-								) : null}
 							</div>
 						</div>
 					) : null}

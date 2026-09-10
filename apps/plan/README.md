@@ -21,7 +21,7 @@ One draft is saved in this browser. Download/Open transfers a JSON plan. Browser
 
 ## AI tools
 
-Choose **Use AI → Enable AI tools** in a browser with native WebMCP support. The app registers:
+WebMCP tools register automatically in supported browsers. The header badge shows **WebMCP is supported** or **WebMCP is not supported**. The app registers:
 
 - `plan_read`: returns the current graph, block kinds, node appearances, and service icons.
 - `plan_add`: adds blocks and connections in one validated call, preserving existing content. Read the canvas first and choose unused IDs.
@@ -29,9 +29,9 @@ Choose **Use AI → Enable AI tools** in a browser with native WebMCP support. T
 
 Example instruction for your browser agent: “Read this plan. Add a worker below the API and connect the API to it with a jobs connection.”
 
-Enabling tools permits the browser agent to read and extend this canvas directly. AI processing depends on your agent and may happen in the cloud. There is no embedded model or chat. Disable tools from the toolbar. Opening another plan disables tools; leaving the page unregisters them. Manual editing works without WebMCP.
+The tools let the browser agent read and extend the current canvas. Registration alone does not run a model or send the canvas anywhere. AI processing depends on your agent and may happen in the cloud. There is no embedded model or chat. Opening another plan keeps tools available for the new canvas; leaving the page unregisters them. Manual editing works without WebMCP.
 
-Registration follows the [document.modelContext API](https://developer.chrome.com/docs/ai/webmcp/imperative-api). Verified in Codex's in-app browser on September 9, 2026: native tool discovery, reading the canvas, adding and connecting a storage block, rejecting a missing endpoint without changing the graph, and removing tools on disable. Unit tests additionally cover invalid batches, file validation, and registration cleanup. Other browsers and agents have not been tested.
+Registration follows the [document.modelContext API](https://developer.chrome.com/docs/ai/webmcp/imperative-api). Verified in Codex's in-app browser on September 9, 2026: native tool discovery, reading the canvas, adding and connecting a storage block, and rejecting a missing endpoint without changing the graph. Unit tests additionally cover invalid batches, file validation, and registration cleanup. Other browsers and agents have not been tested.
 
 ## Checks
 
