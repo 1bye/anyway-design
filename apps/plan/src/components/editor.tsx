@@ -17,11 +17,11 @@ import {
 	type XYPosition,
 } from "@xyflow/react";
 import {
-	ArrowDownToLine,
 	CircleHelp,
 	FolderOpen,
 	MousePointer2,
 	Plus,
+	Save,
 	Trash2,
 	X,
 	Zap,
@@ -46,12 +46,18 @@ import {
 	type PlanNode,
 	planSchema,
 } from "../lib/plan";
+import {
+	readDraft,
+	readSavedPlans,
+	type SavedPlan,
+	writeDraft,
+} from "../lib/plan-storage";
 import { SERVICE_IDS, SERVICES } from "../lib/services";
 import { getModelContext, registerPlanTools } from "../lib/webmcp";
 import { BLOCK_DRAG_TYPE, BlockDock } from "./block-dock";
 import { BLOCKS, BlockIcon, BlockNode, blockColor } from "./block-node";
+import { PlanLibrary } from "./plan-library";
 
-const STORAGE_KEY = "anyway-plan:v1";
 const nodeTypes = { block: BlockNode };
 const defaultEdgeOptions = {
 	markerEnd: { height: 16, type: MarkerType.ArrowClosed, width: 16 },
@@ -65,18 +71,24 @@ const appearanceLabels = {
 	white: "B · White",
 };
 
-function readDraft(): { plan: Plan; error: string } {
+function readInitialDraft(): {
+	plan: Plan;
+	savedPlanId: string | null;
+	error: string;
+} {
 	try {
-		const saved = localStorage.getItem(STORAGE_KEY);
+		const saved = readDraft(localStorage);
 		return {
 			error: "",
-			plan: saved ? planSchema.parse(JSON.parse(saved)) : INITIAL_PLAN,
+			plan: saved?.plan ?? INITIAL_PLAN,
+			savedPlanId: saved?.savedPlanId ?? null,
 		};
 	} catch {
 		return {
 			error:
 				"The local draft could not be opened. Download your work to keep it.",
 			plan: INITIAL_PLAN,
+			savedPlanId: null,
 		};
 	}
 }
@@ -90,7 +102,10 @@ export function PlanEditor() {
 }
 
 function Editor() {
-	const [draft] = useState(readDraft);
+	const [draft] = useState(readInitialDraft);
+	const [draftError, setDraftError] = useState(draft.error);
+	const [savedPlanId, setSavedPlanId] = useState(draft.savedPlanId);
+	const [libraryOpen, setLibraryOpen] = useState(false);
 	const [plan, setPlan] = useState(draft.plan);
 	const planRef = useRef(plan);
 	const [notice, setNotice] = useState(draft.error);
@@ -139,15 +154,12 @@ function Editor() {
 	}, [plan.nodes.length, fitView]);
 
 	useEffect(() => {
-		if (draft.error) {
+		if (draftError) {
 			return;
 		}
 		const timer = setTimeout(() => {
 			try {
-				localStorage.setItem(
-					STORAGE_KEY,
-					JSON.stringify(planSchema.parse(plan))
-				);
+				writeDraft(localStorage, plan, savedPlanId);
 			} catch {
 				setNotice(
 					"Couldn't save locally. Download your plan to keep your changes."
@@ -155,7 +167,7 @@ function Editor() {
 			}
 		}, 300);
 		return () => clearTimeout(timer);
-	}, [plan, draft.error]);
+	}, [plan, savedPlanId, draftError]);
 
 	useEffect(() => {
 		const context = getModelContext();
@@ -303,17 +315,47 @@ function Editor() {
 			};
 		});
 	}
-	function download() {
-		const url = URL.createObjectURL(
-			new Blob([JSON.stringify(planSchema.parse(plan), null, 2)], {
-				type: "application/json",
-			})
-		);
-		const link = document.createElement("a");
-		link.href = url;
-		link.download = "canvas.plan.json";
-		link.click();
-		setTimeout(() => URL.revokeObjectURL(url), 1000);
+	function openCanvas(next: Plan, id: string | null = null) {
+		try {
+			const current = planSchema.parse(planRef.current);
+			const saved = savedPlanId
+				? readSavedPlans(localStorage).find((entry) => entry.id === savedPlanId)
+				: undefined;
+			const hasUnsavedChanges =
+				(savedPlanId !== null ||
+					current.nodes.length > 0 ||
+					current.edges.length > 0 ||
+					current.name !== "Untitled plan") &&
+				JSON.stringify(current) !== JSON.stringify(saved?.plan);
+			if (
+				hasUnsavedChanges &&
+				// biome-ignore lint/suspicious/noAlert: Protect unsaved work before replacing the active draft.
+				!window.confirm(
+					"Replace the current canvas? Save it here or export it first to keep unsaved changes."
+				)
+			) {
+				return;
+			}
+			update(() => planSchema.parse(next));
+			setSavedPlanId(id);
+			setDraftError("");
+			setLibraryOpen(false);
+			setHelp(false);
+			setNotice("");
+			requestAnimationFrame(() => {
+				fitView(fitViewOptions).catch(() =>
+					setNotice("Use Fit view to center your plan.")
+				);
+			});
+		} catch (failure) {
+			setLibraryOpen(false);
+			setNotice(`Couldn't open this plan. ${errorMessage(failure)}`);
+		}
+	}
+	function onPlanSaved(saved: SavedPlan) {
+		update((current) => ({ ...current, name: saved.plan.name }));
+		setSavedPlanId(saved.id);
+		setDraftError("");
 	}
 	async function importPlan(event: ChangeEvent<HTMLInputElement>) {
 		const file = event.target.files?.[0];
@@ -326,28 +368,38 @@ function Editor() {
 				throw new Error("Choose a plan smaller than 2 MB.");
 			}
 			const imported = planSchema.parse(JSON.parse(await file.text()));
-			if (
-				// biome-ignore lint/suspicious/noAlert: Native confirmation protects the current canvas before replacing it with a file.
-				!window.confirm(
-					"Open this plan? It will replace the current canvas. Download your current plan first if you want to keep it."
-				)
-			) {
-				return;
-			}
-			update(() => imported);
-			setNotice("");
-			requestAnimationFrame(() => {
-				fitView(fitViewOptions).catch(() =>
-					setNotice("Use Fit view to center the imported plan.")
-				);
-			});
+			openCanvas(imported);
 		} catch (error) {
+			setLibraryOpen(false);
 			setNotice(errorMessage(error));
 		}
 	}
 
 	return (
 		<div className="app-shell">
+			{libraryOpen ? (
+				<PlanLibrary
+					activeId={savedPlanId}
+					onClose={() => setLibraryOpen(false)}
+					onDelete={(id) => {
+						if (savedPlanId === id) {
+							setSavedPlanId(null);
+						}
+					}}
+					onImport={() => importRef.current?.click()}
+					onNew={() =>
+						openCanvas({
+							edges: [],
+							name: "Untitled plan",
+							nodes: [],
+							version: 1,
+						})
+					}
+					onOpen={(saved) => openCanvas(saved.plan, saved.id)}
+					onSave={onPlanSaved}
+					plan={plan}
+				/>
+			) : null}
 			<header className="site-header">
 				<a
 					aria-label="Anyway design home"
@@ -375,22 +427,24 @@ function Editor() {
 						type="file"
 					/>
 					<button
-						aria-label="Open plan"
+						aria-haspopup="dialog"
+						aria-label="Saved plans"
 						className="icon-button"
-						onClick={() => importRef.current?.click()}
-						title="Open plan"
+						onClick={() => setLibraryOpen(true)}
+						title="Saved plans"
 						type="button"
 					>
 						<FolderOpen size={17} />
 					</button>
 					<button
-						aria-label="Download plan"
+						aria-haspopup="dialog"
+						aria-label="Save or export plan"
 						className="icon-button"
-						onClick={download}
-						title="Download plan"
+						onClick={() => setLibraryOpen(true)}
+						title="Save or export plan"
 						type="button"
 					>
-						<ArrowDownToLine size={17} />
+						<Save size={17} />
 					</button>
 					<button
 						aria-expanded={help}

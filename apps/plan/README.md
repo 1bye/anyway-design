@@ -17,7 +17,9 @@ Catalog metadata is served locally and warmed shortly after mount; opening the d
 
 The generated catalog and unchanged third-party SVGs in `public/icons` are excluded from Biome. The catalog generator and tests validate the full metadata instead.
 
-One draft is saved in this browser. Download/Open transfers a JSON plan. Browser storage can be cleared; keep a downloaded copy of work you want to retain. Multiple tabs are independent editors; use one tab per browser draft.
+Open **Plans** from the folder or save button. Enter a name and choose **Save** to create or update the current saved plan. The adjacent copy and export icons save a separate copy or download a portable JSON file. Click a saved plan to reopen it; each row also has export and delete actions. **New** starts a blank canvas and **Import** opens a file. Escape or clicking outside closes the dialog. Named saves are snapshots: editing the canvas updates the working draft, and saving again updates the named version. Replacing a canvas with unsaved changes asks for confirmation.
+
+The working draft and its saved-plan identity survive reloads; older single-draft storage is read automatically. Saved plans are stored locally in this browser, without an account or cloud sync. Browser storage can be cleared; export files to keep a backup or move to another browser. Multiple tabs share the library but have independent editors; use one tab for the working draft.
 
 ## AI tools
 

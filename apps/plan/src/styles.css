@@ -723,6 +723,122 @@ svg {
 	border: 1px solid var(--color-line);
 	border-radius: 8px;
 }
+.plan-library {
+	width: min(440px, calc(100vw - 24px));
+	max-height: calc(100dvh - 32px);
+	padding: 16px;
+	margin: auto;
+	overflow-y: auto;
+	color: var(--color-ink);
+	outline: none;
+	background: white;
+	border: 1px solid var(--color-line);
+	border-radius: 18px;
+	box-shadow: 0 24px 80px rgb(0 0 0 / 0.12);
+}
+.plan-library::backdrop {
+	background: rgb(20 20 20 / 0.18);
+}
+.plan-library-header {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 12px;
+}
+.plan-library h2 {
+	font-size: 14px;
+	font-weight: 500;
+}
+.plan-library-header > div {
+	display: flex;
+	gap: 4px;
+}
+.plan-save-form {
+	display: flex;
+	gap: 6px;
+	align-items: center;
+}
+.plan-save-form .text-field {
+	flex: 1;
+	min-width: 0;
+	height: 36px;
+	font-size: 12px;
+	background: #f7f7f7;
+	border-color: transparent;
+}
+.plan-library :is(button, input):focus-visible {
+	outline: 2px solid #b8b8b8;
+	outline-offset: 2px;
+}
+.plan-text-button {
+	display: inline-flex;
+	gap: 6px;
+	align-items: center;
+	min-height: 36px;
+	padding: 6px;
+	font-size: 11px;
+	color: var(--color-muted);
+	border-radius: 8px;
+}
+.plan-text-button:hover {
+	color: var(--color-ink);
+	background: #ededed;
+}
+.plan-save-primary {
+	flex-shrink: 0;
+	min-height: 36px;
+	padding: 0 12px;
+	font-size: 12px;
+	color: white;
+	background: var(--color-ink);
+	border: 0;
+	border-radius: 8px;
+}
+.plan-save-primary:hover {
+	background: #333;
+}
+.plan-library-error {
+	margin-top: 10px;
+	font-size: 11px;
+	color: #a03e32;
+}
+.saved-plan-list {
+	max-height: 280px;
+	padding-top: 8px;
+	margin: 14px 0 0;
+	overflow-y: auto;
+	list-style: none;
+	border-top: 1px solid #eee;
+}
+.saved-plan-list li {
+	display: flex;
+	align-items: center;
+	border-radius: 8px;
+}
+.saved-plan-list li:hover,
+.saved-plan-list li[data-current="true"] {
+	background: #f7f7f7;
+}
+.saved-plan-open {
+	display: block;
+	flex: 1;
+	min-width: 0;
+	min-height: 40px;
+	padding: 10px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 12px;
+	text-align: left;
+	white-space: nowrap;
+	border-radius: 8px;
+}
+.saved-plans-empty {
+	padding: 24px 0 8px;
+	font-size: 12px;
+	color: var(--color-muted);
+	text-align: center;
+}
 .empty-canvas {
 	position: absolute;
 	inset: 0;
@@ -744,6 +860,11 @@ svg {
 	border-bottom: 1px solid var(--color-line);
 }
 @media (max-width: 639px) {
+	.plan-library button,
+	.plan-library input {
+		min-width: 44px;
+		min-height: 44px;
+	}
 	.site-header {
 		gap: 8px;
 		padding: 0 12px;
@@ -820,7 +941,8 @@ svg {
 		opacity: 1;
 		transform: none;
 	}
-	.palette-search input {
+	.palette-search input,
+	.plan-save-form .text-field {
 		font-size: 16px;
 	}
 }
