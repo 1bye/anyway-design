@@ -24,6 +24,7 @@
   },
   "scripts": {
     "build": "turbo run build",
+    "build:liquid": "bun run --cwd apps/liquid build",
     "build:md": "bun run --cwd apps/md build",
     "build:plan": "bun run --cwd apps/plan build",
     "check": "ultracite check",
@@ -31,10 +32,12 @@
     "deploy": "turbo run deploy -F @anyway-design/infra --",
     "destroy": "turbo run destroy -F @anyway-design/infra --",
     "dev": "turbo run dev",
+    "dev:liquid": "bun run --cwd apps/liquid dev",
     "dev:md": "bun run --cwd apps/md dev",
     "dev:plan": "bun run --cwd apps/plan dev",
     "dev:web": "turbo run dev -F web --",
     "fix": "ultracite fix",
+    "test:liquid": "bun run --cwd apps/liquid test",
     "test:md": "bun run --cwd apps/md test",
     "test:plan": "bun run --cwd apps/plan test"
   },

@@ -8,6 +8,8 @@ The agent setup builder lives in [`apps/md`](apps/md/README.md). Run `bun run --
 
 The minimal planning canvas lives in [`apps/plan`](apps/plan/README.md). Run `bun run dev:plan` to open it at `http://127.0.0.1:3004`.
 
+The Liquid connected-menu toolkit and live playground live in [`apps/liquid`](apps/liquid/README.md). Run `bun run dev:liquid` to open it at `http://127.0.0.1:3005`.
+
 - **TypeScript** - For type safety and improved developer experience
 - **TanStack Start** - SSR framework with TanStack Router
 - **TailwindCSS** - Utility-first CSS for rapid UI development
@@ -87,6 +89,7 @@ anyway-design/
 │   ├── web/         # Frontend application (React + TanStack Start)
 │   ├── md/          # Skills and AGENTS.md builder, anonymous D1 saves
 │   ├── plan/        # Premade blocks, connections, and optional WebMCP tools
+│   ├── liquid/      # Connected surface toolkit and live playground
 ├── packages/
 │   ├── ui/          # Shared shadcn/ui components and styles
 │   ├── md-cli/      # Dependency-free installer, packaged by apps/md
@@ -97,5 +100,8 @@ anyway-design/
 - `bun run dev`: Start all applications in development mode
 - `bun run build`: Build all applications
 - `bun run dev:web`: Start only the web application
+- `bun run dev:liquid`: Start the Liquid app
+- `bun run build:liquid`: Build the Liquid app
+- `bun run test:liquid`: Test Liquid geometry, tracking, layers, and motion preferences
 - `bun run check-types`: Check TypeScript types across all apps
 - `bun run check`: Run Biome formatting and linting
