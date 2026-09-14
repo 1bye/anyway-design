@@ -16,6 +16,7 @@ import {
 	createLiquidMenuFrame,
 	easeLiquidMenuProgress,
 	type LiquidMenuAnchorGeometry,
+	type LiquidMenuBranch,
 	type LiquidMenuFrame,
 	type LiquidMenuMeasurement,
 	type LiquidMenuRect,
@@ -31,6 +32,7 @@ interface UseLiquidMenuSurfaceOptions {
 	readonly anchor: () => Element | null;
 	readonly anchorClip: (() => Element | null) | undefined;
 	readonly anchorGeometry: LiquidMenuAnchorGeometry;
+	readonly branches: readonly LiquidMenuBranch[];
 	readonly geometry: LiquidMenuGeometry;
 	readonly isOpen: boolean;
 	readonly isSubmenuOpen: boolean;
@@ -226,7 +228,7 @@ const advanceMeasurementStability = <Measurement>(
 	return stability.isStable;
 };
 
-const useLiquidProgress = ({
+export const useLiquidProgress = ({
 	closeDurationMs,
 	hasMeasurement,
 	isActive,
@@ -333,6 +335,7 @@ const useLiquidProgress = ({
 };
 
 export const useLiquidMenuSurface = ({
+	branches,
 	anchor,
 	anchorClip,
 	anchorGeometry,
@@ -464,6 +467,29 @@ export const useLiquidMenuSurface = ({
 		submenuTriggerElement,
 	]);
 
+	const hasClosingMeasurement = measurement !== null;
+	useLayoutEffect(() => {
+		if (isOpen || !hasClosingMeasurement) {
+			return;
+		}
+		const element = anchor();
+		if (!element) {
+			return;
+		}
+		const tracker = createLiquidGeometryTracker(() => {
+			const rect = toLiquidRect(element.getBoundingClientRect());
+			setMeasurement((current) =>
+				current && !hasSameRect(current.anchor, rect)
+					? { ...current, anchor: rect }
+					: current
+			);
+		});
+		tracker.setElements([element]);
+		tracker.setContinuousTracking(true);
+		tracker.schedule();
+		return tracker.disconnect;
+	}, [isOpen, anchor, hasClosingMeasurement]);
+
 	const hideMenu = useCallback((): void => {
 		positionedMenuElementRef.current = null;
 		positionedSubmenuElementRef.current = null;
@@ -502,10 +528,11 @@ export const useLiquidMenuSurface = ({
 							submenu: submenuProgress,
 						},
 						anchorGeometry,
-						geometry
+						geometry,
+						branches
 					)
 				: null,
-		[anchorGeometry, geometry, measurement, progress, submenuProgress]
+		[anchorGeometry, geometry, measurement, progress, submenuProgress, branches]
 	);
 
 	return { frame, progress, submenuProgress };

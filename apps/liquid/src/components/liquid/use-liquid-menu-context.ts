@@ -6,13 +6,17 @@ import type {
 	LiquidMenuGeometry,
 	LiquidMenuMotion,
 } from "./liquid-menu-config";
-import type { LiquidMenuAnchorGeometry } from "./liquid-menu-geometry";
+import type {
+	LiquidMenuAnchorGeometry,
+	LiquidMenuBranch,
+} from "./liquid-menu-geometry";
 
 export interface LiquidMenuContextValue {
 	readonly activeSubmenuId: string | null;
 	readonly anchor: () => Element | null;
 	readonly anchorClip: (() => Element | null) | undefined;
 	readonly anchorGeometry: LiquidMenuAnchorGeometry;
+	readonly branches: readonly LiquidMenuBranch[];
 	readonly geometry: LiquidMenuGeometry;
 	readonly hasSubmenuSurface: boolean;
 	readonly hasSurface: boolean;
@@ -32,9 +36,12 @@ export interface LiquidMenuContextValue {
 	readonly setTriggerElement: RefCallback<HTMLElement>;
 	readonly submenuElement: HTMLElement | null;
 	readonly submenuTriggerElement: HTMLElement | null;
+	readonly updateBranch: (id: string, branch: LiquidMenuBranch | null) => void;
 }
 
 export interface LiquidMenuSubContextValue {
+	readonly isOpen: boolean;
+	readonly isPresent: boolean;
 	readonly setContentElement: RefCallback<HTMLElement>;
 	readonly setTriggerElement: RefCallback<HTMLElement>;
 }

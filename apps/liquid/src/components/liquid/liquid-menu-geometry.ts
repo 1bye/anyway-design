@@ -33,6 +33,11 @@ export interface LiquidMenuSubmenuMeasurement {
 	readonly trigger: LiquidMenuRect;
 }
 
+export interface LiquidMenuBranch extends LiquidMenuSubmenuMeasurement {
+	readonly parent: LiquidMenuRect;
+	readonly progress: number;
+}
+
 export interface LiquidMenuProgress {
 	readonly menu: number;
 	readonly submenu: number;
@@ -163,7 +168,8 @@ export const createLiquidMenuFrame = (
 	measurement: LiquidMenuMeasurement,
 	progress: LiquidMenuProgress,
 	anchorGeometry: LiquidMenuAnchorGeometry,
-	geometry: LiquidMenuGeometry = LIQUID_MENU_GEOMETRY
+	geometry: LiquidMenuGeometry = LIQUID_MENU_GEOMETRY,
+	branches: readonly LiquidMenuBranch[] = []
 ): LiquidMenuFrame => {
 	const menuProgress = clampProgress(progress.menu);
 	const submenuProgress = clampProgress(progress.submenu);
@@ -206,6 +212,18 @@ export const createLiquidMenuFrame = (
 		boundsBottom = Math.max(
 			boundsBottom,
 			submenuMenu.top + submenuMenu.height + padding
+		);
+	}
+	for (const branch of branches) {
+		boundsLeft = Math.min(boundsLeft, branch.menu.left - padding);
+		boundsTop = Math.min(boundsTop, branch.menu.top - padding);
+		boundsRight = Math.max(
+			boundsRight,
+			branch.menu.left + branch.menu.width + padding
+		);
+		boundsBottom = Math.max(
+			boundsBottom,
+			branch.menu.top + branch.menu.height + padding
 		);
 	}
 	const bounds: LiquidMenuRect = {
@@ -261,32 +279,43 @@ export const createLiquidMenuFrame = (
 	const boxes: RoundedBox[] = hasVisibleAnchor
 		? [anchorBox, menuBox]
 		: [menuBox];
-	if (measurement.submenu) {
-		const { submenu } = measurement;
+	for (const submenu of [
+		...(measurement.submenu
+			? [
+					{
+						...measurement.submenu,
+						parent: measurement.menu,
+						progress: submenuProgress,
+					},
+				]
+			: []),
+		...branches,
+	]) {
+		const branchProgress = submenu.progress * menuProgress;
 		const finalSubmenuHalfHeight = submenu.menu.height / 2;
 		const finalSubmenuHalfWidth = submenu.menu.width / 2;
 		const connectionX =
 			submenu.side === "left"
-				? measurement.menu.left
-				: measurement.menu.left + measurement.menu.width;
+				? submenu.parent.left
+				: submenu.parent.left + submenu.parent.width;
 		const connectionY = submenu.trigger.top + submenu.trigger.height / 2;
 		const finalCenterX = submenu.menu.left + submenu.menu.width / 2;
 		const finalCenterY = submenu.menu.top + submenu.menu.height / 2;
 		const animatedSubmenuHalfHeight = interpolate(
 			Math.min(submenu.trigger.height / 2, finalSubmenuHalfHeight),
 			finalSubmenuHalfHeight,
-			submenuProgress
+			branchProgress
 		);
 		const animatedSubmenuHalfWidth = interpolate(
 			geometry.sampleCellSize,
 			finalSubmenuHalfWidth,
-			submenuProgress
+			branchProgress
 		);
 		boxes.push({
 			centerX:
-				interpolate(connectionX, finalCenterX, submenuProgress) - bounds.left,
+				interpolate(connectionX, finalCenterX, branchProgress) - bounds.left,
 			centerY:
-				interpolate(connectionY, finalCenterY, submenuProgress) - bounds.top,
+				interpolate(connectionY, finalCenterY, branchProgress) - bounds.top,
 			halfHeight: animatedSubmenuHalfHeight,
 			halfWidth: animatedSubmenuHalfWidth,
 			radius: Math.min(

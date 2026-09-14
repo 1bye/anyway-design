@@ -131,3 +131,50 @@ test("connects the trigger, menu, and submenu on either collision side", () => {
 		expect(frame.bounds.width).toBeGreaterThan(320);
 	}
 });
+
+test("three submenu levels share one exterior contour on either side", () => {
+	for (const side of ["left", "right"] as const) {
+		const menu = { height: 140, left: 600, top: 160, width: 176 };
+		const branch = {
+			height: 100,
+			left: side === "left" ? 420 : 780,
+			top: 180,
+			width: 176,
+		};
+		const deepest = {
+			height: 80,
+			left: side === "left" ? 240 : 960,
+			top: 200,
+			width: 176,
+		};
+		const frame = createLiquidMenuFrame(
+			{
+				anchor: { height: 44, left: 600, top: 112, width: 100 },
+				menu,
+				submenu: null,
+			},
+			{ menu: 1, submenu: 0 },
+			LIQUID_MENU_CONNECTED_BUTTON_ANCHOR_GEOMETRY,
+			undefined,
+			[
+				{
+					menu: branch,
+					parent: menu,
+					progress: 1,
+					side,
+					trigger: { ...menu, height: 40 },
+				},
+				{
+					menu: deepest,
+					parent: branch,
+					progress: 1,
+					side,
+					trigger: { ...branch, height: 40 },
+				},
+			]
+		);
+		expect(frame.path.match(/M /g)).toHaveLength(1);
+		expect(frame.path).not.toMatch(NON_FINITE_COORDINATE);
+		expect(frame.bounds.width).toBeGreaterThan(520);
+	}
+});

@@ -20,6 +20,16 @@ const previewFrame = createLiquidMenuFrame(
 	LIQUID_MENU_CONNECTED_BUTTON_ANCHOR_GEOMETRY
 );
 
+const statusFrame = createLiquidMenuFrame(
+	{
+		anchor: { height: 36, left: 17, top: 0, width: 134 },
+		menu: { height: 116, left: 0, top: 40, width: 168 },
+		submenu: null,
+	},
+	{ menu: 1, submenu: 0 },
+	LIQUID_MENU_CONNECTED_BUTTON_ANCHOR_GEOMETRY
+);
+
 export function LiquidHero() {
 	return (
 		<section
@@ -53,6 +63,13 @@ export function LiquidHero() {
 				</div>
 			</div>
 			<div aria-hidden="true" className="hero-fragment hero-status">
+				<svg className="hero-menu-surface" viewBox="0 0 168 156">
+					<title>Connected status menu preview</title>
+					<path
+						d={statusFrame.path}
+						transform={`translate(${statusFrame.bounds.left} ${statusFrame.bounds.top})`}
+					/>
+				</svg>
 				<div className="hero-status-trigger">
 					<span className="status-dot" />
 					In progress

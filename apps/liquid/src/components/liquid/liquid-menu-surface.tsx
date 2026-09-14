@@ -7,6 +7,7 @@ import {
 	getLiquidMenuBackdropOpacity,
 	getLiquidMenuLayerZIndices,
 } from "./liquid-menu-stack";
+import { readLiquidTheme } from "./liquid-theme";
 import { useLiquidMenuContext } from "./use-liquid-menu-context";
 import { useLiquidMenuSurface } from "./use-liquid-menu-surface";
 
@@ -15,6 +16,7 @@ const getSvgMaskUrl = (maskId: string): string => `url(#${maskId})`;
 export function LiquidMenuSurface(): ReactElement | null {
 	const maskId = useId().replaceAll(":", "");
 	const {
+		branches,
 		anchor,
 		anchorClip,
 		anchorGeometry,
@@ -35,6 +37,7 @@ export function LiquidMenuSurface(): ReactElement | null {
 		anchor,
 		anchorClip,
 		anchorGeometry,
+		branches,
 		geometry,
 		isOpen,
 		isSubmenuOpen,
@@ -63,10 +66,13 @@ export function LiquidMenuSurface(): ReactElement | null {
 	});
 	const { backdrop: backdropZIndex, surface: surfaceZIndex } =
 		getLiquidMenuLayerZIndices(layerIndex);
+	const theme = readLiquidTheme(anchor());
 	const backdropLayerStyle: CSSProperties = {
+		...theme,
 		zIndex: backdropZIndex,
 	};
 	const surfaceLayerStyle: CSSProperties = {
+		...theme,
 		zIndex: surfaceZIndex,
 	};
 	const surfaceStyle: CSSProperties = {
