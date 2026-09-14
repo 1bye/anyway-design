@@ -101,6 +101,113 @@ export const additionsSchema = z.object({
 	nodes: z.array(nodeSchema).max(100).default([]),
 });
 
+export const updatesSchema = z.strictObject({
+	edges: z
+		.array(edgeSchema.partial().required({ id: true }).strict())
+		.max(200)
+		.default([]),
+	nodes: z
+		.array(
+			z.strictObject({
+				data: blockDataSchema
+					.partial()
+					.extend({
+						icon: iconSchema.nullable().optional(),
+						service: z.enum(SERVICE_IDS).nullable().optional(),
+					})
+					.strict()
+					.optional(),
+				id: idSchema,
+				position: nodeSchema.shape.position.partial().strict().optional(),
+			})
+		)
+		.max(100)
+		.default([]),
+});
+
+export const removalsSchema = z.strictObject({
+	edgeIds: z.array(idSchema).max(1000).default([]),
+	nodeIds: z.array(idSchema).max(500).default([]),
+});
+
+function targetIds(
+	items: { id: string }[],
+	ids: string[],
+	kind: string
+): Set<string> {
+	const known = new Set(items.map((item) => item.id));
+	const targets = new Set(ids);
+	if (targets.size !== ids.length) {
+		throw new Error(`Each ${kind} ID must be listed only once.`);
+	}
+	for (const id of targets) {
+		if (!known.has(id)) {
+			throw new Error(`Unknown ${kind} ID: ${id}. Read the canvas first.`);
+		}
+	}
+	return targets;
+}
+
+export function updatePlan(plan: Plan, input: unknown): Plan {
+	const updates = updatesSchema.parse(input);
+	targetIds(
+		plan.nodes,
+		updates.nodes.map((node) => node.id),
+		"block"
+	);
+	targetIds(
+		plan.edges,
+		updates.edges.map((edge) => edge.id),
+		"connection"
+	);
+	const nodes = new Map(updates.nodes.map((node) => [node.id, node]));
+	const edges = new Map(updates.edges.map((edge) => [edge.id, edge]));
+	const next = {
+		...plan,
+		edges: plan.edges.map((edge) =>
+			edges.has(edge.id) ? { ...edge, ...edges.get(edge.id) } : edge
+		),
+		nodes: plan.nodes.map((node) => {
+			const patch = nodes.get(node.id);
+			if (!patch) {
+				return node;
+			}
+			const data = { ...node.data, ...patch.data };
+			return {
+				...node,
+				data: {
+					...data,
+					icon: data.icon ?? undefined,
+					service: data.service ?? undefined,
+				},
+				position: { ...node.position, ...patch.position },
+			};
+		}),
+	};
+	planSchema.parse(next);
+	return next;
+}
+
+export function removeFromPlan(plan: Plan, input: unknown): Plan {
+	const removals = removalsSchema.parse(input);
+	const nodes = targetIds(plan.nodes, removals.nodeIds, "block");
+	const edges = targetIds(plan.edges, removals.edgeIds, "connection");
+	const next = {
+		...plan,
+		edges: plan.edges.filter(
+			(edge) =>
+				!(
+					edges.has(edge.id) ||
+					nodes.has(edge.source) ||
+					nodes.has(edge.target)
+				)
+		),
+		nodes: plan.nodes.filter((node) => !nodes.has(node.id)),
+	};
+	planSchema.parse(next);
+	return next;
+}
+
 export function addToPlan(plan: Plan, input: unknown): Plan {
 	const additions = additionsSchema.parse(input);
 	const next = {

@@ -29,6 +29,7 @@
     "check": "ultracite check",
     "check-types": "turbo run check-types",
     "deploy": "turbo run deploy -F @anyway-design/infra --",
+    "deploy:plan": "bun run --cwd apps/plan deploy",
     "destroy": "turbo run destroy -F @anyway-design/infra --",
     "dev": "turbo run dev",
     "dev:md": "bun run --cwd apps/md dev",

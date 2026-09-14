@@ -36,7 +36,6 @@ import {
 	useState,
 } from "react";
 import {
-	addToPlan,
 	BLOCK_SIZE,
 	blockDataSchema,
 	errorMessage,
@@ -136,10 +135,6 @@ function Editor() {
 		return next;
 	}, []);
 	const read = useCallback(() => planRef.current, []);
-	const add = useCallback(
-		(input: unknown) => update((current) => addToPlan(current, input)),
-		[update]
-	);
 	useEffect(() => {
 		// biome-ignore lint/suspicious/noUnnecessaryConditions: addBlock updates this ref before the effect runs.
 		if (preserveViewport.current) {
@@ -176,7 +171,7 @@ function Editor() {
 		}
 		const controller = new AbortController();
 		let active = true;
-		registerPlanTools(context, controller, read, add).catch((error) => {
+		registerPlanTools(context, controller, read, update).catch((error) => {
 			if (active) {
 				setNotice(`WebMCP tools couldn't start. ${errorMessage(error)}`);
 			}
@@ -185,7 +180,7 @@ function Editor() {
 			active = false;
 			controller.abort();
 		};
-	}, [read, add]);
+	}, [read, update]);
 
 	const onNodesChange: OnNodesChange<PlanNode> = useCallback(
 		(changes) => {
@@ -564,7 +559,7 @@ function Editor() {
 								</h3>
 								<p>
 									{webmcpSupported
-										? "WebMCP tools are available automatically. Ask your browser agent to read this canvas, find service icons, or add blocks and connections."
+										? "WebMCP tools are available automatically. Ask your browser agent to read this canvas, find service icons, or add, edit, and remove blocks and connections."
 										: "WebMCP isn't available in this browser. Open Plan in a browser with WebMCP enabled to let your agent build on the canvas."}
 								</p>
 							</div>

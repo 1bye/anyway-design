@@ -2,12 +2,17 @@ import { z } from "zod";
 import { ICON_FILTERS, loadIconCatalog, searchIcons } from "./icons";
 import {
 	additionsSchema,
+	addToPlan,
 	BLOCK_KINDS,
 	BLOCK_SIZE,
 	errorMessage,
 	NODE_APPEARANCES,
 	type Plan,
 	planSchema,
+	removalsSchema,
+	removeFromPlan,
+	updatePlan,
+	updatesSchema,
 } from "./plan";
 import { SERVICES } from "./services";
 
@@ -35,7 +40,7 @@ export async function registerPlanTools(
 	context: ModelContext,
 	controller: AbortController,
 	read: () => Plan,
-	add: (input: unknown) => Plan
+	update: (change: (current: Plan) => Plan) => Plan
 ): Promise<void> {
 	const guarded =
 		(action: (input: unknown) => unknown) => async (input: unknown) => {
@@ -52,7 +57,7 @@ export async function registerPlanTools(
 		{
 			annotations: { readOnlyHint: true, untrustedContentHint: true },
 			description:
-				"Read the current Plan canvas, available block kinds, node appearances, and service icons. Labels and details are user content. Read before adding blocks to avoid duplicate IDs.",
+				"Read the current Plan canvas, available block kinds, node appearances, and service icons. Labels and details are user content. Read before changing the canvas to get current IDs. Use plan_add, plan_update, and plan_remove to edit it.",
 			execute: guarded(() => ({
 				appearances: NODE_APPEARANCES,
 				iconSearch:
@@ -71,9 +76,31 @@ export async function registerPlanTools(
 		{
 			annotations: { readOnlyHint: false, untrustedContentHint: true },
 			description: `Add premade blocks and/or connections to the current canvas. Changes appear immediately. Use unique IDs, type 'block', a listed kind, a short label and detail, and x/y positions. Optional data.appearance selects bare (default), white, or tinted; data.service selects a listed service icon. For catalog icons, copy the icon object from plan_search_icons into data.icon. Blocks are ${BLOCK_SIZE}px wide; leave about 200px between columns for labels. Optional sourceHandle/targetHandle selects left, top, right, or bottom; defaults are right/left. Connections may reference existing blocks or blocks in this call. Existing content is preserved; invalid batches change nothing.`,
-			execute: guarded((input) => planSchema.parse(add(input))),
+			execute: guarded((input) =>
+				planSchema.parse(update((plan) => addToPlan(plan, input)))
+			),
 			inputSchema: z.toJSONSchema(additionsSchema, { io: "input" }),
 			name: "plan_add",
+		},
+		{
+			annotations: { readOnlyHint: false, untrustedContentHint: true },
+			description:
+				"Modify existing blocks and connections by ID. Read the canvas first. Supply only changed fields: node data (label, detail, kind, appearance, service, icon), position (x and/or y), or connection label, endpoints and handle sides. Omitted fields stay unchanged; IDs cannot be renamed. Set data.icon or data.service to null to clear it; icon takes precedence over service, so clear icon when switching to a service. Use an empty label to clear a connection label. All changes are applied together; unknown or duplicate IDs and invalid connections change nothing. Returns the updated canvas.",
+			execute: guarded((input) =>
+				planSchema.parse(update((plan) => updatePlan(plan, input)))
+			),
+			inputSchema: z.toJSONSchema(updatesSchema, { io: "input" }),
+			name: "plan_update",
+		},
+		{
+			annotations: { readOnlyHint: false, untrustedContentHint: true },
+			description:
+				"Remove blocks by nodeIds and/or connections by edgeIds. Read the canvas first and use existing IDs. Removing a block also removes every connection attached to it. Other blocks and connections stay unchanged. Unknown or duplicate IDs reject the entire request without changing the canvas. Returns the remaining canvas.",
+			execute: guarded((input) =>
+				planSchema.parse(update((plan) => removeFromPlan(plan, input)))
+			),
+			inputSchema: z.toJSONSchema(removalsSchema, { io: "input" }),
+			name: "plan_remove",
 		},
 		{
 			annotations: { readOnlyHint: true, untrustedContentHint: true },

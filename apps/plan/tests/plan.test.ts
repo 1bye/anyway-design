@@ -4,6 +4,8 @@ import {
 	INITIAL_PLAN,
 	NODE_APPEARANCES,
 	planSchema,
+	removeFromPlan,
+	updatePlan,
 } from "../src/lib/plan";
 import { type ModelContext, registerPlanTools } from "../src/lib/webmcp";
 
@@ -126,7 +128,112 @@ test("AI additions accept styled service nodes and validate connection sides", (
 	expect(INITIAL_PLAN.nodes).toHaveLength(3);
 });
 
-test("WebMCP handlers validate additions, read current state, and stop after disconnect", async () => {
+test("partial updates preserve node data, positions, and IDs while allowing reconnection and icon resets", () => {
+	const icon = {
+		color: "#f80",
+		label: "Lambda",
+		slug: "aws-aws-lambda",
+		variant: "default",
+	};
+	const updated = updatePlan(INITIAL_PLAN, {
+		edges: [
+			{
+				id: "app-api",
+				label: "invoke",
+				target: "database",
+				targetHandle: "top",
+			},
+		],
+		nodes: [
+			{
+				data: { appearance: "tinted", icon, label: "Lambda" },
+				id: "api",
+				position: { y: 240 },
+			},
+		],
+	});
+	expect(updated.nodes[1].data).toMatchObject({
+		...INITIAL_PLAN.nodes[1].data,
+		appearance: "tinted",
+		icon,
+		label: "Lambda",
+	});
+	expect(updated.nodes[1].position).toEqual({ x: 320, y: 240 });
+	expect(updated.nodes[1].data.aiReveal).toBeUndefined();
+	expect(updated.nodes[0]).toBe(INITIAL_PLAN.nodes[0]);
+	expect(updated.edges[0]).toEqual({
+		...INITIAL_PLAN.edges[0],
+		label: "invoke",
+		target: "database",
+		targetHandle: "top",
+	});
+	const service = updatePlan(updated, {
+		nodes: [{ data: { icon: null, service: "lambda" }, id: "api" }],
+	});
+	expect(service.nodes[1].data.icon).toBeUndefined();
+	expect(service.nodes[1].data.service).toBe("lambda");
+	const cleared = updatePlan(service, {
+		nodes: [{ data: { service: null }, id: "api" }],
+	});
+	expect(cleared.nodes[1].data.service).toBeUndefined();
+	expect(
+		planSchema.parse(JSON.parse(JSON.stringify(cleared))).nodes[1].data
+	).toEqual({
+		...INITIAL_PLAN.nodes[1].data,
+		appearance: "tinted",
+		label: "Lambda",
+	});
+	expect(INITIAL_PLAN.nodes[1].data.label).toBe("API");
+});
+
+test("invalid update batches preserve the whole canvas", () => {
+	const before = JSON.stringify(INITIAL_PLAN);
+	const validPatch = { data: { label: "Changed" }, id: "app" };
+	for (const input of [
+		{ nodes: [validPatch, { id: "missing" }] },
+		{ nodes: [validPatch, validPatch] },
+		{ edges: [{ id: "app-api", target: "missing" }], nodes: [validPatch] },
+		{ edges: [{ id: "missing", label: "Changed" }], nodes: [validPatch] },
+		{ nodes: [{ id: "api", position: { x: Number.POSITIVE_INFINITY } }] },
+		{ nodes: [{ data: { label: "" }, id: "api" }] },
+		{ nodes: [{ data: { appearance: "invalid" }, id: "api" }] },
+		{ nodes: [{ data: { icon: { slug: "../secret" } }, id: "api" }] },
+		{ nodes: [{ id: "api", label: "Wrong field" }] },
+		{ edges: [{ id: "app-api" }, { id: "app-api" }] },
+	]) {
+		expect(() => updatePlan(INITIAL_PLAN, input)).toThrow();
+		expect(JSON.stringify(INITIAL_PLAN)).toBe(before);
+	}
+});
+
+test("removals cascade attached connections and reject invalid batches without data loss", () => {
+	const before = JSON.stringify(INITIAL_PLAN);
+	const removed = removeFromPlan(INITIAL_PLAN, { nodeIds: ["api"] });
+	expect(removed.nodes.map((node) => node.id)).toEqual(["app", "database"]);
+	expect(removed.edges).toEqual([]);
+	expect(removed.nodes[0]).toBe(INITIAL_PLAN.nodes[0]);
+	const edgeOnly = removeFromPlan(INITIAL_PLAN, { edgeIds: ["app-api"] });
+	expect(edgeOnly.nodes).toEqual(INITIAL_PLAN.nodes);
+	expect(edgeOnly.edges.map((edge) => edge.id)).toEqual(["api-database"]);
+	expect(
+		removeFromPlan(INITIAL_PLAN, {
+			edgeIds: ["api-database"],
+			nodeIds: ["app"],
+		}).edges
+	).toEqual([]);
+	for (const input of [
+		{ nodeIds: ["api", "missing"] },
+		{ edgeIds: ["missing"], nodeIds: ["api"] },
+		{ nodeIds: ["api", "api"] },
+		{ edgeIds: ["app-api", "app-api"] },
+		{ nodes: ["api"] },
+	]) {
+		expect(() => removeFromPlan(INITIAL_PLAN, input)).toThrow();
+		expect(JSON.stringify(INITIAL_PLAN)).toBe(before);
+	}
+});
+
+test("WebMCP handlers edit the current state atomically and stop after disconnect", async () => {
 	let plan = INITIAL_PLAN;
 	const registered: Parameters<ModelContext["registerTool"]>[0][] = [];
 	const controller = new AbortController();
@@ -140,15 +247,17 @@ test("WebMCP handlers validate additions, read current state, and stop after dis
 		context,
 		controller,
 		() => plan,
-		(input) => {
-			plan = addToPlan(plan, input);
+		(change) => {
+			plan = change(plan);
 			return plan;
 		}
 	);
-	const [read, add] = registered;
+	const [read, add, update, remove] = registered;
 	expect(registered.map((tool) => tool.name)).toEqual([
 		"plan_read",
 		"plan_add",
+		"plan_update",
+		"plan_remove",
 		"plan_search_icons",
 	]);
 	expect(
@@ -166,8 +275,43 @@ test("WebMCP handlers validate additions, read current state, and stop after dis
 		).ok
 	).toBe(true);
 	expect(JSON.parse(await read.execute({})).data.plan.edges).toHaveLength(3);
+	expect(update.annotations.readOnlyHint).toBe(false);
+	expect(remove.annotations.readOnlyHint).toBe(false);
+	expect(
+		JSON.parse(
+			await update.execute({
+				nodes: [{ data: { label: "Backend" }, id: "api" }],
+			})
+		).ok
+	).toBe(true);
+	expect(JSON.parse(await read.execute({})).data.plan.nodes[1].data.label).toBe(
+		"Backend"
+	);
+	const beforeFailure = plan;
+	expect(
+		JSON.parse(
+			await update.execute({ edges: [{ id: "direct", target: "missing" }] })
+		).ok
+	).toBe(false);
+	expect(
+		JSON.parse(await remove.execute({ nodeIds: ["api", "missing"] })).ok
+	).toBe(false);
+	expect(plan).toBe(beforeFailure);
+	expect(JSON.parse(await remove.execute({ nodeIds: ["api"] })).ok).toBe(true);
+	expect(plan.edges.map((edge) => edge.id)).toEqual(["direct"]);
+	expect(JSON.parse(await read.execute({})).data.plan.nodes).toHaveLength(2);
+	const beforeAbort = plan;
 	controller.abort();
 	expect(JSON.parse(await add.execute({})).ok).toBe(false);
+	expect(
+		JSON.parse(
+			await update.execute({
+				nodes: [{ data: { label: "Aborted" }, id: "app" }],
+			})
+		).ok
+	).toBe(false);
+	expect(JSON.parse(await remove.execute({ nodeIds: ["app"] })).ok).toBe(false);
+	expect(plan).toBe(beforeAbort);
 });
 
 test("partial WebMCP registration failure cleans up registered tools", async () => {

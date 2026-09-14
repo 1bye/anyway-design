@@ -92,7 +92,7 @@ test("AI icon search returns usable references and rejects requests after discon
 			},
 			controller,
 			() => INITIAL_PLAN,
-			(input) => addToPlan(INITIAL_PLAN, input)
+			(change) => change(INITIAL_PLAN)
 		);
 		const search = registered.find((tool) => tool.name === "plan_search_icons");
 		if (!search) {
