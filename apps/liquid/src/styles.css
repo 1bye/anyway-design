@@ -400,7 +400,7 @@ a:focus-visible {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	margin-bottom: 28px;
+	margin-bottom: 12px;
 }
 .controls-heading h2 {
 	font-size: 13px;
@@ -512,7 +512,8 @@ a:focus-visible {
 	color: #777;
 	content: " px";
 }
-.dial-controls [aria-label="Duration"] .dialkit-slider-value::after {
+.dial-controls [aria-label="Duration"] .dialkit-slider-value::after,
+.dial-controls [aria-label="Reveal delay"] .dialkit-slider-value::after {
 	content: " ms";
 }
 .dial-controls .dialkit-slider-value-editable {
@@ -946,4 +947,108 @@ a:focus-visible {
 	z-index: -1;
 	background: #e5e5e5;
 	border-radius: 12px;
+}
+
+/* One inspector follows the active playground; values remain local to each demo. */
+.component-library {
+	grid-template-columns: 156px minmax(0, 1fr) 224px;
+	align-items: start;
+}
+.example-preview {
+	display: block;
+}
+.following-controls {
+	position: sticky;
+	top: 32px;
+	min-width: 0;
+}
+.following-controls .surface-controls {
+	position: static;
+	padding: 0;
+	background: transparent;
+}
+.following-controls {
+	padding: 12px;
+	background: #f7f7f7;
+	border-radius: 16px;
+}
+.controls-host {
+	position: relative;
+}
+.control-select {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	justify-content: space-between;
+	min-height: 44px;
+	padding: 0 12px;
+	font-size: 12px;
+	background: #ededed;
+	border-radius: 9px;
+}
+.control-select select {
+	min-width: 72px;
+	padding: 6px;
+	font: inherit;
+	color: inherit;
+	background: transparent;
+	border: 0;
+	border-radius: 5px;
+}
+.control-select select:focus-visible {
+	outline: 2px solid #5d83db;
+	outline-offset: 2px;
+}
+@media (max-width: 1100px) {
+	.component-library {
+		grid-template-columns: 132px minmax(0, 1fr) 204px;
+		gap: 24px;
+	}
+}
+@media (max-width: 860px) {
+	.component-library {
+		grid-template-columns: minmax(0, 1fr) 204px;
+	}
+	.example-nav {
+		grid-column: 1 / -1;
+	}
+}
+@media (max-width: 640px) {
+	.component-library {
+		display: flex;
+		flex-direction: column;
+	}
+	.example-nav {
+		order: -2;
+		width: 100%;
+	}
+	.following-controls {
+		position: sticky;
+		top: 8px;
+		z-index: 5;
+		order: -1;
+		width: 100%;
+	}
+	.following-controls {
+		padding: 12px;
+		box-shadow: 0 3px 16px #00000008;
+	}
+	.controls-heading {
+		margin-bottom: 8px;
+	}
+	.following-controls .dial-controls {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 6px;
+	}
+	.example-collection {
+		width: 100%;
+	}
+	.component-example {
+		scroll-margin-top: 220px;
+	}
+}
+
+.dial-controls [aria-label="Background dim"] .dialkit-slider-value::after {
+	content: "";
 }

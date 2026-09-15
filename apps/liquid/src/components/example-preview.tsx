@@ -8,6 +8,7 @@ import {
 	useEffect,
 	useState,
 } from "react";
+import { PlaygroundControls } from "./playground-controls";
 
 const HighlightedCode = lazy(() => import("./highlighted-code"));
 
@@ -103,13 +104,7 @@ export function ExamplePreview({
 					</Tabs.Panel>
 				</div>
 			</div>
-			<aside
-				aria-label={`${name} playground controls`}
-				className="playground-sidebar"
-				hidden={!controls}
-			>
-				{controls}
-			</aside>
+			<PlaygroundControls name={name}>{controls}</PlaygroundControls>
 			<span className="copy-announcement" role="status">
 				{copied ? "Code copied to clipboard." : ""}
 			</span>

@@ -31,21 +31,21 @@ export const LIQUID_MENU_CONNECTED_BUTTON_ANCHOR_GEOMETRY = {
 } as const;
 
 export const LIQUID_MENU_GEOMETRY: LiquidMenuGeometry = {
-	blendRadius: 40,
-	menuRadius: 16,
+	blendRadius: 16,
+	menuRadius: 14,
 	sampleCellSize: 2,
 	smoothingPasses: 1,
 };
 
 export const LIQUID_MENU_MOTION: LiquidMenuMotion = {
 	backdropOpacity: 0.2,
-	closeDurationMs: 180,
-	contentDelayMs: 120,
-	contentDurationMs: 120,
-	openDurationMs: 240,
-	submenuCloseDurationMs: 160,
-	submenuContentDelayMs: 90,
-	submenuOpenDurationMs: 200,
+	closeDurationMs: 225,
+	contentDelayMs: 150,
+	contentDurationMs: 150,
+	openDurationMs: 300,
+	submenuCloseDurationMs: 200,
+	submenuContentDelayMs: 112.5,
+	submenuOpenDurationMs: 250,
 };
 
 export const LIQUID_SUBMENU_CLOSE_DELAY_MS = 300;

@@ -39,6 +39,7 @@ import {
 } from "./liquid/liquid-menu-config";
 import { LiquidProvider } from "./liquid/liquid-provider";
 import { MorePlaygrounds } from "./more-playgrounds";
+import { PlaygroundControlsProvider } from "./playground-controls";
 
 type ExampleSettings = Pick<
 	LiquidMenuProps,
@@ -119,6 +120,17 @@ const VARIANTS = [
 type Variant = (typeof VARIANTS)[number]["value"];
 
 export function MenuPlayground() {
+	const [active, setActive] = useState("Menu");
+	const changeActive = useCallback((id: string) => {
+		const names: Record<string, string> = {
+			"connected-menu": "Menu",
+			"context-menu": "Context menu",
+			"nested-menus": "Nested submenus",
+			shortcuts: "Shortcut preview",
+			"stacked-menus": "Stacked menus",
+		};
+		setActive(names[id] ?? "Menu");
+	}, []);
 	const [variant, setVariant] = useState<Variant>("connected");
 	const changeVariant = useCallback((event: ChangeEvent<HTMLInputElement>) => {
 		const next = VARIANTS.find((item) => item.value === event.target.value);
@@ -184,174 +196,180 @@ export function MenuPlayground() {
 	return (
 		<LiquidProvider>
 			<div className="component-library" id="examples">
-				<ExampleNav />
-				<div className="example-collection">
-					<section
-						aria-labelledby="connected-menu-title"
-						className="component-example"
-						id="connected-menu"
-					>
-						<ExamplePreview
-							code={createExampleCode(variant, { geometry, motion })}
-							controls={
-								<div className="surface-controls" ref={controlsRef}>
-									<div className="controls-heading">
-										<h2>Make it yours</h2>
-										<button
-											aria-label="Reset controls"
-											className="reset-button"
-											onClick={reset}
-											title="Reset controls"
-											type="button"
-										>
-											<RotateCcw aria-hidden="true" size={15} />
-										</button>
-									</div>
-									<div className="dial-controls">
-										<DialSlider
-											label="Softness"
-											max={64}
-											min={0}
-											onChange={setSoftness}
-											step={2}
-											unit="px"
-											value={softness}
-										/>
-										<DialSlider
-											label="Corner radius"
-											max={28}
-											min={4}
-											onChange={setRadius}
-											step={1}
-											unit="px"
-											value={radius}
-										/>
-										<DialSlider
-											label="Duration"
-											max={600}
-											min={100}
-											onChange={setDuration}
-											step={20}
-											unit="ms"
-											value={duration}
-										/>
-									</div>
-								</div>
-							}
-							heading={
-								<header className="example-heading">
-									<h2 id="connected-menu-title">Menus</h2>
-									<p>
-										Connected surfaces, from a simple action to a nested menu.
-									</p>
-								</header>
-							}
-							name="Menu"
-							variants={
-								<fieldset className="variant-controls">
-									<legend>Variants</legend>
-									{VARIANTS.map((item) => (
-										<label key={item.value}>
-											<input
-												checked={variant === item.value}
-												name="menu-variant"
-												onChange={changeVariant}
-												type="radio"
-												value={item.value}
-											/>
-											<span>{item.label}</span>
-										</label>
-									))}
-								</fieldset>
-							}
+				<PlaygroundControlsProvider active={active}>
+					<ExampleNav onActiveChange={changeActive} />
+					<div className="example-collection">
+						<section
+							aria-labelledby="connected-menu-title"
+							className="component-example"
+							id="connected-menu"
 						>
-							{variant === "connected" ? (
-								<div className="preview-stage">
-									<div className="preview-document">
-										<div className="document-icon">
-											<Folder aria-hidden="true" size={24} strokeWidth={1.3} />
+							<ExamplePreview
+								code={createExampleCode(variant, { geometry, motion })}
+								controls={
+									<div className="surface-controls" ref={controlsRef}>
+										<div className="controls-heading">
+											<h2>Menus</h2>
+											<button
+												aria-label="Reset controls"
+												className="reset-button"
+												onClick={reset}
+												title="Reset controls"
+												type="button"
+											>
+												<RotateCcw aria-hidden="true" size={15} />
+											</button>
 										</div>
-										<div className="document-description">
-											<span className="document-title">Untitled idea</span>
-											<span className="document-meta">
-												{folder}
-												{copies > 0
-													? ` · ${copies} ${copies === 1 ? "copy" : "copies"}`
-													: ""}
-											</span>
+										<div className="dial-controls">
+											<DialSlider
+												label="Softness"
+												max={64}
+												min={0}
+												onChange={setSoftness}
+												step={2}
+												unit="px"
+												value={softness}
+											/>
+											<DialSlider
+												label="Corner radius"
+												max={28}
+												min={4}
+												onChange={setRadius}
+												step={1}
+												unit="px"
+												value={radius}
+											/>
+											<DialSlider
+												label="Duration"
+												max={600}
+												min={100}
+												onChange={setDuration}
+												step={20}
+												unit="ms"
+												value={duration}
+											/>
 										</div>
-										<LiquidMenu
-											geometry={geometry}
-											modal={false}
-											motion={motion}
-											onOpenChange={changeOpen}
-										>
-											<LiquidMenuTrigger aria-label="Open idea menu">
-												<MoreHorizontal aria-hidden="true" size={20} />
-											</LiquidMenuTrigger>
-											<LiquidMenuContent align="end" className="demo-menu">
-												<LiquidMenuItem onClick={duplicate}>
-													<Copy aria-hidden="true" />
-													Duplicate
-												</LiquidMenuItem>
-												<LiquidMenuSub>
-													<LiquidMenuSubTrigger>
-														<FolderInput aria-hidden="true" />
-														Move to
-														<ChevronRight
-															aria-hidden="true"
-															className="item-trailing"
-														/>
-													</LiquidMenuSubTrigger>
-													<LiquidMenuSubContent className="demo-submenu">
-														<LiquidMenuItem onClick={movePersonal}>
-															Personal
-															{folder === "Personal" && (
-																<Check
-																	aria-hidden="true"
-																	className="item-trailing"
-																/>
-															)}
-														</LiquidMenuItem>
-														<LiquidMenuItem onClick={moveTeam}>
-															Team
-															{folder === "Team" && (
-																<Check
-																	aria-hidden="true"
-																	className="item-trailing"
-																/>
-															)}
-														</LiquidMenuItem>
-													</LiquidMenuSubContent>
-												</LiquidMenuSub>
-												<LiquidMenuSeparator />
-												<LiquidMenuItem onClick={archive}>
-													<Archive aria-hidden="true" />
-													Archive
-												</LiquidMenuItem>
-											</LiquidMenuContent>
-										</LiquidMenu>
 									</div>
-								</div>
-							) : null}
-							{variant === "action" ? (
-								<ActionMenuExample
-									geometry={geometry}
-									motion={motion}
-									onOpenChange={changeOpen}
-								/>
-							) : null}
-							{variant === "status" ? (
-								<StatusMenuExample
-									geometry={geometry}
-									motion={motion}
-									onOpenChange={changeOpen}
-								/>
-							) : null}
-						</ExamplePreview>
-					</section>
-					<MorePlaygrounds />
-				</div>
+								}
+								heading={
+									<header className="example-heading">
+										<h2 id="connected-menu-title">Menus</h2>
+										<p>
+											Connected surfaces, from a simple action to a nested menu.
+										</p>
+									</header>
+								}
+								name="Menu"
+								variants={
+									<fieldset className="variant-controls">
+										<legend>Variants</legend>
+										{VARIANTS.map((item) => (
+											<label key={item.value}>
+												<input
+													checked={variant === item.value}
+													name="menu-variant"
+													onChange={changeVariant}
+													type="radio"
+													value={item.value}
+												/>
+												<span>{item.label}</span>
+											</label>
+										))}
+									</fieldset>
+								}
+							>
+								{variant === "connected" ? (
+									<div className="preview-stage">
+										<div className="preview-document">
+											<div className="document-icon">
+												<Folder
+													aria-hidden="true"
+													size={24}
+													strokeWidth={1.3}
+												/>
+											</div>
+											<div className="document-description">
+												<span className="document-title">Untitled idea</span>
+												<span className="document-meta">
+													{folder}
+													{copies > 0
+														? ` · ${copies} ${copies === 1 ? "copy" : "copies"}`
+														: ""}
+												</span>
+											</div>
+											<LiquidMenu
+												geometry={geometry}
+												modal={false}
+												motion={motion}
+												onOpenChange={changeOpen}
+											>
+												<LiquidMenuTrigger aria-label="Open idea menu">
+													<MoreHorizontal aria-hidden="true" size={20} />
+												</LiquidMenuTrigger>
+												<LiquidMenuContent align="end" className="demo-menu">
+													<LiquidMenuItem onClick={duplicate}>
+														<Copy aria-hidden="true" />
+														Duplicate
+													</LiquidMenuItem>
+													<LiquidMenuSub>
+														<LiquidMenuSubTrigger>
+															<FolderInput aria-hidden="true" />
+															Move to
+															<ChevronRight
+																aria-hidden="true"
+																className="item-trailing"
+															/>
+														</LiquidMenuSubTrigger>
+														<LiquidMenuSubContent className="demo-submenu">
+															<LiquidMenuItem onClick={movePersonal}>
+																Personal
+																{folder === "Personal" && (
+																	<Check
+																		aria-hidden="true"
+																		className="item-trailing"
+																	/>
+																)}
+															</LiquidMenuItem>
+															<LiquidMenuItem onClick={moveTeam}>
+																Team
+																{folder === "Team" && (
+																	<Check
+																		aria-hidden="true"
+																		className="item-trailing"
+																	/>
+																)}
+															</LiquidMenuItem>
+														</LiquidMenuSubContent>
+													</LiquidMenuSub>
+													<LiquidMenuSeparator />
+													<LiquidMenuItem onClick={archive}>
+														<Archive aria-hidden="true" />
+														Archive
+													</LiquidMenuItem>
+												</LiquidMenuContent>
+											</LiquidMenu>
+										</div>
+									</div>
+								) : null}
+								{variant === "action" ? (
+									<ActionMenuExample
+										geometry={geometry}
+										motion={motion}
+										onOpenChange={changeOpen}
+									/>
+								) : null}
+								{variant === "status" ? (
+									<StatusMenuExample
+										geometry={geometry}
+										motion={motion}
+										onOpenChange={changeOpen}
+									/>
+								) : null}
+							</ExamplePreview>
+						</section>
+						<MorePlaygrounds />
+					</div>
+				</PlaygroundControlsProvider>
 			</div>
 		</LiquidProvider>
 	);

@@ -15,28 +15,69 @@ const items = [
 	["context-menu", "Context menu"],
 ] as const;
 
-export function ExampleNav() {
+export function ExampleNav({
+	onActiveChange,
+}: {
+	onActiveChange: (id: string) => void;
+}) {
 	const [active, setActive] = useState("connected-menu");
 	const [hovered, setHovered] = useState<string | null>(null);
 	const reduced = useReducedMotion();
 	useEffect(() => {
+		let selected = "connected-menu";
+		let dragging = false;
 		const update = () => {
+			if (dragging || document.activeElement?.closest(".following-controls")) {
+				return;
+			}
 			let current: string = items[0][0];
 			for (const [id] of items) {
 				if (
 					(document.getElementById(id)?.getBoundingClientRect().top ??
 						Number.POSITIVE_INFINITY) <
-					innerHeight * 0.4
+					innerHeight / 3 +
+						(items.findIndex(([itemId]) => itemId === id) <=
+						items.findIndex(([itemId]) => itemId === selected)
+							? 24
+							: -24)
 				) {
 					current = id;
 				}
 			}
+			selected = current;
 			setActive(current);
+			onActiveChange(current);
 		};
+		const start = (event: PointerEvent) => {
+			dragging =
+				event.target instanceof Element &&
+				!!event.target.closest(".following-controls");
+		};
+		const end = () => {
+			dragging = false;
+		};
+		const blur = () => {
+			dragging = false;
+		};
+		const focusOut = () => requestAnimationFrame(update);
+		document.addEventListener("pointerdown", start);
+		document.addEventListener("pointerup", end);
+		document.addEventListener("pointercancel", end);
+		document.addEventListener("focusout", focusOut);
+		window.addEventListener("blur", blur);
 		update();
 		window.addEventListener("scroll", update, { passive: true });
-		return () => window.removeEventListener("scroll", update);
-	}, []);
+		window.addEventListener("resize", update);
+		return () => {
+			document.removeEventListener("pointerdown", start);
+			document.removeEventListener("pointerup", end);
+			document.removeEventListener("pointercancel", end);
+			document.removeEventListener("focusout", focusOut);
+			window.removeEventListener("blur", blur);
+			window.removeEventListener("scroll", update);
+			window.removeEventListener("resize", update);
+		};
+	}, [onActiveChange]);
 	const highlight = useCallback(
 		(event: MouseEvent<HTMLAnchorElement> | FocusEvent<HTMLAnchorElement>) =>
 			setHovered(event.currentTarget.hash.slice(1)),
