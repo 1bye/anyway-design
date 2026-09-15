@@ -33,7 +33,37 @@ export function PlaygroundControlsProvider({
 	}
 	const [host, setHost] = useState<HTMLDivElement | null>(null);
 	const [height, setHeight] = useState<number>();
+	const [column, setColumn] = useState<HTMLDivElement | null>(null);
+	const [bounds, setBounds] = useState({ height: 0, top: 0 });
 	const reduced = useReducedMotion();
+	useLayoutEffect(() => {
+		const frame = Array.from(
+			document.querySelectorAll<HTMLElement>("[data-playground]")
+		).find((element) => element.dataset.playground === active);
+		const collection = frame?.closest(".example-collection");
+		if (!(column && frame && collection)) {
+			return;
+		}
+		const measure = () => {
+			const rect = frame.getBoundingClientRect();
+			const top = rect.top - column.getBoundingClientRect().top;
+			setBounds((previous) =>
+				previous.top === top && previous.height === rect.height
+					? previous
+					: { height: rect.height, top }
+			);
+		};
+		measure();
+		const observer = new ResizeObserver(measure);
+		observer.observe(collection);
+		observer.observe(frame);
+		observer.observe(column);
+		window.addEventListener("resize", measure);
+		return () => {
+			observer.disconnect();
+			window.removeEventListener("resize", measure);
+		};
+	}, [active, column]);
 	useLayoutEffect(() => {
 		if (!host) {
 			return;
@@ -51,18 +81,27 @@ export function PlaygroundControlsProvider({
 	return (
 		<ControlsContext value={value}>
 			{children}
-			<aside
-				aria-label={`${active} playground controls`}
-				className="following-controls"
-			>
-				<motion.div
-					animate={{ height }}
-					initial={false}
-					transition={{ duration: reduced ? 0 : 0.16 }}
+			<div className="controls-column" ref={setColumn}>
+				<div
+					className="controls-range"
+					style={{ height: bounds.height, top: bounds.top }}
 				>
-					<div className="controls-host" ref={setHost} />
-				</motion.div>
-			</aside>
+					<motion.aside
+						aria-label={`${active} playground controls`}
+						className="following-controls"
+						layout="position"
+						transition={{ duration: reduced ? 0 : 0.18, ease: "easeOut" }}
+					>
+						<motion.div
+							animate={{ height }}
+							initial={false}
+							transition={{ duration: reduced ? 0 : 0.16 }}
+						>
+							<div className="controls-host" ref={setHost} />
+						</motion.div>
+					</motion.aside>
+				</div>
+			</div>
 		</ControlsContext>
 	);
 }

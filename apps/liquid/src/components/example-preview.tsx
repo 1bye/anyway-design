@@ -60,7 +60,7 @@ export function ExamplePreview({
 		>
 			<div className="playground-main">
 				{heading}
-				<div className="playground-frame">
+				<div className="playground-frame" data-playground={name}>
 					<div className="example-toolbar">
 						<div className="playground-view-controls">
 							<Tabs.List aria-label={`${name} view`} className="example-tabs">

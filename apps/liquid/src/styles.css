@@ -1052,3 +1052,29 @@ a:focus-visible {
 .dial-controls [aria-label="Background dim"] .dialkit-slider-value::after {
 	content: "";
 }
+
+.controls-column {
+	position: relative;
+	align-self: stretch;
+	min-width: 0;
+}
+.controls-range {
+	position: absolute;
+	width: 100%;
+}
+@media (max-width: 640px) {
+	.controls-column {
+		position: sticky;
+		top: 8px;
+		z-index: 5;
+		order: -1;
+		width: 100%;
+	}
+	.controls-range {
+		position: static;
+		height: auto !important;
+	}
+	.controls-range .following-controls {
+		position: static;
+	}
+}
