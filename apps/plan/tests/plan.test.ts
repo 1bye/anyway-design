@@ -334,3 +334,32 @@ test("partial WebMCP registration failure cleans up registered tools", async () 
 	).rejects.toThrow("Registration failed");
 	expect(controller.signal.aborted).toBe(true);
 });
+
+test("connection appearance survives saves and AI updates without changing old plans", () => {
+	for (const lineStyle of ["solid", "dashed", "dotted"]) {
+		for (const arrow of ["forward", "reverse", "both", "none"]) {
+			const updated = updatePlan(INITIAL_PLAN, {
+				edges: [{ data: { arrow, lineStyle }, id: "app-api" }],
+			});
+			const saved = planSchema.parse(JSON.parse(JSON.stringify(updated)));
+			expect(saved.edges[0].data).toEqual({ arrow, lineStyle });
+			expect(saved.edges[0].source).toBe("app");
+		}
+	}
+	expect(planSchema.parse(INITIAL_PLAN)).toEqual(INITIAL_PLAN);
+	expect(() =>
+		updatePlan(INITIAL_PLAN, {
+			edges: [{ data: { arrow: "sideways" }, id: "app-api" }],
+		})
+	).toThrow();
+});
+
+test("partial connection appearance updates retain the other style settings", () => {
+	const styled = updatePlan(INITIAL_PLAN, {
+		edges: [{ data: { arrow: "reverse", lineStyle: "dashed" }, id: "app-api" }],
+	});
+	const updated = updatePlan(styled, {
+		edges: [{ data: { arrow: "none" }, id: "app-api" }],
+	});
+	expect(updated.edges[0].data).toEqual({ arrow: "none", lineStyle: "dashed" });
+});

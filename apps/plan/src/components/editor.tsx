@@ -6,7 +6,6 @@ import {
 	Background,
 	ConnectionMode,
 	Controls,
-	type Edge,
 	MarkerType,
 	type OnConnect,
 	type OnEdgesChange,
@@ -22,7 +21,6 @@ import {
 	MousePointer2,
 	Plus,
 	Save,
-	Trash2,
 	X,
 	Zap,
 } from "lucide-react";
@@ -40,8 +38,8 @@ import {
 	blockDataSchema,
 	errorMessage,
 	INITIAL_PLAN,
-	NODE_APPEARANCES,
 	type Plan,
+	type PlanEdge,
 	type PlanNode,
 	planSchema,
 } from "../lib/plan";
@@ -51,11 +49,11 @@ import {
 	type SavedPlan,
 	writeDraft,
 } from "../lib/plan-storage";
-import { SERVICE_IDS, SERVICES } from "../lib/services";
 import { getModelContext, registerPlanTools } from "../lib/webmcp";
 import { BLOCK_DRAG_TYPE, BlockDock } from "./block-dock";
-import { BLOCKS, BlockIcon, BlockNode, blockColor } from "./block-node";
+import { BlockNode } from "./block-node";
 import { PlanLibrary } from "./plan-library";
+import { SelectionEditor } from "./selection-editor";
 
 const nodeTypes = { block: BlockNode };
 const defaultEdgeOptions = {
@@ -64,11 +62,6 @@ const defaultEdgeOptions = {
 };
 const fitViewOptions = { maxZoom: 1, padding: 0.2 };
 const deleteKeyCode = ["Backspace", "Delete"];
-const appearanceLabels = {
-	bare: "A · Bare",
-	tinted: "C · Tinted",
-	white: "B · White",
-};
 
 function readInitialDraft(): {
 	plan: Plan;
@@ -116,13 +109,29 @@ function Editor() {
 	const canvasRef = useRef<HTMLDivElement>(null);
 	const preserveViewport = useRef(false);
 	const { screenToFlowPosition, fitView } = useReactFlow<PlanNode>();
+	const [edgeAnchor, setEdgeAnchor] = useState<{
+		id: string;
+		x: number;
+		y: number;
+	} | null>(null);
 	const selectedNode = plan.nodes.find((node) => node.selected);
 	const selectedEdge = plan.edges.find((edge) => edge.selected);
 	const edges = useMemo(
 		() =>
 			plan.edges.map((edge) => ({
 				...edge,
+				markerEnd: ["forward", "both"].includes(edge.data?.arrow ?? "forward")
+					? defaultEdgeOptions.markerEnd
+					: undefined,
+				markerStart: ["reverse", "both"].includes(edge.data?.arrow ?? "forward")
+					? defaultEdgeOptions.markerEnd
+					: undefined,
 				sourceHandle: edge.sourceHandle ?? "right",
+				style: {
+					strokeDasharray: { dashed: "7 5", dotted: "2 5", solid: undefined }[
+						edge.data?.lineStyle ?? "solid"
+					],
+				},
 				targetHandle: edge.targetHandle ?? "left",
 			})),
 		[plan.edges]
@@ -198,7 +207,7 @@ function Editor() {
 		},
 		[update]
 	);
-	const onEdgesChange: OnEdgesChange = useCallback(
+	const onEdgesChange: OnEdgesChange<PlanEdge> = useCallback(
 		(changes) => {
 			update((current) => ({
 				...current,
@@ -287,14 +296,26 @@ function Editor() {
 			),
 		}));
 	}
-	function editEdge(label: string) {
+	function editEdge(patch: Partial<PlanEdge>) {
 		update((current) => ({
 			...current,
 			edges: current.edges.map((edge) =>
-				edge.id === selectedEdge?.id ? { ...edge, label } : edge
+				edge.id === selectedEdge?.id ? { ...edge, ...patch } : edge
 			),
 		}));
 	}
+	const dismissSelection = useCallback(() => {
+		update((current) => ({
+			...current,
+			edges: current.edges.map((edge) =>
+				edge.selected ? { ...edge, selected: false } : edge
+			),
+			nodes: current.nodes.map((node) =>
+				node.selected ? { ...node, selected: false } : node
+			),
+		}));
+	}, [update]);
+
 	function deleteSelection() {
 		update((current) => {
 			const ids = new Set(
@@ -494,8 +515,22 @@ function Editor() {
 							}
 						}}
 						onDrop={onDrop}
+						onEdgeClick={(event, edge) =>
+							setEdgeAnchor({
+								id: edge.id,
+								...screenToFlowPosition({ x: event.clientX, y: event.clientY }),
+							})
+						}
 						onEdgesChange={onEdgesChange}
+						onNodeDoubleClick={() =>
+							requestAnimationFrame(() =>
+								document
+									.querySelector<HTMLInputElement>(".selection-title")
+									?.select()
+							)
+						}
 						onNodesChange={onNodesChange}
+						onPaneClick={dismissSelection}
 					>
 						<Background color="#d6d6d6" gap={20} size={1} />
 						<Controls position="bottom-left" showInteractive={false} />
@@ -522,12 +557,21 @@ function Editor() {
 						</div>
 					) : null}
 					{selectedNode || selectedEdge ? (
-						<Inspector
+						<SelectionEditor
+							canvasRef={canvasRef}
 							deleteSelection={deleteSelection}
+							dismiss={dismissSelection}
 							edge={selectedEdge}
+							edgeAnchor={edgeAnchor}
 							editEdge={editEdge}
 							editNode={editNode}
+							key={
+								selectedNode
+									? `node-${selectedNode.id}`
+									: `edge-${selectedEdge?.id}`
+							}
 							node={selectedNode}
+							nodes={plan.nodes}
 						/>
 					) : null}
 					{help ? (
@@ -569,132 +613,5 @@ function Editor() {
 				</div>
 			</main>
 		</div>
-	);
-}
-
-function Inspector({
-	node,
-	edge,
-	editNode,
-	editEdge,
-	deleteSelection,
-}: {
-	node?: PlanNode;
-	edge?: Edge;
-	editNode: (data: Partial<PlanNode["data"]>) => void;
-	editEdge: (label: string) => void;
-	deleteSelection: () => void;
-}) {
-	return (
-		<section aria-label="Selection details" className="inspector">
-			<div className="mb-4 flex items-center justify-between">
-				<h2 className="font-mono text-[10px] text-muted uppercase tracking-wider">
-					{node ? BLOCKS[node.data.kind].label : "Connection"}
-				</h2>
-				<button
-					aria-label="Delete selection"
-					className="icon-button"
-					onClick={deleteSelection}
-					title="Delete selection"
-					type="button"
-				>
-					<Trash2 size={15} />
-				</button>
-			</div>
-			{node ? (
-				<>
-					<fieldset
-						className="node-style-picker mb-4"
-						style={blockColor(node.data)}
-					>
-						<legend className="field-label">Node style</legend>
-						<div className="node-style-options">
-							{NODE_APPEARANCES.map((appearance) => (
-								<button
-									aria-label={appearanceLabels[appearance]}
-									aria-pressed={(node.data.appearance ?? "bare") === appearance}
-									className="node-style-option"
-									data-appearance={appearance}
-									key={appearance}
-									onClick={() => editNode({ appearance })}
-									type="button"
-								>
-									<span className="block-tile style-preview">
-										<BlockIcon data={node.data} size={22} />
-									</span>
-									<span>{appearanceLabels[appearance]}</span>
-								</button>
-							))}
-						</div>
-					</fieldset>
-					<label className="field-label" htmlFor="block-service">
-						Service icon
-					</label>
-					<select
-						className="mb-4 text-field"
-						id="block-service"
-						onChange={(event) =>
-							editNode({
-								icon: undefined,
-								service: SERVICE_IDS.find(
-									(service) => service === event.target.value
-								),
-							})
-						}
-						value={node.data.icon ? "catalog" : (node.data.service ?? "")}
-					>
-						<option value="">{BLOCKS[node.data.kind].label} icon</option>
-						{node.data.icon ? (
-							<option value="catalog">{node.data.icon.label}</option>
-						) : null}
-						{SERVICE_IDS.map((service) => (
-							<option key={service} value={service}>
-								{SERVICES[service].label}
-							</option>
-						))}
-					</select>
-					<label className="field-label" htmlFor="block-name">
-						Name
-					</label>
-					<input
-						className="text-field"
-						id="block-name"
-						maxLength={100}
-						onChange={(event) =>
-							editNode({
-								label: event.target.value || BLOCKS[node.data.kind].label,
-							})
-						}
-						value={node.data.label}
-					/>
-					<label className="field-label mt-4" htmlFor="block-detail">
-						A little context
-					</label>
-					<textarea
-						className="resize-none text-field"
-						id="block-detail"
-						maxLength={500}
-						onChange={(event) => editNode({ detail: event.target.value })}
-						placeholder="What does this do?"
-						rows={3}
-						value={node.data.detail}
-					/>
-				</>
-			) : (
-				<>
-					<label className="field-label" htmlFor="connection-label">
-						Label
-					</label>
-					<input
-						className="text-field"
-						id="connection-label"
-						maxLength={100}
-						onChange={(event) => editEdge(event.target.value)}
-						placeholder="e.g. HTTPS"
-						value={typeof edge?.label === "string" ? edge.label : ""}
-					/>
-				</>
-			)}
-		</section>
 	);
 }

@@ -85,7 +85,7 @@ export async function registerPlanTools(
 		{
 			annotations: { readOnlyHint: false, untrustedContentHint: true },
 			description:
-				"Modify existing blocks and connections by ID. Read the canvas first. Supply only changed fields: node data (label, detail, kind, appearance, service, icon), position (x and/or y), or connection label, endpoints and handle sides. Omitted fields stay unchanged; IDs cannot be renamed. Set data.icon or data.service to null to clear it; icon takes precedence over service, so clear icon when switching to a service. Use an empty label to clear a connection label. All changes are applied together; unknown or duplicate IDs and invalid connections change nothing. Returns the updated canvas.",
+				"Modify existing blocks and connections by ID. Read the canvas first. Supply only changed fields: node data (label, detail, kind, appearance, service, icon), position (x and/or y), or connection label, endpoints, handle sides, and data (lineStyle: solid/dashed/dotted, arrow: forward/reverse/both/none). Omitted fields stay unchanged; IDs cannot be renamed. Set data.icon or data.service to null to clear it; icon takes precedence over service, so clear icon when switching to a service. Use an empty label to clear a connection label. All changes are applied together; unknown or duplicate IDs and invalid connections change nothing. Returns the updated canvas.",
 			execute: guarded((input) =>
 				planSchema.parse(update((plan) => updatePlan(plan, input)))
 			),

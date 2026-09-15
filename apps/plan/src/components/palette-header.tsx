@@ -8,7 +8,7 @@ import {
 	Info,
 	Search,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { ICON_FILTERS, ICON_REVISION, type IconFilter } from "../lib/icons";
 import { BLOCK_KINDS } from "../lib/plan";
 
@@ -27,6 +27,7 @@ function IconLibraryInfo({
 	error: boolean;
 	onRetry: () => void;
 }) {
+	const titleId = useId();
 	const [infoOpen, setInfoOpen] = useState(false);
 	const dialogRef = useRef<HTMLDialogElement>(null);
 	const infoButtonRef = useRef<HTMLButtonElement>(null);
@@ -89,7 +90,7 @@ function IconLibraryInfo({
 			</button>
 			{/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: The native dialog isolates keyboard events from canvas shortcuts and supports backdrop dismissal. */}
 			<dialog
-				aria-labelledby="icon-library-title"
+				aria-labelledby={titleId}
 				className="palette-info"
 				data-active={infoOpen}
 				onCancel={(event) => {
@@ -113,7 +114,7 @@ function IconLibraryInfo({
 				onKeyDown={(event) => event.stopPropagation()}
 				ref={dialogRef}
 			>
-				<h2 id="icon-library-title">Icon library</h2>
+				<h2 id={titleId}>Icon library</h2>
 				<p className="palette-info-count">
 					{catalogCount || error
 						? (catalogCount + BLOCK_KINDS.length + 1).toLocaleString()
@@ -209,6 +210,7 @@ export function PaletteHeader({
 	pageCount: number;
 	onPageChange: (page: number) => void;
 }) {
+	const searchId = useId();
 	const [searchOpen, setSearchOpen] = useState(false);
 	const searchRef = useRef<HTMLDivElement>(null);
 	const inputRef = useRef<HTMLInputElement>(null);
@@ -259,7 +261,7 @@ export function PaletteHeader({
 	return (
 		<div className="palette-header">
 			<button
-				aria-controls="palette-search-input"
+				aria-controls={searchId}
 				aria-expanded={searchOpen}
 				aria-label={searchOpen ? "Back to providers" : "Search icon library"}
 				className="palette-icon-button palette-search-toggle"
@@ -306,7 +308,7 @@ export function PaletteHeader({
 					<input
 						aria-label="Search icons"
 						autoComplete="off"
-						id="palette-search-input"
+						id={searchId}
 						onChange={(event) => {
 							onQueryChange(event.target.value);
 							onPageChange(0);

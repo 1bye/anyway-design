@@ -1,5 +1,5 @@
 // biome-ignore-all lint/performance/noJsxPropsBind: Small palette controls capture the current item and filter.
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import {
 	type CatalogEntry,
 	createIconMatcher,
@@ -41,11 +41,14 @@ function catalogBlock(entry: CatalogEntry): PlanNode["data"] {
 
 export function BlockDock({
 	addBlock,
+	embedded = false,
 }: {
 	addBlock: (data: PlanNode["data"]) => void;
+	embedded?: boolean;
 }) {
+	const paletteId = useId();
 	const [active, setActive] = useState(
-		() => window.matchMedia("(hover: none)").matches
+		() => embedded || window.matchMedia("(hover: none)").matches
 	);
 	const [dismissed, setDismissed] = useState(false);
 	const [dragging, setDragging] = useState(false);
@@ -164,13 +167,13 @@ export function BlockDock({
 	return (
 		// biome-ignore lint/a11y/noNoninteractiveElementInteractions: The region delegates focus and Escape from its native controls and preloads on pointer entry.
 		<aside
-			aria-label="Block library"
-			className="block-dock"
+			aria-label={embedded ? "Choose an icon" : "Block library"}
+			className={embedded ? "embedded-palette" : "block-dock"}
 			data-dismissed={dismissed}
 			data-dragging={dragging}
 			onFocus={activate}
 			onKeyDown={(event) => {
-				if (event.key === "Escape") {
+				if (event.key === "Escape" && !embedded) {
 					event.currentTarget
 						.querySelector<HTMLButtonElement>(".dock-trigger")
 						?.focus();
@@ -179,16 +182,18 @@ export function BlockDock({
 			}}
 			onPointerEnter={activate}
 		>
-			<button
-				aria-controls="block-palette"
-				aria-label="Show blocks"
-				className="dock-trigger"
-				onClick={activate}
-				type="button"
-			>
-				<span />
-			</button>
-			<div className="block-palette" id="block-palette" ref={paletteRef}>
+			{embedded ? null : (
+				<button
+					aria-controls={paletteId}
+					aria-label="Show blocks"
+					className="dock-trigger"
+					onClick={activate}
+					type="button"
+				>
+					<span />
+				</button>
+			)}
+			<div className="block-palette" id={paletteId} ref={paletteRef}>
 				<PaletteHeader
 					catalogCount={catalog.length}
 					error={error}
@@ -209,9 +214,11 @@ export function BlockDock({
 				>
 					{visible.map((data) => (
 						<button
-							aria-label={`Add ${data.label} block`}
+							aria-label={
+								embedded ? `Use ${data.label} icon` : `Add ${data.label} block`
+							}
 							className="palette-item"
-							draggable
+							draggable={!embedded}
 							key={data.icon?.slug ?? data.service ?? data.kind}
 							onClick={(event) => {
 								addBlock(data);

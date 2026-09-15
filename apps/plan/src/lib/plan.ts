@@ -32,8 +32,14 @@ export type PlanNode = Node<
 	},
 	"block"
 >;
+export const LINE_STYLES = ["solid", "dashed", "dotted"] as const;
+export const ARROW_DIRECTIONS = ["forward", "both", "none", "reverse"] as const;
+export type PlanEdge = Edge<{
+	lineStyle?: (typeof LINE_STYLES)[number];
+	arrow?: (typeof ARROW_DIRECTIONS)[number];
+}>;
 export interface Plan {
-	edges: Edge[];
+	edges: PlanEdge[];
 	name: string;
 	nodes: PlanNode[];
 	version: 1;
@@ -58,6 +64,12 @@ const nodeSchema = z.object({
 	type: z.literal("block"),
 });
 const edgeSchema = z.object({
+	data: z
+		.object({
+			arrow: z.enum(ARROW_DIRECTIONS).optional(),
+			lineStyle: z.enum(LINE_STYLES).optional(),
+		})
+		.optional(),
 	id: idSchema,
 	label: z.string().max(100).optional(),
 	source: idSchema,
@@ -164,9 +176,16 @@ export function updatePlan(plan: Plan, input: unknown): Plan {
 	const edges = new Map(updates.edges.map((edge) => [edge.id, edge]));
 	const next = {
 		...plan,
-		edges: plan.edges.map((edge) =>
-			edges.has(edge.id) ? { ...edge, ...edges.get(edge.id) } : edge
-		),
+		edges: plan.edges.map((edge) => {
+			const patch = edges.get(edge.id);
+			return patch
+				? {
+						...edge,
+						...patch,
+						data: patch.data ? { ...edge.data, ...patch.data } : edge.data,
+					}
+				: edge;
+		}),
 		nodes: plan.nodes.map((node) => {
 			const patch = nodes.get(node.id);
 			if (!patch) {
