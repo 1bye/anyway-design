@@ -313,3 +313,23 @@ React state; these actions do not operate on native files.
 `public/assets/native-folder-list/SOURCES.md` records the generated native
 fixture and capture provenance. Finder's installed-app file artwork can differ
 from the package's generic file-type icons.
+
+### Open / Save dialog study
+
+Open `/?view=file-dialog-reference` for Open, expanded Save, and compact Save
+beside actual Tahoe NSOpenPanel/NSSavePanel captures. Fit / 1× / 1.5× / 2× zoom
+and Header / Actions crops are shared between panels. Reset native match restores
+the initial directory, filename, selection, and column widths.
+
+The workbench launches focus-trapped dialogs and offers dark/light, sidebar,
+multiple-file selection, and a narrow layout. Navigate folders, use history or
+the Where control, search the current folder, change file types, and resize/sort
+columns. Return opens, Escape cancels, and search consumes Escape to clear a
+nonempty query first. Save chooses the filename stem, adds missing extensions,
+validates input, and asks before reporting replacement. Try Project brief.txt.
+The callback output is demo state; it performs no filesystem operation.
+
+Captures and provenance are in `public/assets/native-file-dialog/`. Save's
+separate system title bar is omitted in the paired viewport; Original shows the
+full capture. The baseline is dark/inactive. View modes other than List, folder
+creation, native storage access, and native tag-token editing are not implemented.

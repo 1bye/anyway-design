@@ -662,3 +662,61 @@ The native side of `?view=file-rename-reference` uses actual Tahoe AppKit contro
 renders, not Finder screenshots. Native inactive selection, Finder-specific
 editor styling, slow-click initiation, extension-change confirmation, batch
 rename, and rename undo history are not reproduced by this first pass.
+
+## Open / Save dialogs
+
+Import `MacFileDialog` or the embedded `MacFileDialogPanel` from
+`@anyway-design/macos/file-dialog` and render inside `MacOSEnvironment`:
+
+```tsx
+<MacFileDialog
+  mode="save"
+  open={open}
+  onOpenChange={setOpen}
+  directories={directories}
+  initialDirectoryId="documents"
+  initialName="Untitled.txt"
+  fileTypes={[{ id: "text", label: "Plain Text", extensions: ["txt"] }]}
+  onConfirm={(result) => handleFileResult(result)}
+/>
+```
+
+`directories` is a flat collection of `{ id, name, parentId?, items }`. Items
+use `MacFileListItem`; each navigable folder's item ID must match a directory ID.
+IDs are stable and unique. A directory's items are its direct children; do not
+also populate `items[].children`. The list handles sorting, column resizing,
+keyboard selection, disabled files, and native file-type artwork. Optional
+`sidebarGroups` use `WindowSidebarGroup`, with location IDs pointing to directories.
+`initialSelectedIds` supports a matched Open state; `multiple` enables multiple
+files (Open only). Search filters names within the current folder.
+
+Open reports `{ mode: "open", directoryId, fileIds }`, in visual sort order.
+Folders navigate rather than being returned. Save reports
+`{ mode: "save", directoryId, name, tags, replaceId? }`. Tags are an optional raw
+text value, not native tag tokens. A filename without an extension gets the first
+extension for the selected type; an incompatible explicit extension is rejected.
+Empty names, path separators, colons, and control characters are rejected.
+Existing filenames use case-insensitive, NFC-normalized matching. A collision
+requires a separate Replace confirmation; folders and disabled files cannot be
+replaced. Storage adapters must revalidate collisions when persisting.
+
+The dialog traps focus, restores it on close (`returnFocus` can override), and
+ignores outside clicks. Escape cancels; Escape from a nonempty search clears it
+first. Initial Save focus selects the basename. `defaultExpanded={false}` starts
+Save in its compact form; the disclosure switches to the shared file browser.
+`showTags={false}` omits the Tags field. `style.width` can constrain the dialog;
+the sidebar and toolbar adapt, and the file list scrolls horizontally. Initial
+props seed each mounted session; remount with a new key to reset a session.
+
+`MacFileDialogPanel` provides the same form without the outer modal. It takes
+`onCancel` instead of `open/onOpenChange` and uses `active={false}` for native
+inactive comparisons. Replacement still uses a modal in the environment portal.
+Keep modal dialogs outside zoomed/transformed preview canvases. Reduced motion
+disables the browser popup transition.
+
+These Tahoe-calibrated components operate on supplied data and callbacks. They
+do not invoke the system file picker, parse documents, or read/write local files.
+The first pass supports List view and plain tag text; native filesystem access,
+directory creation, other view modes, and Sequoia calibration are separate work.
+`MacFileList` also accepts `multiple={false}` for single-selection consumers and
+`columnLabels` to label supplied date values (the panel baseline uses Date Added).

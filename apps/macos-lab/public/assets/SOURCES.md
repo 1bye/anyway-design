@@ -77,3 +77,7 @@ Mac, displaying generated demo files only. See
 - `native-folder-list/`: Live Tahoe Finder captures of generated nested folders,
   in expanded and collapsed states. See the directory's `SOURCES.md` for the
   temporary fixture, dimensions, measured indentation, and capture details.
+
+- `native-file-dialog/`: Genuine Tahoe NSOpenPanel and NSSavePanel captures,
+  using generated files. Includes expanded and compact Save. See the directory's
+  `SOURCES.md` for capture geometry, title-bar cropping, and the reference app.

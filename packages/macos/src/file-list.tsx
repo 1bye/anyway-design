@@ -55,6 +55,7 @@ type ColumnWidths = Partial<Record<MacFileListColumn, number>>;
 export interface MacFileListProps extends MacFileRenameProps {
 	active?: boolean;
 	className?: string;
+	columnLabels?: Partial<Record<MacFileListColumn, string>>;
 	columns?: readonly MacFileListColumn[];
 	columnWidths?: ColumnWidths;
 	defaultExpandedIds?: readonly string[];
@@ -63,6 +64,7 @@ export interface MacFileListProps extends MacFileRenameProps {
 	items: readonly MacFileListItem[];
 	label?: string;
 	minRows?: number;
+	multiple?: boolean;
 	onColumnWidthsChange?: (widths: ColumnWidths) => void;
 	onExpandedChange?: (ids: string[]) => void;
 	onOpen?: (id: string) => void;
@@ -331,6 +333,7 @@ export function MacFileList({
 	onExpandedChange,
 	onSortChange,
 	columnWidths,
+	columnLabels,
 	onColumnWidthsChange,
 	columns = DEFAULT_COLUMNS,
 	label = "Files",
@@ -338,6 +341,7 @@ export function MacFileList({
 	resizable = true,
 	showExtensions = true,
 	minRows = 0,
+	multiple = true,
 	className = "",
 	style,
 }: MacFileListProps) {
@@ -467,15 +471,17 @@ export function MacFileList({
 				anchor.current = id;
 			}
 			onSelectionChange(
-				selectFileIds(ids, selectedIds, id, {
-					anchor: anchor.current,
-					extend,
-					toggle,
-				})
+				multiple
+					? selectFileIds(ids, selectedIds, id, {
+							anchor: anchor.current,
+							extend,
+							toggle,
+						})
+					: [id]
 			);
 			setFocusId(id);
 		},
-		[ids, selectedIds, onSelectionChange]
+		[ids, selectedIds, onSelectionChange, multiple]
 	);
 	const click = useCallback(
 		(event: MouseEvent<HTMLTableElement>) => {
@@ -571,6 +577,10 @@ export function MacFileList({
 		},
 		[]
 	);
+	const selectAll = useCallback(
+		(id: string) => onSelectionChange(multiple ? ids : [id]),
+		[ids, multiple, onSelectionChange]
+	);
 	const keyDown = useCallback(
 		(event: KeyboardEvent<HTMLTableElement>) => {
 			const id = enabledListRow(event.target)?.dataset.fileId;
@@ -604,7 +614,7 @@ export function MacFileList({
 			}
 			if (additive && event.key.toLowerCase() === "a") {
 				event.preventDefault();
-				onSelectionChange(ids);
+				selectAll(id);
 				return;
 			}
 			const next = listKeyTarget(event, sorted, ids, id, typeahead.current);
@@ -631,6 +641,7 @@ export function MacFileList({
 			select,
 			rename.key,
 			arrow,
+			selectAll,
 		]
 	);
 	const totalWidth = columns.reduce(
@@ -650,7 +661,7 @@ export function MacFileList({
 		>
 			<table
 				aria-label={label}
-				aria-multiselectable="true"
+				aria-multiselectable={multiple}
 				className="mac-file-list-table"
 				onClick={click}
 				onDoubleClick={open}
@@ -690,7 +701,7 @@ export function MacFileList({
 									onClick={changeSort}
 									type="button"
 								>
-									{FILE_LIST_COLUMNS[column].label}
+									{columnLabels?.[column] ?? FILE_LIST_COLUMNS[column].label}
 									{sort.column === column ? (
 										<WindowSymbol
 											className="mac-file-list-sort-arrow"
@@ -702,7 +713,7 @@ export function MacFileList({
 								{resizable ? (
 									// biome-ignore lint/a11y/useSemanticElements: This is a focusable, interactive column splitter with pointer capture and keyboard resizing.
 									<button
-										aria-label={`Resize ${FILE_LIST_COLUMNS[column].label} column`}
+										aria-label={`Resize ${columnLabels?.[column] ?? FILE_LIST_COLUMNS[column].label} column`}
 										aria-orientation="vertical"
 										aria-valuemax={FILE_LIST_COLUMNS[column].max}
 										aria-valuemin={FILE_LIST_COLUMNS[column].min}

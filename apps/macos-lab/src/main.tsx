@@ -4,6 +4,7 @@ import { App } from "./app";
 import { ControlsReferenceComparison } from "./controls-reference";
 import { DockGlassPlayground } from "./dock-glass-playground";
 import { DockReferenceComparison } from "./dock-reference";
+import { FileDialogReferenceComparison } from "./file-dialog-reference";
 import { FileListReferenceComparison } from "./file-list-reference";
 import { FileRenameReferenceComparison } from "./file-rename-reference";
 import { MenuReferenceComparison } from "./menu-reference";
@@ -36,5 +37,7 @@ if (view === "dock-reference") {
 	page = <QuickLookReferenceComparison />;
 } else if (view === "file-rename-reference") {
 	page = <FileRenameReferenceComparison />;
+} else if (view === "file-dialog-reference") {
+	page = <FileDialogReferenceComparison />;
 }
 createRoot(root).render(<StrictMode>{page}</StrictMode>);

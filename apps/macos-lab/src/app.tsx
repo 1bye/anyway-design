@@ -259,6 +259,9 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 				<a className="copy-button" href="/?view=file-rename-reference">
 					Compare inline rename
 				</a>
+				<a className="copy-button" href="/?view=file-dialog-reference">
+					Compare Open / Save dialogs
+				</a>
 			</>
 		);
 	}

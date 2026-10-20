@@ -2356,3 +2356,481 @@
 		animation: none !important;
 	}
 }
+
+.mac-file-dialog-panel {
+	position: relative;
+	display: flex;
+	width: 880px;
+	max-width: 100%;
+	height: 448px;
+	container-type: inline-size;
+	overflow: hidden;
+	color: var(--mac-text);
+	background: var(--mac-surface);
+	border-radius: 20px;
+	box-shadow: inset 0 0 0 0.5px rgb(0 0 0 / 22%);
+}
+[data-appearance="dark"] .mac-file-dialog-panel {
+	--mac-surface: #242529;
+	--mac-text: #dedee1;
+	--mac-secondary: #999a9e;
+	--mac-line: #414246;
+}
+.mac-file-dialog-panel[data-mode="save"] {
+	height: 416px;
+}
+.mac-file-dialog-panel[data-compact] {
+	width: 370px;
+	height: auto;
+	min-height: 172px;
+}
+.mac-file-dialog-main {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	min-width: 0;
+	container-type: inline-size;
+}
+.mac-file-dialog-sidebar {
+	flex: 0 0 203px;
+	padding: 8px;
+	overflow: auto;
+	background: var(--mac-sidebar);
+}
+.mac-file-dialog-sidebar .mac-sidebar {
+	padding: 8px;
+}
+.mac-file-dialog-sidebar .mac-sidebar-item > span:last-child {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.mac-file-dialog-toolbar {
+	position: relative;
+	flex: 0 0 64px;
+	border-bottom: 1px solid var(--mac-line);
+}
+.mac-file-dialog-panel[data-mode="save"] .mac-file-dialog-toolbar {
+	flex-basis: 54px;
+}
+.mac-file-dialog-navigation {
+	position: absolute;
+	top: 20px;
+	left: 20px;
+	display: flex;
+	gap: 8px;
+	height: 24px;
+}
+.mac-file-dialog-panel[data-mode="save"] .mac-file-dialog-navigation {
+	top: 10px;
+}
+.mac-file-dialog-navigation > button,
+.mac-file-dialog-sort,
+.mac-file-dialog-history,
+.mac-file-dialog-location,
+.macos .mac-file-dialog-expand {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 24px;
+	padding: 0;
+	color: var(--mac-text);
+	background: color-mix(in srgb, var(--mac-text) 8%, var(--mac-surface));
+	border: 0;
+	border-radius: 6px;
+}
+.mac-file-dialog-navigation > button,
+.mac-file-dialog-sort {
+	gap: 16px;
+	width: 67px;
+}
+.macos .mac-file-dialog-navigation > button:disabled {
+	opacity: 1;
+}
+.mac-file-dialog-history {
+	gap: 0;
+	width: 47px;
+}
+.mac-file-dialog-history button {
+	display: grid;
+	place-items: center;
+	width: 23px;
+	height: 14px;
+	padding: 0;
+	color: inherit;
+	background: none;
+	border: 0;
+	border-radius: 0;
+}
+.mac-file-dialog-history button + button {
+	border-left: 1px solid var(--mac-line);
+}
+.macos .mac-file-dialog-history button:disabled {
+	opacity: 0.3;
+}
+.mac-file-dialog-location {
+	position: absolute;
+	top: 20px;
+	left: calc(50% - 115px);
+	justify-content: flex-start;
+	width: 230px;
+	padding: 0 12px;
+	font-size: 13px;
+	font-weight: 600;
+}
+.mac-file-dialog-location .mac-file-icon {
+	flex-shrink: 0;
+	width: 16px;
+	height: 16px;
+	margin-right: 3px;
+}
+.mac-file-dialog-location select {
+	flex: 1;
+	width: 0;
+	height: 100%;
+	padding: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font: inherit;
+	color: inherit;
+	appearance: none;
+	background: none;
+	border: 0;
+}
+.mac-file-dialog-location .mac-window-symbol:last-child {
+	flex-shrink: 0;
+	margin-left: 8px;
+}
+.mac-file-dialog-sort {
+	position: relative;
+}
+.mac-file-dialog-sort select {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	opacity: 0;
+}
+.mac-file-dialog-toolbar > .mac-search-field {
+	position: absolute;
+	top: 19px;
+	right: 20px;
+	width: 196px;
+	height: 26px;
+	min-height: 26px;
+}
+.mac-file-dialog-panel[data-mode="save"]
+	.mac-file-dialog-toolbar
+	> .mac-search-field {
+	top: 9px;
+}
+.mac-file-dialog-panel[data-mode="save"] .mac-file-dialog-location {
+	top: 10px;
+	width: 198px;
+}
+.macos .mac-file-dialog-expand {
+	position: absolute;
+	top: 10px;
+	left: calc(50% + 91px);
+	width: 24px;
+}
+.mac-file-dialog-expand[aria-expanded="true"] .mac-window-symbol {
+	transform: rotate(180deg);
+}
+.mac-file-dialog-browser {
+	position: relative;
+	flex: 1;
+	min-height: 0;
+}
+.mac-file-dialog-browser .mac-file-list {
+	border-radius: 0;
+}
+.mac-file-dialog-panel[data-mode="save"]
+	.mac-file-list-table
+	tr:not([aria-selected="true"]):not([aria-expanded])
+	td[data-column="name"] {
+	color: var(--mac-secondary);
+}
+.mac-file-dialog-empty {
+	position: absolute;
+	top: 44px;
+	left: 0;
+	width: 100%;
+	font-size: 13px;
+	color: var(--mac-secondary);
+	text-align: center;
+	pointer-events: none;
+}
+.mac-file-dialog-fields {
+	flex-shrink: 0;
+	width: min(300px, calc(100% - 32px));
+	height: 81px;
+	padding-top: 9px;
+	margin-left: max(16px, calc(50% - 184px));
+}
+.mac-file-dialog-fields label {
+	display: grid;
+	grid-template-columns: 60px minmax(0, 1fr);
+	gap: 8px;
+	align-items: center;
+	margin-bottom: 10px;
+	font-size: 13px;
+	color: var(--mac-secondary);
+	text-align: right;
+}
+.mac-file-dialog-fields .mac-text-field {
+	width: 100%;
+	height: 26px;
+	min-height: 26px;
+	padding: 2px 6px;
+	font-size: 13px;
+	color: var(--mac-text);
+	background: transparent;
+	border-radius: 7px;
+}
+.mac-file-dialog-panel .mac-text-field:not(:focus-visible),
+.mac-file-dialog-panel .mac-search-field input:not(:focus-visible) {
+	border-color: color-mix(in srgb, var(--mac-text) 6%, var(--mac-surface));
+}
+.mac-file-dialog-panel .mac-search-field input {
+	border-radius: 7px;
+}
+.mac-file-dialog-panel .mac-file-list-filename {
+	font-weight: 500;
+}
+[data-preset="tahoe"][data-appearance="dark"]
+	.mac-file-dialog-panel
+	.mac-button:not([data-variant="primary"]) {
+	background: #343538;
+}
+.mac-file-dialog-footer {
+	display: flex;
+	flex: 0 0 65px;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+	padding: 20px;
+	border-top: 1px solid var(--mac-line);
+}
+.mac-file-dialog-actions {
+	display: flex;
+	gap: 8px;
+	margin-left: auto;
+}
+.mac-file-dialog-actions .mac-button {
+	min-width: 74px;
+	height: 24px;
+	min-height: 24px;
+	padding: 0 13px;
+	font-size: 13px;
+	font-weight: 500;
+	border-radius: 6px;
+}
+[data-preset="tahoe"]
+	.mac-file-dialog-panel[data-active="false"]
+	.mac-button[data-variant="primary"]:not(:disabled) {
+	color: var(--mac-text);
+	background: color-mix(in srgb, var(--mac-text) 8%, var(--mac-surface));
+	box-shadow: none;
+}
+.mac-file-dialog-footer > p {
+	flex-basis: 100%;
+	margin: 0;
+	font-size: 12px;
+	color: var(--mac-secondary);
+}
+.mac-file-dialog-footer:has(> p) {
+	flex-basis: auto;
+}
+.mac-file-dialog-type {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	font-size: 12px;
+	color: var(--mac-secondary);
+}
+.mac-file-dialog-type select {
+	max-width: 180px;
+	padding: 3px 8px;
+	font: inherit;
+	color: var(--mac-text);
+	background: var(--mac-control);
+	border: 1px solid var(--mac-line);
+	border-radius: 5px;
+}
+.mac-file-dialog-panel[data-compact] .mac-file-dialog-fields {
+	width: calc(100% - 80px);
+	height: 83px;
+	margin-left: 40px;
+}
+.mac-file-dialog-panel[data-compact] .mac-file-dialog-fields label {
+	grid-template-columns: 52px minmax(0, 1fr);
+}
+.mac-file-dialog-panel[data-compact] .mac-file-dialog-toolbar {
+	flex-basis: 34px;
+	border: 0;
+}
+.mac-file-dialog-panel[data-compact] .mac-file-dialog-location {
+	top: 0;
+	left: 100px;
+	width: calc(100% - 172px);
+}
+.mac-file-dialog-panel[data-compact] .mac-file-dialog-expand {
+	top: 0;
+	right: 40px;
+	left: auto;
+}
+.mac-file-dialog-where-label {
+	position: absolute;
+	top: 4px;
+	left: 40px;
+	width: 52px;
+	font-size: 13px;
+	color: var(--mac-secondary);
+	text-align: right;
+}
+.mac-file-dialog-panel[data-compact] .mac-file-dialog-footer {
+	flex-basis: 55px;
+	padding: 11px 20px 20px;
+	border: 0;
+}
+.mac-file-dialog-popup {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	z-index: 60;
+	width: min(880px, calc(100vw - 32px));
+	max-height: calc(100dvh - 32px);
+	overflow: auto;
+	outline: none;
+	border-radius: 20px;
+	box-shadow:
+		0 24px 70px rgb(0 0 0 / 40%),
+		0 0 0 0.5px rgb(0 0 0 / 40%);
+	transform: translate(-50%, -50%);
+	transition:
+		opacity 140ms ease,
+		scale 180ms ease;
+}
+.mac-file-dialog-popup:has([data-compact]) {
+	width: min(370px, calc(100vw - 32px));
+}
+.mac-file-dialog-popup .mac-file-dialog-panel {
+	max-height: calc(100dvh - 32px);
+}
+.mac-file-dialog-popup[data-starting-style],
+.mac-file-dialog-popup[data-ending-style] {
+	opacity: 0;
+	scale: 0.97;
+}
+.mac-file-dialog-backdrop {
+	position: fixed;
+	inset: 0;
+	z-index: 59;
+	background: rgb(0 0 0 / 16%);
+}
+.mac-file-dialog-replace {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	z-index: 61;
+	width: min(320px, calc(100vw - 32px));
+	padding: 24px;
+	text-align: center;
+	outline: none;
+	background: var(--mac-surface);
+	border: 1px solid var(--mac-line);
+	border-radius: 20px;
+	box-shadow: 0 20px 60px rgb(0 0 0 / 35%);
+	transform: translate(-50%, -50%);
+}
+.mac-file-dialog-replace > .mac-file-icon {
+	width: 48px;
+	height: 48px;
+	margin-bottom: 12px;
+}
+.mac-file-dialog-replace h2 {
+	margin: 0 0 8px;
+	font-size: 14px;
+}
+.mac-file-dialog-replace p {
+	font-size: 12px;
+	color: var(--mac-secondary);
+}
+.mac-file-dialog-replace > div {
+	display: flex;
+	gap: 8px;
+	justify-content: flex-end;
+	margin-top: 20px;
+}
+.mac-file-dialog-sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	border: 0;
+	clip-path: inset(50%);
+}
+[data-reduce-motion="true"] .mac-file-dialog-popup {
+	transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	.mac-file-dialog-popup {
+		transition: none;
+	}
+}
+@container (max-width: 740px) {
+	.mac-file-dialog-toolbar > .mac-search-field {
+		width: 130px;
+	}
+	.mac-file-dialog-navigation {
+		gap: 4px;
+	}
+	.mac-file-dialog-navigation > button,
+	.mac-file-dialog-sort {
+		gap: 8px;
+		width: 44px;
+	}
+}
+@container (max-width: 600px) {
+	.mac-file-dialog-toolbar > .mac-search-field {
+		display: none;
+	}
+	.mac-file-dialog-location {
+		right: 20px;
+		left: auto;
+		width: 200px;
+	}
+	.mac-file-dialog-panel[data-mode="save"]:not([data-compact])
+		.mac-file-dialog-location {
+		right: 52px;
+		left: auto;
+		width: 168px;
+	}
+	.mac-file-dialog-panel:not([data-compact]) .mac-file-dialog-expand {
+		right: 20px;
+		left: auto;
+	}
+	.mac-file-dialog-sidebar {
+		flex-basis: 150px;
+	}
+}
+@container (max-width: 460px) {
+	.mac-file-dialog-navigation > button,
+	.mac-file-dialog-sort {
+		display: none;
+	}
+	.mac-file-dialog-panel:not([data-compact]) .mac-file-dialog-location {
+		width: min(200px, calc(100% - 94px));
+	}
+	.mac-file-dialog-panel[data-mode="save"]:not([data-compact])
+		.mac-file-dialog-location {
+		width: min(168px, calc(100% - 126px));
+	}
+}
+.mac-file-dialog-panel .mac-file-dialog-footer:has(.mac-file-dialog-type) {
+	flex-basis: auto;
+	min-height: 65px;
+}

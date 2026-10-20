@@ -1,0 +1,75 @@
+.panel-study .dock-study-jump {
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+.panel-study .dock-study-jump [aria-pressed="true"] {
+	background: #eaf1f5;
+	border-color: #b4c9d5;
+}
+.panel-study-viewport {
+	height: calc(var(--panel-study-height) * var(--panel-study-zoom));
+	max-height: 650px;
+	overflow: auto;
+	background: #edf0f2;
+}
+.panel-study-scene {
+	position: relative;
+	width: var(--panel-study-width);
+	height: var(--panel-study-height);
+	overflow: hidden;
+	zoom: var(--panel-study-zoom);
+}
+.panel-study-live,
+.panel-study-native {
+	position: absolute;
+	top: var(--panel-study-top);
+	left: var(--panel-study-left);
+	width: var(--panel-reference-width);
+	height: var(--panel-reference-height);
+}
+.panel-study-native {
+	overflow: hidden;
+	border-radius: 20px;
+}
+.panel-study-native img {
+	position: absolute;
+	top: var(--panel-reference-image-top);
+	left: 0;
+	width: 100%;
+	max-width: none;
+	height: auto;
+}
+.panel-study-reopen {
+	padding: 12px;
+}
+.panel-study-live .mac-file-dialog-replace {
+	position: absolute;
+}
+.panel-study-live .mac-file-dialog-backdrop {
+	position: absolute;
+}
+.panel-workbench {
+	margin-top: 36px;
+}
+.panel-workbench h2 {
+	font-size: 24px;
+}
+.panel-workbench > p {
+	font-size: 13px;
+	color: #7a8088;
+}
+.panel-workbench-launch {
+	display: flex;
+	gap: 12px;
+}
+.panel-workbench-output {
+	display: block;
+	min-height: 80px;
+	padding: 16px;
+	margin-top: 20px;
+	font: 12px / 1.6 monospace;
+	white-space: pre-wrap;
+	background: #f0f1f3;
+	border-radius: 8px;
+}
