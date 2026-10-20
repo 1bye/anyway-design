@@ -1,0 +1,37 @@
+{
+  "icons": [
+    {
+      "id": "folder",
+      "source": "NSWorkspace.icon(for:)",
+      "type": "public.folder"
+    },
+    {
+      "id": "document",
+      "source": "NSWorkspace.icon(for:)",
+      "type": "public.data"
+    },
+    {
+      "id": "pdf",
+      "source": "NSWorkspace.icon(for:)",
+      "type": "com.adobe.pdf"
+    },
+    {
+      "id": "image",
+      "source": "NSWorkspace.icon(for:)",
+      "type": "public.image"
+    },
+    {
+      "id": "archive",
+      "source": "NSWorkspace.icon(for:)",
+      "type": "public.zip-archive"
+    },
+    {
+      "id": "text",
+      "source": "NSWorkspace.icon(for:)",
+      "type": "public.plain-text"
+    }
+  ],
+  "logicalSize": 64,
+  "pixels": 256,
+  "system": "Version 26.6.2 (Build 25G83)"
+}

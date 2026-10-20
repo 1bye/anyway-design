@@ -1,24 +1,6 @@
 import { type MacTab, MacTabs } from "@anyway-design/macos/tabs";
 import { useCallback, useRef, useState } from "react";
-import { WINDOW_REFERENCE_IMAGE } from "./window-reference-assets";
-
-function FileSample() {
-	return (
-		<div
-			aria-label="Static file content from Apple’s reference"
-			className="window-study-file-sample"
-			role="img"
-		>
-			<img
-				alt=""
-				draggable={false}
-				height={694}
-				src={WINDOW_REFERENCE_IMAGE}
-				width={1144}
-			/>
-		</div>
-	);
-}
+import { WindowReferenceFiles } from "./window-reference-files";
 
 function tabContent(label: string) {
 	return (
@@ -33,7 +15,7 @@ const REFERENCE_TABS: MacTab[] = [
 	{ content: tabContent("Home_"), id: "home", label: "Home_" },
 	{ content: tabContent("Home_"), id: "home-2", label: "Home_" },
 	{ content: tabContent("Home"), id: "home-3", label: "Home" },
-	{ content: <FileSample />, id: "documents", label: "Documents" },
+	{ content: null, id: "documents", label: "Documents" },
 ];
 const EXTRA_TABS: MacTab[] = [
 	"Projects",
@@ -57,13 +39,22 @@ EXTRA_TABS.push({
 export function WindowReferenceTabs({
 	crowded,
 	compact,
+	onFileOpen,
 }: {
 	crowded: boolean;
 	compact: boolean;
+	onFileOpen: (id: string) => void;
 }) {
-	const [tabs, setTabs] = useState(() =>
-		crowded ? [...REFERENCE_TABS, ...EXTRA_TABS] : REFERENCE_TABS
-	);
+	const [tabs, setTabs] = useState(() => {
+		const initial = crowded
+			? [...REFERENCE_TABS, ...EXTRA_TABS]
+			: REFERENCE_TABS;
+		return initial.map((tab) =>
+			tab.id === "documents"
+				? { ...tab, content: <WindowReferenceFiles onOpen={onFileOpen} /> }
+				: tab
+		);
+	});
 	const [value, setValue] = useState("documents");
 	const sequence = useRef(0);
 	const add = useCallback(() => {

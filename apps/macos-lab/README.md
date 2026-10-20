@@ -96,7 +96,7 @@ Finder comparison. The source is [Apple's Tahoe 26 Finder guide](https://support
 The original transparent 1144 × 694 PNG is displayed at 572 × 347 before
 shared zoom. This 2:1 normalization is a comparison convention, not a
 verified native display scale. **Fit both**, **1×–2×**, **Toolbar**, and
-**Sidebar** provide matching views; scrolling either panel follows in the other.
+**Sidebar**, and **Files** provide matching views; scrolling either panel follows in the other.
 
 The shared React window, floating sidebar, traffic lights, and toolbar groups
 are live. Sidebar selection, toolbar activation callbacks, active/inactive
@@ -106,8 +106,40 @@ state, sidebar visibility, and reduced transparency can be exercised.
 Delete closes the focused tab, and Alt+Shift+Left/Right reorders it.
 **More tabs** adds a long list with a disabled tab; **Narrow tab area (260px)**
 exercises horizontal scrolling and the All tabs menu. These stress controls
-affect the live side only. Only the Documents file pane remains a static
-crop from Apple's image; other tabs use simple sample content.
+affect the live side only. The Documents pane now uses shared `MacFileGrid` and
+`MacFileItem` components. Thumbnail artwork is sampled individually from Apple's
+image; filenames, wrapping, colored tags, row spacing, and selection are live.
+The reference uses 48px artwork canvases, 87.5px column/row pitches, and 9.5px
+labels at the study's normalization. Its fixed five columns preserve alignment;
+the reusable grid fills and wraps within its container. Other tabs use sample content.
+
+Use **Files** and shared zoom to compare the selected document's two-line label
+and the surrounding thumbnails. Click, Command/Ctrl-click, and Shift-click select;
+arrow keys follow the grid, Shift extends, Command/Ctrl+A selects all, and Escape
+clears. Typeahead finds filenames; Enter or double-click reports an open callback.
+**Reset comparison** restores the original selection.
+The selected filename's two lines now form one continuous rounded outline,
+including the inward corners at the join. It follows rendered line widths at
+each size and zoom; keyboard focus stays around the caption.
+
+The workbench below the comparison uses six generic file/folder icons exported
+from this Mac via `NSWorkspace.icon(for: UTType)`. Try icon size, container width,
+extension visibility, dark appearance, and inactive selection. One disabled item,
+multiple tags, and a long filename exercise edge cases. These native icons also
+replace the main lab's hand-drawn folders. Provenance and regeneration live in
+`packages/macos/src/assets/native-file-icons/SOURCES.md`; no user files are read.
+The browser receives supplied thumbnails and does not generate Quick Look previews.
+Renaming, drag selection, and file dragging remain future work. Native light
+selection is visually calibrated here; dark/inactive file states are adaptations.
+
+**One image, three presentations** below the icon workbench lets you choose a
+local image and compare the original aspect ratio with contained and cropped
+document previews. `kind: "pdf"` plus `thumbnail` adds the paper mask, folded
+corner, edge, and shadow automatically. `thumbnailStyle` overrides the shape;
+`thumbnailFit: "cover"` fills the page from the top, while the default `"contain"`
+preserves the whole image. The image stays in browser memory as an object URL;
+resetting, replacing it, or leaving the view releases it. These are styled image
+previews, not PDF parsing or page-content generation.
 
 The study calibrates a 121px sidebar column, 41px title bar, 7px sidebar inset,
 22px outer radius, 22px tab track with a 6px content inset below it, 25px sidebar rows, and 11px traffic lights at its normalized

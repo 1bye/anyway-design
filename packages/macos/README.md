@@ -35,6 +35,9 @@ and the portal container so menus retain their styles in embedded previews.
 | `window-symbol` | `WindowSymbol`: `name`, `size`, span props; `WindowSymbolName` |
 | `tabs` | `MacTabs`: `tabs`, `value`, `onValueChange`, `variant`, `label`, `onAdd`, `onClose`, `onReorder` |
 | `controls` | `MacButton`, `MacTextField`, `MacSearchField`, `MacSwitch` |
+| `files` | `MacFileItem`, `MacFileGrid`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `active`, `showExtensions` |
+| `file-icons` | `MacFileIcon`: `name` (`folder`, `document`, `pdf`, `image`, `archive`, `text`), native image props |
+| `file-thumbnail` | `MacFileThumbnail`: `src`, `presentation` (`image`, `document`), `fit` (`contain`, `cover`), `alt` |
 
 Menus and tabs use Base UI for focus and keyboard behavior. Dock pointer
 updates use one animation frame and DOM transforms, without React renders
@@ -334,3 +337,77 @@ input attributes apply to the input. Composition keystrokes are left to the IME.
 The lab's controls study records the native comparison's limits: only inactive
 AppKit geometry and neutral states are calibrated. Active accent, hover, and
 focus-ring appearance still require a corresponding native capture.
+
+## File items
+
+```tsx
+import { MacFileGrid } from "@anyway-design/macos/files";
+
+<MacFileGrid
+  label="Project files"
+  items={[
+    { id: "projects", name: "Projects", kind: "folder" },
+    { id: "brief", name: "Project brief.pdf", kind: "pdf",
+      thumbnail: "/page-preview.jpg",
+      tags: [{ label: "Approved", color: "#30b956" }] },
+    { id: "photo", name: "Photo.jpg", thumbnail: "/photo-thumbnail.jpg" },
+  ]}
+  selectedIds={selection}
+  onSelectionChange={setSelection}
+  onOpen={openFile}
+/>
+```
+
+`MacFileItem` is a native button with `file`, `selected`, `showExtensions`, and
+native button props. `MacFileGrid` composes those items with controlled selection
+and one Tab stop. Item IDs must be unique. `kind` defaults to `document`; `icon`
+accepts custom React artwork, and `thumbnail` takes precedence when supplied.
+Tags have accessible names, independent of their colors. Labels wrap to two
+lines; the full original filename stays in the accessible name and tooltip.
+`showExtensions={false}` hides the last suffix while preserving dotfiles.
+Selected lines share one SVG outline, including rounded inward corners. It
+measures only selected labels and updates on wrapping, text, and font changes.
+The keyboard focus ring stays around the caption rather than the entire tile.
+
+Supply any ordinary image as `thumbnail`. Explicit `kind="pdf"`, `"document"`,
+or `"text"` gives it a white paper silhouette with a folded corner, clipping,
+edge, and shadow. Other kinds (or an omitted kind) retain the image's aspect ratio.
+`thumbnailStyle="image" | "document"` overrides that choice. For document previews,
+`thumbnailFit="contain"` preserves the whole image within the page; `"cover"`
+fills the inset page area and crops from the top. Styling scales with icon size.
+Pre-rendered thumbnails can use `thumbnailStyle="image"` to retain their artwork.
+
+`MacFileThumbnail` is also available directly from `file-thumbnail`. Its `src`,
+`presentation`, and `fit` props use the same renderer; place it in a sized
+`.mac-file-artwork` container and supply `alt` when it conveys independent content.
+This decorates a supplied image; it does not render PDF bytes or generate page
+content. No canvas, screenshot, image pre-processing, or AppKit call is needed.
+
+Click selects, Command/Ctrl-click toggles, and Shift-click selects a contiguous
+range in item order. Arrow keys select and follow the rendered grid on resize;
+Shift extends the range. Home/End, Command/Ctrl+A, Escape, typeahead, and Space
+selection are supported. Enter and double-click call `onOpen(id)`. Disabled items
+are skipped. This is preview interaction, not Finder's complete shortcut set.
+Actions do not access the filesystem. Renaming, drag selection, and file dragging
+are not implemented. Empty background clicks clear selection.
+
+`active={false}` or an inactive ancestor `MacWindow` mutes selection. The
+environment supplies accent, appearance, and typography. Hover keeps tiles
+neutral and shows the browser's filename tooltip; keyboard navigation has a
+focus outline. Dark/inactive visuals are adaptations of the published
+light reference. Both presets currently share the file-item geometry and Tahoe
+artwork; a separate Sequoia file baseline has not been calibrated.
+
+Use `style` or `className` to configure `--mac-file-icon-size` (64px),
+`--mac-file-column-width` (104px minimum), `--mac-file-row-height` (112px),
+`--mac-file-column-gap` (8px), `--mac-file-row-gap` (12px),
+`--mac-file-grid-padding` (20px), `--mac-file-label-gap` (5px),
+`--mac-file-font-size` (13px), `--mac-file-line-height` (16px), and
+`--mac-file-tag-size` (9px). Grid columns grow to fill the container. Adjust row
+height with icon size to leave room for two label lines.
+
+The six native file-type icons are 256px transparent AppKit exports. Regenerate
+with `xcrun swift packages/macos/scripts/export-file-icons.swift`. The exporter
+checks visible/transparent content and PNG decoding, without opening user files.
+See `src/assets/native-file-icons/SOURCES.md` for provenance. Custom thumbnails
+must be supplied by the caller; the browser does not generate Quick Look previews.

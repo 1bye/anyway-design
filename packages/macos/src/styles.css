@@ -71,6 +71,169 @@
 	mask-size: contain;
 }
 
+.mac-file-grid {
+	display: grid;
+	grid-template-columns: repeat(
+			auto-fill,
+			minmax(min(100%, var(--mac-file-column-width, 104px)), 1fr)
+		);
+	grid-auto-rows: var(--mac-file-row-height, 112px);
+	gap: var(--mac-file-row-gap, 12px) var(--mac-file-column-gap, 8px);
+	align-content: start;
+	min-width: 0;
+	min-height: 100%;
+	padding: var(--mac-file-grid-padding, 20px);
+	margin: 0;
+	background: var(--mac-surface);
+	border: 0;
+}
+
+.macos .mac-file-item {
+	display: flex;
+	flex-direction: column;
+	gap: var(--mac-file-label-gap, 5px);
+	align-items: center;
+	justify-content: start;
+	min-width: 0;
+	padding: 0 3px;
+	font-size: var(--mac-file-font-size, 13px);
+	line-height: var(--mac-file-line-height, 16px);
+	text-align: center;
+	cursor: default;
+	user-select: none;
+	background: transparent;
+	border: 0;
+	border-radius: 5px;
+}
+
+.mac-file-artwork {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: var(--mac-file-icon-size, 64px);
+	height: var(--mac-file-icon-size, 64px);
+	border-radius: 5px;
+}
+
+.mac-file-icon {
+	display: block;
+	width: var(--mac-file-icon-size, 64px);
+	height: var(--mac-file-icon-size, 64px);
+	object-fit: contain;
+}
+
+.mac-file-artwork > .mac-file-icon,
+.mac-file-artwork > svg:not(.mac-file-document-thumbnail) {
+	display: block;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	object-fit: contain;
+}
+
+.mac-file-caption {
+	position: relative;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	max-width: 100%;
+	padding: 1px 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	-webkit-line-clamp: 2;
+	overflow-wrap: anywhere;
+	isolation: isolate;
+}
+
+.mac-file-name {
+	padding: 1px 3px;
+	box-decoration-break: clone;
+	-webkit-box-decoration-break: clone;
+	border-radius: 4px;
+}
+
+.mac-file-selection {
+	position: absolute;
+	inset: 0;
+	z-index: -1;
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	fill: var(--mac-accent);
+}
+
+.mac-file-tags {
+	display: inline-flex;
+	gap: 2px;
+	margin-right: 4px;
+	vertical-align: 0;
+}
+
+.mac-file-tag {
+	width: var(--mac-file-tag-size, 9px);
+	height: var(--mac-file-tag-size, 9px);
+	border-radius: 50%;
+}
+
+.mac-file-item[aria-pressed="true"] .mac-file-name {
+	color: white;
+}
+
+.mac-file-item[aria-pressed="true"] .mac-file-tag {
+	box-shadow: 0 0 0 1px rgb(255 255 255 / 90%);
+}
+
+.mac-file-item[aria-pressed="true"] .mac-file-artwork {
+	background: var(--mac-selected);
+}
+
+:is(.mac-window, .mac-file-grid)[data-active="false"]
+	.mac-file-item[aria-pressed="true"]
+	.mac-file-name {
+	color: var(--mac-text);
+}
+
+:is(.mac-window, .mac-file-grid)[data-active="false"] .mac-file-selection {
+	fill: var(--mac-selected);
+}
+
+.mac-file-item:disabled {
+	opacity: 0.4;
+}
+
+.macos .mac-file-item:focus-visible {
+	outline: none;
+}
+
+.mac-file-item:focus-visible .mac-file-caption {
+	outline: 2px solid color-mix(in srgb, var(--mac-accent) 55%, transparent);
+	outline-offset: 2px;
+	border-radius: 4px;
+}
+
+.mac-file-document-thumbnail {
+	display: block;
+	width: 67.5%;
+	height: 90%;
+	overflow: visible;
+	pointer-events: none;
+	filter: drop-shadow(0 1px 1.5px rgb(0 0 0 / 24%));
+}
+
+.mac-file-paper {
+	fill: #fff;
+}
+
+.mac-file-paper-fold {
+	fill: #eeeeef;
+}
+
+.mac-file-paper-edge {
+	fill: none;
+	stroke: rgb(0 0 0 / 12%);
+	stroke-width: 0.5px;
+}
+
 .mac-menubar {
 	position: absolute;
 	inset: 0 0 auto;
@@ -297,6 +460,17 @@
 	z-index: 40;
 	overflow: clip;
 	pointer-events: none;
+}
+
+.mac-file-thumbnail {
+	display: block;
+	width: auto;
+	max-width: 100%;
+	height: auto;
+	max-height: 100%;
+	pointer-events: none;
+	border-radius: 3px;
+	box-shadow: 0 1px 3px var(--mac-line);
 }
 
 .mac-dock-reveal {

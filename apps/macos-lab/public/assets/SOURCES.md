@@ -37,11 +37,14 @@ is included alongside it.
   [Original PNG](https://help.apple.com/assets/69DD569682238CF8EC0621E2/69DD569982238CF8EC0621E9/en_US/4c09ae5b39875fee3cde6fbc1fbf89d3.png).
 
 The study uses a common 2:1 normalization, then applies shared zoom. The right
-panel displays the original. On the left, only the document tabs and file pane
-are clipped from the image (source region beginning at x=242, y=82); the window
-border, toolbar, traffic lights, and sidebar are rendered by React and CSS.
-No photographed window chrome appears behind the live chrome. The source and
-the static content crop are disclosed in the study. This is a local reference
+panel displays the original. The left now uses live React window chrome, tabs,
+file labels, tag dots, selection, and file-grid placement. Only the individual
+thumbnail artwork is clipped from the image using SVG viewports: 96 × 96 source
+squares centered at x=333, 508, 683, 858, and 1033, starting at y=162, 337, and
+512. Those crops contain Apple's baked thumbnail shadows/background; they are
+not transparent reusable file icons. No photographed labels or window chrome
+appear behind the live items. The sampled artwork is disclosed in the study.
+This is a local reference
 fixture, not a component-package asset; Apple's ownership remains unchanged.
 
 ## Tahoe menu reference

@@ -10,9 +10,10 @@ export const WINDOW_REFERENCE_IMAGE =
 // A consistent 2:1 normalization for this published image, not a measured OS scale.
 export const WINDOW_REFERENCE_SIZE = { height: 347, width: 572 } as const;
 export const WINDOW_REFERENCE_CROPS = {
-	sidebar: { height: 347, width: 128 },
-	toolbar: { height: 72, width: 572 },
-	window: { height: 347, width: 572 },
+	files: { height: 278, width: 451, x: 121, y: 69 },
+	sidebar: { height: 347, width: 128, x: 0, y: 0 },
+	toolbar: { height: 72, width: 572, x: 0, y: 0 },
+	window: { height: 347, width: 572, x: 0, y: 0 },
 } as const;
 
 export const WINDOW_REFERENCE_GROUPS: WindowSidebarGroup[] = [

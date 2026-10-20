@@ -11,6 +11,8 @@ import {
 	MacOSEnvironment,
 	type MacOSPreset,
 } from "@anyway-design/macos/environment";
+import { MacFileIcon } from "@anyway-design/macos/file-icons";
+import { MacFileGrid } from "@anyway-design/macos/files";
 import {
 	AppleMark,
 	type MacMenu,
@@ -35,7 +37,14 @@ import {
 	SlidersHorizontal,
 	Wifi,
 } from "lucide-react";
-import { type CSSProperties, useEffect, useId, useRef, useState } from "react";
+import {
+	type CSSProperties,
+	useCallback,
+	useEffect,
+	useId,
+	useRef,
+	useState,
+} from "react";
 import { DOCK_ITEMS } from "./dock-items";
 import { FinderActions } from "./finder-actions";
 export type ComponentName =
@@ -500,37 +509,51 @@ function FinderFiles({
 	setSelectedFolders: (value: string[]) => void;
 	setSelected: (value: string) => void;
 }) {
+	const visibleFolders = folders.filter(
+		(_, index) => tab !== "recent" || index < 3
+	);
+	const openFolder = useCallback(
+		(folder: string) => {
+			setSelected(folder);
+			setSelectedFolders([]);
+		},
+		[setSelected, setSelectedFolders]
+	);
+	if (!listView) {
+		return (
+			<MacFileGrid
+				className="finder-icon-grid"
+				items={visibleFolders.map((name) => ({
+					id: name,
+					kind: "folder",
+					name,
+				}))}
+				onOpen={openFolder}
+				onSelectionChange={setSelectedFolders}
+				selectedIds={selectedFolders}
+			/>
+		);
+	}
+
 	return (
 		<div className="finder-files" data-list={listView}>
-			{folders
-				.filter((_, index) => tab !== "recent" || index < 3)
-				.map((folder) => (
-					<button
-						aria-pressed={selectedFolders.includes(folder)}
-						className="finder-file"
-						key={folder}
-						onClick={() => setSelectedFolders([folder])}
-						onDoubleClick={() => {
-							setSelected(folder);
-							setSelectedFolders([]);
-						}}
-						type="button"
-					>
-						<svg aria-hidden className="folder-art" viewBox="0 0 80 64">
-							<path
-								d="M3 12a5 5 0 0 1 5-5h22l7 7h35a5 5 0 0 1 5 5v36a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z"
-								fill="#30a9dd"
-							/>
-							<path
-								d="M3 22a5 5 0 0 1 5-5h64a5 5 0 0 1 5 5v33a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5z"
-								fill="#6bc9f1"
-							/>
-							<path d="M7 18h66" stroke="#b4e8ff" strokeWidth="1.5" />
-						</svg>
-						<span>{folder}</span>
-						{listView ? <small>Folder</small> : null}
-					</button>
-				))}
+			{visibleFolders.map((folder) => (
+				<button
+					aria-pressed={selectedFolders.includes(folder)}
+					className="finder-file"
+					key={folder}
+					onClick={() => setSelectedFolders([folder])}
+					onDoubleClick={() => {
+						setSelected(folder);
+						setSelectedFolders([]);
+					}}
+					type="button"
+				>
+					<MacFileIcon className="folder-art" name="folder" />
+					<span>{folder}</span>
+					{listView ? <small>Folder</small> : null}
+				</button>
+			))}
 		</div>
 	);
 }

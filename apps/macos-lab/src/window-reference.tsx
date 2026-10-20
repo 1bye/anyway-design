@@ -28,6 +28,10 @@ import {
 import "./dock-reference.css";
 import "./window-reference.css";
 import { FinderActions } from "./finder-actions";
+import {
+	FileIconWorkbench,
+	FileThumbnailWorkbench,
+} from "./window-reference-files";
 import { WindowReferenceTabs } from "./window-reference-tabs";
 
 type WindowDetail = keyof typeof WINDOW_REFERENCE_CROPS;
@@ -149,7 +153,12 @@ export function WindowReferenceComparison() {
 	const changeDetail = useCallback(
 		(event: MouseEvent<HTMLButtonElement>) => {
 			const { detail: next } = event.currentTarget.dataset;
-			if (next === "window" || next === "toolbar" || next === "sidebar") {
+			if (
+				next === "window" ||
+				next === "toolbar" ||
+				next === "sidebar" ||
+				next === "files"
+			) {
 				setDetail(next);
 				resetScroll();
 			}
@@ -196,6 +205,11 @@ export function WindowReferenceComparison() {
 	const menuAction = useCallback(
 		(id: string) =>
 			setNotice(`${id} activated. File actions are preview callbacks.`),
+		[]
+	);
+	const fileOpen = useCallback(
+		(id: string) =>
+			setNotice(`Open callback: ${id}. No system files are opened.`),
 		[]
 	);
 	const close = useCallback(
@@ -258,6 +272,8 @@ export function WindowReferenceComparison() {
 		/>
 	);
 	const sceneStyle = {
+		"--window-study-crop-x": `${crop.x}px`,
+		"--window-study-crop-y": `${crop.y}px`,
 		"--window-study-height": `${sceneHeight}px`,
 		"--window-study-width": `${sceneWidth}px`,
 		"--window-study-zoom": scale,
@@ -275,8 +291,8 @@ export function WindowReferenceComparison() {
 				<p className="dock-study-eyebrow">TAHOE · WINDOW STUDY</p>
 				<h1>A closer look at the window.</h1>
 				<p>
-					Compare the floating sidebar, toolbar, and live document tabs against
-					Apple’s Finder.
+					Compare the floating sidebar, toolbar, tabs, and live file items
+					against Apple’s Finder.
 				</p>
 			</div>
 			<div className="dock-study-toolbar">
@@ -304,6 +320,14 @@ export function WindowReferenceComparison() {
 						type="button"
 					>
 						Sidebar
+					</button>
+					<button
+						aria-pressed={detail === "files"}
+						data-detail="files"
+						onClick={changeDetail}
+						type="button"
+					>
+						Files
 					</button>
 				</fieldset>
 				<label>
@@ -398,14 +422,13 @@ export function WindowReferenceComparison() {
 										compact={compactTabs}
 										crowded={crowdedTabs}
 										key={`${tabReset}-${crowdedTabs}`}
+										onFileOpen={fileOpen}
 									/>
 								</MacWindow>
 							</MacOSEnvironment>
 						</div>
 					</section>
-					<footer>
-						Shared MacWindow + MacTabs · live toolbar, sidebar, and tabs
-					</footer>
+					<footer>Shared MacWindow + MacTabs + MacFileGrid · live React</footer>
 				</section>
 				<section className="dock-study-panel">
 					<header>
@@ -448,10 +471,13 @@ export function WindowReferenceComparison() {
 					<footer>Apple’s macOS Tahoe 26 user guide · Documents</footer>
 				</section>
 			</div>
+			<FileIconWorkbench />
+			<FileThumbnailWorkbench />
 			<div className="dock-study-notes">
 				<p>
 					Shared zoom and synchronized scrolling keep both views aligned. Use
-					Toolbar or Sidebar for a closer inspection.
+					Toolbar, Sidebar, or Files for a closer inspection. File selection is
+					live; Reset comparison restores Apple’s selected document.
 				</p>
 				<p>
 					Reference:{" "}
@@ -466,10 +492,11 @@ export function WindowReferenceComparison() {
 					before zoom.
 				</p>
 				<p>
-					Window chrome, toolbar buttons, sidebar rows, and tabs are live React.
-					Only the Documents file pane is a static crop of Apple’s image. Icons
-					are native exports from macOS Tahoe 26.6.2. Their size and weight are
-					calibrated here; glass remains an approximation.
+					Window chrome, toolbar buttons, sidebar rows, tabs, file labels, tags,
+					and selection are live React. Only the comparison’s thumbnail artwork
+					is clipped from Apple’s image. The examples below use native folder
+					and file-type icons from this Mac. Dark and inactive file states are
+					adaptations; glass remains an approximation.
 				</p>
 			</div>
 			<p aria-live="polite" className="dock-study-selection">
