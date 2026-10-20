@@ -211,10 +211,11 @@ function exampleCode(component: ComponentName, settings: SceneSettings) {
 			'<MacTabs\n        variant="segmented"\n        value={tab}\n        onValueChange={setTab}\n        tabs={[\n          { id: "all", label: "All files", content: <p>All files</p> },\n          { id: "recent", label: "Recent", content: <p>Recent files</p> },\n        ]}\n      />';
 	} else {
 		imports =
-			'import { MacSwitch, MacButton } from "@anyway-design/macos/controls";';
-		state = "  const [enabled, setEnabled] = useState(true);\n";
+			'import { MacSwitch, MacButton, MacTextField, MacSearchField } from "@anyway-design/macos/controls";';
+		state =
+			'  const [enabled, setEnabled] = useState(true);\n  const [query, setQuery] = useState("");\n';
 		content =
-			'<MacSwitch\n        label="Notifications"\n        checked={enabled}\n        onCheckedChange={setEnabled}\n      />\n      <MacButton variant="primary" onClick={() => setEnabled(true)}>Enable</MacButton>';
+			'<div style={{ display: "grid", gap: 16, width: 320 }}>\n        <MacSwitch label="Notifications" checked={enabled} onCheckedChange={setEnabled} />\n        <label>Project name <MacTextField defaultValue="Design system" /></label>\n        <MacSearchField aria-label="Search components" value={query} onValueChange={setQuery} />\n        <MacButton variant="primary" onClick={() => setEnabled(true)}>Enable</MacButton>\n      </div>';
 	}
 	if (component === "desktop") {
 		imports +=
@@ -263,6 +264,13 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 			</a>
 		);
 	}
+	if (component === "controls") {
+		return (
+			<a className="copy-button" href="/?view=controls-reference">
+				<Columns2 size={14} /> Compare with native AppKit
+			</a>
+		);
+	}
 	return null;
 }
 
@@ -270,7 +278,7 @@ function initialComponent(): ComponentName {
 	const component = new URLSearchParams(window.location.search).get(
 		"component"
 	);
-	return component === "dock" || component === "window" ? component : "desktop";
+	return COMPONENTS.find((entry) => entry.id === component)?.id ?? "desktop";
 }
 
 export function App() {

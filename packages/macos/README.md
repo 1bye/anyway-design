@@ -34,7 +34,7 @@ and the portal container so menus retain their styles in embedded previews.
 | `window-sidebar` | `WindowSidebar`: `groups`, `selected`, `onSelect`, `label` |
 | `window-symbol` | `WindowSymbol`: `name`, `size`, span props; `WindowSymbolName` |
 | `tabs` | `MacTabs`: `tabs`, `value`, `onValueChange`, `variant`, `label`, `onAdd`, `onClose`, `onReorder` |
-| `controls` | `MacButton`, `MacSwitch` |
+| `controls` | `MacButton`, `MacTextField`, `MacSearchField`, `MacSwitch` |
 
 Menus and tabs use Base UI for focus and keyboard behavior. Dock pointer
 updates use one animation frame and DOM transforms, without React renders
@@ -144,14 +144,14 @@ fieldsets, and buttons retain native disabled, keyboard, and click behavior.
 Omit `sidebar` to use the full content width. `active={false}` mutes the chrome
 and traffic lights. Reduced transparency removes the sidebar backdrop blur.
 
-`WindowSymbol` supplies 32 native Tahoe glyphs for tabs, the toolbar, sidebar, and
+`WindowSymbol` supplies 33 native Tahoe glyphs for controls, tabs, the toolbar, sidebar, and
 menus. AppKit renders them at 4× into transparent 64 × 64 PNGs on a 16px canvas;
 CSS masks inherit `currentColor`, including selection, disabled, and highlighted
 states. The component renders a decorative `span` (previously an SVG); its
 containing control supplies the accessible label. Custom React icons remain
 supported in every slot.
 
-The checked-in assets were extracted on macOS 26.6.2 (25G83). Thirty use
+The checked-in assets were extracted on macOS 26.6.2 (25G83). Thirty-one use
 the public system-symbol API; Applications and Make Alias use the installed
 `CoreGlyphsPrivate.bundle` through AppKit's bundle image loader. No native or
 private API runs in the browser. Bundlers resolve the static asset URLs.
@@ -311,3 +311,26 @@ memory.
 
 The presets are initial reproductions, pending native screenshot calibration.
 See the [lab fidelity notes](../../apps/macos-lab/README.md) for known limits.
+
+`MacButton` accepts native button props plus `variant="default" | "primary"`
+and `size="regular" | "small"`. Tahoe regular/small buttons use 32/24px minimum
+heights and capsule borders. Sequoia retains its original compact geometry.
+Hover, pressed, keyboard focus, and disabled states use environment colors;
+primary buttons become neutral inside an inactive `MacWindow`.
+
+`MacTextField` accepts native input props and the same size options, including
+`ref`, `disabled`, `readOnly`, validation attributes, `value`/`onChange`, and
+`defaultValue`. Associate a visible label or supply `aria-label`.
+
+`MacSearchField` accepts native input props except `type`, `size`, and
+`onChange`; use `value`/`onValueChange` or `defaultValue`. `onSearch(query)`
+handles Enter without submitting a surrounding form; without it, normal form
+submission applies. Escape clears a nonempty editable field, and the native
+clear icon returns focus to the input. Disabled and read-only fields cannot
+be cleared. `clearLabel` customizes the clear button's accessible name.
+`className` and `style` apply to the wrapper; `id`, `name`, `ref`, and other
+input attributes apply to the input. Composition keystrokes are left to the IME.
+
+The lab's controls study records the native comparison's limits: only inactive
+AppKit geometry and neutral states are calibrated. Active accent, hover, and
+focus-ring appearance still require a corresponding native capture.

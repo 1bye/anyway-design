@@ -1321,12 +1321,170 @@
 	opacity: 0.45;
 }
 [data-preset="tahoe"] .mac-button {
-	min-height: 28px;
+	--mac-button-neutral: #ebebeb;
+	--mac-button-pressed: #d5d5d5;
+	--mac-button-disabled: #f5f5f5;
+	min-height: 32px;
 	padding-inline: 16px;
-	border-radius: 20px;
+	font-weight: 400;
+	line-height: 1;
+	color: var(--mac-text);
+	background: var(--mac-button-neutral);
+	border: 0;
+	border-radius: 999px;
+	box-shadow: none;
 }
 [data-preset="tahoe"] .mac-button[data-size="small"] {
-	min-height: 22px;
+	min-height: 24px;
+}
+
+[data-preset="tahoe"][data-appearance="dark"] .mac-button {
+	--mac-button-neutral: #303030;
+	--mac-button-pressed: #454545;
+	--mac-button-disabled: #262626;
+}
+
+[data-preset="tahoe"] .mac-button[data-variant="primary"] {
+	color: white;
+	background: var(--mac-accent);
+}
+
+[data-preset="tahoe"] .mac-button:hover:not(:disabled) {
+	box-shadow: inset 0 0 0 100px
+		color-mix(in srgb, var(--mac-text) 3%, transparent);
+}
+
+[data-preset="tahoe"] .mac-button:active:not(:disabled) {
+	background: var(--mac-button-pressed);
+	box-shadow: none;
+	filter: none;
+}
+
+[data-preset="tahoe"]
+	.mac-button[data-variant="primary"]:active:not(:disabled) {
+	background: color-mix(in srgb, var(--mac-accent), black 12%);
+}
+
+[data-preset="tahoe"] .mac-button:disabled {
+	color: color-mix(in srgb, var(--mac-text) 30%, var(--mac-surface));
+	background: var(--mac-button-disabled);
+	opacity: 1;
+}
+
+[data-preset="tahoe"]
+	.mac-window[data-active="false"]
+	.mac-button[data-variant="primary"]:not(:disabled) {
+	color: var(--mac-text);
+	background: var(--mac-button-neutral);
+}
+
+.mac-text-field,
+.mac-search-field input {
+	width: 220px;
+	max-width: 100%;
+	min-height: 23px;
+	padding: 2px 6px;
+	font-size: 13px;
+	line-height: normal;
+	color: var(--mac-text);
+	appearance: none;
+	background: var(--mac-surface);
+	border: 1px solid var(--mac-line);
+	border-radius: 4px;
+	box-shadow: inset 0 0.5px 1px rgb(0 0 0 / 3%);
+}
+
+.mac-text-field::placeholder,
+.mac-search-field input::placeholder {
+	color: var(--mac-secondary);
+	opacity: 1;
+}
+
+.mac-text-field:disabled,
+.mac-search-field input:disabled {
+	color: var(--mac-secondary);
+	cursor: default;
+}
+
+.mac-search-field {
+	position: relative;
+	display: inline-flex;
+	width: 220px;
+	max-width: 100%;
+	vertical-align: middle;
+}
+
+.mac-search-field input {
+	width: 100%;
+	min-width: 0;
+	padding-inline: 24px;
+	border-radius: 999px;
+}
+
+.mac-search-field input::-webkit-search-cancel-button,
+.mac-search-field input::-webkit-search-decoration {
+	appearance: none;
+}
+
+.mac-search-icon,
+.mac-search-clear {
+	position: absolute;
+	top: 50%;
+	color: var(--mac-secondary);
+	transform: translateY(-50%);
+}
+
+.mac-search-icon {
+	left: 7px;
+	pointer-events: none;
+}
+
+.mac-search-field .mac-search-clear {
+	right: 3px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 20px;
+	height: 20px;
+	padding: 0;
+	color: var(--mac-secondary);
+	background: transparent;
+	border: 0;
+	border-radius: 50%;
+}
+
+.mac-search-clear:hover:not(:disabled) {
+	color: var(--mac-text);
+}
+
+.mac-search-field[data-disabled] .mac-search-icon,
+.mac-search-clear:disabled {
+	opacity: 0.4;
+}
+
+[data-preset="tahoe"] .mac-text-field,
+[data-preset="tahoe"] .mac-search-field input {
+	min-height: 24px;
+	border-color: color-mix(in srgb, var(--mac-text) 12%, var(--mac-surface));
+	border-radius: 6px;
+	box-shadow: none;
+}
+
+[data-preset="tahoe"] .mac-search-field input {
+	border-radius: 999px;
+}
+
+.mac-text-field[data-size="small"],
+.mac-search-field[data-size="small"] input {
+	min-height: 20px;
+	font-size: 11px;
+}
+
+.mac-text-field:focus-visible,
+.mac-search-field input:focus-visible {
+	outline: 3px solid color-mix(in srgb, var(--mac-accent) 45%, transparent);
+	outline-offset: 1px;
+	border-color: var(--mac-accent);
 }
 
 .mac-switch-label {

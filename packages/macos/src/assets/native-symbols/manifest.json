@@ -301,6 +301,17 @@
     },
     {
       "extent": 14,
+      "id": "search-clear",
+      "nativeName": "xmark.circle.fill",
+      "pixelHeight": 64,
+      "pixelWidth": 64,
+      "pointSize": 16,
+      "rendering": "monochrome",
+      "source": "NSImage(systemSymbolName: xmark.circle.fill)",
+      "weight": 0
+    },
+    {
+      "extent": 14,
       "id": "settings",
       "nativeName": "slider.horizontal.3",
       "pixelHeight": 64,

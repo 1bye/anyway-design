@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { App } from "./app";
+import { ControlsReferenceComparison } from "./controls-reference";
 import { DockGlassPlayground } from "./dock-glass-playground";
 import { DockReferenceComparison } from "./dock-reference";
 import { MenuReferenceComparison } from "./menu-reference";
@@ -22,5 +23,7 @@ if (view === "dock-reference") {
 	page = <WindowReferenceComparison />;
 } else if (view === "menu-reference") {
 	page = <MenuReferenceComparison />;
+} else if (view === "controls-reference") {
+	page = <ControlsReferenceComparison />;
 }
 createRoot(root).render(<StrictMode>{page}</StrictMode>);

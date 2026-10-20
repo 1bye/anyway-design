@@ -1,10 +1,10 @@
 # Native Tahoe symbols
 
 Exported locally on macOS 26.6.2 (build 25G83) with
-`packages/macos/scripts/export-symbols.swift`. All 32 icons are native raster
+`packages/macos/scripts/export-symbols.swift`. All 33 icons are native raster
 exports. No screenshot tracing or hand-drawn paths are used.
 
-- 30 symbols: AppKit `NSImage(systemSymbolName:accessibilityDescription:)`.
+- 31 symbols: AppKit `NSImage(systemSymbolName:accessibilityDescription:)`.
 - `applications` (`appstore`) and `alias` (`square.dashed.and.alias`):
   AppKit `NSImage(symbolName:bundle:variableValue:)`, loading
   `/System/Library/PrivateFrameworks/SFSymbols.framework/Versions/A/Resources/CoreGlyphsPrivate.bundle`.
@@ -15,6 +15,10 @@ to its recorded optical extent on a 16px canvas at 4× density. Transparent
 64 × 64 PNGs supply alpha masks; React supplies color. The original vector
 silhouettes are not edited. Rendering and downsampling can differ from AppKit
 at another point size or display scale.
+
+`search-clear` requests the monochrome variant, retaining the transparent X
+inside the filled circle. The exporter checks that the X remains a cutout;
+a single-color palette would incorrectly turn that symbol into a solid disc.
 
 The live window and menu comparison views use Apple's reference images listed
 in `apps/macos-lab/public/assets/SOURCES.md`. The current `zipper.page` symbol

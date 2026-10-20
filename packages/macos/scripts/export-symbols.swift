@@ -37,6 +37,7 @@ let symbols: [Symbol] = [
     .init(id: "recents", name: "clock", extent: 13, weight: .medium),
     .init(id: "rename", name: "pencil", extent: 10.5),
     .init(id: "search", name: "magnifyingglass"),
+    .init(id: "search-clear", name: "xmark.circle.fill", extent: 14),
     .init(id: "settings", name: "slider.horizontal.3"),
     .init(id: "share", name: "square.and.arrow.up", extent: 15),
     .init(id: "shared", name: "folder.badge.person.crop", extent: 16, weight: .medium),
@@ -99,7 +100,7 @@ func export(_ symbol: Symbol) throws -> [String: Any] {
         raw = NSImage(systemSymbolName: symbol.name, accessibilityDescription: nil)
     }
     let configuration = NSImage.SymbolConfiguration(pointSize: 16, weight: symbol.weight)
-        .applying(.init(paletteColors: [.black]))
+        .applying(symbol.id == "search-clear" ? .preferringMonochrome() : .init(paletteColors: [.black]))
     guard let image = raw?.withSymbolConfiguration(configuration) else {
         throw NSError(domain: "NativeSymbols", code: 1, userInfo: [
             NSLocalizedDescriptionKey: "Unavailable native asset: \(source)"
@@ -122,6 +123,11 @@ func export(_ symbol: Symbol) throws -> [String: Any] {
     ), on: target)
     // Self-check every export: visible pixels, transparent corners, and expected dimensions.
     let actualBounds = try alphaBounds(target)
+    // The clear symbol must retain the transparent X when used as an alpha mask.
+    if symbol.id == "search-clear" {
+        guard target.colorAt(x: 32, y: 32)?.alphaComponent == 0,
+              (target.colorAt(x: 32, y: 12)?.alphaComponent ?? 0) > 0 else { throw CocoaError(.fileWriteUnknown) }
+    }
     guard target.pixelsWide == 64, target.pixelsHigh == 64,
           actualBounds.width > 4, actualBounds.height > 4,
           target.colorAt(x: 0, y: 0)?.alphaComponent == 0,

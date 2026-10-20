@@ -1,5 +1,10 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: This small interactive lab intentionally uses local handlers; pointer animation is isolated in the Dock. */
-import { MacButton, MacSwitch } from "@anyway-design/macos/controls";
+import {
+	MacButton,
+	MacSearchField,
+	MacSwitch,
+	MacTextField,
+} from "@anyway-design/macos/controls";
 import { Dock } from "@anyway-design/macos/dock";
 import {
 	type MacOSAppearance,
@@ -30,7 +35,7 @@ import {
 	SlidersHorizontal,
 	Wifi,
 } from "lucide-react";
-import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { type CSSProperties, useEffect, useId, useRef, useState } from "react";
 import { DOCK_ITEMS } from "./dock-items";
 import { FinderActions } from "./finder-actions";
 export type ComponentName =
@@ -193,6 +198,7 @@ const INITIAL_FOLDERS = [
 	"Weekend ideas",
 ];
 function ControlsExample() {
+	const displayNameId = useId();
 	const [notifications, setNotifications] = useState(true);
 	const [sounds, setSounds] = useState(false);
 	const [saved, setSaved] = useState(false);
@@ -203,6 +209,10 @@ function ControlsExample() {
 				<h3>Make yourself at home.</h3>
 				<p>A few familiar controls, down to the details.</p>
 			</div>
+			<MacSearchField
+				aria-label="Search settings"
+				placeholder="Search settings"
+			/>
 			<div className="sample-setting">
 				<MacSwitch
 					checked={notifications}
@@ -217,9 +227,9 @@ function ControlsExample() {
 					onCheckedChange={setSounds}
 				/>
 			</div>
-			<label className="sample-input-label">
+			<label className="sample-input-label" htmlFor={displayNameId}>
 				Display name
-				<input defaultValue="My Mac" />
+				<MacTextField defaultValue="My Mac" id={displayNameId} />
 			</label>
 			<div className="sample-buttons">
 				<span aria-live="polite">{saved ? "Preferences saved" : ""}</span>

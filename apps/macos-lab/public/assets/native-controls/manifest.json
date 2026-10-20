@@ -1,0 +1,9 @@
+{
+  "density": 2,
+  "logicalHeight": 380,
+  "logicalWidth": 584,
+  "rendering": "NSView.cacheDisplay; explicit NSCell highlighted state; inactive offscreen NSWindow; capsule borderShape",
+  "rowTops": [74, 120, 164, 226, 282],
+  "states": ["Normal", "Pressed \/ filled", "Disabled"],
+  "system": "Version 26.6.2 (Build 25G83)"
+}

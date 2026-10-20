@@ -49,6 +49,10 @@ export const NATIVE_SYMBOLS = {
 	recents: new URL("./assets/native-symbols/recents.png", import.meta.url).href,
 	rename: new URL("./assets/native-symbols/rename.png", import.meta.url).href,
 	search: new URL("./assets/native-symbols/search.png", import.meta.url).href,
+	"search-clear": new URL(
+		"./assets/native-symbols/search-clear.png",
+		import.meta.url
+	).href,
 	settings: new URL("./assets/native-symbols/settings.png", import.meta.url)
 		.href,
 	share: new URL("./assets/native-symbols/share.png", import.meta.url).href,

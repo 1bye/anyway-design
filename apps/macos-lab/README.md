@@ -55,6 +55,23 @@ of difference. This view is not proof of a pixel-identical native compositor.
 
 ## Fidelity status
 
+Open [the controls study](http://127.0.0.1:3006/?view=controls-reference) from
+**Controls → Compare with native AppKit**. It compares `MacButton`,
+`MacTextField`, and `MacSearchField` against 2× AppKit renders from the user's
+Tahoe 26.6.2 system. Shared zoom, synchronized scrolling, Buttons/Fields crops,
+and light/dark modes use the same geometry on both sides.
+
+The native baseline is an inactive offscreen window. It calibrates 32px regular
+capsule buttons, 24px small buttons and fields, filled search fields, highlights,
+and disabled states. **Active accent (live only)** previews blue primary actions;
+active accent, hover, and focus rings remain browser approximations. The lower
+workbench exercises typing, native labels, Enter search submission, Escape and
+clear-button behavior, focus restoration, Save/Reset callbacks, and disabled
+controls. It uses local state and does not save preferences or send searches.
+The reference exporter and provenance are in
+`packages/macos/scripts/export-controls.swift` and
+`public/assets/native-controls/SOURCES.md`.
+
 Open [the menu study](http://127.0.0.1:3006/?view=menu-reference) from **Compare
 menus** in the Window or Menu bar preview. Its source is the Finder context menu
 in Apple's Tahoe 26 Windows-switching guide. The toolbar More button, right-click
