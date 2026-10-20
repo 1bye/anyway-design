@@ -5,6 +5,7 @@ import {
 	applyNodeChanges,
 	Background,
 	ConnectionMode,
+	ControlButton,
 	Controls,
 	MarkerType,
 	type OnConnect,
@@ -13,11 +14,14 @@ import {
 	ReactFlow,
 	ReactFlowProvider,
 	useReactFlow,
+	useStore,
 	type XYPosition,
 } from "@xyflow/react";
 import {
 	CircleHelp,
 	FolderOpen,
+	Maximize,
+	Minus,
 	MousePointer2,
 	Plus,
 	Save,
@@ -533,7 +537,7 @@ function Editor() {
 						onPaneClick={dismissSelection}
 					>
 						<Background color="#d6d6d6" gap={20} size={1} />
-						<Controls position="bottom-left" showInteractive={false} />
+						<CanvasControls onError={setNotice} />
 					</ReactFlow>
 					{plan.nodes.length === 0 ? (
 						<div className="empty-canvas">
@@ -613,5 +617,51 @@ function Editor() {
 				</div>
 			</main>
 		</div>
+	);
+}
+
+function CanvasControls({ onError }: { onError: (message: string) => void }) {
+	const { zoomIn, zoomOut, fitView } = useReactFlow();
+	const atMaxZoom = useStore((state) => state.transform[2] >= state.maxZoom);
+	const atMinZoom = useStore((state) => state.transform[2] <= state.minZoom);
+	return (
+		<Controls
+			position="bottom-left"
+			showFitView={false}
+			showInteractive={false}
+			showZoom={false}
+		>
+			<ControlButton
+				aria-label="Zoom In"
+				disabled={atMaxZoom}
+				onClick={() =>
+					zoomIn().catch(() => onError("Couldn't zoom in. Please try again."))
+				}
+				title="Zoom in"
+			>
+				<Plus aria-hidden="true" size={17} />
+			</ControlButton>
+			<ControlButton
+				aria-label="Zoom Out"
+				disabled={atMinZoom}
+				onClick={() =>
+					zoomOut().catch(() => onError("Couldn't zoom out. Please try again."))
+				}
+				title="Zoom out"
+			>
+				<Minus aria-hidden="true" size={17} />
+			</ControlButton>
+			<ControlButton
+				aria-label="Fit View"
+				onClick={() =>
+					fitView().catch(() =>
+						onError("Couldn't fit the canvas. Please try again.")
+					)
+				}
+				title="Fit view"
+			>
+				<Maximize aria-hidden="true" size={17} />
+			</ControlButton>
+		</Controls>
 	);
 }
