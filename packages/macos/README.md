@@ -36,7 +36,7 @@ and the portal container so menus retain their styles in embedded previews.
 | `tabs` | `MacTabs`: `tabs`, `value`, `onValueChange`, `variant`, `label`, `onAdd`, `onClose`, `onReorder` |
 | `controls` | `MacButton`, `MacTextField`, `MacSearchField`, `MacSwitch` |
 | `files` | `MacFileItem`, `MacFileGrid`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `active`, `showExtensions` |
-| `file-list` | `MacFileList`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `sort`, `defaultSort`, `onSortChange`, `columns`, `columnWidths`, `onColumnWidthsChange`, `resizable`, `active`, `showExtensions`, `minRows` |
+| `file-list` | `MacFileList`: recursive `items`, `expandedIds`, `defaultExpandedIds`, `onExpandedChange`, `selectedIds`, `onSelectionChange`, `onOpen`, `sort`, `defaultSort`, `onSortChange`, `columns`, `columnWidths`, `onColumnWidthsChange`, `resizable`, `active`, `showExtensions`, `minRows` |
 | `quick-look` | `MacQuickLook`: `items`, `value`, `onValueChange`, `open`, `onOpenChange`, `onOpenFile`, `onShare`, `onMarkup`, `returnFocus`, `style`; `MacQuickLookPanel` for embedded previews |
 | `file-icons` | `MacFileIcon`: `name` (`folder`, `document`, `pdf`, `image`, `archive`, `text`), native image props |
 | `file-thumbnail` | `MacFileThumbnail`: `src`, `presentation` (`image`, `document`), `fit` (`contain`, `cover`), `alt` |
@@ -437,8 +437,9 @@ const items: MacFileListItem[] = [
 />
 ```
 
-`MacFileListItem` extends `MacFile`, so the same items and controlled selection
-can feed a grid or list. Keep IDs unique and stable. `modifiedAt` is an epoch
+`MacFileListItem` extends `MacFile`, so flat items and controlled selection
+can feed a grid or list. A grid renders only the supplied level, while a list
+can reveal nested children. Keep IDs unique and stable. `modifiedAt` is an epoch
 timestamp in milliseconds and `size` is bytes. Optional `modifiedLabel`,
 `sizeLabel`, and `kindLabel` override displayed metadata. Dates and sizes sort
 by raw values, with missing values last in either direction; names use natural
@@ -455,18 +456,71 @@ compressing the columns. The parent supplies the list's available height.
 
 Click, Command/Ctrl-click, and Shift-click select rows. Up/Down, Home/End,
 typeahead, Shift extension, Command/Ctrl+A, Space, and Escape work from a row.
-Ranges follow the current sort order. Enter or double-click calls `onOpen(id)`;
-disabled rows cannot be selected or opened. Sorting retains selection by ID.
-`active={false}` or an inactive parent window mutes selection. Folders have
-decorative disclosure chevrons; expansion and nested rows are not implemented.
+Ranges follow visible rows in the current sort order. Return calls `onOpen(id)`
+unless inline rename is enabled; double-click and Command/Ctrl-O open files.
+Disabled rows cannot be selected or opened. Sorting retains selection by ID.
+`active={false}` or an inactive parent window mutes selection.
 
 The default row/header heights are 20/28px. CSS overrides include
 `--mac-list-font-size`, `--mac-list-row-height`, `--mac-list-header-height`,
-`--mac-list-stripe`, and `--mac-list-selection`. `minRows` adds inert empty
+`--mac-list-stripe`, `--mac-list-selection`, and `--mac-list-indent` (15px). `minRows` adds inert empty
 stripes for fixed-height previews. The lab's dark native Finder comparison
 calibrates density and column alignment; light and inactive states are
 adaptations. Generic type icons can differ from Finder's per-file previews
 or the icons supplied by installed applications.
+
+### Expandable folders
+
+Folders accept recursive `children`. IDs must be unique across the entire
+acyclic tree, including descendants; filenames alone are not sufficient when
+different folders contain files with the same name.
+
+```tsx
+const [expanded, setExpanded] = useState(["projects"]);
+
+<MacFileList
+  items={[
+    { id: "projects", name: "Projects", kind: "folder", children: [
+      { id: "projects/brand", name: "Brand", kind: "folder", children: [
+        { id: "projects/brand/palette", name: "Palette.txt", kind: "text" },
+      ] },
+    ] },
+  ]}
+  expandedIds={expanded}
+  onExpandedChange={setExpanded}
+  selectedIds={selection}
+  onSelectionChange={setSelection}
+/>
+```
+
+Omit `expandedIds` to use internal expansion state, optionally initialized by
+`defaultExpandedIds`. A disclosure click toggles only that folder, preserving
+unrelated selection. Right expands a focused folder in place (including when
+already open), matching the observed Tahoe Finder behavior. Left collapses an
+open folder or selects its parent. Up/Down and range selection follow visible
+rows. Empty folders can expand; disabled folders cannot expose their children.
+
+Collapsing a parent keeps descendant expansion IDs, so reopening restores its
+nested layout. Selection of newly hidden, removed, or disabled rows is cleared
+through `onSelectionChange`, preserving other visible selections. If a focused
+child disappears, its nearest visible ancestor becomes the roving tab stop;
+focus is recovered when it was lost with the removed row, without taking it
+from another control. Hidden inline rename sessions end. Clicking a disclosure
+while editing first follows the rename field's normal blur/validation behavior.
+
+Sorting applies separately to siblings at every level. `MacFileList` exposes
+`treegrid`, row levels, sibling positions, and expanded state. Indentation is
+15px per depth, measured from the native capture; rows remain 20px tall and
+selection spans all columns. Flat items remain supported as root-level rows.
+
+For a preview sequence that matches the visible sorted list, import
+`flattenFileList(items, sort)` and `visibleFileListRows(rows, expandedIds)` from
+`@anyway-design/macos/file-list-tree` and map each result's `file` into Quick
+Look items. The lab demonstrates this with nested previews and inline renaming.
+
+The caller supplies children through props; no native filesystem access,
+built-in asynchronous loader, or recursive Option-click/Option-arrow expansion
+is included. `onOpen` still belongs to the caller and is separate from expansion.
 
 ## Quick Look
 

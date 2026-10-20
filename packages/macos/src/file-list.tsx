@@ -7,6 +7,7 @@ import {
 	type ReactNode,
 	type RefObject,
 	useCallback,
+	useLayoutEffect,
 	useMemo,
 	useRef,
 	useState,
@@ -23,8 +24,14 @@ import {
 	fileColumnWidth,
 	type MacFileListColumn,
 	type MacFileSort,
-	sortFileList,
 } from "./file-list-sort";
+import {
+	FILE_KIND_LABELS,
+	fileListArrowAction,
+	flattenFileList,
+	visibleFileListAncestor,
+	visibleFileListRows,
+} from "./file-list-tree";
 import type { MacFileRenameProps } from "./file-rename";
 import { FileRenameField } from "./file-rename-field";
 import { selectFileIds } from "./file-selection";
@@ -36,6 +43,7 @@ import { WindowSymbol } from "./window-symbol";
 export type { MacFileListColumn, MacFileSort } from "./file-list-sort";
 
 export interface MacFileListItem extends MacFile {
+	children?: readonly MacFileListItem[];
 	kindLabel?: string;
 	modifiedAt?: number;
 	modifiedLabel?: string;
@@ -49,11 +57,14 @@ export interface MacFileListProps extends MacFileRenameProps {
 	className?: string;
 	columns?: readonly MacFileListColumn[];
 	columnWidths?: ColumnWidths;
+	defaultExpandedIds?: readonly string[];
 	defaultSort?: MacFileSort;
+	expandedIds?: readonly string[];
 	items: readonly MacFileListItem[];
 	label?: string;
 	minRows?: number;
 	onColumnWidthsChange?: (widths: ColumnWidths) => void;
+	onExpandedChange?: (ids: string[]) => void;
 	onOpen?: (id: string) => void;
 	onQuickLook?: (id: string) => void;
 	onSelectionChange: (ids: string[]) => void;
@@ -72,14 +83,7 @@ const DEFAULT_COLUMNS: readonly MacFileListColumn[] = [
 	"kind",
 ];
 const DEFAULT_SORT: MacFileSort = { column: "name", direction: "ascending" };
-const KINDS = {
-	archive: "ZIP archive",
-	document: "Document",
-	folder: "Folder",
-	image: "Image",
-	pdf: "PDF Document",
-	text: "Text document",
-} as const;
+
 const EXTENSION = /\.[^.]+$/;
 const DATE = new Intl.DateTimeFormat(undefined, {
 	dateStyle: "medium",
@@ -113,10 +117,14 @@ function FileListName({
 	file,
 	showExtensions,
 	editor,
+	depth,
+	expanded,
 }: {
 	file: MacFileListItem;
 	showExtensions: boolean;
 	editor?: ReactNode;
+	depth: number;
+	expanded: boolean;
 }) {
 	const name =
 		showExtensions || file.name.startsWith(".")
@@ -125,10 +133,28 @@ function FileListName({
 	const documentThumbnail =
 		file.kind === "pdf" || file.kind === "text" || file.kind === "document";
 	return (
-		<div className="mac-file-list-name">
+		<div
+			className="mac-file-list-name"
+			style={{
+				paddingInlineStart: `calc(${depth} * var(--mac-list-indent, 15px))`,
+			}}
+		>
 			<span className="mac-file-list-disclosure">
 				{file.kind === "folder" ? (
-					<WindowSymbol name="chevron-right" size={8} />
+					<button
+						aria-expanded={expanded}
+						aria-label={`${expanded ? "Collapse" : "Expand"} ${file.name}`}
+						className="mac-file-list-toggle"
+						data-file-toggle
+						disabled={file.disabled}
+						tabIndex={-1}
+						type="button"
+					>
+						<WindowSymbol
+							name={expanded ? "chevron-down" : "chevron-right"}
+							size={10}
+						/>
+					</button>
 				) : null}
 			</span>
 			<span aria-hidden="true" className="mac-file-list-icon">
@@ -170,7 +196,7 @@ function FileListName({
 
 function cellValue(file: MacFileListItem, column: MacFileListColumn) {
 	if (column === "kind") {
-		return file.kindLabel ?? KINDS[file.kind ?? "document"];
+		return file.kindLabel ?? FILE_KIND_LABELS[file.kind ?? "document"];
 	}
 	if (column === "size") {
 		return file.sizeLabel ?? byteLabel(file.size);
@@ -300,6 +326,9 @@ export function MacFileList({
 	validateRename,
 	sort: controlledSort,
 	defaultSort = DEFAULT_SORT,
+	defaultExpandedIds = [],
+	expandedIds: controlledExpandedIds,
+	onExpandedChange,
 	onSortChange,
 	columnWidths,
 	onColumnWidthsChange,
@@ -312,37 +341,97 @@ export function MacFileList({
 	className = "",
 	style,
 }: MacFileListProps) {
+	const [internalSort, setInternalSort] = useState(defaultSort);
+	const [internalWidths, setInternalWidths] = useState<ColumnWidths>({});
+	const [internalExpandedIds, setInternalExpandedIds] =
+		useState(defaultExpandedIds);
+	const [focusId, setFocusId] = useState<string>();
+	const table: RefObject<HTMLTableElement | null> = useRef(null);
+	const anchor: RefObject<string | undefined> = useRef(undefined);
+	const typeahead = useRef({ text: "", time: 0 });
+	const sort = controlledSort ?? internalSort;
+	const widths = columnWidths ?? internalWidths;
+	const expandedIds = controlledExpandedIds ?? internalExpandedIds;
+	const allRows = useMemo(() => flattenFileList(items, sort), [items, sort]);
+	const rows = useMemo(
+		() => visibleFileListRows(allRows, expandedIds),
+		[allRows, expandedIds]
+	);
+	const sorted = useMemo(() => rows.map((row) => row.file), [rows]);
+	const ids = sorted.filter((file) => !file.disabled).map((file) => file.id);
+	const visibleIds = useMemo(
+		() =>
+			new Set(
+				rows.filter((row) => !row.file.disabled).map((row) => row.file.id)
+			),
+		[rows]
+	);
+	const visibleFocusId = visibleFileListAncestor(allRows, visibleIds, focusId);
+	const tabStop =
+		visibleFocusId ?? ids.find((id) => selectedIds.includes(id)) ?? ids[0];
 	const rename = useFileRename({
-		items,
+		items: sorted,
 		onRename,
 		onRenamingChange,
 		onSelectionChange,
 		renamingId,
 		selectedIds,
 	});
-	const [internalSort, setInternalSort] = useState(defaultSort);
-	const [internalWidths, setInternalWidths] = useState<ColumnWidths>({});
-	const [focusId, setFocusId] = useState<string>();
-	const anchor = useRef<string>(undefined);
-	const typeahead = useRef({ text: "", time: 0 });
-	const sort = controlledSort ?? internalSort;
-	const widths = columnWidths ?? internalWidths;
-	const sorted = useMemo(
-		() =>
-			sortFileList(
-				items.map((item) => ({
-					...item,
-					kindLabel: item.kindLabel ?? KINDS[item.kind ?? "document"],
-				})),
-				sort
-			),
-		[items, sort]
+	const previous = useRef({ renameId: rename.id, rows });
+	useLayoutEffect(() => {
+		const selected = selectedIds.filter((id) => visibleIds.has(id));
+		if (selected.length !== selectedIds.length) {
+			onSelectionChange(selected);
+		}
+		if (anchor.current && !visibleIds.has(anchor.current)) {
+			anchor.current = undefined;
+		}
+		if (
+			previous.current.renameId &&
+			!visibleIds.has(previous.current.renameId)
+		) {
+			rename.end();
+		}
+		if (
+			focusId &&
+			!visibleIds.has(focusId) &&
+			previous.current.rows.some((row) => row.file.id === focusId) &&
+			table.current?.ownerDocument.activeElement ===
+				table.current?.ownerDocument.body
+		) {
+			const target = [
+				...(table.current?.querySelectorAll<HTMLTableRowElement>(
+					"tr[data-file-id]"
+				) ?? []),
+			].find((row) => row.dataset.fileId === tabStop);
+			focusFileTarget(target);
+		}
+		previous.current = { renameId: rename.id, rows };
+	}, [
+		rows,
+		visibleIds,
+		selectedIds,
+		onSelectionChange,
+		focusId,
+		tabStop,
+		rename.id,
+		rename.end,
+	]);
+	const expand = useCallback(
+		(id: string, value: boolean) => {
+			if (expandedIds.includes(id) === value) {
+				return;
+			}
+			const next = value
+				? [...expandedIds, id]
+				: expandedIds.filter((entry) => entry !== id);
+			if (controlledExpandedIds === undefined) {
+				setInternalExpandedIds(next);
+			}
+			onExpandedChange?.(next);
+		},
+		[expandedIds, controlledExpandedIds, onExpandedChange]
 	);
-	const ids = sorted.filter((item) => !item.disabled).map((item) => item.id);
-	const tabStop =
-		ids.find((id) => id === focusId) ??
-		ids.find((id) => selectedIds.includes(id)) ??
-		ids[0];
 	const changeWidths = useCallback(
 		(next: ColumnWidths) => {
 			if (columnWidths === undefined) {
@@ -397,6 +486,14 @@ export function MacFileList({
 				return;
 			}
 			const row = listRow(event.target);
+			if (
+				row?.dataset.fileId &&
+				event.target instanceof Element &&
+				event.target.closest("[data-file-toggle]")
+			) {
+				expand(row.dataset.fileId, !expandedIds.includes(row.dataset.fileId));
+				return;
+			}
 			if (row?.dataset.fileId && row.getAttribute("aria-disabled") !== "true") {
 				row.focus({ preventScroll: true });
 				select(row.dataset.fileId, event.shiftKey, isAdditiveSelection(event));
@@ -409,13 +506,13 @@ export function MacFileList({
 				onSelectionChange([]);
 			}
 		},
-		[select, onSelectionChange]
+		[select, onSelectionChange, expand, expandedIds]
 	);
 	const open = useCallback(
 		(event: MouseEvent<HTMLTableElement>) => {
 			if (
 				event.target instanceof Element &&
-				event.target.closest(".mac-file-rename")
+				event.target.closest(".mac-file-rename, [data-file-toggle]")
 			) {
 				return;
 			}
@@ -432,14 +529,62 @@ export function MacFileList({
 			setFocusId(id);
 		}
 	}, []);
+	const arrow = useCallback(
+		(event: KeyboardEvent<HTMLTableElement>, id: string) => {
+			if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+				return false;
+			}
+			const row = rows.find((entry) => entry.file.id === id);
+			const action = row
+				? fileListArrowAction(row, event.key, expandedIds.includes(id))
+				: undefined;
+			if (!action) {
+				return false;
+			}
+			event.preventDefault();
+			if (action.type === "focus") {
+				const target = [
+					...event.currentTarget.querySelectorAll<HTMLTableRowElement>(
+						"tr[data-file-id]"
+					),
+				].find((entry) => entry.dataset.fileId === action.id);
+				focusFileTarget(target);
+				select(action.id, false, false);
+			} else {
+				expand(action.id, action.type === "expand");
+			}
+			return true;
+		},
+		[rows, expandedIds, expand, select]
+	);
+	const preventToggleFocus = useCallback(
+		(event: PointerEvent<HTMLTableElement>) => {
+			if (
+				event.target instanceof Element &&
+				event.target.closest("[data-file-toggle]") &&
+				!event.currentTarget.ownerDocument.activeElement?.closest(
+					".mac-file-rename"
+				)
+			) {
+				event.preventDefault();
+			}
+		},
+		[]
+	);
 	const keyDown = useCallback(
 		(event: KeyboardEvent<HTMLTableElement>) => {
 			const id = enabledListRow(event.target)?.dataset.fileId;
-			if (!id || event.nativeEvent.isComposing) {
+			if (
+				!id ||
+				event.nativeEvent.isComposing ||
+				(event.target instanceof Element &&
+					event.target.closest("[data-file-toggle]"))
+			) {
 				return;
 			}
 			const additive = isAdditiveSelection(event);
 			if (
+				arrow(event, id) ||
 				rename.key(event, id) ||
 				requestFileOpen(event, id, onOpen) ||
 				requestFilePreview(event, id, onQuickLook)
@@ -477,7 +622,16 @@ export function MacFileList({
 			focusFileTarget(row);
 			select(next, event.shiftKey, event.shiftKey && additive);
 		},
-		[sorted, ids, onOpen, onQuickLook, onSelectionChange, select, rename.key]
+		[
+			sorted,
+			ids,
+			onOpen,
+			onQuickLook,
+			onSelectionChange,
+			select,
+			rename.key,
+			arrow,
+		]
 	);
 	const totalWidth = columns.reduce(
 		(total, column) =>
@@ -502,8 +656,10 @@ export function MacFileList({
 				onDoubleClick={open}
 				onFocus={focus}
 				onKeyDown={keyDown}
+				onPointerDown={preventToggleFocus}
+				ref={table}
 				// biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: Native table/header semantics are retained in this keyboard-selectable data grid.
-				role="grid"
+				role="treegrid"
 				style={{ width: totalWidth }}
 			>
 				<colgroup>
@@ -574,11 +730,20 @@ export function MacFileList({
 					</tr>
 				</thead>
 				<tbody>
-					{sorted.map((file) => (
+					{rows.map(({ file, depth, parentId, position, siblingCount }) => (
 						<tr
 							aria-disabled={file.disabled || undefined}
+							aria-expanded={
+								file.kind === "folder"
+									? !file.disabled && expandedIds.includes(file.id)
+									: undefined
+							}
+							aria-level={depth + 1}
+							aria-posinset={position}
 							aria-selected={selectedIds.includes(file.id)}
+							aria-setsize={siblingCount}
 							data-file-id={file.id}
+							data-parent-id={parentId}
 							data-renaming={rename.id === file.id || undefined}
 							key={file.id}
 							tabIndex={file.id === tabStop ? 0 : -1}
@@ -587,6 +752,7 @@ export function MacFileList({
 								<td data-column={column} key={column}>
 									{column === "name" ? (
 										<FileListName
+											depth={depth}
 											editor={
 												rename.id === file.id && onRename ? (
 													<FileRenameField
@@ -597,6 +763,7 @@ export function MacFileList({
 													/>
 												) : undefined
 											}
+											expanded={!file.disabled && expandedIds.includes(file.id)}
 											file={file}
 											showExtensions={showExtensions}
 										/>

@@ -1,0 +1,22 @@
+{
+  "source": "Live Finder window capture through the computer-use screenshot API",
+  "system": "macOS Tahoe 26.6.2 (25G83)",
+  "captureDate": "2026-10-20",
+  "pixelSize": { "width": 1840, "height": 1380 },
+  "logicalSize": { "width": 920, "height": 690 },
+  "sourceCropPixels": { "x": 0, "y": 176, "width": 1840, "height": 696 },
+  "indent": 15,
+  "rowHeight": 20,
+  "headerHeight": 28,
+  "columns": { "name": 500.5, "modified": 181.5, "size": 96.5, "kind": 121.5 },
+  "expanded": {
+    "image": "tahoe-expanded.jpg",
+    "expandedIds": ["Design resources", "Design resources/Brand"],
+    "selectedIds": ["Design resources/Brand/Colors.txt"]
+  },
+  "collapsed": {
+    "image": "tahoe-collapsed.jpg",
+    "expandedIds": ["Design resources/Brand"],
+    "selectedIds": ["Design resources"]
+  }
+}

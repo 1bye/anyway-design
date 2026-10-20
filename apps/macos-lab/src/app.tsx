@@ -250,6 +250,9 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 				<a className="copy-button" href="/?view=file-list-reference">
 					Compare file lists
 				</a>
+				<a className="copy-button" href="/?view=folder-list-reference">
+					Compare folder hierarchy
+				</a>
 				<a className="copy-button" href="/?view=quick-look-reference">
 					Compare Quick Look
 				</a>

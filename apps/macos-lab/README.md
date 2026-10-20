@@ -293,3 +293,23 @@ floating rename editor. The reference's selection is inactive; exact Finder
 field padding, border, and active selection still require a direct capture.
 See `public/assets/native-file-rename/SOURCES.md` and the reproducible native
 renderer at `scripts/render-rename-reference.swift`.
+
+
+### Expandable folder study
+
+Open `/?view=folder-list-reference` for nested live rows beside actual Tahoe
+Finder captures. Expanded and Collapsed baseline buttons restore matched
+states. Shared zoom and Name/Details crops use the existing list comparison.
+The captures show 15px indentation, 20px rows, full-width selection, and native
+disclosure arrows. Dark/light, active/inactive, sorting, resizing, and disabled
+extra states remain interactive on the live side.
+
+Click a disclosure or use Right/Left from a row. Right opens in place; Left
+closes an open folder or selects its parent. Collapsed descendants retain their
+expansion state while hidden selections are removed. Return renames nested
+items, and Space opens Quick Look in visible sibling-sort order. Data is demo
+React state; these actions do not operate on native files.
+
+`public/assets/native-folder-list/SOURCES.md` records the generated native
+fixture and capture provenance. Finder's installed-app file artwork can differ
+from the package's generic file-type icons.

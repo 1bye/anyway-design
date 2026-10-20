@@ -5,7 +5,10 @@ import {
 	type MacFileListItem,
 	type MacFileSort,
 } from "@anyway-design/macos/file-list";
-import { sortFileList } from "@anyway-design/macos/file-list-sort";
+import {
+	flattenFileList,
+	visibleFileListRows,
+} from "@anyway-design/macos/file-list-tree";
 import {
 	MacQuickLook,
 	type MacQuickLookItem,
@@ -25,6 +28,11 @@ import {
 	FILE_LIST_REFERENCE_ITEMS,
 	FILE_LIST_REFERENCE_WIDTHS,
 } from "./file-list-reference-data";
+import {
+	FOLDER_LIST_EXPANDED_IDS,
+	FOLDER_LIST_REFERENCE_ITEMS,
+	renameFolderFile,
+} from "./folder-list-reference-data";
 import "./dock-reference.css";
 import "./window-reference.css";
 import "./file-list-reference.css";
@@ -36,7 +44,19 @@ const CROPS = {
 } as const;
 const INITIAL_SORT: MacFileSort = { column: "name", direction: "ascending" };
 
-export function FileListReferenceComparison() {
+export function FileListReferenceComparison({
+	folders = false,
+}: {
+	folders?: boolean;
+}) {
+	const [folderItems, setFolderItems] = useState(FOLDER_LIST_REFERENCE_ITEMS);
+	const [expandedIds, setExpandedIds] = useState<string[]>(
+		folders ? FOLDER_LIST_EXPANDED_IDS : []
+	);
+	const [capture, setCapture] = useState<"expanded" | "collapsed">("expanded");
+	const referenceImage = folders
+		? `/assets/native-folder-list/tahoe-${capture}.jpg`
+		: "/assets/native-file-list/tahoe-finder-dark.jpg";
 	const [detail, setDetail] = useState<keyof typeof CROPS>("all");
 	const [zoom, setZoom] = useState("fit");
 	const [fit, setFit] = useState(1);
@@ -47,7 +67,11 @@ export function FileListReferenceComparison() {
 	const [widths, setWidths] = useState<
 		Partial<typeof FILE_LIST_REFERENCE_WIDTHS>
 	>(FILE_LIST_REFERENCE_WIDTHS);
-	const [selected, setSelected] = useState(["Agreement for Services.pdf"]);
+	const [selected, setSelected] = useState([
+		folders
+			? "Design resources/Brand/Colors.txt"
+			: "Agreement for Services.pdf",
+	]);
 	const [notice, setNotice] = useState("");
 	const [previewId, setPreviewId] = useState("");
 	const [previewOpen, setPreviewOpen] = useState(false);
@@ -57,21 +81,24 @@ export function FileListReferenceComparison() {
 	const sceneWidth = crop.width + 48;
 	const scale = zoom === "fit" ? fit : Number(zoom);
 	const items = useMemo<MacFileListItem[]>(() => {
+		const base = folders ? folderItems : FILE_LIST_REFERENCE_ITEMS;
 		if (!extra) {
-			return FILE_LIST_REFERENCE_ITEMS;
+			return base;
 		}
 		return [
-			...FILE_LIST_REFERENCE_ITEMS.map((item) =>
+			...base.map((item) =>
 				item.id === "Archive"
 					? { ...item, tags: [{ color: "#ff9f0a", label: "Work" }] }
 					: item
 			),
 			{
+				children: [
+					{ id: "offline/child", kind: "text", name: "Unavailable child.txt" },
+				],
 				disabled: true,
 				id: "offline",
-				kind: "text",
-				kindLabel: "Text document",
-				name: "Unavailable file.txt",
+				kind: "folder",
+				name: "Unavailable folder",
 			},
 			{
 				id: "long",
@@ -85,16 +112,20 @@ export function FileListReferenceComparison() {
 				],
 			},
 		];
-	}, [extra]);
+	}, [extra, folders, folderItems]);
 	const previewItems = useMemo<MacQuickLookItem[]>(
 		() =>
-			sortFileList(items, sort).map((item) => ({
-				...item,
-				preview:
-					item.kind === "image" ? { src: "/assets/clouds.webp" } : undefined,
-				subtitle: [item.kindLabel, item.sizeLabel].filter(Boolean).join(" · "),
-			})),
-		[items, sort]
+			visibleFileListRows(flattenFileList(items, sort), expandedIds).map(
+				({ file: item }) => ({
+					...item,
+					preview:
+						item.kind === "image" ? { src: "/assets/clouds.webp" } : undefined,
+					subtitle: [item.kindLabel, item.sizeLabel]
+						.filter(Boolean)
+						.join(" · "),
+				})
+			),
+		[items, sort, expandedIds]
 	);
 	const preview = useCallback((id: string) => {
 		setPreviewId(id);
@@ -150,13 +181,47 @@ export function FileListReferenceComparison() {
 	const reset = useCallback(() => {
 		setSort(INITIAL_SORT);
 		setWidths(FILE_LIST_REFERENCE_WIDTHS);
-		setSelected(["Agreement for Services.pdf"]);
+		setSelected([
+			folders
+				? "Design resources/Brand/Colors.txt"
+				: "Agreement for Services.pdf",
+		]);
+		setExpandedIds(folders ? FOLDER_LIST_EXPANDED_IDS : []);
+		setCapture("expanded");
+		setFolderItems(FOLDER_LIST_REFERENCE_ITEMS);
 		setExtra(false);
 		setDark(true);
 		setActive(true);
 		setNotice("");
 		scrollStart();
-	}, [scrollStart]);
+	}, [scrollStart, folders]);
+	const changeCapture = useCallback(
+		(state: "expanded" | "collapsed") => {
+			setCapture(state);
+			setFolderItems(FOLDER_LIST_REFERENCE_ITEMS);
+			setSort(INITIAL_SORT);
+			setWidths(FILE_LIST_REFERENCE_WIDTHS);
+			setDark(true);
+			setActive(true);
+			setExtra(false);
+			setExpandedIds(
+				state === "expanded"
+					? FOLDER_LIST_EXPANDED_IDS
+					: ["Design resources/Brand"]
+			);
+			setSelected([
+				state === "expanded"
+					? "Design resources/Brand/Colors.txt"
+					: "Design resources",
+			]);
+			scrollStart();
+		},
+		[scrollStart]
+	);
+	const rename = useCallback((id: string, name: string) => {
+		setFolderItems((current) => renameFolderFile(current, id, name));
+		setNotice(`Renamed to “${name}”.`);
+	}, []);
 	const open = useCallback(
 		(id: string) => setNotice(`Open callback: ${id}`),
 		[]
@@ -179,8 +244,12 @@ export function FileListReferenceComparison() {
 				<span>ANYWAY / PLATFORM LAB</span>
 			</header>
 			<div className="dock-study-heading">
-				<p className="dock-study-eyebrow">TAHOE · FILE LIST STUDY</p>
-				<h1>Every row, in its place.</h1>
+				<p className="dock-study-eyebrow">
+					TAHOE · {folders ? "FOLDER HIERARCHY" : "FILE LIST"} STUDY
+				</p>
+				<h1>
+					{folders ? "A folder, within a folder." : "Every row, in its place."}
+				</h1>
 				<p>
 					Live React rows beside Finder running on this Mac, with the same demo
 					files and column widths.
@@ -221,6 +290,36 @@ export function FileListReferenceComparison() {
 			<div className="window-study-controls">
 				<a href="/?view=quick-look-reference">Compare Quick Look ↗</a>
 				<a href="/?view=file-rename-reference">Compare inline rename ↗</a>
+				<a
+					href={
+						folders
+							? "/?view=file-list-reference"
+							: "/?view=folder-list-reference"
+					}
+				>
+					{folders ? "Compare flat lists" : "Compare folder hierarchy"} ↗
+				</a>
+				{folders ? (
+					<>
+						<button
+							aria-pressed={capture === "expanded"}
+							onClick={() => changeCapture("expanded")}
+							type="button"
+						>
+							Expanded baseline
+						</button>
+						<button
+							aria-pressed={capture === "collapsed"}
+							onClick={() => changeCapture("collapsed")}
+							type="button"
+						>
+							Collapsed baseline
+						</button>
+						<button onClick={() => setExpandedIds([])} type="button">
+							Collapse all
+						</button>
+					</>
+				) : null}
 				<label>
 					<input
 						checked={active}
@@ -274,12 +373,15 @@ export function FileListReferenceComparison() {
 								<MacFileList
 									active={active}
 									columnWidths={widths}
+									expandedIds={expandedIds}
 									items={items}
 									label="Demo files"
 									minRows={16}
 									onColumnWidthsChange={setWidths}
+									onExpandedChange={setExpandedIds}
 									onOpen={open}
 									onQuickLook={preview}
+									onRename={folders ? rename : undefined}
 									onSelectionChange={setSelected}
 									onSortChange={setSort}
 									selectedIds={selected}
@@ -293,11 +395,7 @@ export function FileListReferenceComparison() {
 				<section className="dock-study-panel">
 					<header>
 						<h2>Native Finder</h2>
-						<a
-							href="/assets/native-file-list/tahoe-finder-dark.jpg"
-							rel="noopener"
-							target="_blank"
-						>
+						<a href={referenceImage} rel="noopener" target="_blank">
 							Original ↗
 						</a>
 					</header>
@@ -312,11 +410,15 @@ export function FileListReferenceComparison() {
 						<div className="list-study-scene">
 							<div className="list-study-native-frame">
 								<img
-									alt="Native Tahoe Finder list of nine generated demo files with Agreement for Services selected, sorted by Name"
+									alt={
+										folders
+											? `Native Tahoe Finder folder hierarchy, ${capture}, sorted by Name`
+											: "Native Tahoe Finder list of nine generated demo files with Agreement for Services selected, sorted by Name"
+									}
 									className="list-study-native"
 									draggable={false}
 									height={1380}
-									src="/assets/native-file-list/tahoe-finder-dark.jpg"
+									src={referenceImage}
 									width={1840}
 								/>
 							</div>
@@ -326,6 +428,17 @@ export function FileListReferenceComparison() {
 				</section>
 			</div>
 			<div className="dock-study-notes">
+				{folders ? (
+					<p>
+						Click a disclosure arrow to expand without changing selection. Right
+						opens the selected folder and stays on it; Left closes it or selects
+						its parent. Collapsing clears selected descendants that become
+						hidden, while remembering which nested folders were expanded.
+						Sorting applies independently within each folder. Return renames a
+						visible item. The native presets are actual Finder captures from
+						this Mac.
+					</p>
+				) : null}
 				<p>
 					Click headers to sort; drag column dividers to resize. Focus a divider
 					and use ← / → (10px), Home / End, or double-click it to restore its
@@ -333,16 +446,16 @@ export function FileListReferenceComparison() {
 				</p>
 				<p>
 					Click, ⌘/Ctrl-click, and Shift-click select. ↑ / ↓, Home / End,
-					typeahead, ⌘/Ctrl+A, Escape, and Enter work from a row. Space opens
-					Quick Look. Double-click reports an open callback.
+					typeahead, ⌘/Ctrl+A, and Escape work from a row. Space opens Quick
+					Look. Double-click or ⌘/Ctrl+O reports an open callback. Return opens
+					a file when inline rename is not enabled.
 				</p>
 				<p>
 					The native side is a fixed capture of generated files. Sorting,
 					resizing, other selections, light/inactive appearance, and extra
 					states affect the live side. Reset native match restores the baseline.
 					Finder’s per-file previews and installed-app artwork can differ from
-					the shared native type icons. Folder hierarchy is not part of this
-					list yet.
+					the shared native type icons.
 				</p>
 			</div>
 			<p aria-live="polite" className="dock-study-selection">

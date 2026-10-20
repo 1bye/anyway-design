@@ -73,3 +73,7 @@ Mac, displaying generated demo files only. See
 - `native-file-rename/`: Native Tahoe AppKit text-field baseline rendered locally
   at 2×. These are control renders, not Finder screenshots; selection is inactive.
   See the directory's `SOURCES.md` for limitations and reproduction instructions.
+
+- `native-folder-list/`: Live Tahoe Finder captures of generated nested folders,
+  in expanded and collapsed states. See the directory's `SOURCES.md` for the
+  temporary fixture, dimensions, measured indentation, and capture details.

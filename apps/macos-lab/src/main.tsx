@@ -30,6 +30,8 @@ if (view === "dock-reference") {
 	page = <ControlsReferenceComparison />;
 } else if (view === "file-list-reference") {
 	page = <FileListReferenceComparison />;
+} else if (view === "folder-list-reference") {
+	page = <FileListReferenceComparison folders />;
 } else if (view === "quick-look-reference") {
 	page = <QuickLookReferenceComparison />;
 } else if (view === "file-rename-reference") {

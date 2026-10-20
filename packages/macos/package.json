@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     "./file-list-sort": "./src/file-list-sort.ts",
+    "./file-list-tree": "./src/file-list-tree.ts",
     "./styles.css": "./src/styles.css",
     "./*": "./src/*.tsx"
   },
