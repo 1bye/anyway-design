@@ -61,6 +61,7 @@ export interface MacFileListProps extends MacFileRenameProps {
 	defaultExpandedIds?: readonly string[];
 	defaultSort?: MacFileSort;
 	expandedIds?: readonly string[];
+	folderDisclosure?: "toggle" | "indicator";
 	items: readonly MacFileListItem[];
 	label?: string;
 	minRows?: number;
@@ -121,12 +122,14 @@ function FileListName({
 	editor,
 	depth,
 	expanded,
+	folderDisclosure,
 }: {
 	file: MacFileListItem;
 	showExtensions: boolean;
 	editor?: ReactNode;
 	depth: number;
 	expanded: boolean;
+	folderDisclosure: "toggle" | "indicator";
 }) {
 	const name =
 		showExtensions || file.name.startsWith(".")
@@ -142,7 +145,10 @@ function FileListName({
 			}}
 		>
 			<span className="mac-file-list-disclosure">
-				{file.kind === "folder" ? (
+				{file.kind === "folder" && folderDisclosure === "indicator" ? (
+					<WindowSymbol name="chevron-right" size={10} />
+				) : null}
+				{file.kind === "folder" && folderDisclosure === "toggle" ? (
 					<button
 						aria-expanded={expanded}
 						aria-label={`${expanded ? "Collapse" : "Expand"} ${file.name}`}
@@ -330,6 +336,7 @@ export function MacFileList({
 	defaultSort = DEFAULT_SORT,
 	defaultExpandedIds = [],
 	expandedIds: controlledExpandedIds,
+	folderDisclosure = "toggle",
 	onExpandedChange,
 	onSortChange,
 	columnWidths,
@@ -776,6 +783,7 @@ export function MacFileList({
 											}
 											expanded={!file.disabled && expandedIds.includes(file.id)}
 											file={file}
+											folderDisclosure={folderDisclosure}
 											showExtensions={showExtensions}
 										/>
 									) : (

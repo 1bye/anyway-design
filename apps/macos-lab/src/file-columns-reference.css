@@ -1,0 +1,42 @@
+.column-study .dock-study-jump {
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+.column-study .dock-study-jump [aria-pressed="true"] {
+	background: #eaf1f5;
+	border-color: #b4c9d5;
+}
+.column-study-viewport {
+	height: calc(var(--column-study-height) * var(--column-study-zoom));
+	max-height: 650px;
+	overflow: auto;
+	background: #edf0f2;
+}
+.column-study-scene {
+	position: relative;
+	width: var(--column-study-width);
+	height: var(--column-study-height);
+	overflow: hidden;
+	zoom: var(--column-study-zoom);
+}
+.column-study-live,
+.column-study-native {
+	position: absolute;
+	top: 24px;
+	left: var(--column-study-offset);
+	width: var(--column-reference-width);
+	height: 470px;
+}
+.column-study-native {
+	overflow: hidden;
+}
+.column-study-native img {
+	width: 100%;
+	max-width: none;
+	height: 574px;
+}
+.column-study-live .mac-file-list {
+	--mac-list-selection: #0058cc;
+	scrollbar-width: none;
+}

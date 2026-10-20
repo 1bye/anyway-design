@@ -262,6 +262,9 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 				<a className="copy-button" href="/?view=file-dialog-reference">
 					Compare Open / Save dialogs
 				</a>
+				<a className="copy-button" href="/?view=file-columns-reference">
+					Compare column view
+				</a>
 			</>
 		);
 	}

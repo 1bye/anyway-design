@@ -333,3 +333,25 @@ Captures and provenance are in `public/assets/native-file-dialog/`. Save's
 separate system title bar is omitted in the paired viewport; Original shows the
 full capture. The baseline is dark/inactive. View modes other than List, folder
 creation, native storage access, and native tag-token editing are not implemented.
+
+### Finder column study
+
+Open `/?view=file-columns-reference` for connected file columns beside genuine
+Tahoe Finder browser captures. Folder path and Image preview restore matched
+presets. Shared zoom and Rows / Preview crops inspect the same geometry on both
+sides: 245px columns, 22px rows, retained gray ancestors, and the active selection.
+The preview uses the same Clouds.webp bytes as native Finder.
+
+Single-click folders to reveal children. Right enters the first enabled child;
+Left selects the parent. The existing file list supplies sibling arrows, Home /
+End, typeahead, rename, and Quick Look callbacks. Resize a divider with pointer
+or keyboard, double-click to reset, and Escape to cancel a pointer resize.
+The narrow-container control keeps the selected column visible while revealing
+as much right-hand context as fits. Extra states include a disabled folder, a
+long filename, and 32 generated files for vertical scrolling.
+
+The native images are fixed crops documented in
+`public/assets/native-file-columns/SOURCES.md`. Other selections, resizing,
+appearance, sorting, and extra files affect the React side. Native Quick Actions,
+Show More, and tag editing are outside this preview comparison. The reusable
+column component uses single selection; Open/Save dialogs still use List view.

@@ -210,6 +210,7 @@ export function FileDialogReferenceComparison() {
 				</label>
 			</div>
 			<div className="window-study-controls">
+				<a href="/?view=file-columns-reference">Compare column view ↗</a>
 				<label>
 					Detail{" "}
 					<select

@@ -720,3 +720,61 @@ The first pass supports List view and plain tag text; native filesystem access,
 directory creation, other view modes, and Sequoia calibration are separate work.
 `MacFileList` also accepts `multiple={false}` for single-selection consumers and
 `columnLabels` to label supplied date values (the panel baseline uses Date Added).
+
+## Finder column view
+
+`MacFileColumns` from `@anyway-design/macos/file-columns` renders connected
+columns from a nested array of `MacFileColumnItem` (the same file-list fields,
+with optional `children` and preview content):
+
+```tsx
+const [value, setValue] = useState<string | undefined>("Photos/Clouds.webp");
+
+<MacFileColumns
+  items={files}
+  value={value}
+  onValueChange={setValue}
+  onOpen={(id) => openFile(id)}
+  onQuickLook={(id) => showPreview(id)}
+/>
+```
+
+Supply stable, unique IDs and an acyclic tree. A folder has `kind: "folder"`;
+its `children` may be empty. The selected ID determines the path: ancestors
+stay highlighted, each selected folder reveals its children, and a selected
+file reveals a preview. Missing or disabled selections clear to `undefined`;
+disabled folders cannot expose descendants. Switching branches prunes the old
+columns. `sort` applies independently to each sibling group.
+
+Click selects and reveals folders. Right enters the first enabled, sorted
+child; Left returns to the parent. Up/Down, Home/End, and typeahead use the shared
+file-list navigation. This is a single-selection component. Optional `onRename`,
+`renamingId`, `onRenamingChange`, and `validateRename` reuse inline renaming:
+Return renames when enabled, otherwise it reports `onOpen`. Double-click and
+Command/Control-O report `onOpen`; Space reports `onQuickLook` when supplied.
+The caller owns filename changes, previews, opening, and persistence.
+
+Columns default to 245px with 22px rows. `columnWidth` changes the default;
+`columnWidths` and `onColumnWidthsChange` control widths by depth and retain
+widths when a branch is hidden. Dividers support pointer capture with zoom
+correction, Left/Right in 10px steps, Home/End (160–600px), double-click to reset
+to 245px, and Escape/pointer cancellation to restore the original width.
+`resizable={false}` omits handles. Each list scrolls vertically; the browser
+scrolls horizontally, keeping the current column's start visible as its
+container changes size. Set a height on the containing layout.
+
+`showPreview={false}` omits the final preview; `previewWidth` defaults to 240px.
+Each item can provide `preview: { src, alt?, details? }` for an image, or
+`preview: { text, details? }` for plain text. Details are `{ label, value }` pairs
+with unique labels. The built-in preview shows artwork, filename, kind/size,
+and supplied metadata. Text is escaped and scrolls in a fixed artwork area;
+images fit proportionally, with a native-icon fallback after load failure.
+It does not decode PDFs or other documents. `renderPreview(file)` can render a
+custom preview instead. `MacFileColumnPreview` is also directly importable from
+`@anyway-design/macos/file-column-preview`.
+
+`active`, `showExtensions`, `label`, `className`, and `style` configure presentation.
+Tahoe dark geometry is compared against real Finder captures in the lab;
+font rasterization, small-size icon artwork, and capture color profiles can differ.
+Native Quick Actions, multi-selection, tag-token editing, and Sequoia-specific
+calibration are not included. Open/Save retain List view in this release.

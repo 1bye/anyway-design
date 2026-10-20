@@ -81,3 +81,7 @@ Mac, displaying generated demo files only. See
 - `native-file-dialog/`: Genuine Tahoe NSOpenPanel and NSSavePanel captures,
   using generated files. Includes expanded and compact Save. See the directory's
   `SOURCES.md` for capture geometry, title-bar cropping, and the reference app.
+
+- `native-file-columns/`: Browser-only crops from genuine Tahoe Finder windows,
+  showing a folder path and an image preview. See the directory's `SOURCES.md`
+  for fixture provenance, crop coordinates, and measured geometry.
