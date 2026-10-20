@@ -33,7 +33,7 @@ and the portal container so menus retain their styles in embedded previews.
 | `window-toolbar` | `WindowToolbarGroup`: `label`, `children`; `WindowToolbarButton`: `label`, native button props |
 | `window-sidebar` | `WindowSidebar`: `groups`, `selected`, `onSelect`, `label` |
 | `window-symbol` | `WindowSymbol`: `name`, `size`, span props; `WindowSymbolName` |
-| `tabs` | `MacTabs`: `tabs`, `value`, `onValueChange`, `variant`, `label` |
+| `tabs` | `MacTabs`: `tabs`, `value`, `onValueChange`, `variant`, `label`, `onAdd`, `onClose`, `onReorder` |
 | `controls` | `MacButton`, `MacSwitch` |
 
 Menus and tabs use Base UI for focus and keyboard behavior. Dock pointer
@@ -144,14 +144,14 @@ fieldsets, and buttons retain native disabled, keyboard, and click behavior.
 Omit `sidebar` to use the full content width. `active={false}` mutes the chrome
 and traffic lights. Reduced transparency removes the sidebar backdrop blur.
 
-`WindowSymbol` supplies 30 native Tahoe glyphs for the toolbar, sidebar, and
+`WindowSymbol` supplies 32 native Tahoe glyphs for tabs, the toolbar, sidebar, and
 menus. AppKit renders them at 4× into transparent 64 × 64 PNGs on a 16px canvas;
 CSS masks inherit `currentColor`, including selection, disabled, and highlighted
 states. The component renders a decorative `span` (previously an SVG); its
 containing control supplies the accessible label. Custom React icons remain
 supported in every slot.
 
-The checked-in assets were extracted on macOS 26.6.2 (25G83). Twenty-eight use
+The checked-in assets were extracted on macOS 26.6.2 (25G83). Thirty use
 the public system-symbol API; Applications and Make Alias use the installed
 `CoreGlyphsPrivate.bundle` through AppKit's bundle image loader. No native or
 private API runs in the browser. Bundlers resolve the static asset URLs.
@@ -187,6 +187,25 @@ Each Dock item's `icon` accepts an image URL or a React element, such as an
 inline SVG. Custom artwork should fill the supplied square canvas and include
 its intended transparent margins. `size` measures this canvas, not the opaque
 icon face. The lab's reference-only icon clips are not part of this package.
+
+Document `MacTabs` use a rounded Tahoe track and selected pill, or rectangular
+Sequoia tabs. `onAdd` shows the + button; `onClose(id)` enables hover close
+buttons and Delete/Backspace. Set a tab's `closable` to `false` to keep it open.
+Closing the selected tab requests the next enabled neighbor, then the previous
+one, or `""` when none remain. The parent owns the tab array and selected value.
+`onReorder(ids)` enables dragging and Alt+Shift+Left/Right; update the array to
+match those IDs. Arrow keys, Home, and End select enabled tabs.
+
+Narrow strips scroll horizontally and show an All tabs menu. Selection scrolls
+the active tab into view without scrolling the surrounding page. Set
+`--mac-tab-height` (30px track), `--mac-tab-padding` (4px above and below), and
+`--mac-tab-min-width` (90px) on the document root to calibrate density.
+The dragged pill follows the pointer while neighboring tabs slide into their
+preview positions. Release settles the pill in 180ms; Escape or releasing
+outside the strip cancels. Reduced motion removes the settling animations.
+The window's active state and environment appearance
+apply to tabs too. Action callbacks apply only to `variant="document"`;
+segmented tabs retain their compact layout. Tabs do not detach into OS windows.
 
 `adaptive` defaults to `true`. `size` is the maximum requested canvas size:
 the Dock scales down uniformly to fit its positioned container, reserving

@@ -84,13 +84,23 @@ verified native display scale. **Fit both**, **1×–2×**, **Toolbar**, and
 The shared React window, floating sidebar, traffic lights, and toolbar groups
 are live. Sidebar selection, toolbar activation callbacks, active/inactive
 state, sidebar visibility, and reduced transparency can be exercised.
-**Reset comparison** restores the matching state. The document tabs and file
-pane are a static crop from Apple's image, clearly identified in the page.
-This keeps the study focused on chrome rather than reproducing Finder content.
+**Reset comparison** restores the matching state. Document tabs are live
+`MacTabs`: select, add, close, and drag to reorder them. Arrow keys switch tabs,
+Delete closes the focused tab, and Alt+Shift+Left/Right reorders it.
+**More tabs** adds a long list with a disabled tab; **Narrow tab area (260px)**
+exercises horizontal scrolling and the All tabs menu. These stress controls
+affect the live side only. Only the Documents file pane remains a static
+crop from Apple's image; other tabs use simple sample content.
 
 The study calibrates a 121px sidebar column, 41px title bar, 7px sidebar inset,
-22px outer radius, 25px sidebar rows, and 11px traffic lights at its normalized
+22px outer radius, 22px tab track with a 6px content inset below it, 25px sidebar rows, and 11px traffic lights at its normalized
 scale. Its grayscale and control colors are sampled from the reference.
+Tab movement follows the native recording supplied on 20 October 2026: the
+selected pill follows the pointer continuously, neighbors slide into preview
+positions, and release settles into a slot. Neighbor movement uses 160ms and
+settling uses 180ms ease-out as a first calibration; exact timings remain
+provisional. Escape restores the original order. The recording also shows
+native window detachment, which the tab component does not implement.
 The main lab uses the shared components at their general-purpose dimensions.
 The toolbar, sidebar, and menus use shared `WindowSymbol` masks exported through
 AppKit on the user's macOS 26.6.2 system. These replace the hand-drawn SVGs with

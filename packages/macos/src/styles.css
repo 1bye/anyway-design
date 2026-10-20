@@ -1064,19 +1064,232 @@
 	border-radius: 20px;
 }
 
-[data-preset="tahoe"] [data-variant="document"] .mac-tab-list {
-	gap: 4px;
-	padding: 6px;
+.mac-tabs[data-variant="document"] {
+	--mac-tab-height: 30px;
+	--mac-tab-min-width: 90px;
+	--mac-tab-padding: 4px;
+	--mac-tab-radius: 5px;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 0;
+}
+
+[data-preset="tahoe"] .mac-tabs[data-variant="document"] {
+	--mac-tab-radius: 999px;
+}
+
+.mac-tab-strip {
+	position: relative;
+	display: flex;
+	flex: 0 0 calc(var(--mac-tab-height) + var(--mac-tab-padding) * 2);
+	min-width: 0;
+	padding-block: var(--mac-tab-padding);
+	background: color-mix(in srgb, var(--mac-text) 11%, var(--mac-surface));
+	box-shadow: inset 0 -0.5px var(--mac-line);
+}
+
+.mac-tab-strip .mac-tab-list {
+	position: relative;
+	flex: 1;
+	min-width: 0;
+	padding: 0;
+	overflow: auto hidden;
+	scrollbar-width: none;
 	background: transparent;
 }
 
-[data-preset="tahoe"] [data-variant="document"] .mac-tab {
-	border-radius: 8px;
+.mac-tab-strip .mac-tab-list::-webkit-scrollbar {
+	display: none;
 }
 
-[data-preset="tahoe"] [data-variant="document"] .mac-tab[data-active] {
-	background: var(--mac-selected);
+.mac-tab-item {
+	position: relative;
+	display: flex;
+	flex: 1 0 var(--mac-tab-min-width);
+	min-width: 0;
+	padding: 2px;
+}
+
+.mac-tab-item + .mac-tab-item::before {
+	position: absolute;
+	top: 25%;
+	bottom: 25%;
+	left: -0.5px;
+	width: 1px;
+	content: "";
+	background: color-mix(in srgb, var(--mac-text) 12%, transparent);
+}
+
+.mac-tab-item[data-selected]::before,
+.mac-tab-item[data-selected] + .mac-tab-item::before {
+	opacity: 0;
+}
+
+.mac-tab-strip .mac-tab {
+	width: 100%;
+	min-height: 0;
+	padding: 0 18px;
+	overflow: hidden;
+	font-size: inherit;
+	font-weight: 400;
+	line-height: 1;
+	color: var(--mac-secondary);
+	border-radius: var(--mac-tab-radius);
+}
+
+.mac-tab-strip .mac-tab[data-active] {
+	color: var(--mac-text);
+	background: color-mix(in srgb, var(--mac-control) 90%, transparent);
+	box-shadow:
+		inset 0 0 0 0.75px rgb(255 255 255 / 70%),
+		0 0.5px 1.5px rgb(0 0 0 / 8%);
+}
+
+.mac-tab-label {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.mac-tab[data-reorderable] {
+	touch-action: pan-y;
+	user-select: none;
+}
+
+.mac-tab[data-disabled] {
+	opacity: 0.4;
+}
+
+.mac-tab-close,
+.mac-tab-action {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--mac-secondary);
+	background: transparent;
+	border: 0;
+}
+
+.mac-tab-overflow {
+	display: flex;
+	flex: 0 0 32px;
+}
+
+.mac-tab-close {
+	position: absolute;
+	top: 50%;
+	left: 5px;
+	width: 18px;
+	height: 18px;
+	padding: 0;
+	border-radius: 4px;
+	opacity: 0;
+	transform: translateY(-50%);
+}
+
+.mac-tab-item:hover .mac-tab-close,
+.mac-tab-item:focus-within .mac-tab-close {
+	opacity: 1;
+}
+
+.mac-tab-strip .mac-tab-close {
+	color: var(--mac-text);
+}
+
+[data-preset="tahoe"] .mac-tab-close {
+	border-radius: 50%;
+}
+
+.mac-tab-action {
+	flex: 0 0 32px;
+	padding: 0;
+}
+
+[data-preset="tahoe"] .mac-tab-strip {
+	background: var(--mac-surface);
 	box-shadow: none;
+}
+
+[data-preset="tahoe"] .mac-tab-strip .mac-tab-list {
+	background: color-mix(in srgb, var(--mac-text) 11%, var(--mac-surface));
+	border-radius: 999px;
+}
+
+[data-preset="tahoe"] .mac-tab-action {
+	flex-basis: 22px;
+	margin: 0 5px;
+	background: var(--mac-control);
+	border-radius: 999px;
+}
+
+.mac-tab-close:hover,
+[data-preset] .mac-tab-action:hover {
+	background: var(--mac-selected);
+}
+
+.mac-tab-strip button:focus-visible {
+	outline-offset: -2px;
+}
+
+.mac-tab-list[data-dragging] .mac-tab-item {
+	transition: transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.mac-tab-list[data-dragging] .mac-tab-item[data-dragging] {
+	z-index: 2;
+	transition: none;
+}
+
+.mac-tab-list[data-dragging] .mac-tab-item::before,
+.mac-tab-list[data-dragging] .mac-tab-close {
+	opacity: 0;
+}
+
+.mac-tab-list[data-dragging] .mac-tab:focus-visible {
+	outline: none;
+}
+
+[data-reduce-motion] .mac-tab-list[data-dragging] .mac-tab-item {
+	transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.mac-tab-list[data-dragging] .mac-tab-item {
+		transition: none;
+	}
+}
+
+[data-variant="document"] > .mac-tab-panel {
+	flex: 1;
+	min-height: 0;
+	overflow: auto;
+}
+
+.mac-window[data-active="false"] .mac-tab-strip .mac-tab-list {
+	background: color-mix(in srgb, var(--mac-text) 6%, var(--mac-surface));
+}
+
+.mac-window[data-active="false"] .mac-tab-strip .mac-tab {
+	color: var(--mac-secondary);
+	opacity: 0.65;
+}
+
+[data-appearance="dark"] .mac-tab-strip .mac-tab[data-active] {
+	box-shadow:
+		inset 0 0 0 0.5px rgb(255 255 255 / 12%),
+		0 1px 2px rgb(0 0 0 / 20%);
+}
+
+.mac-tab-announcement {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	clip-path: inset(50%);
 }
 
 .mac-button {

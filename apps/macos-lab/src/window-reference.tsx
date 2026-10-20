@@ -28,6 +28,7 @@ import {
 import "./dock-reference.css";
 import "./window-reference.css";
 import { FinderActions } from "./finder-actions";
+import { WindowReferenceTabs } from "./window-reference-tabs";
 
 type WindowDetail = keyof typeof WINDOW_REFERENCE_CROPS;
 const SCENE_INSET = 24;
@@ -94,6 +95,9 @@ export function WindowReferenceComparison() {
 	const [notice, setNotice] = useState("");
 	const [imageFailed, setImageFailed] = useState(false);
 	const [menuOpen, setMenuOpen] = useState(false);
+	const [crowdedTabs, setCrowdedTabs] = useState(false);
+	const [compactTabs, setCompactTabs] = useState(false);
+	const [tabReset, setTabReset] = useState(0);
 	const liveViewport = useRef<HTMLElement>(null);
 	const referenceViewport = useRef<HTMLElement>(null);
 	const crop = WINDOW_REFERENCE_CROPS[detail];
@@ -165,6 +169,16 @@ export function WindowReferenceComparison() {
 		(event: ChangeEvent<HTMLInputElement>) => setOpaque(event.target.checked),
 		[]
 	);
+	const changeCrowdedTabs = useCallback(
+		(event: ChangeEvent<HTMLInputElement>) =>
+			setCrowdedTabs(event.target.checked),
+		[]
+	);
+	const changeCompactTabs = useCallback(
+		(event: ChangeEvent<HTMLInputElement>) =>
+			setCompactTabs(event.target.checked),
+		[]
+	);
 	const selectSidebar = useCallback((id: string) => {
 		setSelected(id);
 		const item = WINDOW_REFERENCE_GROUPS.flatMap((group) => group.items).find(
@@ -212,6 +226,9 @@ export function WindowReferenceComparison() {
 		setOpaque(false);
 		setSelected("documents");
 		setNotice("");
+		setCrowdedTabs(false);
+		setCompactTabs(false);
+		setTabReset((current) => current + 1);
 		resetScroll();
 	}, [resetScroll]);
 
@@ -258,7 +275,7 @@ export function WindowReferenceComparison() {
 				<p className="dock-study-eyebrow">TAHOE · WINDOW STUDY</p>
 				<h1>A closer look at the window.</h1>
 				<p>
-					Compare the floating sidebar, traffic lights, and toolbar against
+					Compare the floating sidebar, toolbar, and live document tabs against
 					Apple’s Finder.
 				</p>
 			</div>
@@ -321,6 +338,28 @@ export function WindowReferenceComparison() {
 					Reset comparison
 				</button>
 			</div>
+			<div className="window-study-controls">
+				<label>
+					<input
+						checked={crowdedTabs}
+						onChange={changeCrowdedTabs}
+						type="checkbox"
+					/>
+					More tabs
+				</label>
+				<label>
+					<input
+						checked={compactTabs}
+						onChange={changeCompactTabs}
+						type="checkbox"
+					/>
+					Narrow tab area (260px)
+				</label>
+				<span>
+					Drag to reorder · Arrow keys to switch · Delete to close · ⌥⇧← / → to
+					reorder
+				</span>
+			</div>
 			<div className="dock-study-grid">
 				<section className="dock-study-panel">
 					<header>
@@ -355,24 +394,18 @@ export function WindowReferenceComparison() {
 									toolbar={toolbar}
 									toolbarLeading={leading}
 								>
-									<div
-										aria-label="Static document tabs and file content from Apple’s reference"
-										className="window-study-file-sample"
-										role="img"
-									>
-										<img
-											alt=""
-											draggable={false}
-											height={694}
-											src={WINDOW_REFERENCE_IMAGE}
-											width={1144}
-										/>
-									</div>
+									<WindowReferenceTabs
+										compact={compactTabs}
+										crowded={crowdedTabs}
+										key={`${tabReset}-${crowdedTabs}`}
+									/>
 								</MacWindow>
 							</MacOSEnvironment>
 						</div>
 					</section>
-					<footer>Shared MacWindow · configurable toolbar and sidebar</footer>
+					<footer>
+						Shared MacWindow + MacTabs · live toolbar, sidebar, and tabs
+					</footer>
 				</section>
 				<section className="dock-study-panel">
 					<header>
@@ -433,10 +466,10 @@ export function WindowReferenceComparison() {
 					before zoom.
 				</p>
 				<p>
-					Window chrome, toolbar buttons, and sidebar rows are live React.
-					Document tabs and file content are a static crop of Apple’s image.
-					Icons are native exports from macOS Tahoe 26.6.2. Their size and
-					weight are calibrated here; glass remains an approximation.
+					Window chrome, toolbar buttons, sidebar rows, and tabs are live React.
+					Only the Documents file pane is a static crop of Apple’s image. Icons
+					are native exports from macOS Tahoe 26.6.2. Their size and weight are
+					calibrated here; glass remains an approximation.
 				</p>
 			</div>
 			<p aria-live="polite" className="dock-study-selection">

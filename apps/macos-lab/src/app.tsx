@@ -79,7 +79,7 @@ const COMPONENTS = [
 	},
 	{
 		description:
-			"Native-style segmented tabs. Use the arrow keys to move between views.",
+			"Segmented controls and document tabs with closing, reordering, and overflow.",
 		icon: Columns2,
 		id: "tabs",
 		subtitle: "A small change of context.",
@@ -253,6 +253,13 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 		return (
 			<a className="copy-button" href="/?view=menu-reference">
 				Compare menus with Apple
+			</a>
+		);
+	}
+	if (component === "tabs") {
+		return (
+			<a className="copy-button" href="/?view=window-reference">
+				<Columns2 size={14} /> Compare document tabs with Apple
 			</a>
 		);
 	}

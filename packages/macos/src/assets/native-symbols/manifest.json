@@ -91,6 +91,17 @@
       "weight": 0.30000001192092896
     },
     {
+      "extent": 10,
+      "id": "close",
+      "nativeName": "xmark",
+      "pixelHeight": 64,
+      "pixelWidth": 64,
+      "pointSize": 16,
+      "rendering": "monochrome",
+      "source": "NSImage(systemSymbolName: xmark)",
+      "weight": 0
+    },
+    {
       "extent": 14,
       "id": "cloud",
       "nativeName": "icloud",
@@ -242,6 +253,17 @@
       "pointSize": 16,
       "rendering": "monochrome",
       "source": "NSImage(systemSymbolName: arrow.up.forward.app)",
+      "weight": 0
+    },
+    {
+      "extent": 12,
+      "id": "plus",
+      "nativeName": "plus",
+      "pixelHeight": 64,
+      "pixelWidth": 64,
+      "pointSize": 16,
+      "rendering": "monochrome",
+      "source": "NSImage(systemSymbolName: plus)",
       "weight": 0
     },
     {

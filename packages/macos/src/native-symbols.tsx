@@ -23,6 +23,7 @@ export const NATIVE_SYMBOLS = {
 		"./assets/native-symbols/chevron-up-down.png",
 		import.meta.url
 	).href,
+	close: new URL("./assets/native-symbols/close.png", import.meta.url).href,
 	cloud: new URL("./assets/native-symbols/cloud.png", import.meta.url).href,
 	copy: new URL("./assets/native-symbols/copy.png", import.meta.url).href,
 	desktop: new URL("./assets/native-symbols/desktop.png", import.meta.url).href,
@@ -44,6 +45,7 @@ export const NATIVE_SYMBOLS = {
 	"list-view": new URL("./assets/native-symbols/list-view.png", import.meta.url)
 		.href,
 	open: new URL("./assets/native-symbols/open.png", import.meta.url).href,
+	plus: new URL("./assets/native-symbols/plus.png", import.meta.url).href,
 	recents: new URL("./assets/native-symbols/recents.png", import.meta.url).href,
 	rename: new URL("./assets/native-symbols/rename.png", import.meta.url).href,
 	search: new URL("./assets/native-symbols/search.png", import.meta.url).href,

@@ -225,13 +225,71 @@
 
 .window-study-file-sample img {
 	position: absolute;
-	top: -41px;
+	top: calc(-41px - var(--mac-tab-height) - var(--mac-tab-padding) * 2);
 	left: -121px;
 	width: 572px;
 	max-width: none;
 	height: 347px;
 	pointer-events: none;
 	user-select: none;
+}
+
+.window-study-tabs {
+	width: 100%;
+	height: 100%;
+}
+
+.window-study-tabs[data-compact] {
+	width: 260px;
+	max-width: 100%;
+}
+
+.window-study-tabs .mac-tabs[data-variant="document"] {
+	--mac-tab-height: 22px;
+	--mac-tab-padding: 3px;
+	font-size: 9px;
+}
+
+.window-study-live .window-study-tabs .mac-tab-strip {
+	padding-block: 0 6px;
+	background: #f6f6f6;
+}
+
+.window-study-live .window-study-tabs .mac-tab-list {
+	color: #555;
+	background: #e2e2e2;
+}
+
+.window-study-live .window-study-tabs .mac-tab[data-active] {
+	font-weight: 500;
+	color: #555;
+	background: #f7f7f7;
+}
+
+.window-study-tabs .mac-tab-item {
+	padding-block: 2px;
+}
+
+.window-study-tabs .mac-tab-action .mac-window-symbol {
+	width: 12px;
+	height: 12px;
+}
+
+.window-study-tabs .mac-tab-close {
+	left: 6px;
+	width: 12px;
+	height: 12px;
+}
+
+.window-study-tabs .mac-tab-close .mac-window-symbol {
+	width: 10px;
+	height: 10px;
+}
+
+.window-study-tab-content {
+	padding: 24px;
+	font-size: 12px;
+	color: var(--mac-secondary);
 }
 
 .window-study-live .mac-window[data-active="false"] .mac-window-heading {
