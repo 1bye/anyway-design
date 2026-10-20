@@ -1,0 +1,425 @@
+import { MacOSEnvironment } from "@anyway-design/macos/environment";
+import { MacWindow } from "@anyway-design/macos/window";
+import { WindowSidebar } from "@anyway-design/macos/window-sidebar";
+import { WindowSymbol } from "@anyway-design/macos/window-symbol";
+import {
+	WindowToolbarButton,
+	WindowToolbarGroup,
+} from "@anyway-design/macos/window-toolbar";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import {
+	type ChangeEvent,
+	type CSSProperties,
+	type MouseEvent,
+	type UIEvent,
+	useCallback,
+	useLayoutEffect,
+	useRef,
+	useState,
+} from "react";
+import {
+	WINDOW_REFERENCE_CROPS,
+	WINDOW_REFERENCE_GROUPS,
+	WINDOW_REFERENCE_IMAGE,
+	WINDOW_REFERENCE_ORIGINAL,
+	WINDOW_REFERENCE_SIZE,
+	WINDOW_REFERENCE_SOURCE,
+} from "./window-reference-assets";
+import "./dock-reference.css";
+import "./window-reference.css";
+
+type WindowDetail = keyof typeof WINDOW_REFERENCE_CROPS;
+const SCENE_INSET = 24;
+
+function ReferenceToolbar({
+	onAction,
+}: {
+	onAction: (event: MouseEvent<HTMLButtonElement>) => void;
+}) {
+	return (
+		<>
+			<WindowToolbarGroup label="View">
+				<WindowToolbarButton label="Change view" onClick={onAction}>
+					<WindowSymbol name="icon-view" />
+					<WindowSymbol
+						className="window-study-small-symbol"
+						name="chevron-up-down"
+						viewBox="2 0 12 16"
+					/>
+				</WindowToolbarButton>
+			</WindowToolbarGroup>
+			<WindowToolbarGroup label="Arrange">
+				<WindowToolbarButton label="Group items" onClick={onAction}>
+					<WindowSymbol name="group" />
+					<WindowSymbol
+						className="window-study-small-symbol"
+						name="chevron-down"
+						viewBox="2 0 12 16"
+					/>
+				</WindowToolbarButton>
+			</WindowToolbarGroup>
+			<WindowToolbarGroup label="File actions">
+				<WindowToolbarButton label="Share" onClick={onAction}>
+					<WindowSymbol name="share" />
+				</WindowToolbarButton>
+				<WindowToolbarButton label="Tags" onClick={onAction}>
+					<WindowSymbol name="tag" />
+				</WindowToolbarButton>
+				<WindowToolbarButton label="More actions" onClick={onAction}>
+					<WindowSymbol name="ellipsis" />
+				</WindowToolbarButton>
+			</WindowToolbarGroup>
+			<WindowToolbarGroup label="Search">
+				<WindowToolbarButton label="Search" onClick={onAction}>
+					<WindowSymbol name="search" />
+				</WindowToolbarButton>
+			</WindowToolbarGroup>
+		</>
+	);
+}
+
+export function WindowReferenceComparison() {
+	const [zoom, setZoom] = useState("fit");
+	const [fit, setFit] = useState(1);
+	const [detail, setDetail] = useState<WindowDetail>("window");
+	const [active, setActive] = useState(true);
+	const [sidebarVisible, setSidebarVisible] = useState(true);
+	const [opaque, setOpaque] = useState(false);
+	const [selected, setSelected] = useState("documents");
+	const [notice, setNotice] = useState("");
+	const [imageFailed, setImageFailed] = useState(false);
+	const liveViewport = useRef<HTMLElement>(null);
+	const referenceViewport = useRef<HTMLElement>(null);
+	const crop = WINDOW_REFERENCE_CROPS[detail];
+	const sceneWidth = crop.width + SCENE_INSET * 2;
+	const sceneHeight = crop.height + SCENE_INSET * 2;
+	const scale = zoom === "fit" ? fit : Number(zoom);
+
+	useLayoutEffect(() => {
+		const viewport = liveViewport.current;
+		if (viewport === null) {
+			return;
+		}
+		const resize = () => setFit(Math.min(1, viewport.clientWidth / sceneWidth));
+		const observer = new ResizeObserver(resize);
+		observer.observe(viewport);
+		resize();
+		return () => observer.disconnect();
+	}, [sceneWidth]);
+
+	const syncScroll = useCallback((event: UIEvent<HTMLElement>) => {
+		const from = event.currentTarget;
+		const to =
+			from === liveViewport.current
+				? referenceViewport.current
+				: liveViewport.current;
+		if (
+			to !== null &&
+			(Math.abs(to.scrollLeft - from.scrollLeft) > 1 ||
+				Math.abs(to.scrollTop - from.scrollTop) > 1)
+		) {
+			to.scrollTo(from.scrollLeft, from.scrollTop);
+		}
+	}, []);
+	const resetScroll = useCallback(() => {
+		liveViewport.current?.scrollTo(0, 0);
+		referenceViewport.current?.scrollTo(0, 0);
+	}, []);
+	const changeZoom = useCallback(
+		(event: ChangeEvent<HTMLSelectElement>) => {
+			setZoom(event.target.value);
+			resetScroll();
+		},
+		[resetScroll]
+	);
+	const changeDetail = useCallback(
+		(event: MouseEvent<HTMLButtonElement>) => {
+			const { detail: next } = event.currentTarget.dataset;
+			if (next === "window" || next === "toolbar" || next === "sidebar") {
+				setDetail(next);
+				resetScroll();
+			}
+		},
+		[resetScroll]
+	);
+	const changeActive = useCallback(
+		(event: ChangeEvent<HTMLInputElement>) => setActive(event.target.checked),
+		[]
+	);
+	const changeSidebar = useCallback(
+		(event: ChangeEvent<HTMLInputElement>) =>
+			setSidebarVisible(event.target.checked),
+		[]
+	);
+	const changeOpacity = useCallback(
+		(event: ChangeEvent<HTMLInputElement>) => setOpaque(event.target.checked),
+		[]
+	);
+	const selectSidebar = useCallback((id: string) => {
+		setSelected(id);
+		const item = WINDOW_REFERENCE_GROUPS.flatMap((group) => group.items).find(
+			(entry) => entry.id === id
+		);
+		setNotice(
+			`${item?.label ?? "Sidebar item"} selected. The file pane stays fixed for comparison.`
+		);
+	}, []);
+	const toolbarAction = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+		setNotice(
+			`${event.currentTarget.getAttribute("aria-label")} activated. Toolbar actions are preview callbacks.`
+		);
+	}, []);
+	const close = useCallback(
+		() =>
+			setNotice(
+				"Close callback received. The comparison keeps the window open."
+			),
+		[]
+	);
+	const minimize = useCallback(
+		() =>
+			setNotice(
+				"Minimize callback received. The comparison keeps the window open."
+			),
+		[]
+	);
+	const maximize = useCallback(
+		() =>
+			setNotice(
+				"Zoom callback received. Use Shared zoom to inspect the window."
+			),
+		[]
+	);
+	const imageError = useCallback(() => setImageFailed(true), []);
+	const reset = useCallback(() => {
+		setActive(true);
+		setSidebarVisible(true);
+		setOpaque(false);
+		setSelected("documents");
+		setNotice("");
+		resetScroll();
+	}, [resetScroll]);
+
+	const sidebar = sidebarVisible ? (
+		<WindowSidebar
+			groups={WINDOW_REFERENCE_GROUPS}
+			label="Finder sidebar"
+			onSelect={selectSidebar}
+			selected={selected}
+		/>
+	) : undefined;
+	const leading = (
+		<WindowToolbarGroup label="Navigation">
+			<WindowToolbarButton label="Back" onClick={toolbarAction}>
+				<WindowSymbol name="chevron-left" />
+			</WindowToolbarButton>
+			<WindowToolbarButton disabled label="Forward">
+				<WindowSymbol name="chevron-right" />
+			</WindowToolbarButton>
+		</WindowToolbarGroup>
+	);
+	const toolbar = <ReferenceToolbar onAction={toolbarAction} />;
+	const sceneStyle = {
+		"--window-study-height": `${sceneHeight}px`,
+		"--window-study-width": `${sceneWidth}px`,
+		"--window-study-zoom": scale,
+	} as CSSProperties;
+
+	return (
+		<main className="dock-study window-study" style={sceneStyle}>
+			<header className="dock-study-header">
+				<a href="/?component=window">
+					<ArrowLeft size={15} /> Back to the lab
+				</a>
+				<span>ANYWAY / PLATFORM LAB</span>
+			</header>
+			<div className="dock-study-heading">
+				<p className="dock-study-eyebrow">TAHOE · WINDOW STUDY</p>
+				<h1>A closer look at the window.</h1>
+				<p>
+					Compare the floating sidebar, traffic lights, and toolbar against
+					Apple’s Finder.
+				</p>
+			</div>
+			<div className="dock-study-toolbar">
+				<fieldset aria-label="Detail" className="dock-study-jump">
+					<button
+						aria-pressed={detail === "window"}
+						data-detail="window"
+						onClick={changeDetail}
+						type="button"
+					>
+						Full window
+					</button>
+					<button
+						aria-pressed={detail === "toolbar"}
+						data-detail="toolbar"
+						onClick={changeDetail}
+						type="button"
+					>
+						Toolbar
+					</button>
+					<button
+						aria-pressed={detail === "sidebar"}
+						data-detail="sidebar"
+						onClick={changeDetail}
+						type="button"
+					>
+						Sidebar
+					</button>
+				</fieldset>
+				<label>
+					Shared zoom
+					<select onChange={changeZoom} value={zoom}>
+						<option value="fit">Fit both</option>
+						<option value="1">1×</option>
+						<option value="1.5">1.5×</option>
+						<option value="2">2×</option>
+					</select>
+				</label>
+			</div>
+			<div className="window-study-controls">
+				<label>
+					<input checked={active} onChange={changeActive} type="checkbox" />{" "}
+					Active window
+				</label>
+				<label>
+					<input
+						checked={sidebarVisible}
+						onChange={changeSidebar}
+						type="checkbox"
+					/>{" "}
+					Show sidebar
+				</label>
+				<label>
+					<input checked={opaque} onChange={changeOpacity} type="checkbox" />{" "}
+					Reduce transparency
+				</label>
+				<button onClick={reset} type="button">
+					Reset comparison
+				</button>
+			</div>
+			<div className="dock-study-grid">
+				<section className="dock-study-panel">
+					<header>
+						<h2>Our window</h2>
+						<span>
+							<i /> Live React chrome
+						</span>
+					</header>
+					<section
+						aria-label="Our window close-up. Scroll to inspect."
+						className="window-study-viewport"
+						onScroll={syncScroll}
+						ref={liveViewport}
+						// biome-ignore lint/a11y/noNoninteractiveTabindex: Keyboard access to the scrolling comparison.
+						tabIndex={0}
+					>
+						<div className="window-study-scene">
+							<MacOSEnvironment
+								className="window-study-live"
+								preset="tahoe"
+								reduceTransparency={opaque}
+							>
+								<MacWindow
+									active={active}
+									onClose={close}
+									onMinimize={minimize}
+									onZoom={maximize}
+									sidebar={sidebar}
+									sidebarWidth={121}
+									style={WINDOW_REFERENCE_SIZE}
+									title="Documents"
+									toolbar={toolbar}
+									toolbarLeading={leading}
+								>
+									<div
+										aria-label="Static document tabs and file content from Apple’s reference"
+										className="window-study-file-sample"
+										role="img"
+									>
+										<img
+											alt=""
+											draggable={false}
+											height={694}
+											src={WINDOW_REFERENCE_IMAGE}
+											width={1144}
+										/>
+									</div>
+								</MacWindow>
+							</MacOSEnvironment>
+						</div>
+					</section>
+					<footer>Shared MacWindow · configurable toolbar and sidebar</footer>
+				</section>
+				<section className="dock-study-panel">
+					<header>
+						<h2>Apple’s reference</h2>
+						<a
+							href={WINDOW_REFERENCE_ORIGINAL}
+							rel="noopener noreferrer"
+							target="_blank"
+						>
+							Original <ArrowUpRight size={12} />
+						</a>
+					</header>
+					<section
+						aria-label="Apple window close-up. Scroll to inspect."
+						className="window-study-viewport"
+						onScroll={syncScroll}
+						ref={referenceViewport}
+						// biome-ignore lint/a11y/noNoninteractiveTabindex: Keyboard access to the scrolling comparison.
+						tabIndex={0}
+					>
+						<div className="window-study-scene">
+							{imageFailed ? (
+								<p className="window-study-error" role="status">
+									Apple’s image could not load. Open the original above.
+								</p>
+							) : (
+								// biome-ignore lint/a11y/noNoninteractiveElementInteractions: Handles image loading failure, not interaction.
+								<img
+									alt="Apple’s Tahoe Finder window with floating sidebar and grouped toolbar controls"
+									className="window-study-original"
+									draggable={false}
+									height={694}
+									onError={imageError}
+									src={WINDOW_REFERENCE_IMAGE}
+									width={1144}
+								/>
+							)}
+						</div>
+					</section>
+					<footer>Apple’s macOS Tahoe 26 user guide · Documents</footer>
+				</section>
+			</div>
+			<div className="dock-study-notes">
+				<p>
+					Shared zoom and synchronized scrolling keep both views aligned. Use
+					Toolbar or Sidebar for a closer inspection.
+				</p>
+				<p>
+					Reference:{" "}
+					<a
+						href={WINDOW_REFERENCE_SOURCE}
+						rel="noopener noreferrer"
+						target="_blank"
+					>
+						Apple’s “Use the Finder on Mac” guide for Tahoe 26 ↗
+					</a>
+					. The 1144 × 694 image is displayed at a shared 2:1 normalization
+					before zoom.
+				</p>
+				<p>
+					Window chrome, toolbar buttons, and sidebar rows are live React.
+					Document tabs and file content are a static crop of Apple’s image.
+					Symbols and glass are approximations; this is a visual calibration
+					view, not yet a verified 1:1 native window.
+				</p>
+			</div>
+			<p aria-live="polite" className="dock-study-selection">
+				{notice}
+			</p>
+		</main>
+	);
+}

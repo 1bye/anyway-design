@@ -28,7 +28,10 @@ and the portal container so menus retain their styles in embedded previews.
 | `environment` | `MacOSEnvironment`: `preset`, `appearance`, `accentColor`, `reduceMotion`, `reduceTransparency`, `className`, `style` |
 | `dock` | `Dock`: `items`, `size`, `magnification`, `position`, `adaptive`, `autoHide`, `revealDelay`, `hideDelay`, `onActivate`, `glass`, `glassBackdrop` |
 | `menu-bar` | `MenuBar`: `menus`, `status`, `onAction`; `AppleMark` |
-| `window` | `MacWindow`: `title`, `sidebar`, `toolbar`, `footer`, `active`, window action callbacks; `TrafficLights` |
+| `window` | `MacWindow`: `title`, `sidebar`, `sidebarWidth`, `toolbarLeading`, `toolbar`, `footer`, `active`, window action callbacks; `TrafficLights` |
+| `window-toolbar` | `WindowToolbarGroup`: `label`, `children`; `WindowToolbarButton`: `label`, native button props |
+| `window-sidebar` | `WindowSidebar`: `groups`, `selected`, `onSelect`, `label` |
+| `window-symbol` | `WindowSymbol`: `name`, `size`, SVG props; `WindowSymbolName` |
 | `tabs` | `MacTabs`: `tabs`, `value`, `onValueChange`, `variant`, `label` |
 | `controls` | `MacButton`, `MacSwitch` |
 
@@ -36,6 +39,76 @@ Menus and tabs use Base UI for focus and keyboard behavior. Dock pointer
 updates use one animation frame and DOM transforms, without React renders
 on pointer movement. Actions are callbacks; the package never controls
 the operating system.
+
+Tahoe windows use an inset sidebar that extends behind the traffic lights,
+with navigation before the title and action groups after it. Sequoia keeps
+the full-width title bar and divided sidebar. The same slots work in both:
+
+```tsx
+import { MacWindow } from "@anyway-design/macos/window";
+import { WindowSidebar } from "@anyway-design/macos/window-sidebar";
+import { WindowSymbol } from "@anyway-design/macos/window-symbol";
+import { WindowToolbarButton, WindowToolbarGroup } from "@anyway-design/macos/window-toolbar";
+
+<MacWindow
+  title={selected}
+  sidebarWidth={165}
+  sidebar={
+    <WindowSidebar
+      label="Files"
+      groups={[{
+        id: "favorites",
+        label: "Favorites",
+        items: [
+          { id: "Documents", label: "Documents", icon: <WindowSymbol name="document" /> },
+          { id: "Downloads", label: "Downloads", icon: <WindowSymbol name="downloads" /> },
+        ],
+      }]}
+      selected={selected}
+      onSelect={setSelected}
+    />
+  }
+  toolbarLeading={
+    <WindowToolbarGroup label="Navigation">
+      <WindowToolbarButton label="Back" onClick={goBack}>
+        <WindowSymbol name="chevron-left" />
+      </WindowToolbarButton>
+    </WindowToolbarGroup>
+  }
+  toolbar={
+    <WindowToolbarGroup label="File actions">
+      <WindowToolbarButton label="Share" onClick={share}>
+        <WindowSymbol name="share" />
+      </WindowToolbarButton>
+    </WindowToolbarGroup>
+  }
+>
+  <YourContent />
+</MacWindow>
+```
+
+Sidebar groups accept optional headings and React icons; selection is
+controlled and announced with `aria-current`. Toolbar groups are named
+fieldsets, and buttons retain native disabled, keyboard, and click behavior.
+Omit `sidebar` to use the full content width. `active={false}` mutes the chrome
+and traffic lights. Reduced transparency removes the sidebar backdrop blur.
+
+`WindowSymbol` supplies the Finder toolbar and sidebar glyphs on a shared
+16-unit optical canvas, with individual stroke weights and filled details.
+These are custom SVG approximations drawn against the reference, not exported
+SF Symbols. They inherit `currentColor`, including selection and disabled
+states, and are decorative; their containing controls provide accessible labels.
+Custom React icons remain supported in every slot.
+
+The default window is 670 × 420 CSS pixels with a 165px sidebar and a 52px
+title bar. `style` can set dimensions and the CSS variables
+`--mac-window-titlebar-height`, `--mac-window-radius`,
+`--mac-window-sidebar-inset`, and `--mac-window-sidebar-material`.
+`--mac-traffic-close`, `--mac-traffic-minimize`, and `--mac-traffic-zoom`
+allow color calibration. The library contains no reference screenshots.
+The lab's [Tahoe window comparison](../../apps/macos-lab/README.md) normalizes
+Apple's published image separately; its smaller dimensions and colors are
+image-specific calibration values, not claims about OS defaults.
 
 Each Dock item's `icon` accepts an image URL or a React element, such as an
 inline SVG. Custom artwork should fill the supplied square canvas and include

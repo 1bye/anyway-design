@@ -199,9 +199,11 @@ function exampleCode(component: ComponentName, settings: SceneSettings) {
 			'<MenuBar\n        menus={[{ id: "file", label: "File", items: [\n          { id: "new", label: "New Window", shortcut: "⌘N" },\n        ] }]}\n        status="Tue 20 Oct 9:41"\n        onAction={(id) => setSelected(id)}\n      />\n      <p aria-live="polite">{selected}</p>';
 		state = '  const [selected, setSelected] = useState("");\n';
 	} else if (component === "window") {
-		imports = 'import { MacWindow } from "@anyway-design/macos/window";';
-		content = `{open ? <MacWindow\n        title="My window"\n        active={${settings.active}}\n        onClose={() => setOpen(false)}\n        sidebar={<p>Favorites</p>}\n      >\n        <p>Your application goes here.</p>\n      </MacWindow> : <button onClick={() => setOpen(true)}>Reopen</button>}`;
-		state = "  const [open, setOpen] = useState(true);\n";
+		imports =
+			'import { MacWindow } from "@anyway-design/macos/window";\nimport { WindowSidebar } from "@anyway-design/macos/window-sidebar";\nimport { WindowSymbol } from "@anyway-design/macos/window-symbol";\nimport { WindowToolbarButton, WindowToolbarGroup } from "@anyway-design/macos/window-toolbar";';
+		content = `{open ? <MacWindow\n        title={selected}\n        active={${settings.active}}\n        sidebarWidth={165}\n        onClose={() => setOpen(false)}\n        sidebar={<WindowSidebar\n          selected={selected}\n          onSelect={setSelected}\n          groups={[{ id: "favorites", label: "Favorites", items: [\n            { id: "Documents", label: "Documents", icon: <WindowSymbol name="document" /> },\n            { id: "Downloads", label: "Downloads", icon: <WindowSymbol name="downloads" /> },\n          ] }]}\n        />}\n        toolbar={<WindowToolbarGroup label="View">\n          <WindowToolbarButton label="Refresh" onClick={() => setSelected("Documents")}>Refresh</WindowToolbarButton>\n        </WindowToolbarGroup>}\n      >\n        <p>Your application goes here.</p>\n      </MacWindow> : <button onClick={() => setOpen(true)}>Reopen</button>}`;
+		state =
+			'  const [open, setOpen] = useState(true);\n  const [selected, setSelected] = useState("Documents");\n';
 	} else if (component === "tabs") {
 		imports = 'import { MacTabs } from "@anyway-design/macos/tabs";';
 		state = '  const [tab, setTab] = useState("all");\n';
@@ -222,13 +224,39 @@ function exampleCode(component: ComponentName, settings: SceneSettings) {
 	}
 	return `import { useState } from "react";\nimport { MacOSEnvironment } from "@anyway-design/macos/environment";\n${imports}\nimport "@anyway-design/macos/styles.css";\n\nexport function Example() {\n${state}  return (\n    <MacOSEnvironment\n      ${environment}\n      style={{ minHeight: 480, padding: 32, background: "#64819b" }}\n    >\n      ${content}\n    </MacOSEnvironment>\n  );\n}`;
 }
+function ReferenceLinks({ component }: { component: ComponentName }) {
+	if (component === "dock") {
+		return (
+			<>
+				<a className="copy-button" href="/?view=dock-reference">
+					<Columns2 size={14} /> Compare with Apple
+				</a>
+				<a className="copy-button" href="/?view=dock-glass">
+					Try live glass
+				</a>
+			</>
+		);
+	}
+	if (component === "window") {
+		return (
+			<a className="copy-button" href="/?view=window-reference">
+				<Columns2 size={14} /> Compare with Apple
+			</a>
+		);
+	}
+	return null;
+}
+
+function initialComponent(): ComponentName {
+	const component = new URLSearchParams(window.location.search).get(
+		"component"
+	);
+	return component === "dock" || component === "window" ? component : "desktop";
+}
+
 export function App() {
 	const [settings, setSettings] = useState(DEFAULTS);
-	const [component, setComponent] = useState<ComponentName>(() =>
-		new URLSearchParams(window.location.search).get("component") === "dock"
-			? "dock"
-			: "desktop"
-	);
+	const [component, setComponent] = useState<ComponentName>(initialComponent);
 	const [mode, setMode] = useState<"preview" | "compare" | "code">("preview");
 	const [copied, setCopied] = useState(false);
 	const [copyError, setCopyError] = useState(false);
@@ -476,17 +504,7 @@ export function App() {
 									: "Change the properties on the right. The component and its code stay in sync."}
 							</p>
 						</div>
-						{component === "dock" ? (
-							<>
-								<a className="copy-button" href="/?view=dock-reference">
-									<Columns2 size={14} />
-									Compare with Apple
-								</a>
-								<a className="copy-button" href="/?view=dock-glass">
-									Try live glass
-								</a>
-							</>
-						) : null}
+						<ReferenceLinks component={component} />
 						<button className="copy-button" onClick={copy} type="button">
 							{copied ? <Check size={14} /> : <Copy size={14} />}
 							{copied ? "Copied example" : "Copy example"}

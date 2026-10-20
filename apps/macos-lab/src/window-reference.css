@@ -1,0 +1,246 @@
+.window-study .dock-study-heading {
+	margin-top: 40px;
+}
+
+.window-study .dock-study-jump {
+	min-width: 0;
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
+.window-study .dock-study-jump [aria-pressed="true"] {
+	color: #24566f;
+	background: #eaf1f5;
+	border-color: #b4c9d5;
+}
+
+.window-study-controls {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+	align-items: center;
+	margin: 0 0 18px;
+	font-size: 11px;
+	color: #737981;
+}
+
+.window-study-controls label {
+	display: flex;
+	gap: 6px;
+	align-items: center;
+}
+
+.window-study-controls input {
+	accent-color: #3c718e;
+}
+
+.window-study-controls button {
+	padding: 0;
+	margin-left: auto;
+	color: #606872;
+	background: none;
+	border: 0;
+}
+
+.window-study-viewport {
+	height: calc(var(--window-study-height) * var(--window-study-zoom) + 12px);
+	max-height: 650px;
+	overflow: auto;
+	scrollbar-color: #abb4bb #edf0f2;
+	scrollbar-width: thin;
+	background: #edf0f2;
+}
+
+.window-study-viewport:focus-visible {
+	outline-offset: -3px;
+}
+
+.window-study-scene {
+	position: relative;
+	width: var(--window-study-width);
+	height: var(--window-study-height);
+	overflow: hidden;
+	zoom: var(--window-study-zoom);
+	background: #edf0f2;
+}
+
+.window-study-live,
+.window-study-original {
+	position: absolute;
+	top: 24px;
+	left: 24px;
+}
+
+.window-study-original {
+	width: 572px;
+	max-width: none;
+	height: 347px;
+}
+
+.window-study .window-study-live .mac-window {
+	--mac-window-titlebar-height: 41px;
+	--mac-window-sidebar-material: rgb(255 255 255 / 68%);
+	--mac-traffic-close: #ec6765;
+	--mac-traffic-minimize: #f2ca44;
+	--mac-traffic-zoom: #65c466;
+	font-size: 10.5px;
+	background: linear-gradient(100deg, #f1f1f1, #fcfcfc 42%, #f6f6f6);
+	border-color: #c2c2c2;
+	box-shadow: none;
+}
+
+.window-study-live .mac-window-heading {
+	gap: 10px;
+}
+
+.window-study .window-study-live .mac-window .mac-window-sidebar {
+	padding-top: 33.5px;
+}
+
+.window-study .window-study-live[data-reduce-transparency] .mac-window {
+	background: var(--mac-surface);
+}
+
+.window-study-live .mac-window-titlebar h2 {
+	font-size: 11.5px;
+	color: #515151;
+}
+
+.window-study-live .mac-window-toolbar {
+	gap: 12px;
+}
+
+.window-study-live .mac-traffic-lights {
+	gap: 7px;
+}
+
+.window-study-live .mac-traffic-lights button {
+	width: 11px;
+	height: 11px;
+}
+
+.window-study-live .mac-toolbar-group .mac-toolbar-button {
+	min-width: 28px;
+	height: 27px;
+	padding: 0 7px;
+	color: #555;
+}
+
+.window-study-live .mac-toolbar-group .mac-toolbar-button:disabled {
+	opacity: 0.35;
+}
+
+.window-study-live .mac-toolbar-button:has(.window-study-small-symbol) {
+	padding-inline: 4px;
+}
+
+.window-study-live .mac-toolbar-group [aria-label="Back"] {
+	position: relative;
+}
+
+.window-study-live [aria-label="Back"]::after {
+	position: absolute;
+	top: 6px;
+	right: 0;
+	bottom: 6px;
+	width: 0.5px;
+	content: "";
+	background: #eee;
+}
+
+.window-study-live .mac-toolbar-button > svg {
+	width: 15px;
+	height: 15px;
+}
+
+.window-study-live .mac-toolbar-button > .window-study-small-symbol {
+	width: 9px;
+}
+
+.window-study-live .mac-sidebar {
+	--mac-sidebar-row-height: 25px;
+	--mac-sidebar-group-gap: 11px;
+}
+
+.window-study-live .mac-sidebar-group h3 {
+	margin: 0 5px 2px;
+	font-size: 9px;
+	line-height: 12px;
+}
+
+.window-study-live .mac-sidebar-item {
+	gap: 6px;
+	padding: 0 7px 0 6.5px;
+	font-weight: 500;
+	border-radius: 7px;
+}
+
+.window-study-live .mac-sidebar-icon {
+	flex-basis: 15px;
+}
+
+.window-study-live .mac-sidebar-icon svg {
+	width: 15px;
+	height: 15px;
+}
+
+.window-study-live .mac-sidebar-item[aria-current="page"] {
+	background: #eceeef;
+}
+
+.window-study-tag {
+	display: block;
+	width: 10px;
+	height: 10px;
+	border-radius: 50%;
+}
+
+.tag-urgent {
+	background: #ff302b;
+}
+.tag-work {
+	background: #ff9300;
+}
+.tag-vacation {
+	background: #f5c300;
+}
+
+.window-study-file-sample {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+.window-study-file-sample img {
+	position: absolute;
+	top: -41px;
+	left: -121px;
+	width: 572px;
+	max-width: none;
+	height: 347px;
+	pointer-events: none;
+	user-select: none;
+}
+
+.window-study-live .mac-window[data-active="false"] .mac-window-heading {
+	opacity: 0.5;
+}
+
+.window-study-error {
+	padding: 24px;
+	font-size: 13px;
+}
+
+@media (max-width: 600px) {
+	.window-study-controls {
+		gap: 12px;
+	}
+	.window-study-controls button {
+		margin-left: 0;
+	}
+	.window-study .dock-study-heading h1 {
+		font-size: 26px;
+	}
+}

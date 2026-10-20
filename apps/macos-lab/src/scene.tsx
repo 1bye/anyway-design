@@ -13,20 +13,21 @@ import {
 } from "@anyway-design/macos/menu-bar";
 import { MacTabs } from "@anyway-design/macos/tabs";
 import { MacWindow, type MacWindowProps } from "@anyway-design/macos/window";
+import { WindowSidebar } from "@anyway-design/macos/window-sidebar";
+import {
+	WindowSymbol,
+	type WindowSymbolName,
+} from "@anyway-design/macos/window-symbol";
+import {
+	WindowToolbarButton,
+	WindowToolbarGroup,
+} from "@anyway-design/macos/window-toolbar";
 import {
 	BatteryFull,
-	ChevronLeft,
-	ChevronRight,
 	Cloud,
-	Download,
-	Folder,
-	Grid2X2,
 	House,
-	LayoutGrid,
-	List,
 	Search,
 	SlidersHorizontal,
-	Star,
 	Wifi,
 } from "lucide-react";
 import { type CSSProperties, useEffect, useRef, useState } from "react";
@@ -137,12 +138,50 @@ const MENUS: MacMenu[] = [
 		label: "Window",
 	},
 ];
-const SIDEBAR = [
-	{ icon: Cloud, label: "Recents" },
-	{ icon: Star, label: "Favorites" },
-	{ icon: LayoutGrid, label: "Desktop" },
-	{ icon: Folder, label: "Documents" },
-	{ icon: Download, label: "Downloads" },
+const SIDEBAR: { icon: WindowSymbolName; label: string }[] = [
+	{ icon: "recents", label: "Recents" },
+	{ icon: "favorites", label: "Favorites" },
+	{ icon: "desktop", label: "Desktop" },
+	{ icon: "document", label: "Documents" },
+	{ icon: "downloads", label: "Downloads" },
+];
+const FINDER_SIDEBAR_GROUPS = [
+	{
+		id: "favorites",
+		items: SIDEBAR.map(({ icon, label }) => ({
+			icon: <WindowSymbol name={icon} />,
+			id: label,
+			label,
+		})),
+		label: "Favorites",
+	},
+	{
+		id: "cloud",
+		items: [
+			{
+				icon: <WindowSymbol name="cloud" />,
+				id: "iCloud Drive",
+				label: "iCloud Drive",
+			},
+		],
+		label: "iCloud",
+	},
+	{
+		id: "tags",
+		items: [
+			{
+				icon: <span className="finder-tag-dot" />,
+				id: "Personal",
+				label: "Personal",
+			},
+			{
+				icon: <span className="finder-tag-dot finder-tag-work" />,
+				id: "Work",
+				label: "Work",
+			},
+		],
+		label: "Tags",
+	},
 ];
 const INITIAL_FOLDERS = [
 	"Applications",
@@ -299,41 +338,33 @@ export function DesktopScene({
 		},
 	];
 	const sidebar = (
-		<>
-			<p className="sidebar-group-label">Favorites</p>
-			{SIDEBAR.map(({ label, icon: Icon }) => (
-				<button
-					aria-pressed={selected === label}
-					key={label}
-					onClick={() => setSelected(label)}
-					type="button"
-				>
-					<Icon size={16} />
-					<span>{label}</span>
-				</button>
-			))}
-			<p className="sidebar-group-label sidebar-group-second">iCloud</p>
-			<button onClick={() => setSelected("iCloud Drive")} type="button">
-				<Cloud size={16} />
-				iCloud Drive
-			</button>
-			<p className="sidebar-group-label sidebar-group-second">Tags</p>
-			<div className="finder-tags">
-				<i />
-				Personal
-			</div>
-			<div className="finder-tags">
-				<i />
-				Work
-			</div>
-		</>
+		<WindowSidebar
+			groups={FINDER_SIDEBAR_GROUPS}
+			onSelect={setSelected}
+			selected={selected}
+		/>
+	);
+	const toolbarLeading = (
+		<WindowToolbarGroup label="Navigation">
+			<WindowToolbarButton
+				label="Go to Documents"
+				onClick={() => setSelected("Documents")}
+			>
+				<WindowSymbol name="chevron-left" />
+			</WindowToolbarButton>
+			<WindowToolbarButton
+				label="Go to Downloads"
+				onClick={() => setSelected("Downloads")}
+			>
+				<WindowSymbol name="chevron-right" />
+			</WindowToolbarButton>
+		</WindowToolbarGroup>
 	);
 	const toolbar = (
 		<FinderToolbar
 			listView={listView}
 			setApp={setApp}
 			setListView={setListView}
-			setSelected={setSelected}
 		/>
 	);
 	return (
@@ -391,6 +422,7 @@ export function DesktopScene({
 									sidebarVisible,
 									title: windowTitle,
 									toolbar,
+									toolbarLeading,
 								})}
 								onClose={() => setWindowVisible(false)}
 								onMinimize={() => setWindowVisible(false)}
@@ -494,46 +526,27 @@ function FinderFiles({
 function FinderToolbar({
 	listView,
 	setListView,
-	setSelected,
 	setApp,
 }: {
 	listView: boolean;
 	setListView: React.Dispatch<React.SetStateAction<boolean>>;
-	setSelected: (value: string) => void;
 	setApp: (value: string) => void;
 }) {
 	return (
-		<>
-			<button
-				aria-label="Go to Documents"
-				onClick={() => setSelected("Documents")}
-				type="button"
-			>
-				<ChevronLeft />
-			</button>
-			<button
-				aria-label="Go to Downloads"
-				onClick={() => setSelected("Downloads")}
-				type="button"
-			>
-				<ChevronRight />
-			</button>
-			<span className="toolbar-spacer" />
-			<button
-				aria-label={listView ? "Show icons" : "Show list"}
+		<WindowToolbarGroup label="View options">
+			<WindowToolbarButton
+				label={listView ? "Show icons" : "Show list"}
 				onClick={() => setListView((value) => !value)}
-				type="button"
 			>
-				{listView ? <Grid2X2 /> : <List />}
-			</button>
-			<button
-				aria-label="Open preferences"
+				<WindowSymbol name={listView ? "icon-view" : "list-view"} />
+			</WindowToolbarButton>
+			<WindowToolbarButton
+				label="Open preferences"
 				onClick={() => setApp("Settings")}
-				type="button"
 			>
-				<SlidersHorizontal />
-			</button>
-		</>
+				<WindowSymbol name="settings" />
+			</WindowToolbarButton>
+		</WindowToolbarGroup>
 	);
 }
 
@@ -618,6 +631,7 @@ function getWindowChrome({
 	app,
 	title,
 	toolbar,
+	toolbarLeading,
 }: {
 	isControls: boolean;
 	count: number;
@@ -626,11 +640,16 @@ function getWindowChrome({
 	app: string;
 	title: string;
 	toolbar: React.ReactNode;
-}): Pick<MacWindowProps, "footer" | "sidebar" | "title" | "toolbar"> {
+	toolbarLeading: React.ReactNode;
+}): Pick<
+	MacWindowProps,
+	"footer" | "sidebar" | "title" | "toolbar" | "toolbarLeading"
+> {
 	return {
 		footer: isControls ? undefined : `${count} items · 128.4 GB available`,
 		sidebar: !isControls && sidebarVisible ? sidebar : undefined,
 		title: app === "Finder" || isControls ? title : app,
 		toolbar: isControls ? undefined : toolbar,
+		toolbarLeading: isControls ? undefined : toolbarLeading,
 	};
 }

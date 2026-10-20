@@ -377,71 +377,14 @@ h1 {
 	width: 960px;
 	height: 490px;
 }
-.mac-window-toolbar button {
-	display: grid;
-	place-items: center;
-	width: 22px;
-	height: 26px;
-	padding: 0;
-	background: transparent;
-	border: 0;
-	border-radius: 4px;
-}
-.mac-window-toolbar button:hover {
-	background: var(--mac-selected);
-}
-.mac-window-toolbar :where(button) svg {
-	width: 17px;
-	height: 17px;
-	stroke-width: 1.6;
-}
-.toolbar-spacer {
-	width: 8px;
-}
-.sidebar-group-label {
-	margin: 0 8px 6px;
-	font-size: 10px;
-	font-weight: 600;
-	color: var(--mac-secondary);
-}
-.sidebar-group-second {
-	margin-top: 20px;
-}
-.mac-window-sidebar > button {
-	display: flex;
-	gap: 8px;
-	align-items: center;
-	width: 100%;
-	height: 29px;
-	padding: 0 8px;
-	font-size: 12px;
-	text-align: left;
-	background: transparent;
-	border: 0;
-	border-radius: 5px;
-}
-.mac-window-sidebar > button > svg {
-	color: var(--mac-accent);
-	stroke-width: 1.7;
-}
-.mac-window-sidebar > button[aria-pressed="true"] {
-	background: var(--mac-selected);
-}
-.finder-tags {
-	display: flex;
-	gap: 10px;
-	align-items: center;
-	height: 25px;
-	padding: 0 10px;
-	font-size: 12px;
-}
-.finder-tags i {
+.finder-tag-dot {
+	display: block;
 	width: 8px;
 	height: 8px;
 	background: #ff6a66;
 	border-radius: 50%;
 }
-.finder-tags:last-child i {
+.finder-tag-work {
 	background: #78c66b;
 }
 .finder-files {

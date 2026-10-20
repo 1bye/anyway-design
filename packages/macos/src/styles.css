@@ -549,6 +549,7 @@
 }
 
 .mac-window {
+	--mac-window-titlebar-height: 52px;
 	display: flex;
 	flex-direction: column;
 	width: 670px;
@@ -574,18 +575,26 @@
 	display: flex;
 	gap: 20px;
 	align-items: center;
-	min-height: 52px;
+	min-height: var(--mac-window-titlebar-height);
 	padding: 0 17px;
 	background: var(--mac-chrome);
 	border-bottom: 1px solid var(--mac-line);
 }
 
-[data-preset="tahoe"] .mac-window-titlebar {
-	min-height: 58px;
-	border-bottom: 0;
+.mac-window-controls {
+	flex-shrink: 0;
+}
+
+.mac-window-heading {
+	display: flex;
+	flex: 1;
+	gap: 12px;
+	align-items: center;
+	min-width: 0;
 }
 
 .mac-window-titlebar h2 {
+	flex-shrink: 0;
 	margin: 0;
 	font-size: 14px;
 	font-weight: 600;
@@ -603,6 +612,12 @@
 	color: var(--mac-secondary);
 }
 
+.mac-window-toolbar-leading {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+}
+
 .mac-window-body {
 	display: flex;
 	flex: 1;
@@ -611,7 +626,7 @@
 
 .mac-window-sidebar {
 	flex-shrink: 0;
-	width: 165px;
+	width: var(--mac-window-sidebar-width);
 	padding: 16px 10px;
 	border-right: 1px solid var(--mac-line);
 }
@@ -623,13 +638,212 @@
 	background: var(--mac-surface);
 }
 
-[data-preset="tahoe"] .mac-window-content {
-	margin: 0 6px 6px 0;
-	border-radius: 11px;
+[data-preset="tahoe"] .mac-window {
+	--mac-window-titlebar-height: 52px;
+	--mac-window-sidebar-inset: 7px;
+	--mac-window-radius: 22px;
+	background: var(--mac-chrome);
+	border-color: rgb(255 255 255 / 80%);
+	box-shadow:
+		0 0 0 0.5px rgb(0 0 0 / 23%),
+		0 18px 45px -8px rgb(0 0 0 / 30%),
+		0 4px 12px rgb(0 0 0 / 12%);
 }
 
-[data-preset="tahoe"] .mac-window-sidebar {
+[data-preset="tahoe"] .mac-window[data-sidebar="true"] {
+	display: grid;
+	grid-template-rows: var(--mac-window-titlebar-height) minmax(0, 1fr) auto;
+	grid-template-columns: var(--mac-window-sidebar-width) minmax(0, 1fr);
+}
+
+[data-preset="tahoe"] .mac-window-titlebar {
+	position: relative;
+	z-index: 2;
+	gap: 16px;
+	padding-inline: 15px;
+	background: transparent;
+	border-bottom: 0;
+}
+
+[data-preset="tahoe"] [data-sidebar="true"] > .mac-window-titlebar {
+	display: grid;
+	grid-area: 1 / 1 / 2 / -1;
+	grid-template-columns: var(--mac-window-sidebar-width) minmax(0, 1fr);
+	gap: 0;
+	padding: 0;
+}
+
+[data-preset="tahoe"] [data-sidebar="true"] .mac-window-controls {
+	padding-left: 15px;
+}
+
+[data-preset="tahoe"] [data-sidebar="true"] .mac-window-heading {
+	padding-right: 7px;
+}
+
+[data-preset="tahoe"] [data-sidebar="true"] > .mac-window-body {
+	display: contents;
+}
+
+[data-preset="tahoe"] .mac-window-toolbar {
+	gap: 12px;
+	color: var(--mac-text);
+}
+
+[data-preset="tahoe"] [data-sidebar="true"] .mac-window-content {
+	grid-area: 2 / 2 / 3 / 3;
+	margin: 0;
+	border-radius: 0;
+}
+
+[data-preset="tahoe"] [data-sidebar="true"] .mac-window-sidebar {
+	z-index: 1;
+	grid-area: 1 / 1 / -1 / 2;
+	width: auto;
+	min-height: 0;
+	padding: calc(
+			var(--mac-window-titlebar-height) -
+			var(--mac-window-sidebar-inset)
+		)
+		7px 7px;
+	margin: var(--mac-window-sidebar-inset) 6px var(--mac-window-sidebar-inset)
+		var(--mac-window-sidebar-inset);
+	overflow: auto;
+	scrollbar-width: thin;
+	background: var(--mac-window-sidebar-material, rgb(255 255 255 / 65%));
+	border: 0.5px solid rgb(255 255 255 / 80%);
+	border-radius: calc(
+		var(--mac-window-radius) -
+		var(--mac-window-sidebar-inset)
+	);
+	backdrop-filter: blur(20px) saturate(1.15);
+}
+
+[data-preset="tahoe"][data-appearance="dark"] .mac-window-sidebar {
+	--mac-window-sidebar-material: rgb(55 55 55 / 65%);
+	border-color: rgb(255 255 255 / 10%);
+}
+
+[data-preset="tahoe"] .mac-window[data-active="false"] {
+	box-shadow:
+		0 0 0 0.5px rgb(0 0 0 / 18%),
+		0 8px 24px rgb(0 0 0 / 16%);
+}
+
+[data-preset="tahoe"] .mac-window[data-active="false"] .mac-window-heading {
+	color: var(--mac-secondary);
+}
+
+.mac-toolbar-group {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	min-width: 0;
+	padding: 1px;
+	margin: 0;
+	background: var(--mac-control);
+	border: 0.5px solid var(--mac-line);
+	border-radius: 7px;
+}
+
+.mac-toolbar-group .mac-toolbar-button {
+	display: inline-flex;
+	gap: 4px;
+	align-items: center;
+	justify-content: center;
+	min-width: 28px;
+	height: 28px;
+	padding: 0 7px;
+	color: inherit;
+	background: transparent;
 	border: 0;
+	border-radius: inherit;
+}
+
+.mac-toolbar-button > svg {
+	width: 16px;
+	height: 16px;
+}
+
+.mac-toolbar-button > svg:not(.mac-window-symbol) {
+	stroke-width: 1.6;
+}
+
+.mac-toolbar-button:disabled {
+	opacity: 0.35;
+}
+
+.mac-toolbar-button:not(:disabled):hover,
+.mac-toolbar-button[aria-pressed="true"] {
+	background: var(--mac-selected);
+}
+
+[data-preset="tahoe"] .mac-toolbar-group {
+	padding: 0;
+	border-color: rgb(255 255 255 / 60%);
+	border-radius: 99px;
+	box-shadow: 0 3px 20px rgb(0 0 0 / 3%);
+}
+
+[data-preset="tahoe"] .mac-window[data-active="false"] .mac-toolbar-group {
+	color: var(--mac-secondary);
+	box-shadow: none;
+}
+
+.mac-sidebar {
+	--mac-sidebar-row-height: 28px;
+	--mac-sidebar-group-gap: 14px;
+	display: flex;
+	flex-direction: column;
+	gap: var(--mac-sidebar-group-gap);
+}
+
+.mac-sidebar-group h3 {
+	margin: 0 5px 3px;
+	font-size: 11px;
+	font-weight: 600;
+	line-height: 14px;
+	color: var(--mac-secondary);
+}
+
+.mac-sidebar-item {
+	display: flex;
+	gap: 7px;
+	align-items: center;
+	width: 100%;
+	min-height: var(--mac-sidebar-row-height);
+	padding: 0 8px;
+	font-size: inherit;
+	text-align: left;
+	white-space: nowrap;
+	background: transparent;
+	border: 0;
+	border-radius: 7px;
+}
+
+.mac-sidebar-item:hover {
+	background: var(--mac-selected);
+}
+
+.mac-sidebar-item[aria-current="page"] {
+	color: var(--mac-accent);
+	background: var(--mac-selected);
+}
+
+.mac-sidebar-icon {
+	display: flex;
+	flex: 0 0 16px;
+	align-items: center;
+	justify-content: center;
+}
+
+.mac-sidebar-icon svg {
+	width: 16px;
+	height: 16px;
+}
+
+.mac-sidebar-icon svg:not(.mac-window-symbol) {
+	stroke-width: 1.7;
 }
 
 .mac-window-footer {
@@ -639,6 +853,10 @@
 	text-align: center;
 	background: var(--mac-chrome);
 	border-top: 1px solid var(--mac-line);
+}
+
+[data-preset="tahoe"] [data-sidebar="true"] .mac-window-footer {
+	grid-area: 3 / 2 / 4 / 3;
 }
 
 .mac-traffic-lights {
@@ -658,13 +876,13 @@
 }
 
 .mac-traffic-close {
-	background: #ff5f57;
+	background: var(--mac-traffic-close, #ff5f57);
 }
 .mac-traffic-minimize {
-	background: #febc2e;
+	background: var(--mac-traffic-minimize, #febc2e);
 }
 .mac-traffic-zoom {
-	background: #28c840;
+	background: var(--mac-traffic-zoom, #28c840);
 }
 .mac-traffic-lights svg {
 	width: 12px;
@@ -847,6 +1065,12 @@
 [data-reduce-transparency] .mac-window,
 [data-reduce-transparency] .mac-window-titlebar,
 [data-reduce-transparency] .mac-dock-tooltip {
+	background: var(--mac-surface);
+	backdrop-filter: none;
+}
+
+[data-reduce-transparency][data-preset="tahoe"] .mac-window-sidebar,
+[data-reduce-transparency][data-preset="tahoe"] .mac-toolbar-group {
 	background: var(--mac-surface);
 	backdrop-filter: none;
 }

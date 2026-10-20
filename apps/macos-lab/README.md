@@ -55,6 +55,31 @@ of difference. This view is not proof of a pixel-identical native compositor.
 
 ## Fidelity status
 
+Choose **Window → Compare with Apple**, or open
+[the window study](http://127.0.0.1:3006/?view=window-reference), for the Tahoe
+Finder comparison. The source is [Apple's Tahoe 26 Finder guide](https://support.apple.com/en-euro/guide/mac-help/mchlp2605/26/mac/26).
+The original transparent 1144 × 694 PNG is displayed at 572 × 347 before
+shared zoom. This 2:1 normalization is a comparison convention, not a
+verified native display scale. **Fit both**, **1×–2×**, **Toolbar**, and
+**Sidebar** provide matching views; scrolling either panel follows in the other.
+
+The shared React window, floating sidebar, traffic lights, and toolbar groups
+are live. Sidebar selection, toolbar activation callbacks, active/inactive
+state, sidebar visibility, and reduced transparency can be exercised.
+**Reset comparison** restores the matching state. The document tabs and file
+pane are a static crop from Apple's image, clearly identified in the page.
+This keeps the study focused on chrome rather than reproducing Finder content.
+
+The study calibrates a 121px sidebar column, 41px title bar, 7px sidebar inset,
+22px outer radius, 25px sidebar rows, and 11px traffic lights at its normalized
+scale. Its grayscale and control colors are sampled from the reference.
+The main lab uses the shared components at their general-purpose dimensions.
+The toolbar and sidebar use shared `WindowSymbol` SVGs, with reference-matched
+silhouettes, optical sizing, and stroke weights instead of generic Lucide icons.
+These are custom approximations, not exported SF Symbols. Font rasterization,
+backdrop blur, and rim light still differ from Apple's renderer. Dark and inactive
+states are adaptations without a matching reference image.
+
 These are interactive reproductions, **not yet verified 1:1 replicas**.
 Preset geometry and materials need native reference calibration. Tahoe's
 optical refraction and AppKit vibrancy remain approximations. The live

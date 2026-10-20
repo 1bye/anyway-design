@@ -53,9 +53,11 @@ export interface MacWindowProps extends TrafficLightsProps {
 	children: ReactNode;
 	footer?: ReactNode;
 	sidebar?: ReactNode;
+	sidebarWidth?: number;
 	style?: CSSProperties;
 	title: string;
 	toolbar?: ReactNode;
+	toolbarLeading?: ReactNode;
 	zoomed?: boolean;
 }
 
@@ -63,7 +65,9 @@ export function MacWindow({
 	title,
 	children,
 	sidebar,
+	sidebarWidth = 165,
 	toolbar,
+	toolbarLeading,
 	footer,
 	active = true,
 	zoomed = false,
@@ -76,13 +80,26 @@ export function MacWindow({
 			aria-labelledby={titleId}
 			className="mac-window"
 			data-active={active}
+			data-sidebar={Boolean(sidebar)}
 			data-zoomed={zoomed}
-			style={style}
+			style={
+				{
+					"--mac-window-sidebar-width": `${sidebarWidth}px`,
+					...style,
+				} as CSSProperties
+			}
 		>
 			<header className="mac-window-titlebar">
-				<TrafficLights active={active} {...actions} />
-				<h2 id={titleId}>{title}</h2>
-				<div className="mac-window-toolbar">{toolbar}</div>
+				<div className="mac-window-controls">
+					<TrafficLights active={active} {...actions} />
+				</div>
+				<div className="mac-window-heading">
+					{toolbarLeading ? (
+						<div className="mac-window-toolbar-leading">{toolbarLeading}</div>
+					) : null}
+					<h2 id={titleId}>{title}</h2>
+					{toolbar ? <div className="mac-window-toolbar">{toolbar}</div> : null}
+				</div>
 			</header>
 			<div className="mac-window-body">
 				{sidebar ? (

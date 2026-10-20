@@ -29,3 +29,17 @@ fixtures and are not exported by the component package.
 
 Geist in `../fonts/` is copied from the existing planning app; its license
 is included alongside it.
+
+## Tahoe window reference study
+
+- `apple-tahoe-finder-reference.png`: unmodified 1144 × 694 RGBA image linked
+  from [Apple's macOS Tahoe 26 “Use the Finder on Mac” guide](https://support.apple.com/en-euro/guide/mac-help/mchlp2605/26/mac/26).
+  [Original PNG](https://help.apple.com/assets/69DD569682238CF8EC0621E2/69DD569982238CF8EC0621E9/en_US/4c09ae5b39875fee3cde6fbc1fbf89d3.png).
+
+The study uses a common 2:1 normalization, then applies shared zoom. The right
+panel displays the original. On the left, only the document tabs and file pane
+are clipped from the image (source region beginning at x=242, y=82); the window
+border, toolbar, traffic lights, and sidebar are rendered by React and CSS.
+No photographed window chrome appears behind the live chrome. The source and
+the static content crop are disclosed in the study. This is a local reference
+fixture, not a component-package asset; Apple's ownership remains unchanged.
