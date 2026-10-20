@@ -1,0 +1,15 @@
+{
+  "source": "Native AppKit control rendering, not a Finder screenshot",
+  "system": "macOS Tahoe 26.6.2 (25G83)",
+  "renderDate": "2026-10-20",
+  "logicalSize": { "width": 460, "height": 220 },
+  "pixelSize": { "width": 920, "height": 440 },
+  "filename": "Agreement for Services.pdf",
+  "selection": { "start": 0, "length": 22, "active": false },
+  "gridField": { "x": 174, "y": 138, "width": 112, "height": 38 },
+  "listField": { "x": 46, "y": 100, "width": 365, "height": 20 },
+  "limitations": [
+    "Inactive offscreen selection",
+    "Finder-specific field styling is not calibrated"
+  ]
+}

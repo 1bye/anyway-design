@@ -277,3 +277,19 @@ bun x ultracite check apps/macos-lab packages/macos
 
 Assets under `public/assets` come from the user's local Taada project and the
 documented reference sources. See `public/assets/SOURCES.md`.
+
+### Inline rename study
+
+Open `/?view=file-rename-reference` for grid/list editor comparisons, shared zoom,
+and an interactive workbench. Return starts renaming; Enter commits, Escape
+cancels, and valid drafts commit on blur. Right-click or Shift-F10 offers Rename.
+The workbench covers duplicate validation, disabled files, dotfiles, wrapping
+names, hidden extensions, light/dark appearance, and narrow containers. Names
+exist only in React state; no native filesystem entries are renamed.
+
+The reference assets are native AppKit `NSTextField` renders from this Tahoe
+system, **not Finder captures**. The Finder window capture API omitted its
+floating rename editor. The reference's selection is inactive; exact Finder
+field padding, border, and active selection still require a direct capture.
+See `public/assets/native-file-rename/SOURCES.md` and the reproducible native
+renderer at `scripts/render-rename-reference.swift`.

@@ -9,6 +9,7 @@
 	--mac-line: rgb(0 0 0 / 12%);
 	--mac-control: #fff;
 	--mac-selected: rgb(0 0 0 / 8%);
+	--mac-rename-surface: #fff;
 	--mac-window-radius: 10px;
 	position: relative;
 	font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
@@ -35,6 +36,7 @@
 	--mac-line: rgb(255 255 255 / 12%);
 	--mac-control: #626262;
 	--mac-selected: rgb(255 255 255 / 12%);
+	--mac-rename-surface: #1e1e1e;
 	color-scheme: dark;
 }
 
@@ -86,6 +88,92 @@
 	margin: 0;
 	background: var(--mac-surface);
 	border: 0;
+}
+
+.mac-file-grid-item {
+	position: relative;
+	min-width: 0;
+}
+
+.mac-file-grid-item > .mac-file-item {
+	width: 100%;
+	height: 100%;
+}
+
+.mac-file-rename {
+	position: relative;
+	min-width: 0;
+	color: var(--mac-text);
+}
+
+.mac-file-rename[data-multiline="true"] {
+	position: absolute;
+	top: calc(var(--mac-file-icon-size, 64px) + var(--mac-file-label-gap, 5px));
+	right: 0;
+	left: 0;
+	z-index: 2;
+	font-size: var(--mac-file-font-size, 13px);
+	line-height: var(--mac-file-line-height, 16px);
+}
+
+.macos .mac-file-rename-input {
+	display: block;
+	width: 100%;
+	min-width: 0;
+	height: 20px;
+	padding: 0 3px;
+	margin: 0;
+	font: inherit;
+	line-height: inherit;
+	color: var(--mac-text);
+	caret-color: var(--mac-text);
+	user-select: text;
+	outline: none;
+	background: var(--mac-rename-surface);
+	border: 1px solid var(--mac-secondary);
+	border-radius: 6px;
+	box-shadow: none;
+}
+
+.macos .mac-file-rename-input:focus-visible {
+	outline: none;
+}
+
+.mac-file-rename-input::selection {
+	color: white;
+	background: var(--mac-accent);
+}
+
+.mac-file-rename[data-multiline="true"] .mac-file-rename-input {
+	min-height: 20px;
+	padding: 2px 3px;
+	overflow: hidden;
+	text-align: center;
+	overflow-wrap: anywhere;
+	resize: none;
+}
+
+.mac-file-rename-input[aria-invalid="true"] {
+	border-color: #ff453a;
+}
+
+.mac-file-rename-error {
+	position: absolute;
+	top: calc(100% + 4px);
+	left: 0;
+	z-index: 5;
+	width: max-content;
+	max-width: 240px;
+	padding: 6px 8px;
+	font-size: 11px;
+	line-height: 15px;
+	color: var(--mac-text);
+	text-align: left;
+	white-space: normal;
+	background: var(--mac-surface);
+	border: 1px solid var(--mac-line);
+	border-radius: 5px;
+	box-shadow: 0 3px 10px rgb(0 0 0 / 15%);
 }
 
 .macos .mac-file-item {
@@ -150,6 +238,10 @@
 	-webkit-line-clamp: 2;
 	overflow-wrap: anywhere;
 	isolation: isolate;
+}
+
+.mac-file-item[data-renaming] .mac-file-caption {
+	visibility: hidden;
 }
 
 .mac-file-name {
@@ -346,6 +438,10 @@
 
 .mac-file-list-table td[data-column="name"] {
 	padding-left: 5px;
+}
+
+.mac-file-list-table tr[data-renaming] td[data-column="name"] {
+	overflow: visible;
 }
 
 .mac-file-list-table td[data-column="size"] {

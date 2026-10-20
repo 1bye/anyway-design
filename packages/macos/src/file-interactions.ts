@@ -44,3 +44,26 @@ export function requestFilePreview(
 	}
 	return true;
 }
+
+export function requestFileOpen(
+	event: PreviewKey,
+	id: string,
+	onOpen?: (id: string) => void
+): boolean {
+	if (
+		event.key !== "Enter" &&
+		!(
+			(event.metaKey || event.ctrlKey) &&
+			!event.altKey &&
+			!event.shiftKey &&
+			event.key.toLowerCase() === "o"
+		)
+	) {
+		return false;
+	}
+	event.preventDefault();
+	if (!event.repeat) {
+		onOpen?.(id);
+	}
+	return true;
+}

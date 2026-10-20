@@ -5,6 +5,7 @@ import { ControlsReferenceComparison } from "./controls-reference";
 import { DockGlassPlayground } from "./dock-glass-playground";
 import { DockReferenceComparison } from "./dock-reference";
 import { FileListReferenceComparison } from "./file-list-reference";
+import { FileRenameReferenceComparison } from "./file-rename-reference";
 import { MenuReferenceComparison } from "./menu-reference";
 import { QuickLookReferenceComparison } from "./quick-look-reference";
 import { WindowReferenceComparison } from "./window-reference";
@@ -31,5 +32,7 @@ if (view === "dock-reference") {
 	page = <FileListReferenceComparison />;
 } else if (view === "quick-look-reference") {
 	page = <QuickLookReferenceComparison />;
+} else if (view === "file-rename-reference") {
+	page = <FileRenameReferenceComparison />;
 }
 createRoot(root).render(<StrictMode>{page}</StrictMode>);

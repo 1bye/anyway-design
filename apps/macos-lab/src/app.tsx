@@ -253,6 +253,9 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 				<a className="copy-button" href="/?view=quick-look-reference">
 					Compare Quick Look
 				</a>
+				<a className="copy-button" href="/?view=file-rename-reference">
+					Compare inline rename
+				</a>
 			</>
 		);
 	}

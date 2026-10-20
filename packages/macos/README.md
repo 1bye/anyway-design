@@ -552,3 +552,59 @@ zoomed preview canvases; use the panel within them. The native image comparison
 calibrates Tahoe's charcoal frame, controls, and geometry. Font rendering,
 source-image color handling, native vibrancy, and transition timing remain
 approximations; the Sequoia variant is not separately calibrated.
+
+## Inline file renaming
+
+`MacFileGrid` and `MacFileList` opt into inline renaming with `onRename`:
+
+```tsx
+const [items, setItems] = useState(initialFiles);
+const [selectedIds, setSelectedIds] = useState<string[]>([]);
+
+<MacFileGrid
+  items={items}
+  selectedIds={selectedIds}
+  onSelectionChange={setSelectedIds}
+  onRename={(id, name) => {
+    setItems((current) =>
+      current.map((file) => (file.id === id ? { ...file, name } : file))
+    );
+  }}
+/>
+```
+
+With `onRename`, unmodified Return starts editing a single selected or focused
+file. Without it, Return preserves the existing `onOpen` behavior. Double-click
+and Command/Control-O open the file. Multi-selection does not start a batch
+rename. Disabled files cannot be edited.
+
+The editor initially selects the basename, leaving the last extension visible
+and unselected. Dotfiles, names without extensions, and folders (including dotted
+folder names) are selected in full. Hidden extensions are revealed while editing.
+Icon-view text wraps and grows without moving the grid; list-view text edits in
+one line within the Name column.
+
+Enter commits, Escape cancels, and blur commits a valid name. Tab follows normal
+browser focus navigation. Composing text is left to the IME; text arrows, Space,
+and Command/Control-A stay inside the editor. Enter and Escape return focus to
+the same file, including after a name sort moves its list row.
+
+`onRename(id, name)` reports a changed, valid draft once. The caller owns `items`
+and must update the filename; no filesystem operations are performed. The
+component rejects empty/whitespace-only names, `.`/`..`, colons, slashes, and
+control characters, without silently trimming other names. Use
+`validateRename(id, name)` to return an error string for application rules, such
+as duplicate names or prohibited extension changes. Invalid drafts remain
+editable and show an accessible error; Escape discards them. The callback is
+synchronous; server persistence and server error feedback belong to the caller.
+
+For a Rename button or context-menu command, control the session with
+`renamingId: string | null` and `onRenamingChange(id | null)`. Set the selection
+and `renamingId` to the target file; set it to `null` to cancel externally.
+The lab demonstrates composition with `MacContextMenu`, including keyboard
+invocation. The package does not impose a file context menu on consumers.
+
+The native side of `?view=file-rename-reference` uses actual Tahoe AppKit control
+renders, not Finder screenshots. Native inactive selection, Finder-specific
+editor styling, slow-click initiation, extension-change confirmation, batch
+rename, and rename undo history are not reproduced by this first pass.

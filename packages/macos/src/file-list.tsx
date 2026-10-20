@@ -4,6 +4,7 @@ import {
 	type KeyboardEvent,
 	type MouseEvent,
 	type PointerEvent,
+	type ReactNode,
 	type RefObject,
 	useCallback,
 	useMemo,
@@ -14,6 +15,7 @@ import { MacFileIcon } from "./file-icons";
 import {
 	focusFileTarget,
 	isAdditiveSelection,
+	requestFileOpen,
 	requestFilePreview,
 } from "./file-interactions";
 import {
@@ -23,9 +25,12 @@ import {
 	type MacFileSort,
 	sortFileList,
 } from "./file-list-sort";
+import type { MacFileRenameProps } from "./file-rename";
+import { FileRenameField } from "./file-rename-field";
 import { selectFileIds } from "./file-selection";
 import { MacFileThumbnail } from "./file-thumbnail";
 import type { MacFile } from "./files";
+import { useFileRename } from "./use-file-rename";
 import { WindowSymbol } from "./window-symbol";
 
 export type { MacFileListColumn, MacFileSort } from "./file-list-sort";
@@ -39,7 +44,7 @@ export interface MacFileListItem extends MacFile {
 }
 
 type ColumnWidths = Partial<Record<MacFileListColumn, number>>;
-export interface MacFileListProps {
+export interface MacFileListProps extends MacFileRenameProps {
 	active?: boolean;
 	className?: string;
 	columns?: readonly MacFileListColumn[];
@@ -107,9 +112,11 @@ function enabledListRow(target: EventTarget) {
 function FileListName({
 	file,
 	showExtensions,
+	editor,
 }: {
 	file: MacFileListItem;
 	showExtensions: boolean;
+	editor?: ReactNode;
 }) {
 	const name =
 		showExtensions || file.name.startsWith(".")
@@ -137,9 +144,11 @@ function FileListName({
 					(file.icon ?? <MacFileIcon name={file.kind ?? "document"} />)
 				)}
 			</span>
-			<span className="mac-file-list-filename" title={file.name}>
-				{name}
-			</span>
+			{editor ?? (
+				<span className="mac-file-list-filename" title={file.name}>
+					{name}
+				</span>
+			)}
 			{file.tags?.length ? (
 				<span
 					aria-label={`Tags: ${file.tags.map((tag) => tag.label).join(", ")}`}
@@ -285,6 +294,10 @@ export function MacFileList({
 	onSelectionChange,
 	onOpen,
 	onQuickLook,
+	onRename,
+	onRenamingChange,
+	renamingId,
+	validateRename,
 	sort: controlledSort,
 	defaultSort = DEFAULT_SORT,
 	onSortChange,
@@ -299,6 +312,14 @@ export function MacFileList({
 	className = "",
 	style,
 }: MacFileListProps) {
+	const rename = useFileRename({
+		items,
+		onRename,
+		onRenamingChange,
+		onSelectionChange,
+		renamingId,
+		selectedIds,
+	});
 	const [internalSort, setInternalSort] = useState(defaultSort);
 	const [internalWidths, setInternalWidths] = useState<ColumnWidths>({});
 	const [focusId, setFocusId] = useState<string>();
@@ -369,6 +390,12 @@ export function MacFileList({
 	);
 	const click = useCallback(
 		(event: MouseEvent<HTMLTableElement>) => {
+			if (
+				event.target instanceof Element &&
+				event.target.closest(".mac-file-rename")
+			) {
+				return;
+			}
 			const row = listRow(event.target);
 			if (row?.dataset.fileId && row.getAttribute("aria-disabled") !== "true") {
 				row.focus({ preventScroll: true });
@@ -386,6 +413,12 @@ export function MacFileList({
 	);
 	const open = useCallback(
 		(event: MouseEvent<HTMLTableElement>) => {
+			if (
+				event.target instanceof Element &&
+				event.target.closest(".mac-file-rename")
+			) {
+				return;
+			}
 			const row = listRow(event.target);
 			if (row?.dataset.fileId && row.getAttribute("aria-disabled") !== "true") {
 				onOpen?.(row.dataset.fileId);
@@ -406,18 +439,17 @@ export function MacFileList({
 				return;
 			}
 			const additive = isAdditiveSelection(event);
-			if (requestFilePreview(event, id, onQuickLook)) {
+			if (
+				rename.key(event, id) ||
+				requestFileOpen(event, id, onOpen) ||
+				requestFilePreview(event, id, onQuickLook)
+			) {
 				return;
 			}
 			if (event.key === "Escape") {
 				event.preventDefault();
 				anchor.current = undefined;
 				onSelectionChange([]);
-				return;
-			}
-			if (event.key === "Enter") {
-				event.preventDefault();
-				onOpen?.(id);
 				return;
 			}
 			if (event.key === " ") {
@@ -445,7 +477,7 @@ export function MacFileList({
 			focusFileTarget(row);
 			select(next, event.shiftKey, event.shiftKey && additive);
 		},
-		[sorted, ids, onOpen, onQuickLook, onSelectionChange, select]
+		[sorted, ids, onOpen, onQuickLook, onSelectionChange, select, rename.key]
 	);
 	const totalWidth = columns.reduce(
 		(total, column) =>
@@ -547,13 +579,27 @@ export function MacFileList({
 							aria-disabled={file.disabled || undefined}
 							aria-selected={selectedIds.includes(file.id)}
 							data-file-id={file.id}
+							data-renaming={rename.id === file.id || undefined}
 							key={file.id}
 							tabIndex={file.id === tabStop ? 0 : -1}
 						>
 							{columns.map((column) => (
 								<td data-column={column} key={column}>
 									{column === "name" ? (
-										<FileListName file={file} showExtensions={showExtensions} />
+										<FileListName
+											editor={
+												rename.id === file.id && onRename ? (
+													<FileRenameField
+														file={file}
+														onCommit={onRename}
+														onEnd={rename.end}
+														validate={validateRename}
+													/>
+												) : undefined
+											}
+											file={file}
+											showExtensions={showExtensions}
+										/>
 									) : (
 										cellValue(file, column)
 									)}

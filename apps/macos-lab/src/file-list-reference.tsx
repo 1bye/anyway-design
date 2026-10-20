@@ -220,6 +220,7 @@ export function FileListReferenceComparison() {
 			</div>
 			<div className="window-study-controls">
 				<a href="/?view=quick-look-reference">Compare Quick Look ↗</a>
+				<a href="/?view=file-rename-reference">Compare inline rename ↗</a>
 				<label>
 					<input
 						checked={active}

@@ -69,3 +69,7 @@ The image remains a local comparison fixture outside the component package.
 Mac, displaying generated demo files only. See
 [capture provenance and geometry](native-file-list/SOURCES.md) and its
 `manifest.json`. This image is a lab fixture, not a component-package asset.
+
+- `native-file-rename/`: Native Tahoe AppKit text-field baseline rendered locally
+  at 2×. These are control renders, not Finder screenshots; selection is inactive.
+  See the directory's `SOURCES.md` for limitations and reproduction instructions.

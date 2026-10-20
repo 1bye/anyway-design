@@ -13,11 +13,15 @@ import { MacFileIcon, type MacFileIconName } from "./file-icons";
 import {
 	focusFileTarget,
 	isAdditiveSelection,
+	requestFileOpen,
 	requestFilePreview,
 } from "./file-interactions";
 import { FileLabel } from "./file-label";
+import type { MacFileRenameProps } from "./file-rename";
+import { FileRenameField } from "./file-rename-field";
 import { fileGridNeighbor, selectFileIds } from "./file-selection";
 import { MacFileThumbnail, type MacFileThumbnailProps } from "./file-thumbnail";
+import { useFileRename } from "./use-file-rename";
 
 export interface MacFileTag {
 	color: string;
@@ -100,7 +104,7 @@ export function MacFileItem({
 	);
 }
 
-export interface MacFileGridProps {
+export interface MacFileGridProps extends MacFileRenameProps {
 	active?: boolean;
 	className?: string;
 	items: readonly MacFile[];
@@ -188,12 +192,24 @@ export function MacFileGrid({
 	onSelectionChange,
 	onOpen,
 	onQuickLook,
+	onRename,
+	onRenamingChange,
+	renamingId,
+	validateRename,
 	label = "Files",
 	active = true,
 	showExtensions = true,
 	className = "",
 	style,
 }: MacFileGridProps) {
+	const rename = useFileRename({
+		items,
+		onRename,
+		onRenamingChange,
+		onSelectionChange,
+		renamingId,
+		selectedIds,
+	});
 	const [focusId, setFocusId] = useState<string>();
 	const anchor = useRef<string>(undefined);
 	const typeahead = useRef({ text: "", time: 0 });
@@ -251,7 +267,11 @@ export function MacFileGrid({
 				return;
 			}
 			const additive = isAdditiveSelection(event);
-			if (requestFilePreview(event, id, onQuickLook)) {
+			if (
+				rename.key(event, id) ||
+				requestFileOpen(event, id, onOpen) ||
+				requestFilePreview(event, id, onQuickLook)
+			) {
 				return;
 			}
 			const buttons = [
@@ -263,11 +283,6 @@ export function MacFileGrid({
 				event.preventDefault();
 				anchor.current = undefined;
 				onSelectionChange([]);
-				return;
-			}
-			if (event.key === "Enter") {
-				event.preventDefault();
-				onOpen?.(id);
 				return;
 			}
 			if (additive && event.key.toLowerCase() === "a") {
@@ -287,7 +302,15 @@ export function MacFileGrid({
 			focusFileTarget(button);
 			select(next, event.shiftKey, event.shiftKey && additive);
 		},
-		[enabledIds, items, onOpen, onQuickLook, onSelectionChange, select]
+		[
+			enabledIds,
+			items,
+			onOpen,
+			onQuickLook,
+			onSelectionChange,
+			select,
+			rename.key,
+		]
 	);
 	const focus = useCallback((event: FocusEvent<HTMLFieldSetElement>) => {
 		const id = fileButton(event.target)?.dataset.fileId;
@@ -308,14 +331,25 @@ export function MacFileGrid({
 			style={style}
 		>
 			{items.map((file) => (
-				<MacFileItem
-					data-file-id={file.id}
-					file={file}
-					key={file.id}
-					selected={selectedIds.includes(file.id)}
-					showExtensions={showExtensions}
-					tabIndex={file.id === tabStop ? 0 : -1}
-				/>
+				<div className="mac-file-grid-item" key={file.id}>
+					<MacFileItem
+						data-file-id={file.id}
+						data-renaming={rename.id === file.id || undefined}
+						file={file}
+						selected={selectedIds.includes(file.id)}
+						showExtensions={showExtensions}
+						tabIndex={rename.id !== file.id && file.id === tabStop ? 0 : -1}
+					/>
+					{rename.id === file.id && onRename ? (
+						<FileRenameField
+							file={file}
+							multiline
+							onCommit={onRename}
+							onEnd={rename.end}
+							validate={validateRename}
+						/>
+					) : null}
+				</div>
 			))}
 		</fieldset>
 	);
