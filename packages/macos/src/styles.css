@@ -1,0 +1,810 @@
+.macos {
+	--mac-accent: #007aff;
+	--mac-text: #242424;
+	--mac-secondary: #858585;
+	--mac-surface: #fff;
+	--mac-chrome: rgb(242 241 240 / 86%);
+	--mac-sidebar: rgb(238 237 236 / 72%);
+	--mac-material: rgb(244 244 244 / 77%);
+	--mac-line: rgb(0 0 0 / 12%);
+	--mac-control: #fff;
+	--mac-selected: rgb(0 0 0 / 8%);
+	--mac-window-radius: 10px;
+	position: relative;
+	font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+	font-size: 13px;
+	-webkit-font-smoothing: antialiased;
+	color: var(--mac-text);
+	color-scheme: light;
+}
+
+.macos[data-preset="tahoe"] {
+	--mac-window-radius: 20px;
+	--mac-chrome: rgb(249 249 249 / 79%);
+	--mac-sidebar: rgb(244 244 244 / 63%);
+	--mac-material: rgb(250 250 250 / 70%);
+}
+
+.macos[data-appearance="dark"] {
+	--mac-text: #f2f2f2;
+	--mac-secondary: #999;
+	--mac-surface: #242424;
+	--mac-chrome: rgb(43 43 43 / 91%);
+	--mac-sidebar: rgb(40 40 40 / 77%);
+	--mac-material: rgb(45 45 45 / 84%);
+	--mac-line: rgb(255 255 255 / 12%);
+	--mac-control: #626262;
+	--mac-selected: rgb(255 255 255 / 12%);
+	color-scheme: dark;
+}
+
+.macos *,
+.macos *::before,
+.macos *::after {
+	box-sizing: border-box;
+}
+
+.macos button,
+.macos input {
+	font: inherit;
+}
+
+.macos button {
+	color: inherit;
+}
+
+.macos button:focus-visible,
+.macos input:focus-visible {
+	outline: 3px solid color-mix(in srgb, var(--mac-accent) 50%, transparent);
+	outline-offset: 3px;
+}
+
+.mac-menubar {
+	position: absolute;
+	inset: 0 0 auto;
+	z-index: 30;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 27px;
+	padding: 0 15px;
+	color: #fff;
+	text-shadow: 0 1px 3px rgb(0 0 0 / 18%);
+	background: rgb(255 255 255 / 22%);
+	backdrop-filter: blur(28px) saturate(1.5);
+}
+
+[data-preset="tahoe"] .mac-menubar {
+	background: transparent;
+	backdrop-filter: none;
+}
+
+.mac-menubar-menus,
+.mac-menu-status {
+	display: flex;
+	align-items: center;
+	height: 100%;
+}
+
+.mac-menu-trigger {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	padding: 0 10px;
+	font-size: 13px;
+	color: inherit;
+	text-shadow: inherit;
+	background: none;
+	border: 0;
+	border-radius: 4px;
+}
+
+.mac-menu-trigger svg {
+	width: 17px;
+	height: 19px;
+}
+
+.mac-menu-trigger[data-popup-open] {
+	background: rgb(255 255 255 / 25%);
+}
+
+.mac-menu-status {
+	gap: 17px;
+	font-size: 12px;
+	font-weight: 500;
+}
+
+.mac-menu-status > svg {
+	width: 16px;
+	height: 16px;
+}
+
+.mac-menu-positioner {
+	z-index: 100;
+}
+
+.mac-menu-popup {
+	min-width: 230px;
+	padding: 5px;
+	outline: none;
+	background: var(--mac-material);
+	border: 0.5px solid rgb(255 255 255 / 38%);
+	border-radius: 6px;
+	box-shadow:
+		0 0 0 0.5px rgb(0 0 0 / 15%),
+		0 12px 32px rgb(0 0 0 / 25%);
+	backdrop-filter: blur(30px) saturate(1.6);
+}
+
+[data-preset="tahoe"] .mac-menu-popup {
+	padding: 6px;
+	border-radius: 12px;
+	box-shadow:
+		inset 0 0 0 0.5px rgb(255 255 255 / 30%),
+		0 12px 32px rgb(0 0 0 / 22%);
+}
+
+.mac-menu-item {
+	display: flex;
+	gap: 32px;
+	align-items: center;
+	justify-content: space-between;
+	min-height: 24px;
+	padding: 3px 9px;
+	font-size: 13px;
+	cursor: default;
+	user-select: none;
+	outline: none;
+	border-radius: 4px;
+}
+
+[data-preset="tahoe"] .mac-menu-item {
+	min-height: 27px;
+	border-radius: 6px;
+}
+
+.mac-menu-item[data-highlighted] {
+	color: white;
+	background: var(--mac-accent);
+}
+
+.mac-menu-item[data-disabled] {
+	opacity: 0.35;
+}
+
+.mac-menu-shortcut {
+	opacity: 0.5;
+}
+
+.mac-menu-separator {
+	height: 1px;
+	margin: 5px 9px;
+	background: var(--mac-line);
+}
+
+.mac-dock {
+	--dock-size: 52px;
+	--dock-growth: 0px;
+	--dock-gap: 4px;
+	--dock-edge-gap: 9px;
+	--dock-separator-gap: 15px;
+	position: absolute;
+	z-index: 40;
+	display: flex;
+	gap: var(--dock-gap);
+	align-items: flex-end;
+	width: max-content;
+	padding: var(--dock-padding, 6px 8px 12px);
+	isolation: isolate;
+}
+
+.mac-dock[data-position="bottom"] {
+	bottom: var(--dock-edge-gap);
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+.mac-dock-surface {
+	position: absolute;
+	inset: 0 calc(var(--dock-growth) / -2);
+	z-index: -1;
+	background: rgb(233 233 233 / 29%);
+	border: 0.5px solid rgb(255 255 255 / 42%);
+	border-radius: 17px;
+	box-shadow:
+		0 0 0 0.5px rgb(0 0 0 / 12%),
+		0 4px 14px rgb(0 0 0 / 23%),
+		inset 0 0 0 0.5px rgb(255 255 255 / 15%);
+	backdrop-filter: blur(22px) saturate(1.6);
+	transition: inset 100ms ease-out;
+}
+
+[data-appearance="dark"] .mac-dock-surface {
+	background-color: rgb(30 30 30 / 35%);
+}
+
+/* Proportions estimated from Apple's WWDC25 Apple Music desktop image. */
+[data-preset="tahoe"] .mac-dock {
+	--dock-gap: calc(var(--dock-size) * 0.07143);
+	--dock-edge-gap: 5px;
+	--dock-separator-gap: calc(var(--dock-size) * 0.49091);
+	--dock-padding: calc(var(--dock-size) * 0.19467)
+		calc(var(--dock-size) * 0.18759) calc(var(--dock-size) * 0.21442);
+	--dock-vertical-padding: calc(var(--dock-size) * 0.2);
+	--dock-glass-tint: rgb(245 248 255 / 16%);
+	--dock-dot-size: calc(var(--dock-size) * 0.08182);
+}
+
+[data-preset="tahoe"][data-appearance="dark"] .mac-dock {
+	--dock-glass-tint: rgb(28 32 42 / 24%);
+}
+
+[data-preset="tahoe"] .mac-dock-surface {
+	/* shortcut: CSS scattering and rim light; native lensing needs capture calibration. */
+	background:
+		linear-gradient(180deg, rgb(255 255 255 / 3%), rgb(255 255 255 / 0%) 45%),
+		var(--dock-glass-tint);
+	border-color: rgb(255 255 255 / 24%);
+	border-radius: calc(var(--dock-size) * 0.49091);
+	box-shadow:
+		0 0 0 0.5px rgb(0 0 0 / 5%),
+		0 3px 9px -4px rgb(0 0 0 / 12%),
+		inset 0 0.5px 0.5px rgb(255 255 255 / 22%),
+		inset 0 -0.5px 0.5px rgb(255 255 255 / 22%);
+	backdrop-filter: blur(16px) saturate(1.2);
+}
+
+.mac-dock-glass {
+	position: absolute;
+	inset: -0.5px;
+	visibility: hidden;
+	width: calc(100% + 1px);
+	height: calc(100% + 1px);
+	pointer-events: none;
+}
+
+.mac-dock-filter-definitions {
+	position: absolute;
+	pointer-events: none;
+}
+
+[data-preset="tahoe"]:not([data-reduce-transparency])
+	.mac-dock-surface[data-refraction="live"] {
+	border-color: rgb(185 239 255 / 55%);
+	box-shadow:
+		0 3px 9px -4px rgb(0 0 0 / 12%),
+		inset 0 0 0.5px 0.5px rgb(230 250 255 / 24%);
+	backdrop-filter: var(--dock-live-filter);
+}
+
+[data-preset="tahoe"]:not([data-reduce-transparency])
+	.mac-dock-glass[data-renderer="webgl"] {
+	visibility: visible;
+}
+
+[data-preset="tahoe"]:not([data-reduce-transparency])
+	.mac-dock-surface:has(.mac-dock-glass[data-renderer="webgl"]) {
+	background: transparent;
+	border-color: transparent;
+	box-shadow: 0 3px 9px -4px rgb(0 0 0 / 12%);
+	backdrop-filter: none;
+}
+
+.mac-dock-item {
+	--dock-shift: 0px;
+	--dock-scale: 1;
+	position: relative;
+	flex: 0 0 var(--dock-size);
+	width: var(--dock-size);
+	height: var(--dock-size);
+	padding: 0;
+	background: transparent;
+	border: 0;
+	border-radius: 12px;
+	transform: translateX(var(--dock-shift));
+	transition: transform 100ms ease-out;
+}
+
+.mac-dock-art {
+	position: absolute;
+	inset: 0;
+	display: block;
+	transform: scale(var(--dock-scale));
+	transform-origin: center bottom;
+	transition: transform 100ms ease-out;
+}
+
+.mac-dock-art img {
+	display: block;
+	width: 100%;
+	height: 100%;
+	user-select: none;
+	object-fit: contain;
+}
+
+.mac-dock-item:active .mac-dock-art {
+	filter: brightness(0.7);
+}
+
+.mac-dock-item[data-separator] {
+	margin-left: var(--dock-separator-gap);
+}
+
+.mac-dock-item[data-separator]::before {
+	position: absolute;
+	top: 6px;
+	bottom: 3px;
+	left: -10px;
+	width: 1px;
+	content: "";
+	background: rgb(255 255 255 / 35%);
+	box-shadow: -0.5px 0 rgb(0 0 0 / 14%);
+	transform: translateX(calc(var(--dock-size) * (1 - var(--dock-scale)) / 2));
+	transition: transform 100ms ease-out;
+}
+
+[data-preset="tahoe"] .mac-dock-item[data-separator]::before {
+	top: -1px;
+	bottom: -1px;
+	left: calc((var(--dock-gap) + var(--dock-separator-gap)) / -2);
+	width: 1.5px;
+	background: rgb(0 0 0 / 20%);
+	box-shadow: 0.5px 0 rgb(255 255 255 / 12%);
+}
+
+.mac-dock-dot {
+	position: absolute;
+	bottom: -7px;
+	left: calc(50% - var(--dock-dot-size, 3px) / 2);
+	display: none;
+	width: var(--dock-dot-size, 3px);
+	height: var(--dock-dot-size, 3px);
+	background: rgb(20 20 20 / 80%);
+	border-radius: 50%;
+}
+
+[data-running] .mac-dock-dot {
+	display: block;
+}
+
+[data-appearance="dark"] .mac-dock-dot {
+	background: rgb(255 255 255 / 85%);
+}
+
+[data-preset="tahoe"] .mac-dock-dot {
+	bottom: calc(var(--dock-size) * -0.15);
+	filter: blur(0.2px);
+}
+
+[data-preset="tahoe"][data-appearance="light"] .mac-dock-dot {
+	background: rgb(0 14 34 / 96%);
+}
+
+.mac-dock-tooltip {
+	position: absolute;
+	bottom: calc(var(--dock-size) * var(--dock-scale) + 16px);
+	left: 50%;
+	padding: 5px 12px;
+	white-space: nowrap;
+	pointer-events: none;
+	background: var(--mac-material);
+	border: 0.5px solid rgb(255 255 255 / 30%);
+	border-radius: 6px;
+	box-shadow: 0 3px 9px rgb(0 0 0 / 20%);
+	opacity: 0;
+	backdrop-filter: blur(24px);
+	transform: translateX(-50%);
+}
+
+.mac-dock-item:hover .mac-dock-tooltip,
+.mac-dock-item:focus-visible .mac-dock-tooltip {
+	opacity: 1;
+}
+
+.mac-dock-badge {
+	position: absolute;
+	top: -1px;
+	right: -2px;
+	min-width: 18px;
+	padding: 2px 4px;
+	font-size: 10px;
+	font-weight: 500;
+	color: white;
+	text-align: center;
+	background: #f33b34;
+	border: 1px solid rgb(255 255 255 / 45%);
+	border-radius: 20px;
+}
+
+.mac-dock[data-position="left"],
+.mac-dock[data-position="right"] {
+	top: 50%;
+	flex-direction: column;
+	padding: var(--dock-vertical-padding, 8px 9px);
+	transform: translateY(-50%);
+}
+
+.mac-dock[data-position="left"] {
+	left: var(--dock-edge-gap);
+}
+.mac-dock[data-position="right"] {
+	right: var(--dock-edge-gap);
+}
+.mac-dock:not([data-position="bottom"]) .mac-dock-surface {
+	inset: calc(var(--dock-growth) / -2) 0;
+}
+.mac-dock:not([data-position="bottom"]) .mac-dock-item {
+	transform: translateY(var(--dock-shift));
+}
+.mac-dock[data-position="left"] .mac-dock-art {
+	transform-origin: left center;
+}
+.mac-dock[data-position="right"] .mac-dock-art {
+	transform-origin: right center;
+}
+.mac-dock:not([data-position="bottom"]) [data-separator] {
+	margin-top: var(--dock-separator-gap);
+	margin-left: 0;
+}
+.mac-dock:not([data-position="bottom"]) [data-separator]::before {
+	inset: -9px 3px auto;
+	width: auto;
+	height: 1px;
+	transform: translateY(calc(var(--dock-size) * (1 - var(--dock-scale)) / 2));
+}
+[data-preset="tahoe"]
+	.mac-dock:not([data-position="bottom"])
+	[data-separator]::before {
+	inset: calc((var(--dock-gap) + var(--dock-separator-gap)) / -2) 0 auto;
+	width: auto;
+	height: 1.5px;
+	box-shadow: 0 0.5px rgb(255 255 255 / 12%);
+}
+.mac-dock:not([data-position="bottom"]) .mac-dock-dot {
+	top: calc(50% - var(--dock-dot-size, 3px) / 2);
+	bottom: auto;
+	left: -5px;
+}
+.mac-dock[data-position="right"] .mac-dock-dot {
+	right: -5px;
+	left: auto;
+}
+.mac-dock:not([data-position="bottom"]) .mac-dock-tooltip {
+	top: 50%;
+	bottom: auto;
+	left: calc(var(--dock-size) * var(--dock-scale) + 16px);
+	transform: translateY(-50%);
+}
+.mac-dock[data-position="right"] .mac-dock-tooltip {
+	right: calc(var(--dock-size) * var(--dock-scale) + 16px);
+	left: auto;
+}
+
+.mac-window {
+	display: flex;
+	flex-direction: column;
+	width: 670px;
+	height: 420px;
+	overflow: hidden;
+	background: var(--mac-sidebar);
+	border: 0.5px solid rgb(255 255 255 / 65%);
+	border-radius: var(--mac-window-radius);
+	box-shadow:
+		0 0 0 0.5px rgb(0 0 0 / 25%),
+		0 26px 60px -12px rgb(0 0 0 / 42%),
+		0 5px 15px rgb(0 0 0 / 12%);
+	backdrop-filter: blur(36px) saturate(1.35);
+}
+
+.mac-window[data-active="false"] {
+	box-shadow:
+		0 0 0 0.5px rgb(0 0 0 / 20%),
+		0 8px 24px rgb(0 0 0 / 16%);
+}
+
+.mac-window-titlebar {
+	display: flex;
+	gap: 20px;
+	align-items: center;
+	min-height: 52px;
+	padding: 0 17px;
+	background: var(--mac-chrome);
+	border-bottom: 1px solid var(--mac-line);
+}
+
+[data-preset="tahoe"] .mac-window-titlebar {
+	min-height: 58px;
+	border-bottom: 0;
+}
+
+.mac-window-titlebar h2 {
+	margin: 0;
+	font-size: 14px;
+	font-weight: 600;
+}
+
+.mac-window[data-active="false"] .mac-window-titlebar {
+	color: var(--mac-secondary);
+}
+
+.mac-window-toolbar {
+	display: flex;
+	gap: 14px;
+	align-items: center;
+	margin-left: auto;
+	color: var(--mac-secondary);
+}
+
+.mac-window-body {
+	display: flex;
+	flex: 1;
+	min-height: 0;
+}
+
+.mac-window-sidebar {
+	flex-shrink: 0;
+	width: 165px;
+	padding: 16px 10px;
+	border-right: 1px solid var(--mac-line);
+}
+
+.mac-window-content {
+	flex: 1;
+	min-width: 0;
+	overflow: auto;
+	background: var(--mac-surface);
+}
+
+[data-preset="tahoe"] .mac-window-content {
+	margin: 0 6px 6px 0;
+	border-radius: 11px;
+}
+
+[data-preset="tahoe"] .mac-window-sidebar {
+	border: 0;
+}
+
+.mac-window-footer {
+	padding: 6px 15px;
+	font-size: 11px;
+	color: var(--mac-secondary);
+	text-align: center;
+	background: var(--mac-chrome);
+	border-top: 1px solid var(--mac-line);
+}
+
+.mac-traffic-lights {
+	display: flex;
+	flex-shrink: 0;
+	gap: 8px;
+}
+
+.mac-traffic-lights button {
+	display: grid;
+	place-items: center;
+	width: 12px;
+	height: 12px;
+	padding: 0;
+	border: 0.5px solid rgb(0 0 0 / 12%);
+	border-radius: 50%;
+}
+
+.mac-traffic-close {
+	background: #ff5f57;
+}
+.mac-traffic-minimize {
+	background: #febc2e;
+}
+.mac-traffic-zoom {
+	background: #28c840;
+}
+.mac-traffic-lights svg {
+	width: 12px;
+	height: 12px;
+	opacity: 0;
+	stroke: rgb(0 0 0 / 60%);
+	stroke-width: 1.2;
+}
+.mac-traffic-lights:hover svg,
+.mac-traffic-lights button:focus-visible svg {
+	opacity: 1;
+}
+.mac-zoom-symbol {
+	fill: rgb(0 0 0 / 60%);
+	stroke: none;
+}
+.mac-traffic-lights[data-active="false"]:not(:hover) button {
+	background: #cdcdcd;
+}
+[data-appearance="dark"]
+	.mac-traffic-lights[data-active="false"]:not(:hover)
+	button {
+	background: #575757;
+}
+
+.mac-tabs {
+	width: 100%;
+}
+
+.mac-tab-list {
+	display: flex;
+	padding: 3px;
+	background: var(--mac-selected);
+}
+
+.mac-tab {
+	position: relative;
+	flex: 1;
+	min-width: 0;
+	min-height: 27px;
+	padding: 4px 14px;
+	font-size: 12px;
+	font-weight: 500;
+	color: var(--mac-secondary);
+	background: transparent;
+	border: 0;
+	border-radius: 4px;
+}
+
+.mac-tab[data-active] {
+	color: var(--mac-text);
+	background: var(--mac-control);
+	box-shadow: 0 1px 3px rgb(0 0 0 / 14%);
+}
+
+.mac-tab-panel {
+	outline: none;
+}
+
+[data-variant="segmented"] .mac-tab-list {
+	width: max-content;
+	max-width: 100%;
+	margin: 0 auto;
+	border-radius: 7px;
+}
+
+[data-preset="tahoe"] [data-variant="segmented"] .mac-tab-list,
+[data-preset="tahoe"] [data-variant="segmented"] .mac-tab {
+	border-radius: 20px;
+}
+
+[data-preset="tahoe"] [data-variant="document"] .mac-tab-list {
+	gap: 4px;
+	padding: 6px;
+	background: transparent;
+}
+
+[data-preset="tahoe"] [data-variant="document"] .mac-tab {
+	border-radius: 8px;
+}
+
+[data-preset="tahoe"] [data-variant="document"] .mac-tab[data-active] {
+	background: var(--mac-selected);
+	box-shadow: none;
+}
+
+.mac-button {
+	min-width: 70px;
+	min-height: 23px;
+	padding: 2px 12px;
+	font-size: 13px;
+	background: var(--mac-control);
+	border: 0.5px solid rgb(0 0 0 / 15%);
+	border-radius: 5px;
+	box-shadow: 0 1px 2px rgb(0 0 0 / 12%);
+}
+
+.mac-button[data-variant="primary"] {
+	color: white;
+	background:
+		linear-gradient(rgb(255 255 255 / 13%), transparent), var(--mac-accent);
+	border-color: rgb(0 0 0 / 8%);
+}
+
+.mac-button[data-size="small"] {
+	min-height: 19px;
+	font-size: 11px;
+}
+.mac-button:active {
+	filter: brightness(0.93);
+}
+.mac-button:disabled {
+	opacity: 0.45;
+}
+[data-preset="tahoe"] .mac-button {
+	min-height: 28px;
+	padding-inline: 16px;
+	border-radius: 20px;
+}
+[data-preset="tahoe"] .mac-button[data-size="small"] {
+	min-height: 22px;
+}
+
+.mac-switch-label {
+	display: flex;
+	gap: 24px;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.mac-switch {
+	position: relative;
+	flex-shrink: 0;
+	width: 26px;
+	height: 15px;
+	margin: 0;
+	appearance: none;
+	background: rgb(120 120 128 / 28%);
+	border: 0.5px solid rgb(0 0 0 / 8%);
+	border-radius: 20px;
+	transition: background 160ms;
+}
+
+.mac-switch::before {
+	position: absolute;
+	top: 1px;
+	left: 1px;
+	width: 11px;
+	height: 11px;
+	content: "";
+	background: white;
+	border-radius: 50%;
+	box-shadow: 0 1px 2px rgb(0 0 0 / 20%);
+	transition: transform 160ms;
+}
+
+.mac-switch:checked {
+	background: var(--mac-accent);
+}
+.mac-switch:checked::before {
+	transform: translateX(11px);
+}
+.mac-switch:disabled {
+	opacity: 0.4;
+}
+[data-preset="tahoe"] .mac-switch {
+	width: 32px;
+	height: 19px;
+}
+[data-preset="tahoe"] .mac-switch::before {
+	width: 15px;
+	height: 15px;
+}
+[data-preset="tahoe"] .mac-switch:checked::before {
+	transform: translateX(13px);
+}
+
+[data-reduce-transparency] .mac-dock-surface,
+[data-reduce-transparency] .mac-menu-popup,
+[data-reduce-transparency] .mac-window,
+[data-reduce-transparency] .mac-window-titlebar,
+[data-reduce-transparency] .mac-dock-tooltip {
+	background: var(--mac-surface);
+	backdrop-filter: none;
+}
+
+[data-reduce-transparency] .mac-menubar {
+	color: var(--mac-text);
+	text-shadow: none;
+	background: var(--mac-surface);
+	backdrop-filter: none;
+}
+
+[data-reduce-transparency] .mac-traffic-lights button {
+	border-color: var(--mac-line);
+}
+
+[data-reduce-motion] *,
+[data-reduce-motion] *::before {
+	transition: none !important;
+	animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.macos *,
+	.macos *::before {
+		transition: none !important;
+		animation: none !important;
+	}
+}

@@ -1,0 +1,218 @@
+.dock-study {
+	max-width: 1800px;
+	padding: 24px 28px 40px;
+	margin: 0 auto;
+}
+
+:where(
+	.dock-study-header,
+	.dock-study-header a,
+	.dock-study-toolbar,
+	.dock-study-toolbar label,
+	.dock-study-panel > header,
+	.dock-study-panel > header a,
+	.dock-study-panel > header span
+) {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.dock-study-header {
+	justify-content: space-between;
+	font-size: 11px;
+	color: #737981;
+}
+
+.dock-study-header > span {
+	font-size: 9px;
+	letter-spacing: 1px;
+}
+
+.dock-study-heading {
+	margin: 48px 0 28px;
+}
+
+.dock-study-eyebrow {
+	font-size: 10px;
+	color: #8a9098;
+	letter-spacing: 1.6px;
+}
+
+.dock-study-heading h1 {
+	margin: 12px 0;
+	font-size: 32px;
+}
+
+.dock-study-heading > p:last-child {
+	font-size: 13px;
+	color: #7a8088;
+}
+
+.dock-study-toolbar {
+	justify-content: space-between;
+	margin-bottom: 14px;
+	font-size: 11px;
+	color: #737981;
+}
+
+.dock-study-jump {
+	display: flex;
+	gap: 6px;
+}
+
+.dock-study-toolbar button,
+.dock-study-toolbar select {
+	min-height: 32px;
+	padding: 6px 11px;
+	background: white;
+	border: 1px solid #dedfe1;
+	border-radius: 6px;
+}
+
+.dock-study-toolbar button:hover {
+	background: #f0f1f3;
+}
+
+.dock-study-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 16px;
+}
+
+.dock-study-panel {
+	min-width: 0;
+	overflow: hidden;
+	background: white;
+	border: 1px solid #dedfe1;
+	border-radius: 10px;
+}
+
+.dock-study-panel > header {
+	justify-content: space-between;
+	min-height: 55px;
+	padding: 12px 16px;
+}
+
+.dock-study-panel h2 {
+	margin: 0;
+	font-size: 13px;
+	font-weight: 550;
+}
+
+.dock-study-panel > header span,
+.dock-study-panel > header a {
+	font-size: 10px;
+	color: #898f97;
+}
+
+.dock-study-panel i {
+	width: 5px;
+	height: 5px;
+	background: #7eaa91;
+	border-radius: 50%;
+}
+
+.dock-study-viewport {
+	height: calc(var(--study-height) * var(--study-zoom) + 14px);
+	overflow: auto hidden;
+	scrollbar-color: #74899e #263d59;
+	scrollbar-width: thin;
+	background: #263d59;
+}
+
+.dock-study-viewport:focus-visible {
+	outline-offset: -2px;
+}
+
+.dock-study-live,
+.dock-study-reference {
+	zoom: var(--study-zoom);
+}
+
+.dock-study-live {
+	width: var(--study-width);
+	height: var(--study-height);
+	padding: 32.62px 18.91px 4.73px;
+	/* Map the clean 6016px wallpaper into the photograph's screen coordinates. */
+	background-image: url("/assets/tahoe-light.jpg");
+	background-position: -100.71px -1225.19px;
+	background-size: 1619.56px 1619.56px;
+}
+
+.dock-study-live-content {
+	width: max-content;
+}
+
+.dock-study-icon {
+	display: block;
+	width: 100%;
+	height: 100%;
+	filter: drop-shadow(0 1.1px 1.2px rgb(0 26 43 / 17%));
+}
+
+.dock-study-live .mac-dock[data-position="bottom"] {
+	position: relative;
+	bottom: auto;
+	left: auto;
+	transform: none;
+}
+
+.dock-study-reference {
+	position: relative;
+	overflow: hidden;
+}
+
+.dock-study-reference img {
+	position: absolute;
+	max-width: none;
+	user-select: none;
+}
+
+.dock-study-panel > footer {
+	min-height: 48px;
+	padding: 15px 16px;
+	font-size: 10px;
+	line-height: 1.6;
+	color: #898f97;
+}
+
+.dock-study-notes {
+	max-width: 680px;
+	margin-top: 23px;
+	font-size: 11px;
+	line-height: 1.8;
+	color: #8a9098;
+}
+
+.dock-study-notes p:first-child {
+	color: #606872;
+}
+
+.dock-study-image-error {
+	padding: 20px;
+	color: white;
+}
+
+.dock-study-selection {
+	min-height: 18px;
+	font-size: 11px;
+	color: #606872;
+}
+
+@media (max-width: 600px) {
+	.dock-study {
+		padding: 20px 12px;
+	}
+	.dock-study-grid {
+		gap: 8px;
+	}
+	.dock-study-panel > header {
+		flex-wrap: wrap;
+		gap: 5px;
+		padding: 12px;
+	}
+	.dock-study-toolbar {
+		flex-wrap: wrap;
+	}
+}

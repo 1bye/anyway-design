@@ -32,6 +32,7 @@
     "deploy:plan": "bun run --cwd apps/plan deploy",
     "destroy": "turbo run destroy -F @anyway-design/infra --",
     "dev": "turbo run dev",
+    "dev:macos": "bun run --cwd apps/macos-lab dev",
     "dev:md": "bun run --cwd apps/md dev",
     "dev:plan": "bun run --cwd apps/plan dev",
     "dev:web": "turbo run dev -F web --",

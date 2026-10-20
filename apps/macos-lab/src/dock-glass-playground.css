@@ -1,0 +1,207 @@
+.glass-playground {
+	max-width: 1240px;
+	padding: 24px 28px 40px;
+	margin: 0 auto;
+}
+
+.glass-playground-controls a {
+	color: #606872;
+}
+
+.glass-playground > header,
+.glass-playground > header a {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	justify-content: space-between;
+	font-size: 11px;
+	color: #737981;
+}
+
+.glass-playground-eyebrow {
+	margin-top: 40px;
+	font-size: 10px;
+	color: #8a9098;
+	letter-spacing: 1.6px;
+}
+
+.glass-playground h1 {
+	margin: 12px 0;
+	font-size: 32px;
+}
+
+.glass-playground-intro {
+	margin-bottom: 28px;
+	font-size: 13px;
+	color: #7a8088;
+}
+
+.glass-playground-controls {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px 24px;
+	align-items: center;
+	margin-bottom: 20px;
+	font-size: 11px;
+	color: #606872;
+}
+
+.glass-playground-controls label {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+}
+
+.glass-playground-controls select {
+	padding: 6px 10px;
+	background: white;
+	border: 1px solid #dedfe1;
+	border-radius: 6px;
+}
+
+.glass-playground-controls input {
+	accent-color: #3c718e;
+}
+
+.glass-playground-controls output {
+	min-width: 3.5em;
+	font-variant-numeric: tabular-nums;
+}
+
+.glass-window-position {
+	flex: 1;
+	min-width: 220px;
+}
+
+.glass-window-position input {
+	flex: 1;
+	width: 100px;
+}
+
+.glass-playground-stage {
+	position: relative;
+	height: 440px;
+	overflow: hidden;
+	background-position: center;
+	background-size: cover;
+	border-radius: 12px;
+}
+
+.glass-wallpaper-tahoe {
+	background-image: url("/assets/tahoe-light.jpg");
+}
+.glass-wallpaper-clouds {
+	background-image: url("/assets/clouds.webp");
+}
+.glass-wallpaper-dusk {
+	background: linear-gradient(140deg, #384c7c, #c48f97 50%, #edbf99);
+}
+.glass-wallpaper-grid {
+	background:
+		repeating-linear-gradient(0deg, transparent 0 62px, #264c66 62px 64px),
+		repeating-linear-gradient(90deg, #d2e5ec 0 62px, #264c66 62px 64px);
+}
+
+.glass-desktop-label {
+	position: absolute;
+	top: 18px;
+	left: 22px;
+	font-size: 11px;
+	color: white;
+	text-shadow: 0 1px 3px #122b45;
+}
+
+.glass-content-window {
+	position: absolute;
+	top: 44px;
+	width: min(400px, 85%);
+	height: 378px;
+}
+
+.glass-content-window .mac-window {
+	width: 100%;
+	height: 100%;
+}
+
+.glass-content-window .mac-window-content {
+	overflow: hidden;
+}
+
+.glass-window-scroll {
+	height: 100%;
+	padding: 20px;
+	overflow: auto;
+	color: #173047;
+	scrollbar-width: thin;
+}
+
+.glass-window-scroll h2 {
+	margin: 0 0 8px;
+	font-size: 19px;
+}
+.glass-window-scroll p {
+	font-size: 12px;
+}
+.glass-window-scroll article {
+	min-height: 160px;
+	padding: 24px;
+	margin-top: 18px;
+	border-radius: 10px;
+}
+.glass-window-scroll article span {
+	font-size: 9px;
+	letter-spacing: 1.4px;
+}
+.glass-window-scroll h3 {
+	margin: 16px 0 6px;
+	font-size: 26px;
+}
+.glass-playground-stage .mac-dock {
+	--dock-edge-gap: 14px;
+}
+
+.glass-playground-caption {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	justify-content: space-between;
+	padding: 14px 2px;
+	font-size: 10px;
+	color: #737981;
+}
+
+.glass-status-live,
+.glass-status-opaque {
+	display: none;
+}
+.glass-playground-stage:has([data-refraction="live"])
+	+ .glass-playground-caption
+	.glass-status-live {
+	display: inline;
+}
+.glass-playground-stage:has([data-refraction="live"])
+	+ .glass-playground-caption
+	.glass-status-blur,
+.glass-playground-stage[data-reduce-transparency]
+	+ .glass-playground-caption
+	:is(.glass-status-live, .glass-status-blur) {
+	display: none;
+}
+.glass-playground-stage[data-reduce-transparency]
+	+ .glass-playground-caption
+	.glass-status-opaque {
+	display: inline;
+}
+
+.glass-playground-note,
+.glass-playground-selection {
+	font-size: 11px;
+	line-height: 1.8;
+	color: #8a9098;
+}
+
+@media (max-width: 600px) {
+	.glass-playground {
+		padding-inline: 12px;
+	}
+}

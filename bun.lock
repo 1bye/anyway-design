@@ -19,6 +19,23 @@
         "ultracite": "7.10.7",
       },
     },
+    "apps/macos-lab": {
+      "name": "macos-lab",
+      "dependencies": {
+        "@anyway-design/macos": "workspace:*",
+        "lucide-react": "catalog:",
+        "react": "catalog:",
+        "react-dom": "catalog:",
+      },
+      "devDependencies": {
+        "@types/node": "catalog:",
+        "@types/react": "catalog:",
+        "@types/react-dom": "catalog:",
+        "@vitejs/plugin-react": "^6.0.4",
+        "typescript": "catalog:",
+        "vite": "^8.1.5",
+      },
+    },
     "apps/md": {
       "name": "md",
       "dependencies": {
@@ -138,6 +155,22 @@
         "typescript": "catalog:",
       },
     },
+    "packages/macos": {
+      "name": "@anyway-design/macos",
+      "version": "0.0.0",
+      "dependencies": {
+        "@base-ui/react": "^1.6.0",
+      },
+      "devDependencies": {
+        "@types/react": "catalog:",
+        "@types/react-dom": "catalog:",
+        "typescript": "catalog:",
+      },
+      "peerDependencies": {
+        "react": "^19.2.0",
+        "react-dom": "^19.2.0",
+      },
+    },
     "packages/md-cli": {
       "name": "@anyway-design/md",
       "version": "0.1.0",
@@ -200,6 +233,8 @@
     "@anyway-design/env": ["@anyway-design/env@workspace:packages/env"],
 
     "@anyway-design/infra": ["@anyway-design/infra@workspace:packages/infra"],
+
+    "@anyway-design/macos": ["@anyway-design/macos@workspace:packages/macos"],
 
     "@anyway-design/md": ["@anyway-design/md@workspace:packages/md-cli"],
 
@@ -1430,6 +1465,8 @@
     "lucide-react": ["lucide-react@1.37.0", "", { "peerDependencies": { "react": "^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0" } }, "sha512-LPsB4rD1TD6wZu1djKOf9vUnS1jTNaHbolXebXDgiTdb6jeA1agIJhJsIybCmjKmQClcOaal1o1OaiYahEftyQ=="],
 
     "lz-string": ["lz-string@1.5.0", "", { "bin": { "lz-string": "bin/bin.js" } }, "sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ=="],
+
+    "macos-lab": ["macos-lab@workspace:apps/macos-lab"],
 
     "magic-string": ["magic-string@0.30.21", "", { "dependencies": { "@jridgewell/sourcemap-codec": "^1.5.5" } }, "sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ=="],
 
