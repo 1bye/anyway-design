@@ -341,6 +341,7 @@ export function WindowReferenceComparison() {
 				</label>
 			</div>
 			<div className="window-study-controls">
+				<a href="/?view=file-list-reference">Compare file lists ↗</a>
 				<a href="/?view=menu-reference">Compare menus ↗</a>
 				<label>
 					<input checked={active} onChange={changeActive} type="checkbox" />{" "}

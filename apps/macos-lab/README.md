@@ -55,6 +55,29 @@ of difference. This view is not proof of a pixel-identical native compositor.
 
 ## Fidelity status
 
+Open [the file-list study](http://127.0.0.1:3006/?view=file-list-reference) from
+**Compare file lists** in the window preview. It compares shared `MacFileList`
+rows with an actual Finder window captured on this Mac's Tahoe 26.6.2 system.
+The reference contains nine generated demo files/folders, with no personal
+documents or sidebar locations. The 2× capture calibrates dark active selection,
+20px rows, a 28px header, column widths, and text alignment.
+
+Shared zoom, All columns/Details/Name crops, and synchronized scrolling align
+both panels. Click headers to sort; drag dividers to resize, use Left/Right or
+Home/End from a focused divider, or double-click to restore its library default.
+**Reset native match** restores the captured column widths, Name ascending,
+and the selected agreement. Raw bytes and timestamps drive sorting while
+display labels match Finder. Selection supports Command/Ctrl and Shift,
+Up/Down, Home/End, typeahead, select all, Escape, and open callbacks.
+
+**Extra states (live only)** adds tags, a long filename, and a disabled row.
+Light and inactive controls change the live side only; the native image stays
+fixed. Generic native type icons differ from Finder's Quick Look thumbnails
+and installed-app artwork. Folder disclosure is decorative; hierarchy,
+renaming, and file dragging remain future work. The main lab's list toggle
+uses the same component and shares selection with icon view. Capture details
+and fixture metadata are in `public/assets/native-file-list/SOURCES.md`.
+
 Open [the controls study](http://127.0.0.1:3006/?view=controls-reference) from
 **Controls → Compare with native AppKit**. It compares `MacButton`,
 `MacTextField`, and `MacSearchField` against 2× AppKit renders from the user's

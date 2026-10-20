@@ -1,0 +1,67 @@
+.list-study .dock-study-jump {
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+
+.list-study .dock-study-jump [aria-pressed="true"] {
+	background: #eaf1f5;
+	border-color: #b4c9d5;
+}
+
+.list-study-viewport {
+	height: calc(396px * var(--list-study-zoom));
+	max-height: 650px;
+	overflow: auto;
+	background: #edf0f2;
+}
+
+.list-study-scene {
+	position: relative;
+	width: var(--list-study-width);
+	height: 396px;
+	overflow: hidden;
+	zoom: var(--list-study-zoom);
+}
+
+.list-study-live {
+	position: absolute;
+	top: 24px;
+	left: var(--list-study-offset);
+	width: 920px;
+	height: 348px;
+}
+
+.list-study-live .mac-file-list {
+	scrollbar-width: none;
+}
+
+.list-study-native-frame {
+	position: absolute;
+	top: 24px;
+	left: var(--list-study-offset);
+	width: 920px;
+	height: 348px;
+	overflow: hidden;
+}
+
+.list-study-native {
+	position: absolute;
+	top: -88px;
+	left: 0;
+	width: 920px;
+	max-width: none;
+	height: 690px;
+}
+
+.list-study .list-study-live[data-appearance="dark"] {
+	--mac-surface: #242529;
+	--mac-text: #dcdce0;
+	--mac-secondary: #999a9e;
+	--mac-line: #414246;
+}
+
+.list-study-live[data-appearance="dark"] .mac-file-list {
+	--mac-list-stripe: #2e2f33;
+	--mac-list-selection: #2457ca;
+}

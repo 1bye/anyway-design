@@ -11,7 +11,10 @@ import {
 	MacOSEnvironment,
 	type MacOSPreset,
 } from "@anyway-design/macos/environment";
-import { MacFileIcon } from "@anyway-design/macos/file-icons";
+import {
+	MacFileList,
+	type MacFileListItem,
+} from "@anyway-design/macos/file-list";
 import { MacFileGrid } from "@anyway-design/macos/files";
 import {
 	AppleMark,
@@ -519,42 +522,30 @@ function FinderFiles({
 		},
 		[setSelected, setSelectedFolders]
 	);
-	if (!listView) {
+	const items: MacFileListItem[] = visibleFolders.map((name) => ({
+		id: name,
+		kind: "folder",
+		name,
+	}));
+	if (listView) {
 		return (
-			<MacFileGrid
-				className="finder-icon-grid"
-				items={visibleFolders.map((name) => ({
-					id: name,
-					kind: "folder",
-					name,
-				}))}
+			<MacFileList
+				items={items}
+				minRows={10}
 				onOpen={openFolder}
 				onSelectionChange={setSelectedFolders}
 				selectedIds={selectedFolders}
 			/>
 		);
 	}
-
 	return (
-		<div className="finder-files" data-list={listView}>
-			{visibleFolders.map((folder) => (
-				<button
-					aria-pressed={selectedFolders.includes(folder)}
-					className="finder-file"
-					key={folder}
-					onClick={() => setSelectedFolders([folder])}
-					onDoubleClick={() => {
-						setSelected(folder);
-						setSelectedFolders([]);
-					}}
-					type="button"
-				>
-					<MacFileIcon className="folder-art" name="folder" />
-					<span>{folder}</span>
-					{listView ? <small>Folder</small> : null}
-				</button>
-			))}
-		</div>
+		<MacFileGrid
+			className="finder-icon-grid"
+			items={items}
+			onOpen={openFolder}
+			onSelectionChange={setSelectedFolders}
+			selectedIds={selectedFolders}
+		/>
 	);
 }
 

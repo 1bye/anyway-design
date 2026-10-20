@@ -132,6 +132,13 @@
 	object-fit: contain;
 }
 
+.mac-file-thumbnail {
+	width: auto;
+	height: auto;
+	border-radius: 1px;
+	box-shadow: none;
+}
+
 .mac-file-caption {
 	position: relative;
 	display: -webkit-box;
@@ -232,6 +239,211 @@
 	fill: none;
 	stroke: rgb(0 0 0 / 12%);
 	stroke-width: 0.5px;
+}
+
+.mac-file-list {
+	--mac-list-stripe: #f3f3f3;
+	--mac-list-selection: var(--mac-accent);
+	width: 100%;
+	max-width: 100%;
+	height: 100%;
+	overflow: auto;
+	color: var(--mac-text);
+	background: var(--mac-surface);
+	border-radius: inherit;
+}
+
+[data-appearance="dark"] .mac-file-list {
+	--mac-list-stripe: #2c2d2e;
+}
+
+.mac-file-list-table {
+	margin: 0 10px 5px;
+	font-size: var(--mac-list-font-size, 13px);
+	line-height: var(--mac-list-row-height, 20px);
+	user-select: none;
+	table-layout: fixed;
+	border-spacing: 0;
+	border-collapse: separate;
+}
+
+.mac-file-list-table th {
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	height: var(--mac-list-header-height, 28px);
+	padding: 0;
+	font-weight: 400;
+	text-align: left;
+	background: var(--mac-surface);
+	border-bottom: 1px solid var(--mac-line);
+}
+
+.macos .mac-file-list-sort {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	height: calc(var(--mac-list-header-height, 28px) - 1px);
+	padding: 0 12px 0 7px;
+	font-size: 12px;
+	color: var(--mac-secondary);
+	text-align: left;
+	white-space: nowrap;
+	background: none;
+	border: 0;
+	border-radius: 0;
+}
+
+.mac-file-list-sort-arrow {
+	flex-shrink: 0;
+}
+
+[aria-sort="ascending"] .mac-file-list-sort-arrow {
+	transform: rotate(180deg);
+}
+
+.macos [aria-sort] .mac-file-list-sort {
+	font-weight: 600;
+	color: var(--mac-text);
+}
+
+.mac-file-list-table th[data-column="name"] .mac-file-list-sort {
+	padding-left: 37px;
+}
+
+.macos .mac-file-list-resize {
+	position: absolute;
+	top: 5px;
+	right: 0;
+	bottom: 5px;
+	z-index: 3;
+	width: 8px;
+	padding: 0;
+	touch-action: none;
+	cursor: col-resize;
+	background:
+		linear-gradient(var(--mac-line), var(--mac-line)) right center / 1px 100%
+		no-repeat;
+	border: 0;
+	border-radius: 0;
+}
+
+.mac-file-list-table tbody::before {
+	display: table-row;
+	height: 5px;
+	content: "";
+}
+
+.mac-file-list-table td {
+	height: var(--mac-list-row-height, 20px);
+	padding: 0 7px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.mac-file-list-table td[data-column="name"] {
+	padding-left: 5px;
+}
+
+.mac-file-list-table td[data-column="size"] {
+	font-variant-numeric: tabular-nums;
+	text-align: right;
+}
+
+.mac-file-list-table td:not([data-column="name"]) {
+	color: var(--mac-secondary);
+}
+
+.mac-file-list-table td:first-child {
+	border-radius: 7px 0 0 7px;
+}
+
+.mac-file-list-table td:last-child {
+	border-radius: 0 7px 7px 0;
+}
+
+.mac-file-list-table td:only-child {
+	border-radius: 7px;
+}
+
+.mac-file-list-table tbody tr:nth-child(even) td {
+	background: var(--mac-list-stripe);
+}
+
+.mac-file-list-table tbody tr[aria-selected="true"] td {
+	color: white;
+	background: var(--mac-list-selection);
+}
+
+:is(.mac-window, .mac-file-list)[data-active="false"]
+	.mac-file-list-table
+	tr[aria-selected="true"]
+	td {
+	color: var(--mac-text);
+	background: color-mix(in srgb, var(--mac-text) 18%, var(--mac-surface));
+}
+
+.mac-file-list-table tr[aria-disabled="true"] {
+	opacity: 0.4;
+}
+
+.mac-file-list-table tr:focus-visible {
+	outline: 2px solid color-mix(in srgb, var(--mac-accent) 65%, transparent);
+	outline-offset: -2px;
+}
+
+.mac-file-list-name {
+	display: grid;
+	grid-template-columns: 8px 16px minmax(0, 1fr) auto;
+	gap: 4px;
+	align-items: center;
+	min-width: 0;
+}
+
+.mac-file-list-filename {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.mac-file-list-icon {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 16px;
+}
+
+.mac-file-list-icon > :is(img, svg) {
+	width: 100%;
+	max-width: 100%;
+	height: 100%;
+	max-height: 100%;
+	object-fit: contain;
+}
+
+.mac-file-list-disclosure {
+	display: flex;
+	align-items: center;
+	color: var(--mac-secondary);
+}
+
+.mac-file-list-name .mac-file-tags {
+	margin: 0;
+}
+
+.mac-file-list-name .mac-file-tag {
+	width: 7px;
+	height: 7px;
+}
+
+.mac-file-list-empty {
+	padding: 12px;
+	font-size: 13px;
+	color: var(--mac-secondary);
+	text-align: center;
 }
 
 .mac-menubar {

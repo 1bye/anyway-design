@@ -1,0 +1,26 @@
+{
+  "system": "macOS Tahoe 26.6.2 (25G83)",
+  "source": "Finder, live native window captured through the computer-use screenshot API",
+  "imageWidth": 1840,
+  "imageHeight": 1380,
+  "density": 2,
+  "crop": {
+    "x": 0,
+    "y": 176,
+    "width": 1840,
+    "height": 696
+  },
+  "appearance": "dark",
+  "active": true,
+  "selectedIds": ["Agreement for Services.pdf"],
+  "sort": {
+    "column": "name",
+    "direction": "ascending"
+  },
+  "columns": {
+    "name": 500.5,
+    "modified": 181.5,
+    "size": 96.5,
+    "kind": 121.5
+  }
+}

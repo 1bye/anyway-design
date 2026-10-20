@@ -387,66 +387,6 @@ h1 {
 .finder-tag-work {
 	background: #78c66b;
 }
-.finder-files {
-	display: grid;
-	grid-template-columns: repeat(3, minmax(0, 1fr));
-	gap: 22px 18px;
-	padding: 24px 20px;
-}
-.finder-file {
-	display: flex;
-	flex-direction: column;
-	gap: 7px;
-	align-items: center;
-	min-width: 0;
-	padding: 0;
-	background: transparent;
-	border: 0;
-}
-.folder-art {
-	width: 65px;
-	height: 53px;
-	filter: drop-shadow(0 1px 1px rgb(0 0 0 / 17%));
-}
-.finder-file > span {
-	max-width: 100%;
-	padding: 2px 5px;
-	font-size: 11px;
-	line-height: 1.4;
-	border-radius: 4px;
-}
-.finder-file[aria-pressed="true"] > span {
-	color: white;
-	background: var(--mac-accent);
-}
-.finder-file[aria-pressed="true"] .folder-art {
-	filter: brightness(0.87);
-}
-.finder-files[data-list="true"] {
-	display: flex;
-	flex-direction: column;
-	gap: 0;
-	padding: 12px;
-}
-.finder-files[data-list="true"] .finder-file {
-	flex-direction: row;
-	gap: 8px;
-	height: 35px;
-	padding: 0 8px;
-	border-radius: 4px;
-}
-.finder-files[data-list="true"] .finder-file:nth-child(odd) {
-	background: var(--mac-selected);
-}
-.finder-files[data-list="true"] .folder-art {
-	width: 25px;
-	height: 23px;
-}
-.finder-files:where([data-list="true"]) small {
-	margin-left: auto;
-	font-size: 10px;
-	color: var(--mac-secondary);
-}
 .mac-tabs[data-variant="segmented"] {
 	padding-top: 20px;
 }

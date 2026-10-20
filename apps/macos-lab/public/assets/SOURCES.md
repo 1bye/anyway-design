@@ -59,3 +59,10 @@ the live React menu. This is Apple's Finder **context menu**, used to calibrate
 the shared surface for toolbar and right-click menus; it is not labeled as a
 screenshot of Finder's More menu. The left panel contains no reference imagery.
 The image remains a local comparison fixture outside the component package.
+
+## Native Tahoe file-list reference
+
+`native-file-list/tahoe-finder-dark.jpg` is a capture of Finder on the user's
+Mac, displaying generated demo files only. See
+[capture provenance and geometry](native-file-list/SOURCES.md) and its
+`manifest.json`. This image is a lab fixture, not a component-package asset.

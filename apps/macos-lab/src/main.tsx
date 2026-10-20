@@ -4,6 +4,7 @@ import { App } from "./app";
 import { ControlsReferenceComparison } from "./controls-reference";
 import { DockGlassPlayground } from "./dock-glass-playground";
 import { DockReferenceComparison } from "./dock-reference";
+import { FileListReferenceComparison } from "./file-list-reference";
 import { MenuReferenceComparison } from "./menu-reference";
 import { WindowReferenceComparison } from "./window-reference";
 import "@anyway-design/macos/styles.css";
@@ -25,5 +26,7 @@ if (view === "dock-reference") {
 	page = <MenuReferenceComparison />;
 } else if (view === "controls-reference") {
 	page = <ControlsReferenceComparison />;
+} else if (view === "file-list-reference") {
+	page = <FileListReferenceComparison />;
 }
 createRoot(root).render(<StrictMode>{page}</StrictMode>);

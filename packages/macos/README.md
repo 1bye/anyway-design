@@ -36,6 +36,7 @@ and the portal container so menus retain their styles in embedded previews.
 | `tabs` | `MacTabs`: `tabs`, `value`, `onValueChange`, `variant`, `label`, `onAdd`, `onClose`, `onReorder` |
 | `controls` | `MacButton`, `MacTextField`, `MacSearchField`, `MacSwitch` |
 | `files` | `MacFileItem`, `MacFileGrid`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `active`, `showExtensions` |
+| `file-list` | `MacFileList`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `sort`, `defaultSort`, `onSortChange`, `columns`, `columnWidths`, `onColumnWidthsChange`, `resizable`, `active`, `showExtensions`, `minRows` |
 | `file-icons` | `MacFileIcon`: `name` (`folder`, `document`, `pdf`, `image`, `archive`, `text`), native image props |
 | `file-thumbnail` | `MacFileThumbnail`: `src`, `presentation` (`image`, `document`), `fit` (`contain`, `cover`), `alt` |
 
@@ -411,3 +412,55 @@ with `xcrun swift packages/macos/scripts/export-file-icons.swift`. The exporter
 checks visible/transparent content and PNG decoding, without opening user files.
 See `src/assets/native-file-icons/SOURCES.md` for provenance. Custom thumbnails
 must be supplied by the caller; the browser does not generate Quick Look previews.
+
+## File lists
+
+```tsx
+import { MacFileList, type MacFileListItem } from "@anyway-design/macos/file-list";
+
+const items: MacFileListItem[] = [
+  { id: "projects", name: "Projects", kind: "folder" },
+  { id: "brief", name: "Project brief.pdf", kind: "pdf",
+    size: 246_000, modifiedAt: Date.UTC(2026, 9, 12, 9, 41),
+    tags: [{ label: "Approved", color: "#30b956" }] },
+];
+
+<MacFileList
+  items={items}
+  selectedIds={selection}
+  onSelectionChange={setSelection}
+  onOpen={openFile}
+  defaultSort={{ column: "name", direction: "ascending" }}
+/>
+```
+
+`MacFileListItem` extends `MacFile`, so the same items and controlled selection
+can feed a grid or list. Keep IDs unique and stable. `modifiedAt` is an epoch
+timestamp in milliseconds and `size` is bytes. Optional `modifiedLabel`,
+`sizeLabel`, and `kindLabel` override displayed metadata. Dates and sizes sort
+by raw values, with missing values last in either direction; names use natural
+ordering (`Photo 2` before `Photo 10`). Equal values retain input order.
+
+Click a header to sort, or control `sort` with `onSortChange`. `columns` selects
+and orders `name`, `modified`, `size`, and `kind`. Column widths are CSS pixels;
+the defaults are 300, 180, 90, and 150 respectively. `columnWidths` and
+`onColumnWidthsChange` optionally control resizing. Drag a divider, use
+Left/Right for 10px steps, or Home/End for its bounds. Double-click restores
+the library default width. `resizable={false}` removes the dividers.
+Widths are bounded; narrow containers scroll horizontally rather than
+compressing the columns. The parent supplies the list's available height.
+
+Click, Command/Ctrl-click, and Shift-click select rows. Up/Down, Home/End,
+typeahead, Shift extension, Command/Ctrl+A, Space, and Escape work from a row.
+Ranges follow the current sort order. Enter or double-click calls `onOpen(id)`;
+disabled rows cannot be selected or opened. Sorting retains selection by ID.
+`active={false}` or an inactive parent window mutes selection. Folders have
+decorative disclosure chevrons; expansion and nested rows are not implemented.
+
+The default row/header heights are 20/28px. CSS overrides include
+`--mac-list-font-size`, `--mac-list-row-height`, `--mac-list-header-height`,
+`--mac-list-stripe`, and `--mac-list-selection`. `minRows` adds inert empty
+stripes for fixed-height previews. The lab's dark native Finder comparison
+calibrates density and column alignment; light and inactive states are
+adaptations. Generic type icons can differ from Finder's per-file previews
+or the icons supplied by installed applications.

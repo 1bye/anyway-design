@@ -247,6 +247,9 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 				<a className="copy-button" href="/?view=menu-reference">
 					Compare menus
 				</a>
+				<a className="copy-button" href="/?view=file-list-reference">
+					Compare file lists
+				</a>
 			</>
 		);
 	}
