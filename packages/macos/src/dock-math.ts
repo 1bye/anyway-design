@@ -15,6 +15,40 @@ export function dockScale(
 const INFLUENCE_IN_ICON_SIZES = 4;
 const FOCUS_SEARCH_STEPS = 18;
 
+/** Reserve the whole wave, so fitting never changes while the pointer moves. */
+export function dockFitScale({
+	availableLength,
+	availableDepth,
+	length,
+	depth,
+	size,
+	itemCount,
+	magnification,
+}: {
+	availableLength: number;
+	availableDepth: number;
+	length: number;
+	depth: number;
+	size: number;
+	itemCount: number;
+	magnification: number;
+}): number {
+	const extra = size * Math.max(0, magnification - 1);
+	// A packed cosine wave sums to four icon widths; gaps only reduce it.
+	const growth = extra * Math.min(itemCount, INFLUENCE_IN_ICON_SIZES);
+	if (length <= 0 || depth <= 0) {
+		return 1;
+	}
+	return Math.max(
+		0,
+		Math.min(
+			1,
+			availableLength / (length + growth),
+			availableDepth / (depth + extra)
+		)
+	);
+}
+
 /** Where a resting coordinate lands after its surrounding icons have expanded. */
 function expandedFocus(
 	centers: readonly number[],

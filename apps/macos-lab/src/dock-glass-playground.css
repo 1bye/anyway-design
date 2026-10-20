@@ -81,6 +81,7 @@
 .glass-playground-stage {
 	position: relative;
 	height: 440px;
+	margin-inline: auto;
 	overflow: hidden;
 	background-position: center;
 	background-size: cover;

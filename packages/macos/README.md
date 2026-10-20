@@ -26,7 +26,7 @@ and the portal container so menus retain their styles in embedded previews.
 | Import | Components / props |
 | --- | --- |
 | `environment` | `MacOSEnvironment`: `preset`, `appearance`, `accentColor`, `reduceMotion`, `reduceTransparency`, `className`, `style` |
-| `dock` | `Dock`: `items`, `size`, `magnification`, `position`, `onActivate`, `glass`, `glassBackdrop` |
+| `dock` | `Dock`: `items`, `size`, `magnification`, `position`, `adaptive`, `autoHide`, `revealDelay`, `hideDelay`, `onActivate`, `glass`, `glassBackdrop` |
 | `menu-bar` | `MenuBar`: `menus`, `status`, `onAction`; `AppleMark` |
 | `window` | `MacWindow`: `title`, `sidebar`, `toolbar`, `footer`, `active`, window action callbacks; `TrafficLights` |
 | `tabs` | `MacTabs`: `tabs`, `value`, `onValueChange`, `variant`, `label` |
@@ -41,6 +41,33 @@ Each Dock item's `icon` accepts an image URL or a React element, such as an
 inline SVG. Custom artwork should fill the supplied square canvas and include
 its intended transparent margins. `size` measures this canvas, not the opaque
 icon face. The lab's reference-only icon clips are not part of this package.
+
+`adaptive` defaults to `true`. `size` is the maximum requested canvas size:
+the Dock scales down uniformly to fit its positioned container, reserving
+space for the full magnification wave and an 8px end gutter. This fit stays
+fixed during hover, so the Dock doesn't shrink under the pointer. A
+`ResizeObserver` updates it when the container, items, or geometry changes.
+Bottom placement fits the available width; left/right fit the available height.
+Extremely dense lists produce small icons; there is no minimum-size overflow
+or scrolling mode. Tooltips retain their text size. Use `adaptive={false}` for
+fixed-scale reference compositions.
+
+Enable `autoHide` to slide the Dock out of its container. A 6px strip at the
+chosen edge reveals it after `revealDelay` (120ms by default). Leaving starts
+`hideDelay` (500ms); returning cancels the hide. The edge is also a **Show Dock**
+button for touch and keyboard access. Keyboard focus keeps the Dock visible,
+and hidden items are inert. Reduced motion disables the slide transition.
+The 180ms slide is provisional rather than native timing calibration.
+
+```tsx
+<Dock
+  items={apps}
+  size={52}
+  autoHide
+  revealDelay={120}
+  hideDelay={500}
+/>
+```
 
 Magnification uses a broad cosine wave with a four-canvas influence radius,
 estimated from the [native Tahoe hover sequence around 0:38–0:43](https://www.youtube.com/watch?v=G3MZaTjIVYc&t=37s).

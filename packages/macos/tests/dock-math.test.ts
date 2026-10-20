@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { dockLayout, dockScale } from "../src/dock-math";
+import { dockFitScale, dockLayout, dockScale } from "../src/dock-math";
 
 describe("Dock magnification", () => {
 	test("peaks under the pointer and returns to the resting size at both edges", () => {
@@ -17,6 +17,62 @@ describe("Dock magnification", () => {
 		expect(dockScale(0, 120, 1)).toBe(1);
 		expect(dockScale(0, 0, 1.8)).toBe(1);
 		expect(dockScale(0, 120, 0)).toBe(1);
+	});
+});
+
+describe("adaptive Dock sizing", () => {
+	test("keeps requested size when there is room and handles zero-sized containers", () => {
+		const geometry = {
+			availableDepth: 400,
+			availableLength: 1000,
+			depth: 74,
+			itemCount: 6,
+			length: 360,
+			magnification: 2.5,
+			size: 52,
+		};
+		expect(dockFitScale(geometry)).toBe(1);
+		expect(dockFitScale({ ...geometry, availableLength: 0 })).toBe(0);
+		expect(dockFitScale({ ...geometry, availableDepth: -8 })).toBe(0);
+		expect(dockFitScale({ ...geometry, itemCount: 0, length: 0 })).toBe(1);
+		expect(dockFitScale({ ...geometry, availableDepth: 76 })).toBe(0.5);
+		expect(
+			dockFitScale({ ...geometry, availableLength: 180, magnification: 1 })
+		).toBe(0.5);
+	});
+
+	test("fits long lists and the entire magnification sweep inside narrow containers", () => {
+		for (const count of [1, 6, 12, 24, 60]) {
+			const size = 52;
+			const centers = Array.from(
+				{ length: count },
+				(_, index) => 36 + index * 56 + Math.floor(index / 6) * 26
+			);
+			const length = (centers.at(-1) ?? 36) + 36;
+			for (const availableLength of [264, 304, 504, 1184]) {
+				const scale = dockFitScale({
+					availableDepth: 400,
+					availableLength,
+					depth: 74,
+					itemCount: count,
+					length,
+					magnification: 2.5,
+					size,
+				});
+				let largest = 0;
+				for (let pointer = -100; pointer <= length + 100; pointer += 7) {
+					largest = Math.max(
+						largest,
+						dockLayout(centers, size, pointer, 2.5).growth
+					);
+				}
+				expect((length + largest) * scale).toBeLessThanOrEqual(
+					availableLength + 0.001
+				);
+				expect(scale).toBeGreaterThan(0);
+				expect(scale).toBeLessThanOrEqual(1);
+			}
+		}
 	});
 });
 

@@ -35,6 +35,7 @@ const DEFAULTS: SceneSettings = {
 	accentColor: "#007aff",
 	active: true,
 	appearance: "light",
+	dockAutoHide: false,
 	dockPosition: "bottom",
 	dockSize: 52,
 	magnification: 1.65,
@@ -190,7 +191,7 @@ function exampleCode(component: ComponentName, settings: SceneSettings) {
 	let content = "";
 	if (component === "dock" || component === "desktop") {
 		imports = 'import { Dock } from "@anyway-design/macos/dock";';
-		content = `<Dock\n        size={${settings.dockSize}}\n        magnification={${settings.magnification}}\n        position="${settings.dockPosition}"\n        items={[\n          { id: "finder", label: "Finder", icon: "/assets/finder.webp", running: true },\n          { id: "safari", label: "Safari", icon: "/assets/safari.webp" },\n          { id: "mail", label: "Mail", icon: "/assets/mail.webp", badge: "2" },\n        ]}\n        onActivate={(id) => setSelected(id)}\n      />\n      <p aria-live="polite">{selected}</p>`;
+		content = `<Dock\n        autoHide={${settings.dockAutoHide}}\n        size={${settings.dockSize}}\n        magnification={${settings.magnification}}\n        position="${settings.dockPosition}"\n        items={[\n          { id: "finder", label: "Finder", icon: "/assets/finder.webp", running: true },\n          { id: "safari", label: "Safari", icon: "/assets/safari.webp" },\n          { id: "mail", label: "Mail", icon: "/assets/mail.webp", badge: "2" },\n        ]}\n        onActivate={(id) => setSelected(id)}\n      />\n      <p aria-live="polite">{selected}</p>`;
 		state = '  const [selected, setSelected] = useState("");\n';
 	} else if (component === "menu-bar") {
 		imports = 'import { MenuBar } from "@anyway-design/macos/menu-bar";';
@@ -658,6 +659,11 @@ function Inspector({
 			{component === "desktop" || component === "dock" ? (
 				<section>
 					<h3>Dock</h3>
+					<Toggle
+						checked={settings.dockAutoHide}
+						label="Auto-hide"
+						onChange={(value) => update("dockAutoHide", value)}
+					/>
 					<Range
 						label="Icon size"
 						max={64}

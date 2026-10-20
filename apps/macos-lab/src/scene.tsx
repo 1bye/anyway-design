@@ -43,6 +43,7 @@ export interface SceneSettings {
 	accentColor: string;
 	active: boolean;
 	appearance: MacOSAppearance;
+	dockAutoHide: boolean;
 	dockPosition: "bottom" | "left" | "right";
 	dockSize: number;
 	magnification: number;
@@ -571,6 +572,7 @@ function SceneDock({
 	const showDock = component === "desktop" || component === "dock";
 	return showDock ? (
 		<Dock
+			autoHide={settings.dockAutoHide}
 			items={DOCK_ITEMS}
 			magnification={settings.reduceMotion ? 1 : settings.magnification}
 			onActivate={(id) => {

@@ -130,6 +130,7 @@ export function DockReferenceComparison() {
 								preset="tahoe"
 							>
 								<Dock
+									adaptive={false}
 									glass={glass === "css" ? "blur" : "refractive"}
 									glassBackdrop={
 										glass === "texture" ? REFERENCE_BACKDROP : undefined

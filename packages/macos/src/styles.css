@@ -183,9 +183,55 @@
 	background: var(--mac-line);
 }
 
+.mac-dock-area {
+	position: absolute;
+	inset: 0;
+	z-index: 40;
+	overflow: clip;
+	pointer-events: none;
+}
+
+.mac-dock-reveal {
+	position: absolute;
+	z-index: 1;
+	padding: 0;
+	pointer-events: auto;
+	background: transparent;
+	border: 0;
+}
+
+.mac-dock-reveal:focus-visible {
+	outline: 2px solid var(--mac-accent);
+	outline-offset: -2px;
+}
+
+[data-position="bottom"] > .mac-dock-reveal {
+	bottom: 0;
+	left: 50%;
+	width: var(--dock-reveal-length);
+	height: 6px;
+	transform: translateX(-50%);
+}
+
+:is([data-position="left"], [data-position="right"]) > .mac-dock-reveal {
+	top: 50%;
+	width: 6px;
+	height: var(--dock-reveal-length);
+	transform: translateY(-50%);
+}
+
+[data-position="left"] > .mac-dock-reveal {
+	left: 0;
+}
+[data-position="right"] > .mac-dock-reveal {
+	right: 0;
+}
+
 .mac-dock {
 	--dock-size: 52px;
 	--dock-growth: 0px;
+	--dock-fit: 1;
+	--dock-slide: 0px;
 	--dock-gap: 4px;
 	--dock-edge-gap: 9px;
 	--dock-separator-gap: 15px;
@@ -196,13 +242,25 @@
 	align-items: flex-end;
 	width: max-content;
 	padding: var(--dock-padding, 6px 8px 12px);
+	pointer-events: auto;
 	isolation: isolate;
+}
+
+.mac-dock[data-auto-hide] {
+	transition: transform 180ms ease-out;
+}
+
+.mac-dock[data-hidden] {
+	--dock-slide: var(--dock-hide-distance, 120px);
+	pointer-events: none;
 }
 
 .mac-dock[data-position="bottom"] {
 	bottom: var(--dock-edge-gap);
 	left: 50%;
-	transform: translateX(-50%);
+	transform: translateX(-50%) translateY(var(--dock-slide))
+		scale(var(--dock-fit));
+	transform-origin: center bottom;
 }
 
 .mac-dock-surface {
@@ -382,6 +440,7 @@
 }
 
 .mac-dock-tooltip {
+	--dock-label-scale: calc(1 / max(var(--dock-fit), 0.01));
 	position: absolute;
 	bottom: calc(var(--dock-size) * var(--dock-scale) + 16px);
 	left: 50%;
@@ -394,7 +453,8 @@
 	box-shadow: 0 3px 9px rgb(0 0 0 / 20%);
 	opacity: 0;
 	backdrop-filter: blur(24px);
-	transform: translateX(-50%);
+	transform: translateX(-50%) scale(var(--dock-label-scale));
+	transform-origin: center bottom;
 }
 
 .mac-dock-item:hover .mac-dock-tooltip,
@@ -422,14 +482,19 @@
 	top: 50%;
 	flex-direction: column;
 	padding: var(--dock-vertical-padding, 8px 9px);
-	transform: translateY(-50%);
 }
 
 .mac-dock[data-position="left"] {
 	left: var(--dock-edge-gap);
+	transform: translateY(-50%) translateX(calc(-1 * var(--dock-slide)))
+		scale(var(--dock-fit));
+	transform-origin: left center;
 }
 .mac-dock[data-position="right"] {
 	right: var(--dock-edge-gap);
+	transform: translateY(-50%) translateX(var(--dock-slide))
+		scale(var(--dock-fit));
+	transform-origin: right center;
 }
 .mac-dock:not([data-position="bottom"]) .mac-dock-surface {
 	inset: calc(var(--dock-growth) / -2) 0;
@@ -474,11 +539,13 @@
 	top: 50%;
 	bottom: auto;
 	left: calc(var(--dock-size) * var(--dock-scale) + 16px);
-	transform: translateY(-50%);
+	transform: translateY(-50%) scale(var(--dock-label-scale));
+	transform-origin: left center;
 }
 .mac-dock[data-position="right"] .mac-dock-tooltip {
 	right: calc(var(--dock-size) * var(--dock-scale) + 16px);
 	left: auto;
+	transform-origin: right center;
 }
 
 .mac-window {

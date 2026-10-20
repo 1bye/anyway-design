@@ -144,6 +144,13 @@
 	width: max-content;
 }
 
+.dock-study-live .mac-dock-area {
+	position: relative;
+	inset: auto;
+	width: max-content;
+	overflow: visible;
+}
+
 .dock-study-icon {
 	display: block;
 	width: 100%;

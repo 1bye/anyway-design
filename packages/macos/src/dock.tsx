@@ -4,9 +4,11 @@ import {
 	type ReactNode,
 	useCallback,
 	useEffect,
+	useId,
 	useRef,
 } from "react";
 import { DockBackdropFilter } from "./dock-backdrop-filter";
+import { useDockAutoHide, useDockFit } from "./dock-behavior";
 import { DockGlass, type DockGlassBackdrop } from "./dock-glass";
 import { dockLayout } from "./dock-math";
 export interface DockItem {
@@ -18,25 +20,48 @@ export interface DockItem {
 	separatorBefore?: boolean;
 }
 export interface DockProps {
+	adaptive?: boolean;
+	autoHide?: boolean;
 	glass?: "refractive" | "blur";
 	glassBackdrop?: DockGlassBackdrop;
+	hideDelay?: number;
 	items: DockItem[];
 	magnification?: number;
 	onActivate?: (id: string) => void;
 	position?: "bottom" | "left" | "right";
+	revealDelay?: number;
 	size?: number;
 }
 export function Dock({
+	adaptive = true,
+	autoHide = false,
 	glass = "refractive",
 	glassBackdrop,
 	items,
 	size = 52,
 	magnification = 1.65,
 	position = "bottom",
+	hideDelay = 500,
+	revealDelay = 120,
 	onActivate,
 }: DockProps) {
 	const root = useRef<HTMLElement | null>(null);
+	const area = useRef<HTMLDivElement | null>(null);
+	const reveal = useRef<HTMLButtonElement | null>(null);
+	const dockId = useId();
 	const vertical = position !== "bottom";
+	useDockFit(root, area, {
+		adaptive,
+		itemCount: items.length,
+		magnification,
+		size,
+		vertical,
+	});
+	useDockAutoHide(root, area, reveal, {
+		autoHide: autoHide && items.length > 0,
+		hideDelay,
+		revealDelay,
+	});
 	const handleActivate = useCallback(
 		(event: MouseEvent<HTMLButtonElement>) => {
 			const { id } = event.currentTarget.dataset;
@@ -106,9 +131,15 @@ export function Dock({
 		node.addEventListener("pointerleave", reset);
 		node.addEventListener("pointercancel", reset);
 		reducedMotion.addEventListener("change", schedule);
+		const resize = new ResizeObserver(schedule);
+		const container = area.current;
+		if (container !== null) {
+			resize.observe(container);
+		}
 		paint();
 		return () => {
 			cancelAnimationFrame(frame);
+			resize.disconnect();
 			node.removeEventListener("pointermove", move);
 			node.removeEventListener("pointerleave", reset);
 			node.removeEventListener("pointercancel", reset);
@@ -116,52 +147,66 @@ export function Dock({
 		};
 	}, [items, magnification, size, vertical]);
 	return (
-		<nav
-			aria-label="Dock"
-			className="mac-dock"
-			data-position={position}
-			ref={root}
-			style={{ "--dock-size": `${size}px` } as CSSProperties}
-		>
-			<div aria-hidden className="mac-dock-surface">
-				{glassBackdrop && glass === "refractive" ? (
-					<DockGlass backdrop={glassBackdrop} />
-				) : null}
-				{!glassBackdrop && glass === "refractive" ? (
-					<DockBackdropFilter />
-				) : null}
-			</div>
-			{items.map((item) => (
+		<div className="mac-dock-area" data-position={position} ref={area}>
+			{autoHide && items.length > 0 ? (
 				<button
-					aria-label={`Open ${item.label}`}
-					className="mac-dock-item"
-					data-id={item.id}
-					data-running={item.running || undefined}
-					data-separator={item.separatorBefore || undefined}
-					key={item.id}
-					onClick={handleActivate}
+					aria-controls={dockId}
+					aria-expanded={false}
+					aria-label="Show Dock"
+					className="mac-dock-reveal"
+					ref={reveal}
 					type="button"
-				>
-					<span className="mac-dock-art">
-						{typeof item.icon === "string" ? (
-							<img
-								alt=""
-								draggable={false}
-								height={128}
-								src={item.icon}
-								width={128}
-							/>
-						) : (
-							item.icon
-						)}
-						{item.badge ? (
-							<span className="mac-dock-badge">{item.badge}</span>
-						) : null}
-					</span>
-					<span className="mac-dock-tooltip">{item.label}</span>
-					<span aria-hidden className="mac-dock-dot" />
-				</button>
-			))}
-		</nav>
+				/>
+			) : null}
+			<nav
+				aria-label="Dock"
+				className="mac-dock"
+				data-auto-hide={autoHide || undefined}
+				data-position={position}
+				id={dockId}
+				ref={root}
+				style={{ "--dock-size": `${size}px` } as CSSProperties}
+			>
+				<div aria-hidden className="mac-dock-surface">
+					{glassBackdrop && glass === "refractive" ? (
+						<DockGlass backdrop={glassBackdrop} />
+					) : null}
+					{!glassBackdrop && glass === "refractive" ? (
+						<DockBackdropFilter />
+					) : null}
+				</div>
+				{items.map((item) => (
+					<button
+						aria-label={`Open ${item.label}`}
+						className="mac-dock-item"
+						data-id={item.id}
+						data-running={item.running || undefined}
+						data-separator={item.separatorBefore || undefined}
+						key={item.id}
+						onClick={handleActivate}
+						type="button"
+					>
+						<span className="mac-dock-art">
+							{typeof item.icon === "string" ? (
+								<img
+									alt=""
+									draggable={false}
+									height={128}
+									src={item.icon}
+									width={128}
+								/>
+							) : (
+								item.icon
+							)}
+							{item.badge ? (
+								<span className="mac-dock-badge">{item.badge}</span>
+							) : null}
+						</span>
+						<span className="mac-dock-tooltip">{item.label}</span>
+						<span aria-hidden className="mac-dock-dot" />
+					</button>
+				))}
+			</nav>
+		</div>
 	);
 }

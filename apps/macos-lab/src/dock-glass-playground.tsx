@@ -1,4 +1,4 @@
-import { Dock } from "@anyway-design/macos/dock";
+import { Dock, type DockItem } from "@anyway-design/macos/dock";
 import { MacOSEnvironment } from "@anyway-design/macos/environment";
 import { MacWindow } from "@anyway-design/macos/window";
 import { ArrowLeft } from "lucide-react";
@@ -26,6 +26,19 @@ const STUDIES = [
 	},
 ];
 
+const LONG_DOCK_ITEMS = Array.from({ length: 4 }, (_, group) =>
+	DOCK_ITEMS.map((item) => ({
+		...item,
+		id: group ? `${item.id}-${group}` : item.id,
+		label: group ? `${item.label} ${group + 1}` : item.label,
+	}))
+).flat();
+const ITEM_SETS: Record<string, DockItem[]> = {
+	"6": DOCK_ITEMS,
+	"12": LONG_DOCK_ITEMS.slice(0, 12),
+	"24": LONG_DOCK_ITEMS,
+};
+
 export function DockGlassPlayground() {
 	const [wallpaper, setWallpaper] = useState("tahoe");
 	const [windowPosition, setWindowPosition] = useState(64);
@@ -33,6 +46,12 @@ export function DockGlassPlayground() {
 	const [blur, setBlur] = useState(false);
 	const [opaque, setOpaque] = useState(false);
 	const [magnification, setMagnification] = useState(1.65);
+	const [iconCount, setIconCount] = useState("6");
+	const [containerWidth, setContainerWidth] = useState(1184);
+	const [autoHide, setAutoHide] = useState(false);
+	const [position, setPosition] = useState<"bottom" | "left" | "right">(
+		"bottom"
+	);
 	const [selected, setSelected] = useState("");
 	const changeWallpaper = useCallback(
 		(event: ChangeEvent<HTMLSelectElement>) => {
@@ -59,8 +78,32 @@ export function DockGlassPlayground() {
 		[]
 	);
 	const closeWindow = useCallback(() => setWindowVisible(false), []);
+	const changeIconCount = useCallback(
+		(event: ChangeEvent<HTMLSelectElement>) => {
+			setIconCount(event.target.value);
+		},
+		[]
+	);
+	const changeContainerWidth = useCallback(
+		(event: ChangeEvent<HTMLInputElement>) => {
+			setContainerWidth(Number(event.target.value));
+		},
+		[]
+	);
+	const changeAutoHide = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+		setAutoHide(event.target.checked);
+	}, []);
+	const changePosition = useCallback(
+		(event: ChangeEvent<HTMLSelectElement>) => {
+			const { value } = event.target;
+			if (value === "bottom" || value === "left" || value === "right") {
+				setPosition(value);
+			}
+		},
+		[]
+	);
 	const activate = useCallback((id: string) => {
-		const app = DOCK_ITEMS.find((item) => item.id === id);
+		const app = LONG_DOCK_ITEMS.find((item) => item.id === id);
 		setSelected(`${app?.label ?? "App"} selected`);
 	}, []);
 
@@ -137,10 +180,46 @@ export function DockGlassPlayground() {
 					Native motion reference ↗
 				</a>
 			</div>
+			<div className="glass-playground-controls">
+				<label>
+					Icons
+					<select onChange={changeIconCount} value={iconCount}>
+						<option value="6">6 apps</option>
+						<option value="12">12 apps</option>
+						<option value="24">24 apps</option>
+					</select>
+				</label>
+				<label>
+					Container width
+					<input
+						aria-label="Container width"
+						max="1184"
+						min="280"
+						onChange={changeContainerWidth}
+						step="1"
+						type="range"
+						value={containerWidth}
+					/>
+					<output>{containerWidth}px</output>
+				</label>
+				<label>
+					Position
+					<select onChange={changePosition} value={position}>
+						<option value="bottom">Bottom</option>
+						<option value="left">Left</option>
+						<option value="right">Right</option>
+					</select>
+				</label>
+				<label>
+					<input checked={autoHide} onChange={changeAutoHide} type="checkbox" />
+					Auto-hide
+				</label>
+			</div>
 			<MacOSEnvironment
 				className={`glass-playground-stage glass-wallpaper-${wallpaper}`}
 				preset="tahoe"
 				reduceTransparency={opaque}
+				style={{ maxWidth: "100%", width: containerWidth }}
 			>
 				<div className="glass-desktop-label">
 					A changing scene. The same Dock.
@@ -178,10 +257,12 @@ export function DockGlassPlayground() {
 					</div>
 				) : null}
 				<Dock
+					autoHide={autoHide}
 					glass={blur ? "blur" : "refractive"}
-					items={DOCK_ITEMS}
+					items={ITEM_SETS[iconCount] ?? DOCK_ITEMS}
 					magnification={magnification}
 					onActivate={activate}
+					position={position}
 					size={52}
 				/>
 			</MacOSEnvironment>
@@ -193,6 +274,11 @@ export function DockGlassPlayground() {
 					Wallpaper, window, and scrolling content are rendered in the page.
 				</span>
 			</div>
+			<p className="glass-playground-note">
+				{autoHide
+					? `Move to the ${position} edge to reveal the Dock, or Tab to Show Dock.`
+					: "Try a longer icon list or a narrower desktop. The Dock keeps room for magnification."}
+			</p>
 			<p className="glass-playground-note">
 				Refraction uses SVG backdrop filtering in Chromium. Other browsers use
 				live blur. No wallpaper texture or screen recording is needed.

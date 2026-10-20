@@ -24,6 +24,12 @@ opaque accessibility mode.
 The **Magnification** slider covers 1×–2.5×. Move along the Dock or hover its
 ends to inspect the growth wave and neighboring shifts; **Native motion
 reference** opens the filmed Tahoe demonstration used for the first pass.
+**Icons**, **Container width**, and **Position** exercise adaptive sizing with
+6, 12, or 24 icons in desktops down to 280px wide. Space for magnification is
+reserved before hover. **Auto-hide** adds edge reveal with a short delay;
+Tab to **Show Dock** to reveal it from the keyboard. Focus keeps it open.
+The main inspector and generated code also expose auto-hide. The Apple
+comparison opts out of adaptive fitting to preserve its reference scale.
 
 For a close-up comparison, choose **Dock → Compare with Apple**, or open
 [the Dock study](http://127.0.0.1:3006/?view=dock-reference). It shows the shared
