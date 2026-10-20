@@ -1,0 +1,118 @@
+.menu-study-options {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 16px;
+	align-items: center;
+}
+
+.menu-study-viewport {
+	height: calc(var(--menu-study-height) * var(--menu-study-zoom));
+	max-height: 650px;
+	overflow: auto;
+	scrollbar-width: thin;
+	background: #fff;
+}
+
+.menu-study-scene {
+	position: relative;
+	width: 440px;
+	height: var(--menu-study-height);
+	margin: 0 auto;
+	zoom: var(--menu-study-zoom);
+	background: white;
+}
+
+.menu-study-live {
+	--mac-menu-width: 192px;
+	--mac-menu-font-size: 11.5px;
+	--mac-menu-row-height: 21px;
+	--mac-menu-icon-size: 12px;
+	--mac-menu-icon-gap: 7px;
+	--mac-menu-color-cell: 20px;
+	--mac-menu-color-size: 12px;
+	--mac-menu-separator-gap: 4.65px;
+}
+
+.menu-study-live[data-appearance="dark"] {
+	background: #252729;
+}
+
+.menu-study-live .mac-menu-popup {
+	max-width: none;
+	max-height: none;
+}
+
+.menu-study-live .mac-menu-palette {
+	padding-right: 5.5px;
+}
+
+.menu-study-trigger {
+	position: absolute;
+	top: 16.5px;
+	left: 197.5px;
+}
+
+.menu-study-trigger .mac-toolbar-button {
+	width: 28px;
+	height: 28px;
+}
+
+.menu-study-filename {
+	position: absolute;
+	top: 25px;
+	left: 34px;
+	font-size: 11px;
+	color: var(--mac-secondary);
+}
+
+.menu-study-reference-crop {
+	position: absolute;
+	top: 44px;
+	left: 24px;
+	width: 212px;
+	height: 406px;
+	overflow: hidden;
+}
+
+.menu-study-reference-crop img {
+	position: absolute;
+	top: -88px;
+	left: -198px;
+	width: 814px;
+	max-width: none;
+	height: 568px;
+}
+
+.menu-study-context {
+	display: flex;
+	gap: 24px;
+	align-items: center;
+	margin: 24px 0;
+}
+
+.menu-study-context-target {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	padding: 12px 14px;
+	background: var(--mac-surface);
+	border: 1px solid var(--mac-line);
+	border-radius: 9px;
+}
+
+.menu-study-context-target span {
+	font-size: 10px;
+	color: var(--mac-secondary);
+}
+
+.menu-study-context > p {
+	font-size: 12px;
+	color: #737981;
+}
+
+@media (max-width: 900px) {
+	.menu-study .dock-study-toolbar,
+	.menu-study-context {
+		flex-wrap: wrap;
+	}
+}

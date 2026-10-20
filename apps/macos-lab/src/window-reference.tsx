@@ -27,14 +27,19 @@ import {
 } from "./window-reference-assets";
 import "./dock-reference.css";
 import "./window-reference.css";
+import { FinderActions } from "./finder-actions";
 
 type WindowDetail = keyof typeof WINDOW_REFERENCE_CROPS;
 const SCENE_INSET = 24;
 
 function ReferenceToolbar({
 	onAction,
+	onMenuAction,
+	onMenuOpenChange,
 }: {
 	onAction: (event: MouseEvent<HTMLButtonElement>) => void;
+	onMenuAction: (id: string) => void;
+	onMenuOpenChange: (open: boolean) => void;
 }) {
 	return (
 		<>
@@ -44,7 +49,6 @@ function ReferenceToolbar({
 					<WindowSymbol
 						className="window-study-small-symbol"
 						name="chevron-up-down"
-						viewBox="2 0 12 16"
 					/>
 				</WindowToolbarButton>
 			</WindowToolbarGroup>
@@ -54,7 +58,6 @@ function ReferenceToolbar({
 					<WindowSymbol
 						className="window-study-small-symbol"
 						name="chevron-down"
-						viewBox="2 0 12 16"
 					/>
 				</WindowToolbarButton>
 			</WindowToolbarGroup>
@@ -65,9 +68,11 @@ function ReferenceToolbar({
 				<WindowToolbarButton label="Tags" onClick={onAction}>
 					<WindowSymbol name="tag" />
 				</WindowToolbarButton>
-				<WindowToolbarButton label="More actions" onClick={onAction}>
-					<WindowSymbol name="ellipsis" />
-				</WindowToolbarButton>
+				<FinderActions
+					filename="Agreement for Services"
+					onAction={onMenuAction}
+					onOpenChange={onMenuOpenChange}
+				/>
 			</WindowToolbarGroup>
 			<WindowToolbarGroup label="Search">
 				<WindowToolbarButton label="Search" onClick={onAction}>
@@ -88,11 +93,16 @@ export function WindowReferenceComparison() {
 	const [selected, setSelected] = useState("documents");
 	const [notice, setNotice] = useState("");
 	const [imageFailed, setImageFailed] = useState(false);
+	const [menuOpen, setMenuOpen] = useState(false);
 	const liveViewport = useRef<HTMLElement>(null);
 	const referenceViewport = useRef<HTMLElement>(null);
 	const crop = WINDOW_REFERENCE_CROPS[detail];
 	const sceneWidth = crop.width + SCENE_INSET * 2;
-	const sceneHeight = crop.height + SCENE_INSET * 2;
+	const sceneHeight =
+		(menuOpen
+			? Math.max(crop.height, WINDOW_REFERENCE_SIZE.height)
+			: crop.height) +
+		SCENE_INSET * 2;
 	const scale = zoom === "fit" ? fit : Number(zoom);
 
 	useLayoutEffect(() => {
@@ -169,6 +179,11 @@ export function WindowReferenceComparison() {
 			`${event.currentTarget.getAttribute("aria-label")} activated. Toolbar actions are preview callbacks.`
 		);
 	}, []);
+	const menuAction = useCallback(
+		(id: string) =>
+			setNotice(`${id} activated. File actions are preview callbacks.`),
+		[]
+	);
 	const close = useCallback(
 		() =>
 			setNotice(
@@ -218,7 +233,13 @@ export function WindowReferenceComparison() {
 			</WindowToolbarButton>
 		</WindowToolbarGroup>
 	);
-	const toolbar = <ReferenceToolbar onAction={toolbarAction} />;
+	const toolbar = (
+		<ReferenceToolbar
+			onAction={toolbarAction}
+			onMenuAction={menuAction}
+			onMenuOpenChange={setMenuOpen}
+		/>
+	);
 	const sceneStyle = {
 		"--window-study-height": `${sceneHeight}px`,
 		"--window-study-width": `${sceneWidth}px`,
@@ -279,6 +300,7 @@ export function WindowReferenceComparison() {
 				</label>
 			</div>
 			<div className="window-study-controls">
+				<a href="/?view=menu-reference">Compare menus ↗</a>
 				<label>
 					<input checked={active} onChange={changeActive} type="checkbox" />{" "}
 					Active window
@@ -413,8 +435,8 @@ export function WindowReferenceComparison() {
 				<p>
 					Window chrome, toolbar buttons, and sidebar rows are live React.
 					Document tabs and file content are a static crop of Apple’s image.
-					Symbols and glass are approximations; this is a visual calibration
-					view, not yet a verified 1:1 native window.
+					Icons are native exports from macOS Tahoe 26.6.2. Their size and
+					weight are calibrated here; glass remains an approximation.
 				</p>
 			</div>
 			<p aria-live="polite" className="dock-study-selection">

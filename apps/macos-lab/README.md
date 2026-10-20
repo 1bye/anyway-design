@@ -55,6 +55,24 @@ of difference. This view is not proof of a pixel-identical native compositor.
 
 ## Fidelity status
 
+Open [the menu study](http://127.0.0.1:3006/?view=menu-reference) from **Compare
+menus** in the Window or Menu bar preview. Its source is the Finder context menu
+in Apple's Tahoe 26 Windows-switching guide. The toolbar More button, right-click
+example, and menu bar use the same shared `MacMenuPopup`. The window comparison
+and main window preview now have a working More menu.
+
+The study matches the visible item list, tag palette, 192px menu width, 21px rows,
+and separator spacing. Shared zoom and synchronized scrolling align both panels.
+Try Open With and Quick Actions, select a tag color, and enable **Extra states**
+for a controlled checkbox, disabled item, and shortcut hints. These extra states
+and submenu contents are interaction fixtures, not claims about the reference.
+Actions report callback IDs; they do not modify files or the system clipboard.
+
+Browser checks cover arrow-key opening, submenu entry/return, Escape and focus
+restoration, checkbox persistence, disabled activation, tag selection,
+right-click, Shift+F10, and dark/reduced-transparency material. Native animation
+timing, optical lensing, and touch long-press behavior still need calibration.
+
 Choose **Window → Compare with Apple**, or open
 [the window study](http://127.0.0.1:3006/?view=window-reference), for the Tahoe
 Finder comparison. The source is [Apple's Tahoe 26 Finder guide](https://support.apple.com/en-euro/guide/mac-help/mchlp2605/26/mac/26).
@@ -74,11 +92,16 @@ The study calibrates a 121px sidebar column, 41px title bar, 7px sidebar inset,
 22px outer radius, 25px sidebar rows, and 11px traffic lights at its normalized
 scale. Its grayscale and control colors are sampled from the reference.
 The main lab uses the shared components at their general-purpose dimensions.
-The toolbar and sidebar use shared `WindowSymbol` SVGs, with reference-matched
-silhouettes, optical sizing, and stroke weights instead of generic Lucide icons.
-These are custom approximations, not exported SF Symbols. Font rasterization,
-backdrop blur, and rim light still differ from Apple's renderer. Dark and inactive
-states are adaptations without a matching reference image.
+The toolbar, sidebar, and menus use shared `WindowSymbol` masks exported through
+AppKit on the user's macOS 26.6.2 system. These replace the hand-drawn SVGs with
+native glyphs, including the Applications and Make Alias symbols from Tahoe's
+additional catalog. The 4× PNG masks retain selection and highlight colors.
+Symbol weights and sizes are calibrated in the Toolbar, Sidebar, and Menu
+close-ups. The current system's zipper glyph differs from the published menu
+reference; optical size, font rasterization, backdrop blur, and rim light are
+still subject to calibration. Dark and inactive states are adaptations without
+a matching reference image. Extraction details and provenance are documented
+in `packages/macos/src/assets/native-symbols/SOURCES.md`.
 
 These are interactive reproductions, **not yet verified 1:1 replicas**.
 Preset geometry and materials need native reference calibration. Tahoe's

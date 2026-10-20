@@ -28,10 +28,11 @@ and the portal container so menus retain their styles in embedded previews.
 | `environment` | `MacOSEnvironment`: `preset`, `appearance`, `accentColor`, `reduceMotion`, `reduceTransparency`, `className`, `style` |
 | `dock` | `Dock`: `items`, `size`, `magnification`, `position`, `adaptive`, `autoHide`, `revealDelay`, `hideDelay`, `onActivate`, `glass`, `glassBackdrop` |
 | `menu-bar` | `MenuBar`: `menus`, `status`, `onAction`; `AppleMark` |
+| `menu` | `MacMenuButton`, `MacContextMenu`: `trigger`, `items`, `onAction`, `positionerProps`; `MacMenuButton` also accepts `open`, `defaultOpen`, `onOpenChange` |
 | `window` | `MacWindow`: `title`, `sidebar`, `sidebarWidth`, `toolbarLeading`, `toolbar`, `footer`, `active`, window action callbacks; `TrafficLights` |
 | `window-toolbar` | `WindowToolbarGroup`: `label`, `children`; `WindowToolbarButton`: `label`, native button props |
 | `window-sidebar` | `WindowSidebar`: `groups`, `selected`, `onSelect`, `label` |
-| `window-symbol` | `WindowSymbol`: `name`, `size`, SVG props; `WindowSymbolName` |
+| `window-symbol` | `WindowSymbol`: `name`, `size`, span props; `WindowSymbolName` |
 | `tabs` | `MacTabs`: `tabs`, `value`, `onValueChange`, `variant`, `label` |
 | `controls` | `MacButton`, `MacSwitch` |
 
@@ -39,6 +40,56 @@ Menus and tabs use Base UI for focus and keyboard behavior. Dock pointer
 updates use one animation frame and DOM transforms, without React renders
 on pointer movement. Actions are callbacks; the package never controls
 the operating system.
+
+Toolbar, context, and menu-bar menus share the same popup, rows, material,
+and Base UI navigation. Items accept `icon`, `shortcut`, `disabled`,
+`separatorBefore`, nested `items`, and controlled `checked` state.
+`onAction(id)` handles commands and updates checked state in the caller.
+Checkbox items stay open by default; `closeOnClick` can override that.
+Shortcut text is a visual hint, not a registered application keyboard binding.
+Palette entries (`type: "palette"`) accept labeled, checked color choices.
+
+```tsx
+import { MacMenuButton, MacContextMenu } from "@anyway-design/macos/menu";
+import { WindowSymbol } from "@anyway-design/macos/window-symbol";
+import { WindowToolbarButton } from "@anyway-design/macos/window-toolbar";
+
+const items = [
+  { id: "copy", label: "Copy", icon: <WindowSymbol name="copy" />, shortcut: "⌘C" },
+  { id: "open-with", label: "Open With", items: [
+    { id: "preview", label: "Preview" },
+    { id: "other", label: "Other…", separatorBefore: true },
+  ] },
+  { id: "preview-pane", label: "Show preview", checked: previewVisible },
+  { id: "paste", label: "Paste", disabled: true, separatorBefore: true },
+];
+
+<MacMenuButton
+  items={items}
+  onAction={handleAction}
+  trigger={<WindowToolbarButton label="More actions"><WindowSymbol name="ellipsis" /></WindowToolbarButton>}
+/>;
+
+<MacContextMenu
+  items={items}
+  onAction={handleAction}
+  trigger={<button type="button">My document</button>}
+/>;
+```
+
+Use a focusable element for a context trigger. Right-click, long-press, the
+Context Menu key, and Shift+F10 open its menu. Arrow keys, typeahead, submenu
+navigation, Escape, outside dismissal, and focus restoration come from Base UI.
+Submenus use the same environment portal and flip near clipping boundaries.
+Menus scroll when there is insufficient vertical space. Reduced transparency
+uses an opaque surface, and reduced motion removes entry/exit transitions.
+The Tahoe material uses live backdrop blur and tint; native lensing and timing
+are not yet calibrated.
+
+Size overrides include `--mac-menu-width`, `--mac-menu-font-size`,
+`--mac-menu-row-height`, `--mac-menu-icon-size`, and `--mac-menu-separator-gap`.
+The comparison uses a 192px width and 21px rows to match Apple's published image;
+the shared default is 230px wide with 25px Tahoe rows.
 
 Tahoe windows use an inset sidebar that extends behind the traffic lights,
 with navigation before the title and action groups after it. Sequoia keeps
@@ -93,12 +144,34 @@ fieldsets, and buttons retain native disabled, keyboard, and click behavior.
 Omit `sidebar` to use the full content width. `active={false}` mutes the chrome
 and traffic lights. Reduced transparency removes the sidebar backdrop blur.
 
-`WindowSymbol` supplies the Finder toolbar and sidebar glyphs on a shared
-16-unit optical canvas, with individual stroke weights and filled details.
-These are custom SVG approximations drawn against the reference, not exported
-SF Symbols. They inherit `currentColor`, including selection and disabled
-states, and are decorative; their containing controls provide accessible labels.
-Custom React icons remain supported in every slot.
+`WindowSymbol` supplies 30 native Tahoe glyphs for the toolbar, sidebar, and
+menus. AppKit renders them at 4× into transparent 64 × 64 PNGs on a 16px canvas;
+CSS masks inherit `currentColor`, including selection, disabled, and highlighted
+states. The component renders a decorative `span` (previously an SVG); its
+containing control supplies the accessible label. Custom React icons remain
+supported in every slot.
+
+The checked-in assets were extracted on macOS 26.6.2 (25G83). Twenty-eight use
+the public system-symbol API; Applications and Make Alias use the installed
+`CoreGlyphsPrivate.bundle` through AppKit's bundle image loader. No native or
+private API runs in the browser. Bundlers resolve the static asset URLs.
+These are native raster exports, not traced vectors; very large zooms can
+soften them. Symbol choice, weight, and optical size are calibrated against the
+published references, not a claim that every Finder rendition is identical.
+Both presets currently share this Tahoe glyph set.
+
+Regenerate on a Mac with Xcode command-line tools:
+
+```sh
+xcrun swift packages/macos/scripts/export-symbols.swift
+bun x ultracite fix packages/macos/src/native-symbols.tsx
+```
+
+The exporter checks every raster for visible content, transparent corners,
+dimensions, and PNG decoding. It fails if a native asset is missing. The
+private catalog path and contents can change with macOS releases.
+`src/assets/native-symbols/manifest.json` records the OS build, native names,
+weights, sources, and optical extents. See that directory's `SOURCES.md`.
 
 The default window is 670 × 420 CSS pixels with a 165px sidebar and a 52px
 title bar. `style` can set dimensions and the CSS variables

@@ -239,8 +239,20 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 	}
 	if (component === "window") {
 		return (
-			<a className="copy-button" href="/?view=window-reference">
-				<Columns2 size={14} /> Compare with Apple
+			<>
+				<a className="copy-button" href="/?view=window-reference">
+					<Columns2 size={14} /> Compare with Apple
+				</a>
+				<a className="copy-button" href="/?view=menu-reference">
+					Compare menus
+				</a>
+			</>
+		);
+	}
+	if (component === "menu-bar") {
+		return (
+			<a className="copy-button" href="/?view=menu-reference">
+				Compare menus with Apple
 			</a>
 		);
 	}

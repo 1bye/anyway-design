@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { App } from "./app";
 import { DockGlassPlayground } from "./dock-glass-playground";
 import { DockReferenceComparison } from "./dock-reference";
+import { MenuReferenceComparison } from "./menu-reference";
 import { WindowReferenceComparison } from "./window-reference";
 import "@anyway-design/macos/styles.css";
 import "./styles.css";
@@ -19,5 +20,7 @@ if (view === "dock-reference") {
 	page = <DockGlassPlayground />;
 } else if (view === "window-reference") {
 	page = <WindowReferenceComparison />;
+} else if (view === "menu-reference") {
+	page = <MenuReferenceComparison />;
 }
 createRoot(root).render(<StrictMode>{page}</StrictMode>);

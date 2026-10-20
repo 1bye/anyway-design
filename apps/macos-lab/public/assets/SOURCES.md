@@ -43,3 +43,16 @@ border, toolbar, traffic lights, and sidebar are rendered by React and CSS.
 No photographed window chrome appears behind the live chrome. The source and
 the static content crop are disclosed in the study. This is a local reference
 fixture, not a component-package asset; Apple's ownership remains unchanged.
+
+## Tahoe menu reference
+
+- `apple-tahoe-menu-reference.png`: unmodified 814 × 568 PNG from
+  [Apple's Tahoe 26 “Switched from Windows to Mac?” guide](https://support.apple.com/en-lk/guide/mac-help/mchlbc684e49/26/mac/26).
+  [Original PNG](https://help.apple.com/assets/69DD569682238CF8EC0621E2/69DD569982238CF8EC0621E9/en_US/3d4f4608b2c832321e287273a5a4ad6d.png).
+
+The menu study clips the rectangle at x=198, y=88, width=212, height=406
+using CSS, including the menu's shadow. It applies the same shared zoom to
+the live React menu. This is Apple's Finder **context menu**, used to calibrate
+the shared surface for toolbar and right-click menus; it is not labeled as a
+screenshot of Finder's More menu. The left panel contains no reference imagery.
+The image remains a local comparison fixture outside the component package.

@@ -32,6 +32,7 @@ import {
 } from "lucide-react";
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { DOCK_ITEMS } from "./dock-items";
+import { FinderActions } from "./finder-actions";
 export type ComponentName =
 	| "desktop"
 	| "menu-bar"
@@ -363,6 +364,7 @@ export function DesktopScene({
 	const toolbar = (
 		<FinderToolbar
 			listView={listView}
+			onAction={(id) => setNotice(`${id} activated`)}
 			setApp={setApp}
 			setListView={setListView}
 		/>
@@ -527,8 +529,10 @@ function FinderToolbar({
 	listView,
 	setListView,
 	setApp,
+	onAction,
 }: {
 	listView: boolean;
+	onAction: (id: string) => void;
 	setListView: React.Dispatch<React.SetStateAction<boolean>>;
 	setApp: (value: string) => void;
 }) {
@@ -546,6 +550,7 @@ function FinderToolbar({
 			>
 				<WindowSymbol name="settings" />
 			</WindowToolbarButton>
+			<FinderActions filename="selection" onAction={onAction} />
 		</WindowToolbarGroup>
 	);
 }

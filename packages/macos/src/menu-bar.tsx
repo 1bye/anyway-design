@@ -1,18 +1,13 @@
 import { Menu } from "@base-ui/react/menu";
 import { Menubar } from "@base-ui/react/menubar";
-import { type MouseEvent, type ReactNode, useCallback } from "react";
-import { useMacOSPortal } from "./environment";
-export interface MacMenuItem {
-	disabled?: boolean;
-	id: string;
-	label: string;
-	separatorBefore?: boolean;
-	shortcut?: string;
-}
+import type { ReactNode } from "react";
+import { type MacMenuEntry, MacMenuPopup } from "./menu";
+
+export type { MacMenuItem } from "./menu";
 export interface MacMenu {
 	accessibleLabel?: string;
 	id: string;
-	items: MacMenuItem[];
+	items: MacMenuEntry[];
 	label: ReactNode;
 }
 export interface MenuBarProps {
@@ -31,16 +26,6 @@ export function AppleMark() {
 	);
 }
 export function MenuBar({ menus, status, onAction }: MenuBarProps) {
-	const container = useMacOSPortal();
-	const handleAction = useCallback(
-		(event: MouseEvent<HTMLElement>) => {
-			const { id } = event.currentTarget.dataset;
-			if (id) {
-				onAction?.(id);
-			}
-		},
-		[onAction]
-	);
 	return (
 		<div className="mac-menubar">
 			<Menubar
@@ -56,36 +41,11 @@ export function MenuBar({ menus, status, onAction }: MenuBarProps) {
 						>
 							{menu.label}
 						</Menu.Trigger>
-						<Menu.Portal container={container}>
-							<Menu.Positioner
-								align="start"
-								className="mac-menu-positioner"
-								sideOffset={3}
-							>
-								<Menu.Popup className="mac-menu-popup">
-									{menu.items.map((item) => (
-										<div key={item.id}>
-											{item.separatorBefore ? (
-												<Menu.Separator className="mac-menu-separator" />
-											) : null}
-											<Menu.Item
-												className="mac-menu-item"
-												data-id={item.id}
-												disabled={item.disabled}
-												onClick={handleAction}
-											>
-												<span>{item.label}</span>
-												{item.shortcut ? (
-													<span className="mac-menu-shortcut">
-														{item.shortcut}
-													</span>
-												) : null}
-											</Menu.Item>
-										</div>
-									))}
-								</Menu.Popup>
-							</Menu.Positioner>
-						</Menu.Portal>
+						<MacMenuPopup
+							items={menu.items}
+							onAction={onAction}
+							positionerProps={{ align: "start", sideOffset: 3 }}
+						/>
 					</Menu.Root>
 				))}
 			</Menubar>

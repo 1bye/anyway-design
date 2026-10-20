@@ -149,13 +149,18 @@
 	background: #eee;
 }
 
-.window-study-live .mac-toolbar-button > svg {
+.window-study-live .mac-toolbar-button > .mac-window-symbol {
 	width: 15px;
 	height: 15px;
 }
 
 .window-study-live .mac-toolbar-button > .window-study-small-symbol {
 	width: 9px;
+	mask-size: 10px 10px;
+}
+
+.window-study-live .window-study-small-symbol[data-symbol="chevron-up-down"] {
+	mask-size: 13px 13px;
 }
 
 .window-study-live .mac-sidebar {
@@ -180,9 +185,14 @@
 	flex-basis: 15px;
 }
 
-.window-study-live .mac-sidebar-icon svg {
-	width: 15px;
-	height: 15px;
+.window-study-live .mac-sidebar-icon .mac-window-symbol {
+	width: 16px;
+	height: 16px;
+}
+
+.window-study-live .mac-sidebar-icon [data-symbol="shared"] {
+	width: 17px;
+	height: 17px;
 }
 
 .window-study-live .mac-sidebar-item[aria-current="page"] {
