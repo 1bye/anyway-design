@@ -114,6 +114,17 @@
     },
     {
       "extent": 14,
+      "id": "column-view",
+      "nativeName": "rectangle.split.3x1",
+      "pixelHeight": 64,
+      "pixelWidth": 64,
+      "pointSize": 16,
+      "rendering": "monochrome",
+      "source": "NSImage(systemSymbolName: rectangle.split.3x1)",
+      "weight": 0
+    },
+    {
+      "extent": 14,
       "id": "copy",
       "nativeName": "doc.on.doc",
       "pixelHeight": 64,

@@ -47,3 +47,26 @@ Choose the view/sidebar state described above and cancel after capture.
 Relative dates, installed-app icons, display rasterization, and OS updates may
 change the resulting pixels. The supplied script was compiled with swiftc and
 both panels were opened and captured during this implementation.
+
+
+## Columns added 20 October 2026
+
+Two additional genuine NSOpenPanel/NSSavePanel captures use the same fixture
+and AppKit reference app in Columns mode, with Design resources selected and
+its Read me.txt child visible. They preserve inactive dark appearance.
+Only the demo root and child columns are retained; unrelated filesystem
+ancestors, the Save sidebar, and system chrome are outside these crops.
+
+- `tahoe-open-columns.png`: 980 × 636 pixels (490 × 318 logical points),
+  crop `(302, 128, 980, 636)` from a 1762 × 898 window capture.
+- `tahoe-save-columns.png`: 980 × 430 pixels (490 × 215 logical points),
+  crop `(780, 334, 980, 430)` from a 1760 × 896 window capture.
+
+Crop coordinates are `(x, y, width, height)`, in physical pixels. ICC profiles
+are preserved; no contents were repainted or reconstructed. The columns are
+245 points wide, rows 22 points, with a 6-point initial top gap and 10-point
+outer row insets. Open's files remain enabled; Save's nonselected filenames
+are muted. The live panel is clipped to the same browser region. Original
+links for these presets show the retained browser crops, not full windows.
+The temporary full-window captures are not shipped in the repository.
+No file was opened or saved while preparing these references.

@@ -2822,12 +2822,17 @@
 	.mac-file-dialog-sort {
 		display: none;
 	}
+	.mac-file-dialog-navigation > .mac-file-dialog-view {
+		display: flex;
+		gap: 4px;
+		width: 36px;
+	}
 	.mac-file-dialog-panel:not([data-compact]) .mac-file-dialog-location {
-		width: min(200px, calc(100% - 94px));
+		width: min(200px, calc(100% - 138px));
 	}
 	.mac-file-dialog-panel[data-mode="save"]:not([data-compact])
 		.mac-file-dialog-location {
-		width: min(168px, calc(100% - 126px));
+		width: min(168px, calc(100% - 170px));
 	}
 }
 .mac-file-dialog-panel .mac-file-dialog-footer:has(.mac-file-dialog-type) {
@@ -3050,4 +3055,10 @@
 	width: 8px;
 	height: 8px;
 	border-radius: 50%;
+}
+.mac-file-dialog-panel[data-mode="save"][data-view="columns"]
+	.mac-file-list-table
+	tr:not([aria-selected="true"]):not([aria-expanded])
+	.mac-file-list-name {
+	opacity: 0.45;
 }

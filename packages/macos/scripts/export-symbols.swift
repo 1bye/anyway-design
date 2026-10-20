@@ -23,6 +23,7 @@ let symbols: [Symbol] = [
     .init(id: "chevron-up-down", name: "chevron.up.chevron.down", extent: 12, weight: .semibold),
     .init(id: "close", name: "xmark", extent: 10),
     .init(id: "cloud", name: "icloud"),
+    .init(id: "column-view", name: "rectangle.split.3x1", extent: 14),
     .init(id: "copy", name: "doc.on.doc"),
     .init(id: "desktop", name: "menubar.dock.rectangle", extent: 14.5, weight: .medium),
     .init(id: "document", name: "doc", weight: .medium),

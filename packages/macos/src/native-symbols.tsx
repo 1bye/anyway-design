@@ -25,6 +25,10 @@ export const NATIVE_SYMBOLS = {
 	).href,
 	close: new URL("./assets/native-symbols/close.png", import.meta.url).href,
 	cloud: new URL("./assets/native-symbols/cloud.png", import.meta.url).href,
+	"column-view": new URL(
+		"./assets/native-symbols/column-view.png",
+		import.meta.url
+	).href,
 	copy: new URL("./assets/native-symbols/copy.png", import.meta.url).href,
 	desktop: new URL("./assets/native-symbols/desktop.png", import.meta.url).href,
 	document: new URL("./assets/native-symbols/document.png", import.meta.url)

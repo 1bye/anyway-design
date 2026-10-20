@@ -317,22 +317,26 @@ from the package's generic file-type icons.
 ### Open / Save dialog study
 
 Open `/?view=file-dialog-reference` for Open, expanded Save, and compact Save
-beside actual Tahoe NSOpenPanel/NSSavePanel captures. Fit / 1× / 1.5× / 2× zoom
+beside actual Tahoe NSOpenPanel/NSSavePanel captures. Open · columns and
+Save · columns compare the demo browser subtree, omitting unrelated ancestors. Fit / 1× / 1.5× / 2× zoom
 and Header / Actions crops are shared between panels. Reset native match restores
 the initial directory, filename, selection, and column widths.
 
 The workbench launches focus-trapped dialogs and offers dark/light, sidebar,
 multiple-file selection, and a narrow layout. Navigate folders, use history or
 the Where control, search the current folder, change file types, and resize/sort
-columns. Return opens, Escape cancels, and search consumes Escape to clear a
+columns. The View options menu switches List / Columns without resetting folder,
+filename, tags, query, type, sort, or selection, and also toggles the sidebar.
+Open supports multiple sibling selections in either view. Return opens, Escape cancels, and search consumes Escape to clear a
 nonempty query first. Save chooses the filename stem, adds missing extensions,
 validates input, and asks before reporting replacement. Try Project brief.txt.
 The callback output is demo state; it performs no filesystem operation.
 
 Captures and provenance are in `public/assets/native-file-dialog/`. Save's
 separate system title bar is omitted in the paired viewport; Original shows the
-full capture. The baseline is dark/inactive. View modes other than List, folder
-creation, native storage access, and native tag-token editing are not implemented.
+full capture for whole-panel presets. The baseline is dark/inactive. Column
+originals are browser-only crops. Icon view, folder creation, native storage
+access, and native tag-token editing are not implemented.
 
 ### Finder column study
 
@@ -354,4 +358,5 @@ The native images are fixed crops documented in
 `public/assets/native-file-columns/SOURCES.md`. Other selections, resizing,
 appearance, sorting, and extra files affect the React side. Native Quick Actions,
 Show More, and tag editing are outside this preview comparison. The reusable
-column component uses single selection; Open/Save dialogs still use List view.
+column component defaults to single selection and also supports controlled
+multiple sibling selections. Open/Save reuse it alongside List view.

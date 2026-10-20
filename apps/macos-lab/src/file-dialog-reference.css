@@ -32,6 +32,26 @@
 	overflow: hidden;
 	border-radius: 20px;
 }
+.panel-study-live {
+	top: calc(var(--panel-study-top) - var(--panel-reference-live-top));
+	width: var(--panel-reference-live-width);
+	height: var(--panel-reference-live-height);
+}
+.panel-study[data-column-crop] .panel-study-native {
+	border-radius: 0;
+}
+.panel-study[data-column-crop] .panel-study-live {
+	clip-path: inset(
+		var(--panel-reference-live-top)
+			calc(var(--panel-reference-live-width) - var(--panel-reference-width))
+			calc(
+				var(--panel-reference-live-height) -
+				var(--panel-reference-live-top) -
+				var(--panel-reference-height)
+			)
+			0
+	);
+}
 .panel-study-native img {
 	position: absolute;
 	top: var(--panel-reference-image-top);

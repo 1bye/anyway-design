@@ -676,6 +676,7 @@ Import `MacFileDialog` or the embedded `MacFileDialogPanel` from
   directories={directories}
   initialDirectoryId="documents"
   initialName="Untitled.txt"
+  defaultView="columns"
   fileTypes={[{ id: "text", label: "Plain Text", extensions: ["txt"] }]}
   onConfirm={(result) => handleFileResult(result)}
 />
@@ -689,6 +690,17 @@ keyboard selection, disabled files, and native file-type artwork. Optional
 `sidebarGroups` use `WindowSidebarGroup`, with location IDs pointing to directories.
 `initialSelectedIds` supports a matched Open state; `multiple` enables multiple
 files (Open only). Search filters names within the current folder.
+
+`defaultView="list"` is the default; use `"columns"` for connected folders.
+The View options menu switches between List and Columns and toggles the sidebar.
+Switching preserves folder/history, filename, tags, query, file type, selection,
+sort, and each view's column widths. Columns use the highest supplied ancestor
+as their root; no host filesystem or unrelated parent folders are exposed.
+Single-click a folder to reveal its children and use it as the current location.
+Right enters a child and Left returns to its folder. Open's `multiple` selection
+works within one sibling column, with Command/Control-click and Shift ranges;
+multiple selected items omit the single-file preview. Search remains local to
+the current directory; disabled/type-incompatible files cannot be selected.
 
 Open reports `{ mode: "open", directoryId, fileIds }`, in visual sort order.
 Folders navigate rather than being returned. Save reports
@@ -716,8 +728,8 @@ disables the browser popup transition.
 
 These Tahoe-calibrated components operate on supplied data and callbacks. They
 do not invoke the system file picker, parse documents, or read/write local files.
-The first pass supports List view and plain tag text; native filesystem access,
-directory creation, other view modes, and Sequoia calibration are separate work.
+The dialogs support List and Columns with plain tag text; native filesystem
+access, directory creation, Icon view, and Sequoia calibration are separate work.
 `MacFileList` also accepts `multiple={false}` for single-selection consumers and
 `columnLabels` to label supplied date values (the panel baseline uses Date Added).
 
@@ -748,7 +760,11 @@ columns. `sort` applies independently to each sibling group.
 
 Click selects and reveals folders. Right enters the first enabled, sorted
 child; Left returns to the parent. Up/Down, Home/End, and typeahead use the shared
-file-list navigation. This is a single-selection component. Optional `onRename`,
+file-list navigation. Single selection is the default. To control multiple
+siblings, pass `multiple` and `selectedIds`; `onValueChange(id, selectedIds)`
+reports the path cursor and selection together. Multi-selection hides the
+individual preview and does not reveal a child column for selected folders.
+Keep the cursor within the selected sibling group. Optional `onRename`,
 `renamingId`, `onRenamingChange`, and `validateRename` reuse inline renaming:
 Return renames when enabled, otherwise it reports `onOpen`. Double-click and
 Command/Control-O report `onOpen`; Space reports `onQuickLook` when supplied.
@@ -776,5 +792,5 @@ custom preview instead. `MacFileColumnPreview` is also directly importable from
 `active`, `showExtensions`, `label`, `className`, and `style` configure presentation.
 Tahoe dark geometry is compared against real Finder captures in the lab;
 font rasterization, small-size icon artwork, and capture color profiles can differ.
-Native Quick Actions, multi-selection, tag-token editing, and Sequoia-specific
-calibration are not included. Open/Save retain List view in this release.
+Native Quick Actions, tag-token editing, and Sequoia-specific calibration are
+not included. Open/Save reuse this browser through their View options menu.

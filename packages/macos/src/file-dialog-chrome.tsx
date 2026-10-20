@@ -9,10 +9,12 @@ import { MacButton, MacSearchField, MacTextField } from "./controls";
 import type {
 	MacFileDialogDirectory,
 	MacFileDialogType,
+	MacFileDialogView,
 } from "./file-dialog-model";
 import { MacFileIcon } from "./file-icons";
 import type { MacFileSort } from "./file-list";
 import { fileRenameSelection } from "./file-rename";
+import { MacMenuButton } from "./menu";
 import { WindowSymbol } from "./window-symbol";
 
 function selectBasename(event: FocusEvent<HTMLInputElement>) {
@@ -94,11 +96,13 @@ interface FileDialogToolbarProps {
 	onQueryChange: (value: string) => void;
 	onSortChange: (sort: MacFileSort) => void;
 	onToggleSidebar: () => void;
+	onViewChange: (view: MacFileDialogView) => void;
 	query: string;
 	saveMode: boolean;
 	showBrowser: boolean;
 	sidebar: boolean;
 	sort: MacFileSort;
+	view: MacFileDialogView;
 }
 const SORT_COLUMNS = ["name", "kind", "size", "modified"] as const;
 export function FileDialogToolbar({
@@ -111,6 +115,7 @@ export function FileDialogToolbar({
 	onToggleSidebar,
 	onQueryChange,
 	onSortChange,
+	onViewChange,
 	query,
 	sort,
 	sidebar,
@@ -120,7 +125,18 @@ export function FileDialogToolbar({
 	expanded,
 	saveMode,
 	showBrowser,
+	view,
 }: FileDialogToolbarProps) {
+	const viewAction = useCallback(
+		(id: string) => {
+			if (id === "sidebar") {
+				onToggleSidebar();
+			} else if (id === "list" || id === "columns") {
+				onViewChange(id);
+			}
+		},
+		[onToggleSidebar, onViewChange]
+	);
 	const changeLocation = useCallback(
 		(event: ChangeEvent<HTMLSelectElement>) => onNavigate(event.target.value),
 		[onNavigate]
@@ -166,16 +182,49 @@ export function FileDialogToolbar({
 							<WindowSymbol name="chevron-right" size={14} />
 						</button>
 					</div>
-					<button
-						aria-label="Toggle sidebar"
-						aria-pressed={sidebar}
-						disabled={!canToggleSidebar}
-						onClick={onToggleSidebar}
-						type="button"
-					>
-						<WindowSymbol name="list-view" size={16} />
-						<WindowSymbol name="chevron-down" size={10} />
-					</button>
+					<MacMenuButton
+						items={[
+							{
+								disabled: !canToggleSidebar,
+								id: "sidebar",
+								label: sidebar ? "Hide Sidebar" : "Show Sidebar",
+							},
+							{
+								disabled: true,
+								id: "view-label",
+								label: "Show items as:",
+								separatorBefore: true,
+							},
+							{
+								checked: view === "list",
+								closeOnClick: true,
+								id: "list",
+								label: "List",
+							},
+							{
+								checked: view === "columns",
+								closeOnClick: true,
+								id: "columns",
+								label: "Columns",
+							},
+						]}
+						onAction={viewAction}
+						positionerProps={{ align: "start" }}
+						trigger={
+							<button
+								aria-label="View options"
+								className="mac-file-dialog-view"
+								title={`View: ${view === "list" ? "List" : "Columns"}`}
+								type="button"
+							>
+								<WindowSymbol
+									name={view === "list" ? "list-view" : "column-view"}
+									size={16}
+								/>
+								<WindowSymbol name="chevron-down" size={10} />
+							</button>
+						}
+					/>
 					<label className="mac-file-dialog-sort">
 						<WindowSymbol name="group" size={16} />
 						<select

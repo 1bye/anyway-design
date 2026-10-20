@@ -35,13 +35,15 @@ export interface MacFileColumnsProps extends MacFileRenameProps {
 	columnWidths?: readonly number[];
 	items: readonly MacFileColumnItem[];
 	label?: string;
+	multiple?: boolean;
 	onColumnWidthsChange?: (widths: number[]) => void;
 	onOpen?: (id: string) => void;
 	onQuickLook?: (id: string) => void;
-	onValueChange: (id: string | undefined) => void;
+	onValueChange: (id: string | undefined, selectedIds: string[]) => void;
 	previewWidth?: number;
 	renderPreview?: (file: MacFileColumnItem) => ReactNode;
 	resizable?: boolean;
+	selectedIds?: readonly string[];
 	showExtensions?: boolean;
 	showPreview?: boolean;
 	sort?: MacFileSort;
@@ -54,11 +56,13 @@ interface BrowserColumnProps extends MacFileRenameProps {
 	column: FileBrowserColumn;
 	index: number;
 	label: string;
+	multiple: boolean;
 	onOpen?: (id: string) => void;
 	onQuickLook?: (id: string) => void;
 	onResize: (index: number, width: number) => void;
-	onSelect: (id: string | undefined) => void;
+	onSelect: (id: string | undefined, selectedIds: string[]) => void;
 	resizable: boolean;
+	selectedIds: readonly string[];
 	showExtensions: boolean;
 	sort: MacFileSort;
 	width: number;
@@ -71,6 +75,7 @@ function BrowserColumn({
 	onResize,
 	onSelect,
 	resizable,
+	selectedIds,
 	...props
 }: BrowserColumnProps) {
 	const items = useMemo(
@@ -78,7 +83,7 @@ function BrowserColumn({
 		[column.items]
 	);
 	const select = useCallback(
-		(ids: string[]) => onSelect(ids[0] ?? column.parentId),
+		(ids: string[]) => onSelect(ids.at(-1) ?? column.parentId, ids),
 		[onSelect, column.parentId]
 	);
 	const resize = useCallback(
@@ -99,10 +104,9 @@ function BrowserColumn({
 				folderDisclosure="indicator"
 				items={items}
 				label={items.length ? label : `${label}, empty`}
-				multiple={false}
 				onSelectionChange={select}
 				resizable={false}
-				selectedIds={column.selectedId ? [column.selectedId] : []}
+				selectedIds={selectedIds}
 			/>
 			{resizable ? (
 				<FileColumnResize label={label} onChange={resize} width={width} />
@@ -111,11 +115,26 @@ function BrowserColumn({
 	);
 }
 
+function columnSelection(
+	column: FileBrowserColumn,
+	value: string | undefined,
+	selectedIds?: readonly string[]
+): readonly string[] {
+	if (selectedIds?.length && column.items.some((file) => file.id === value)) {
+		return selectedIds.filter((id) =>
+			column.items.some((file) => file.id === id)
+		);
+	}
+	return column.selectedId ? [column.selectedId] : [];
+}
+
 export function MacFileColumns({
 	items,
 	value,
 	onValueChange,
 	label = "Files",
+	multiple = false,
+	selectedIds,
 	active = true,
 	columnWidth = FILE_COLUMN_WIDTH.default,
 	columnWidths,
@@ -136,13 +155,14 @@ export function MacFileColumns({
 	style,
 }: MacFileColumnsProps) {
 	const path = useMemo(() => fileColumnPath(items, value), [items, value]);
+	const many = multiple && (selectedIds?.length ?? 0) > 1;
 	const columns = useMemo(
-		() => fileBrowserColumns(items, path, sort),
-		[items, path, sort]
+		() => fileBrowserColumns(items, many ? path.slice(0, -1) : path, sort),
+		[items, path, sort, many]
 	);
 	const selected = path.at(-1);
 	const preview =
-		showPreview && selected && selected.kind !== "folder"
+		showPreview && !many && selected && selected.kind !== "folder"
 			? selected
 			: undefined;
 	const [internalWidths, setInternalWidths] = useState<readonly number[]>([]);
@@ -179,7 +199,7 @@ export function MacFileColumns({
 	}, [reveal]);
 	useLayoutEffect(() => {
 		if (value && !selected) {
-			onValueChange(undefined);
+			onValueChange(undefined, []);
 		}
 	}, [value, selected, onValueChange]);
 	useLayoutEffect(() => {
@@ -241,7 +261,7 @@ export function MacFileColumns({
 			const next = fileColumnArrow(columns[index], id, event.key, sort);
 			if (next) {
 				pendingFocus.current = next;
-				onValueChange(next);
+				onValueChange(next, [next]);
 			}
 		},
 		[columns, sort, onValueChange]
@@ -256,13 +276,14 @@ export function MacFileColumns({
 		>
 			{columns.map((column, index) => (
 				<BrowserColumn
-					active={active && column.selectedId === value}
+					active={active && column.items.some((file) => file.id === value)}
 					column={column}
 					index={index}
 					key={
 						column.parentId === undefined ? "root" : `folder:${column.parentId}`
 					}
 					label={path[index - 1]?.name ?? label}
+					multiple={multiple}
 					onOpen={onOpen}
 					onQuickLook={onQuickLook}
 					onRename={onRename}
@@ -271,6 +292,7 @@ export function MacFileColumns({
 					onSelect={onValueChange}
 					renamingId={renamingId}
 					resizable={resizable}
+					selectedIds={columnSelection(column, value, selectedIds)}
 					showExtensions={showExtensions}
 					sort={sort}
 					validateRename={validateRename}

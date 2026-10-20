@@ -24,28 +24,69 @@ import "./file-dialog-reference.css";
 
 const PRESETS = {
 	compact: {
+		directory: "root",
 		height: 172,
 		image: "tahoe-save-compact.png",
 		label: "Save · compact",
+		liveHeight: 172,
+		liveTop: 0,
+		liveWidth: 370,
 		mode: "save",
 		top: 32,
+		view: "list",
 		width: 370,
 	},
 	open: {
+		directory: "root",
 		height: 448,
 		image: "tahoe-open.png",
 		label: "Open",
+		liveHeight: 448,
+		liveTop: 0,
+		liveWidth: 880,
 		mode: "open",
 		top: 0,
+		view: "list",
 		width: 880,
 	},
+	openColumns: {
+		directory: "Design resources",
+		height: 318,
+		image: "tahoe-open-columns.png",
+		label: "Open · columns",
+		liveHeight: 448,
+		liveTop: 64,
+		liveWidth: 880,
+		mode: "open",
+		top: 0,
+		view: "columns",
+		width: 490,
+	},
 	save: {
+		directory: "root",
 		height: 416,
 		image: "tahoe-save.png",
 		label: "Save · expanded",
+		liveHeight: 416,
+		liveTop: 0,
+		liveWidth: 880,
 		mode: "save",
 		top: 32,
+		view: "list",
 		width: 880,
+	},
+	saveColumns: {
+		directory: "Design resources",
+		height: 215,
+		image: "tahoe-save-columns.png",
+		label: "Save · columns",
+		liveHeight: 416,
+		liveTop: 135,
+		liveWidth: 880,
+		mode: "save",
+		top: 0,
+		view: "columns",
+		width: 490,
 	},
 } as const;
 const SIDEBAR = [
@@ -74,7 +115,7 @@ const SIDEBAR = [
 const TEXT_TYPE = [PANEL_TYPES[0]];
 
 export function FileDialogReferenceComparison() {
-	const [preset, setPreset] = useState<keyof typeof PRESETS>("open");
+	const [preset, setPreset] = useState<keyof typeof PRESETS>("openColumns");
 	const [detail, setDetail] = useState("all");
 	const [zoom, setZoom] = useState("fit");
 	const [fit, setFit] = useState(1);
@@ -110,6 +151,7 @@ export function FileDialogReferenceComparison() {
 				};
 	const sceneWidth = crop.width + 48;
 	const scale = zoom === "fit" ? fit : Number(zoom);
+	const columnCrop = reference.view === "columns";
 	const image = `/assets/native-file-dialog/${reference.image}`;
 	useLayoutEffect(() => {
 		const element = live.current;
@@ -153,10 +195,14 @@ export function FileDialogReferenceComparison() {
 	return (
 		<main
 			className="dock-study panel-study"
+			data-column-crop={columnCrop || undefined}
 			style={
 				{
 					"--panel-reference-height": `${reference.height}px`,
 					"--panel-reference-image-top": `-${reference.top}px`,
+					"--panel-reference-live-height": `${reference.liveHeight}px`,
+					"--panel-reference-live-top": `${reference.liveTop}px`,
+					"--panel-reference-live-width": `${reference.liveWidth}px`,
 					"--panel-reference-width": `${reference.width}px`,
 					"--panel-study-height": `${crop.height + 48}px`,
 					"--panel-study-left": `${24 - crop.x}px`,
@@ -182,12 +228,15 @@ export function FileDialogReferenceComparison() {
 			</div>
 			<div className="dock-study-toolbar">
 				<fieldset aria-label="Native panel" className="dock-study-jump">
-					{(["open", "save", "compact"] as const).map((id) => (
+					{(
+						["open", "save", "compact", "openColumns", "saveColumns"] as const
+					).map((id) => (
 						<button
 							aria-pressed={preset === id}
 							key={id}
 							onClick={() => {
 								setPreset(id);
+								setDetail("all");
 								reset();
 							}}
 							type="button"
@@ -221,9 +270,15 @@ export function FileDialogReferenceComparison() {
 						}}
 						value={detail}
 					>
-						<option value="all">Whole panel</option>
-						<option value="header">Header & fields</option>
-						<option value="actions">Action buttons</option>
+						<option value="all">
+							{columnCrop ? "Column browser" : "Whole panel"}
+						</option>
+						<option disabled={columnCrop} value="header">
+							Header & fields
+						</option>
+						<option disabled={columnCrop} value="actions">
+							Action buttons
+						</option>
 					</select>
 				</label>
 				<button onClick={reset} type="button">
@@ -262,9 +317,10 @@ export function FileDialogReferenceComparison() {
 									<MacFileDialogPanel
 										active={false}
 										defaultExpanded={preset !== "compact"}
+										defaultView={reference.view}
 										directories={PANEL_DIRECTORIES}
 										fileTypes={TEXT_TYPE}
-										initialDirectoryId="root"
+										initialDirectoryId={reference.directory}
 										initialName="Untitled.txt"
 										initialSelectedIds={
 											preset === "open" ? ["Meeting notes.txt"] : []
@@ -279,7 +335,9 @@ export function FileDialogReferenceComparison() {
 						</div>
 					</section>
 					<footer>
-						Shared chrome · Real selection, navigation, and filename fields
+						{columnCrop
+							? "Connected folders · Real dialog state · Drag column dividers"
+							: "Shared chrome · Real selection, navigation, and filename fields"}
 					</footer>
 				</section>
 				<section className="dock-study-panel">
@@ -314,10 +372,13 @@ export function FileDialogReferenceComparison() {
 			</div>
 			<div className="dock-study-notes">
 				<p>
-					Native captures use the same generated files and names. The sidebar is
-					hidden in both baselines. Save’s system title bar is cropped equally
-					from the comparison; Original opens the full capture. Native captures
-					stay fixed while the React panel remains interactive.
+					Native captures use the same generated files and names. Columns
+					presets compare the demo subtree only, cropping out unrelated parent
+					folders and system chrome. The sidebar is hidden in the whole-panel
+					baselines. Save’s system title bar is omitted from those paired
+					viewports. Original opens the full window for whole-panel presets, and
+					the retained browser crop for Columns. Native captures stay fixed
+					while the React panel remains interactive.
 				</p>
 				<p>
 					Use the workbench for active controls, a sidebar, file-type filtering,
@@ -372,6 +433,7 @@ export function FileDialogReferenceComparison() {
 					</div>
 					<MacFileDialog
 						defaultExpanded={preset !== "compact"}
+						defaultView={reference.view}
 						directories={PANEL_DIRECTORIES}
 						fileTypes={PANEL_TYPES}
 						initialDirectoryId="root"
@@ -398,10 +460,13 @@ export function FileDialogReferenceComparison() {
 			</section>
 			<div className="dock-study-notes">
 				<p>
-					Return opens the selected file or folder; ↑ / ↓ navigate rows,
-					⌘/Ctrl+↑ goes to the parent, and Escape cancels. Save selects the
-					filename stem, adds a missing extension, and asks before replacing an
-					existing demo file. Search is local to the current folder.
+					Use View options to switch List / Columns without resetting the
+					folder, filename, tags, search, file type, or selection. Right / Left
+					navigate column folders. Return opens the selected file or folder; ↑ /
+					↓ navigate rows, ⌘/Ctrl+↑ goes to the parent, and Escape cancels. Save
+					selects the filename stem, adds a missing extension, and asks before
+					replacing an existing demo file. Search is local to the current
+					folder.
 				</p>
 				<p>
 					These are reusable React components backed by caller-supplied data.

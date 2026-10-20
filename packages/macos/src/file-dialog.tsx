@@ -14,6 +14,7 @@ import {
 } from "react";
 import { MacButton } from "./controls";
 import { useMacOSPortal } from "./environment";
+import { MacFileColumns, type MacFileColumnsProps } from "./file-columns";
 import {
 	FileDialogFields,
 	FileDialogFooter,
@@ -21,14 +22,21 @@ import {
 } from "./file-dialog-chrome";
 import {
 	fileDialogAccepts,
+	fileDialogColumns,
+	fileDialogItems,
 	fileDialogSaveTarget,
 	fileDialogTrail,
 	type MacFileDialogDirectory,
 	type MacFileDialogResult,
 	type MacFileDialogType,
+	type MacFileDialogView,
 } from "./file-dialog-model";
 import { MacFileIcon } from "./file-icons";
-import { MacFileList, type MacFileSort } from "./file-list";
+import {
+	MacFileList,
+	type MacFileListProps,
+	type MacFileSort,
+} from "./file-list";
 import { sortFileList } from "./file-list-sort";
 import { WindowSidebar, type WindowSidebarGroup } from "./window-sidebar";
 
@@ -36,12 +44,14 @@ export type {
 	MacFileDialogDirectory,
 	MacFileDialogResult,
 	MacFileDialogType,
+	MacFileDialogView,
 } from "./file-dialog-model";
 
 export interface MacFileDialogPanelProps {
 	active?: boolean;
 	className?: string;
 	defaultExpanded?: boolean;
+	defaultView?: MacFileDialogView;
 	directories: readonly MacFileDialogDirectory[];
 	fileTypes?: readonly MacFileDialogType[];
 	initialDirectoryId: string;
@@ -60,14 +70,30 @@ const COLUMNS = ["name", "size", "kind", "modified"] as const;
 const WIDTHS = { kind: 115, modified: 188, name: 460, size: 97 };
 const COLUMN_LABELS = { modified: "Date Added" };
 
-function FileDialogEmpty({ count, query }: { count: number; query: string }) {
-	if (count) {
-		return null;
-	}
+function FileDialogBrowser({
+	view,
+	list,
+	columns,
+	query,
+}: {
+	view: MacFileDialogView;
+	list: MacFileListProps;
+	columns: MacFileColumnsProps;
+	query: string;
+}) {
 	return (
-		<p className="mac-file-dialog-empty">
-			{query ? "No matching files" : "This folder is empty"}
-		</p>
+		<div className="mac-file-dialog-browser">
+			{view === "columns" ? (
+				<MacFileColumns {...columns} />
+			) : (
+				<MacFileList {...list} key={list.label} />
+			)}
+			{view === "list" && !list.items.length ? (
+				<p className="mac-file-dialog-empty">
+					{query ? "No matching files" : "This folder is empty"}
+				</p>
+			) : null}
+		</div>
 	);
 }
 
@@ -128,6 +154,7 @@ export function MacFileDialogPanel({
 	onConfirm,
 	onCancel,
 	defaultExpanded = true,
+	defaultView = "list",
 	sidebarGroups,
 	showTags = true,
 	active = true,
@@ -150,6 +177,8 @@ export function MacFileDialogPanel({
 	const [name, setName] = useState(initialName);
 	const [tags, setTags] = useState("");
 	const [expanded, setExpanded] = useState(defaultExpanded);
+	const [view, setView] = useState(defaultView);
+	const [browserWidths, setBrowserWidths] = useState<readonly number[]>([]);
 	const [sidebar, setSidebar] = useState(Boolean(sidebarGroups?.length));
 	const [typeId, setTypeId] = useState(fileTypes[0]?.id ?? "");
 	const [error, setError] = useState("");
@@ -163,6 +192,7 @@ export function MacFileDialogPanel({
 		useState<Extract<MacFileDialogResult, { mode: "save" }>>();
 	const errorId = useId();
 	const saveMode = mode === "save";
+	const allowMultiple = !saveMode && multiple;
 	const showBrowser = !saveMode || expanded;
 	const type = fileTypes.find((entry) => entry.id === typeId);
 	const directoryId = directory?.id ?? "";
@@ -174,7 +204,7 @@ export function MacFileDialogPanel({
 		}
 		lastDirectory.current = directoryId;
 		const row = panel.current?.querySelector<HTMLElement>(
-			"tr[data-file-id][tabindex='0']"
+			"tr[aria-selected=true][tabindex='0'], tr[data-file-id][tabindex='0']"
 		);
 		const target =
 			row ?? panel.current?.querySelector<HTMLElement>("input[type=search]");
@@ -182,17 +212,14 @@ export function MacFileDialogPanel({
 	}, [directoryId]);
 	const trail = fileDialogTrail(directories, directoryId);
 	const items = useMemo(
-		() =>
-			(directory?.items ?? [])
-				.filter((item) =>
-					item.name.toLocaleLowerCase().includes(query.toLocaleLowerCase())
-				)
-				.map((item) => ({
-					...item,
-					disabled: item.disabled || !fileDialogAccepts(item, type),
-				})),
+		() => (directory ? fileDialogItems(directory, query, type) : []),
 		[directory, query, type]
 	);
+	const columnItems = useMemo(
+		() => fileDialogColumns(directories, directoryId, query, type),
+		[directories, directoryId, query, type]
+	);
+	const columnValue = selected.at(-1) ?? trail.slice(1).at(-1)?.id;
 	const chosen = useMemo(
 		() =>
 			sortFileList(items, sort).filter(
@@ -310,6 +337,52 @@ export function MacFileDialogPanel({
 		},
 		[multiple, saveMode, directory]
 	);
+	const selectColumn = useCallback(
+		(id: string | undefined, ids: string[]) => {
+			if (!id) {
+				setSelected([]);
+				return;
+			}
+			const parent = directories.find((entry) =>
+				entry.items.some((file) => file.id === id)
+			);
+			const item = parent?.items.find((entry) => entry.id === id);
+			if (
+				!(parent && item) ||
+				item.disabled ||
+				!fileDialogAccepts(item, type)
+			) {
+				setSelected([]);
+				return;
+			}
+			const folder = item.kind === "folder" && ids.length < 2;
+			const destination = folder
+				? directories.find((entry) => entry.id === id)
+				: parent;
+			if (!destination) {
+				return;
+			}
+			navigate(destination.id);
+			setSelected(folder ? [] : ids);
+			if (saveMode && item.kind !== "folder") {
+				setName(item.name);
+				setError("");
+			}
+		},
+		[directories, type, navigate, saveMode]
+	);
+	const changeQuery = useCallback(
+		(value: string) => {
+			setQuery(value);
+			const visible = directory ? fileDialogItems(directory, value, type) : [];
+			setSelected((current) =>
+				current.filter((id) =>
+					visible.some((file) => file.id === id && !file.disabled)
+				)
+			);
+		},
+		[directory, type]
+	);
 	const submit = useCallback(
 		(event: FormEvent<HTMLFormElement>) => {
 			event.preventDefault();
@@ -419,6 +492,7 @@ export function MacFileDialogPanel({
 			data-compact={!showBrowser || undefined}
 			data-mode={mode}
 			data-sidebar={(showBrowser && sidebar) || undefined}
+			data-view={view}
 			onKeyDown={keyDown}
 			onKeyDownCapture={escapeKey}
 			onSubmit={submit}
@@ -460,39 +534,55 @@ export function MacFileDialogPanel({
 					onExpand={toggleExpanded}
 					onForward={forward}
 					onNavigate={navigate}
-					onQueryChange={setQuery}
+					onQueryChange={changeQuery}
 					onSortChange={setSort}
 					onToggleSidebar={toggleSidebar}
+					onViewChange={setView}
 					query={query}
 					saveMode={saveMode}
 					showBrowser={showBrowser}
 					sidebar={sidebar}
 					sort={sort}
+					view={view}
 				/>
 				{showBrowser ? (
-					<div className="mac-file-dialog-browser">
-						<MacFileList
-							active={active}
-							columnLabels={COLUMN_LABELS}
-							columns={COLUMNS}
-							columnWidths={widths}
-							expandedIds={[]}
-							items={items}
-							key={directory?.id}
-							label={directory?.name ?? "Files"}
-							minRows={20}
-							multiple={mode === "open" && multiple}
-							onColumnWidthsChange={setWidths}
-							onExpandedChange={expandFolder}
-							onOpen={openFile}
-							onSelectionChange={select}
-							onSortChange={setSort}
-							selectedIds={selected}
-							sort={sort}
-						/>
-						<FileDialogEmpty count={items.length} query={query} />
-					</div>
+					<FileDialogBrowser
+						columns={{
+							active,
+							columnWidths: browserWidths,
+							items: columnItems,
+							label: trail.at(0)?.name,
+							multiple: allowMultiple,
+							onColumnWidthsChange: setBrowserWidths,
+							onOpen: openFile,
+							onValueChange: selectColumn,
+							selectedIds: selected,
+							sort,
+							value: columnValue,
+						}}
+						list={{
+							active,
+							columnLabels: COLUMN_LABELS,
+							columns: COLUMNS,
+							columnWidths: widths,
+							expandedIds: [],
+							items,
+							label: directory?.name ?? "Files",
+							minRows: 20,
+							multiple: allowMultiple,
+							onColumnWidthsChange: setWidths,
+							onExpandedChange: expandFolder,
+							onOpen: openFile,
+							onSelectionChange: select,
+							onSortChange: setSort,
+							selectedIds: selected,
+							sort,
+						}}
+						query={query}
+						view={view}
+					/>
 				) : null}
+
 				<FileDialogFooter
 					canSubmit={canSubmit}
 					error={error}

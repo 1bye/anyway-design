@@ -1,3 +1,4 @@
+import type { MacFileColumnItem } from "./file-column-model";
 import type { MacFileListItem } from "./file-list";
 import { fileRenameError } from "./file-rename";
 
@@ -12,6 +13,57 @@ export interface MacFileDialogType {
 	extensions: readonly string[];
 	id: string;
 	label: string;
+}
+
+export type MacFileDialogView = "list" | "columns";
+
+export function fileDialogItems(
+	directory: MacFileDialogDirectory,
+	query: string,
+	type?: MacFileDialogType
+): MacFileListItem[] {
+	return directory.items
+		.filter((item) =>
+			item.name.toLocaleLowerCase().includes(query.toLocaleLowerCase())
+		)
+		.map((item) => ({
+			...item,
+			disabled: item.disabled || !fileDialogAccepts(item, type),
+		}));
+}
+
+/** Only the supplied root and its reachable folders become browser columns. */
+export function fileDialogColumns(
+	directories: readonly MacFileDialogDirectory[],
+	directoryId: string,
+	query: string,
+	type?: MacFileDialogType
+): MacFileColumnItem[] {
+	const [root] = fileDialogTrail(directories, directoryId);
+	const byId = new Map(
+		directories.map((directory) => [directory.id, directory])
+	);
+	const visit = (
+		directory: MacFileDialogDirectory,
+		ancestors: Set<string>
+	): MacFileColumnItem[] => {
+		const seen = new Set(ancestors).add(directory.id);
+		return fileDialogItems(
+			directory,
+			directory.id === directoryId ? query : "",
+			type
+		).map((item) => {
+			const child = item.kind === "folder" ? byId.get(item.id) : undefined;
+			return {
+				...item,
+				children:
+					child && !seen.has(child.id) && !item.disabled
+						? visit(child, seen)
+						: undefined,
+			};
+		});
+	};
+	return root ? visit(root, new Set()) : [];
 }
 
 export type MacFileDialogResult =
