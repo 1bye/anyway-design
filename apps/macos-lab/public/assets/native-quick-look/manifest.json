@@ -1,0 +1,17 @@
+{
+  "system": "macOS Tahoe 26.6.2 (25G83)",
+  "source": "Quick Look, live native window captured through the computer-use screenshot API",
+  "capturedAt": "2026-10-20",
+  "imageWidth": 1446,
+  "imageHeight": 936,
+  "density": 2,
+  "file": "Photo 2.webp",
+  "sourceAsset": "../clouds.webp",
+  "logicalWidth": 723,
+  "logicalHeight": 468,
+  "toolbarHeight": 38,
+  "contentInset": 5,
+  "outerRadius": 20,
+  "material": "native charcoal",
+  "state": "single image, resting toolbar"
+}

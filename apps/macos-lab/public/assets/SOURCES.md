@@ -1,5 +1,8 @@
 # Example assets
 
+The [native Quick Look study](native-quick-look/SOURCES.md) includes a local
+Tahoe capture of the cloud demo and an original SVG document-page fixture.
+
 - `clouds.webp`: copied from `taada/website/public/images/clouds-1920.webp`,
   the photograph already used in the user's Taada desktop preview.
 - `finder.webp`, `safari.webp`, `mail.webp`, `downloads.webp`, `trash.webp`:

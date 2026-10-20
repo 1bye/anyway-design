@@ -37,6 +37,7 @@ and the portal container so menus retain their styles in embedded previews.
 | `controls` | `MacButton`, `MacTextField`, `MacSearchField`, `MacSwitch` |
 | `files` | `MacFileItem`, `MacFileGrid`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `active`, `showExtensions` |
 | `file-list` | `MacFileList`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `sort`, `defaultSort`, `onSortChange`, `columns`, `columnWidths`, `onColumnWidthsChange`, `resizable`, `active`, `showExtensions`, `minRows` |
+| `quick-look` | `MacQuickLook`: `items`, `value`, `onValueChange`, `open`, `onOpenChange`, `onOpenFile`, `onShare`, `onMarkup`, `returnFocus`, `style`; `MacQuickLookPanel` for embedded previews |
 | `file-icons` | `MacFileIcon`: `name` (`folder`, `document`, `pdf`, `image`, `archive`, `text`), native image props |
 | `file-thumbnail` | `MacFileThumbnail`: `src`, `presentation` (`image`, `document`), `fit` (`contain`, `cover`), `alt` |
 
@@ -148,17 +149,19 @@ fieldsets, and buttons retain native disabled, keyboard, and click behavior.
 Omit `sidebar` to use the full content width. `active={false}` mutes the chrome
 and traffic lights. Reduced transparency removes the sidebar backdrop blur.
 
-`WindowSymbol` supplies 33 native Tahoe glyphs for controls, tabs, the toolbar, sidebar, and
+`WindowSymbol` supplies 36 native Tahoe glyphs for controls, tabs, the toolbar, sidebar, and
 menus. AppKit renders them at 4× into transparent 64 × 64 PNGs on a 16px canvas;
 CSS masks inherit `currentColor`, including selection, disabled, and highlighted
 states. The component renders a decorative `span` (previously an SVG); its
 containing control supplies the accessible label. Custom React icons remain
 supported in every slot.
 
-The checked-in assets were extracted on macOS 26.6.2 (25G83). Thirty-one use
+The checked-in assets were extracted on macOS 26.6.2 (25G83). Thirty-two use
 the public system-symbol API; Applications and Make Alias use the installed
 `CoreGlyphsPrivate.bundle` through AppKit's bundle image loader. No native or
 private API runs in the browser. Bundlers resolve the static asset URLs.
+Quick Look's close and fullscreen controls are the actual 12pt artwork loaded
+from `QuickLookUI.framework`, rather than similar system symbols.
 These are native raster exports, not traced vectors; very large zooms can
 soften them. Symbol choice, weight, and optical size are calibrated against the
 published references, not a claim that every Finder rendition is identical.
@@ -464,3 +467,88 @@ stripes for fixed-height previews. The lab's dark native Finder comparison
 calibrates density and column alignment; light and inactive states are
 adaptations. Generic type icons can differ from Finder's per-file previews
 or the icons supplied by installed applications.
+
+## Quick Look
+
+```tsx
+import { MacQuickLook, type MacQuickLookItem } from "@anyway-design/macos/quick-look";
+
+const items: MacQuickLookItem[] = [
+  { id: "photo", name: "Clouds.webp", kind: "image",
+    thumbnail: "/clouds-small.webp", preview: { src: "/clouds.webp" } },
+  { id: "brief", name: "Project brief.pdf", kind: "pdf",
+    preview: { src: "/brief-page.png", presentation: "document" } },
+];
+
+function previewFile(id: string) {
+  setPreviewId(id);
+  setPreviewOpen(true);
+}
+
+<MacFileGrid
+  items={items}
+  selectedIds={selection}
+  onSelectionChange={setSelection}
+  onQuickLook={previewFile}
+/>
+<MacQuickLook
+  items={items}
+  value={previewId}
+  onValueChange={(id) => { setPreviewId(id); setSelection([id]); }}
+  open={previewOpen}
+  onOpenChange={setPreviewOpen}
+  onOpenFile={openFile}
+  onShare={shareFile}
+/>
+```
+
+Render both inside `MacOSEnvironment`. `MacFileGrid` and `MacFileList` accept
+optional `onQuickLook(id)`: unmodified Space requests a preview of the focused
+file, without triggering its open action. Without the callback, their existing
+Space behavior is preserved. Held-key repeats do not reopen the preview.
+
+`MacQuickLook` is a controlled, labeled Base UI dialog with focus containment
+and restoration. Left/Right move through enabled items in the supplied order,
+clamping at each endpoint. Pass the list's current sorted order when integrating
+with a sortable view; `sortFileList` is available from `file-list-sort` for this.
+Removing the active item resolves to the first enabled item; no enabled items
+means no visible dialog. Space from the preview surface, Escape, Close, and
+outside clicks dismiss it. Space on toolbar buttons retains normal activation.
+`returnFocus` optionally supplies a ref or callback returning the element to
+focus after closing, useful when navigation has changed the selected file.
+
+`preview.src` is a supplied image URL, separate from the small file thumbnail.
+Image previews fit proportionally; `presentation: "document"` fits the page
+width and scrolls vertically. Optional `preview.alt` names its content.
+This does not parse PDFs or generate Quick Look thumbnails. Files without a
+preview show their icon, filename, and optional `subtitle`; failed images show
+an unavailable state. Disabled items are skipped. Previews reset their loading
+and failure states when the item or source changes.
+
+Open, Share, and document Markup controls appear when the matching callbacks
+are supplied and report the file ID. `openLabel` customizes "Open with Preview".
+The full-size control expands within the browser; it does not enter OS full
+screen. The native baseline has a 38px toolbar and 5px content insets. Default
+dialog size is 723 × 468px, bounded by the browser viewport; `style` supports
+`--mac-quick-look-width` and `--mac-quick-look-height`. Reduced motion removes
+all zoom and toolbar transitions.
+
+`getSourceElement(id)` optionally returns the file's icon or thumbnail element.
+The dialog reads its viewport rectangle on opening/closing and when navigating
+to another file. It grows from that rectangle and closes back toward it, with
+the toolbar appearing after the content begins moving. Missing, disconnected,
+or offscreen elements use a simple fade. The lab wires this to both grid and
+list artwork; the comparison's Try button uses its on-screen preview.
+Opening uses 260ms and closing 180ms ease-out curves as a first spatial pass;
+these timings are not measurements of a native recording. The source-rectangle
+zoom and no-source fade follow Apple's documented
+[Quick Look transition model](https://developer.apple.com/documentation/quicklookui/qlpreviewpaneldelegate/previewpanel(_:sourceframeonscreenfor:)).
+
+`MacQuickLookPanel` exposes the same chrome without dialog, portal, focus,
+or keyboard management, for fixed desktop compositions and comparisons. Its
+parent supplies dimensions, `item`, `onClose`, optional action/navigation
+callbacks, and expanded/disabled states. Use the dialog outside transformed or
+zoomed preview canvases; use the panel within them. The native image comparison
+calibrates Tahoe's charcoal frame, controls, and geometry. Font rendering,
+source-image color handling, native vibrancy, and transition timing remain
+approximations; the Sequoia variant is not separately calibrated.

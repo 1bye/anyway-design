@@ -44,8 +44,17 @@ export const NATIVE_SYMBOLS = {
 	info: new URL("./assets/native-symbols/info.png", import.meta.url).href,
 	"list-view": new URL("./assets/native-symbols/list-view.png", import.meta.url)
 		.href,
+	markup: new URL("./assets/native-symbols/markup.png", import.meta.url).href,
 	open: new URL("./assets/native-symbols/open.png", import.meta.url).href,
 	plus: new URL("./assets/native-symbols/plus.png", import.meta.url).href,
+	"quick-look-close": new URL(
+		"./assets/native-symbols/quick-look-close.png",
+		import.meta.url
+	).href,
+	"quick-look-fullscreen": new URL(
+		"./assets/native-symbols/quick-look-fullscreen.png",
+		import.meta.url
+	).href,
 	recents: new URL("./assets/native-symbols/recents.png", import.meta.url).href,
 	rename: new URL("./assets/native-symbols/rename.png", import.meta.url).href,
 	search: new URL("./assets/native-symbols/search.png", import.meta.url).href,

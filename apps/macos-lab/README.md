@@ -55,6 +55,39 @@ of difference. This view is not proof of a pixel-identical native compositor.
 
 ## Fidelity status
 
+Open [the Quick Look study](http://127.0.0.1:3006/?view=quick-look-reference)
+from **Compare Quick Look** in the Window or file-list study. The reference
+is a real Tahoe Quick Look window displaying the lab's cloud photograph,
+captured at 2× on this Mac. Both panels use 723 × 468 logical pixels. The live
+side uses shared `MacQuickLookPanel`; only the right side contains captured
+chrome. Shared zoom, synchronized scrolling, and Full preview / Title &
+controls / Actions crops inspect matching regions.
+
+The workbench opens the shared `MacQuickLook` dialog from grid or list with
+Space, or **Quick Look selected**. Left/Right navigate enabled files in display
+order, including after list sorting; Space or Escape dismisses and returns
+focus to the selected file. Tab stays inside the dialog. Open, Share, and
+document Markup display callback IDs, and full size expands in the browser.
+Narrow/dark file areas, reduced motion, disabled files, an archive fallback,
+and an intentionally invalid preview exercise additional states. The file-list
+study also opens Quick Look with Space; its two cloud files have supplied
+previews and other types use the generic fallback.
+
+Close/fullscreen use the framework's actual 12pt artwork and 20px control slots.
+Opening grows from the selected file's artwork; closing returns toward the
+current file. The toolbar fades in after the image begins moving, and missing
+or offscreen sources fade in place. Try interactive Quick Look uses the visible
+comparison as its origin. Reduced motion removes both transitions. The
+260ms opening and 180ms closing curves are estimates, pending a native recording.
+
+Image content fits proportionally; the supplied document page scrolls at full
+width. The document example is an SVG page image, not PDF parsing or a native
+PDF capture. Native annotation, sharing sheets, app launching, detachment,
+and transition timing are not implemented. Native and browser color handling
+and font rasterization can differ. The solid charcoal surface matches this
+capture; vibrancy over other backgrounds is not calibrated. See
+`public/assets/native-quick-look/SOURCES.md` for capture provenance.
+
 Open [the file-list study](http://127.0.0.1:3006/?view=file-list-reference) from
 **Compare file lists** in the window preview. It compares shared `MacFileList`
 rows with an actual Finder window captured on this Mac's Tahoe 26.6.2 system.

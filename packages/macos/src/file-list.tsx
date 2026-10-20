@@ -1,5 +1,6 @@
 import {
 	type CSSProperties,
+	type FocusEvent,
 	type KeyboardEvent,
 	type MouseEvent,
 	type PointerEvent,
@@ -10,6 +11,11 @@ import {
 	useState,
 } from "react";
 import { MacFileIcon } from "./file-icons";
+import {
+	focusFileTarget,
+	isAdditiveSelection,
+	requestFilePreview,
+} from "./file-interactions";
 import {
 	FILE_LIST_COLUMNS,
 	fileColumnWidth,
@@ -44,6 +50,7 @@ export interface MacFileListProps {
 	minRows?: number;
 	onColumnWidthsChange?: (widths: ColumnWidths) => void;
 	onOpen?: (id: string) => void;
+	onQuickLook?: (id: string) => void;
 	onSelectionChange: (ids: string[]) => void;
 	onSortChange?: (sort: MacFileSort) => void;
 	resizable?: boolean;
@@ -90,6 +97,11 @@ function listRow(target: EventTarget) {
 	return target instanceof Element
 		? target.closest<HTMLTableRowElement>("tr[data-file-id]")
 		: null;
+}
+
+function enabledListRow(target: EventTarget) {
+	const row = listRow(target);
+	return row?.getAttribute("aria-disabled") === "true" ? null : row;
 }
 
 function FileListName({
@@ -272,6 +284,7 @@ export function MacFileList({
 	selectedIds,
 	onSelectionChange,
 	onOpen,
+	onQuickLook,
 	sort: controlledSort,
 	defaultSort = DEFAULT_SORT,
 	onSortChange,
@@ -359,11 +372,7 @@ export function MacFileList({
 			const row = listRow(event.target);
 			if (row?.dataset.fileId && row.getAttribute("aria-disabled") !== "true") {
 				row.focus({ preventScroll: true });
-				select(
-					row.dataset.fileId,
-					event.shiftKey,
-					event.metaKey || event.ctrlKey
-				);
+				select(row.dataset.fileId, event.shiftKey, isAdditiveSelection(event));
 			} else if (
 				!row &&
 				event.target instanceof Element &&
@@ -384,13 +393,22 @@ export function MacFileList({
 		},
 		[onOpen]
 	);
+	const focus = useCallback((event: FocusEvent<HTMLTableElement>) => {
+		const id = enabledListRow(event.target)?.dataset.fileId;
+		if (id) {
+			setFocusId(id);
+		}
+	}, []);
 	const keyDown = useCallback(
 		(event: KeyboardEvent<HTMLTableElement>) => {
-			const id = listRow(event.target)?.dataset.fileId;
+			const id = enabledListRow(event.target)?.dataset.fileId;
 			if (!id || event.nativeEvent.isComposing) {
 				return;
 			}
-			const additive = event.metaKey || event.ctrlKey;
+			const additive = isAdditiveSelection(event);
+			if (requestFilePreview(event, id, onQuickLook)) {
+				return;
+			}
 			if (event.key === "Escape") {
 				event.preventDefault();
 				anchor.current = undefined;
@@ -424,11 +442,10 @@ export function MacFileList({
 					"tr[data-file-id]"
 				),
 			].find((entry) => entry.dataset.fileId === next);
-			row?.focus({ preventScroll: true });
-			row?.scrollIntoView({ block: "nearest", inline: "nearest" });
+			focusFileTarget(row);
 			select(next, event.shiftKey, event.shiftKey && additive);
 		},
-		[sorted, ids, onOpen, onSelectionChange, select]
+		[sorted, ids, onOpen, onQuickLook, onSelectionChange, select]
 	);
 	const totalWidth = columns.reduce(
 		(total, column) =>
@@ -451,6 +468,7 @@ export function MacFileList({
 				className="mac-file-list-table"
 				onClick={click}
 				onDoubleClick={open}
+				onFocus={focus}
 				onKeyDown={keyDown}
 				// biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: Native table/header semantics are retained in this keyboard-selectable data grid.
 				role="grid"

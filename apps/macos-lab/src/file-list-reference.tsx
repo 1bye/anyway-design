@@ -5,6 +5,11 @@ import {
 	type MacFileListItem,
 	type MacFileSort,
 } from "@anyway-design/macos/file-list";
+import { sortFileList } from "@anyway-design/macos/file-list-sort";
+import {
+	MacQuickLook,
+	type MacQuickLookItem,
+} from "@anyway-design/macos/quick-look";
 import { ArrowLeft } from "lucide-react";
 import {
 	type CSSProperties,
@@ -44,6 +49,8 @@ export function FileListReferenceComparison() {
 	>(FILE_LIST_REFERENCE_WIDTHS);
 	const [selected, setSelected] = useState(["Agreement for Services.pdf"]);
 	const [notice, setNotice] = useState("");
+	const [previewId, setPreviewId] = useState("");
+	const [previewOpen, setPreviewOpen] = useState(false);
 	const live: RefObject<HTMLElement | null> = useRef(null);
 	const native: RefObject<HTMLElement | null> = useRef(null);
 	const crop = CROPS[detail];
@@ -79,6 +86,40 @@ export function FileListReferenceComparison() {
 			},
 		];
 	}, [extra]);
+	const previewItems = useMemo<MacQuickLookItem[]>(
+		() =>
+			sortFileList(items, sort).map((item) => ({
+				...item,
+				preview:
+					item.kind === "image" ? { src: "/assets/clouds.webp" } : undefined,
+				subtitle: [item.kindLabel, item.sizeLabel].filter(Boolean).join(" · "),
+			})),
+		[items, sort]
+	);
+	const preview = useCallback((id: string) => {
+		setPreviewId(id);
+		setSelected([id]);
+		setPreviewOpen(true);
+	}, []);
+	const navigatePreview = useCallback((id: string) => {
+		setPreviewId(id);
+		setSelected([id]);
+	}, []);
+	const returnFocus = useCallback(
+		() =>
+			live.current?.querySelector<HTMLElement>(
+				'[data-file-id][aria-selected="true"]'
+			) ?? null,
+		[]
+	);
+	const getSourceElement = useCallback((id: string) => {
+		const row = [
+			...(live.current?.querySelectorAll<HTMLElement>("[data-file-id]") ?? []),
+		].find((element) => element.dataset.fileId === id);
+		return (
+			row?.querySelector<HTMLElement>(".mac-file-list-icon") ?? row ?? null
+		);
+	}, []);
 	useLayoutEffect(() => {
 		const element = live.current;
 		if (!element) {
@@ -178,6 +219,7 @@ export function FileListReferenceComparison() {
 				</label>
 			</div>
 			<div className="window-study-controls">
+				<a href="/?view=quick-look-reference">Compare Quick Look ↗</a>
 				<label>
 					<input
 						checked={active}
@@ -236,6 +278,7 @@ export function FileListReferenceComparison() {
 									minRows={16}
 									onColumnWidthsChange={setWidths}
 									onOpen={open}
+									onQuickLook={preview}
 									onSelectionChange={setSelected}
 									onSortChange={setSort}
 									selectedIds={selected}
@@ -289,8 +332,8 @@ export function FileListReferenceComparison() {
 				</p>
 				<p>
 					Click, ⌘/Ctrl-click, and Shift-click select. ↑ / ↓, Home / End,
-					typeahead, Space, ⌘/Ctrl+A, Escape, and Enter work from a row.
-					Double-click reports an open callback.
+					typeahead, ⌘/Ctrl+A, Escape, and Enter work from a row. Space opens
+					Quick Look. Double-click reports an open callback.
 				</p>
 				<p>
 					The native side is a fixed capture of generated files. Sorting,
@@ -305,6 +348,18 @@ export function FileListReferenceComparison() {
 				{notice ||
 					`${selected.length} selected · ${sort.column}, ${sort.direction}`}
 			</p>
+			<MacOSEnvironment appearance={dark ? "dark" : "light"} preset="tahoe">
+				<MacQuickLook
+					getSourceElement={getSourceElement}
+					items={previewItems}
+					onOpenChange={setPreviewOpen}
+					onOpenFile={open}
+					onValueChange={navigatePreview}
+					open={previewOpen}
+					returnFocus={returnFocus}
+					value={previewId}
+				/>
+			</MacOSEnvironment>
 		</main>
 	);
 }

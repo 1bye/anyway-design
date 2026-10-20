@@ -7,7 +7,10 @@ struct Symbol {
     var extent: CGFloat = 14
     var weight: NSFont.Weight = .regular
     var privateGlyph = false
+    var resourceBundle: String? = nil
 }
+
+let quickLookBundle = "/System/Library/Frameworks/QuickLookUI.framework"
 
 let symbols: [Symbol] = [
     .init(id: "alias", name: "square.dashed.and.alias", extent: 12.5, privateGlyph: true),
@@ -32,8 +35,11 @@ let symbols: [Symbol] = [
     .init(id: "icon-view", name: "square.grid.2x2", extent: 13),
     .init(id: "info", name: "info.circle", extent: 12.5),
     .init(id: "list-view", name: "list.bullet"),
+    .init(id: "markup", name: "pencil.tip.crop.circle", extent: 13),
     .init(id: "open", name: "arrow.up.forward.app", extent: 11.5),
     .init(id: "plus", name: "plus", extent: 12),
+    .init(id: "quick-look-close", name: "close", extent: 12, resourceBundle: quickLookBundle),
+    .init(id: "quick-look-fullscreen", name: "fullscreen", extent: 12, resourceBundle: quickLookBundle),
     .init(id: "recents", name: "clock", extent: 13, weight: .medium),
     .init(id: "rename", name: "pencil", extent: 10.5),
     .init(id: "search", name: "magnifyingglass"),
@@ -89,7 +95,11 @@ func alphaBounds(_ bitmap: NSBitmapImageRep) throws -> CGRect {
 func export(_ symbol: Symbol) throws -> [String: Any] {
     let source: String
     let raw: NSImage?
-    if symbol.privateGlyph {
+    if let path = symbol.resourceBundle {
+        source = "\(path)/\(symbol.name)"
+        guard let bundle = Bundle(path: path) else { throw CocoaError(.fileNoSuchFile) }
+        raw = bundle.image(forResource: symbol.name)
+    } else if symbol.privateGlyph {
         source = "\(privateGlyphs)/\(symbol.name)"
         guard let bundle = Bundle(path: privateGlyphs) else {
             throw CocoaError(.fileNoSuchFile)
@@ -101,7 +111,7 @@ func export(_ symbol: Symbol) throws -> [String: Any] {
     }
     let configuration = NSImage.SymbolConfiguration(pointSize: 16, weight: symbol.weight)
         .applying(symbol.id == "search-clear" ? .preferringMonochrome() : .init(paletteColors: [.black]))
-    guard let image = raw?.withSymbolConfiguration(configuration) else {
+    guard let image = symbol.resourceBundle == nil ? raw?.withSymbolConfiguration(configuration) : raw else {
         throw NSError(domain: "NativeSymbols", code: 1, userInfo: [
             NSLocalizedDescriptionKey: "Unavailable native asset: \(source)"
         ])
@@ -124,7 +134,7 @@ func export(_ symbol: Symbol) throws -> [String: Any] {
     // Self-check every export: visible pixels, transparent corners, and expected dimensions.
     let actualBounds = try alphaBounds(target)
     // The clear symbol must retain the transparent X when used as an alpha mask.
-    if symbol.id == "search-clear" {
+    if ["search-clear", "quick-look-close"].contains(symbol.id) {
         guard target.colorAt(x: 32, y: 32)?.alphaComponent == 0,
               (target.colorAt(x: 32, y: 12)?.alphaComponent ?? 0) > 0 else { throw CocoaError(.fileWriteUnknown) }
     }
@@ -137,7 +147,8 @@ func export(_ symbol: Symbol) throws -> [String: Any] {
     return [
         "id": symbol.id, "source": source, "nativeName": symbol.name,
         "extent": symbol.extent, "pixelWidth": 64, "pixelHeight": 64,
-        "pointSize": 16, "weight": symbol.weight.rawValue, "rendering": "monochrome",
+        "pointSize": symbol.resourceBundle == nil ? 16 : 12,
+        "weight": symbol.weight.rawValue, "rendering": symbol.resourceBundle == nil ? "monochrome" : "bundle artwork",
     ]
 }
 

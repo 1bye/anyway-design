@@ -245,6 +245,17 @@
       "weight": 0
     },
     {
+      "extent": 13,
+      "id": "markup",
+      "nativeName": "pencil.tip.crop.circle",
+      "pixelHeight": 64,
+      "pixelWidth": 64,
+      "pointSize": 16,
+      "rendering": "monochrome",
+      "source": "NSImage(systemSymbolName: pencil.tip.crop.circle)",
+      "weight": 0
+    },
+    {
       "extent": 11.5,
       "id": "open",
       "nativeName": "arrow.up.forward.app",
@@ -264,6 +275,28 @@
       "pointSize": 16,
       "rendering": "monochrome",
       "source": "NSImage(systemSymbolName: plus)",
+      "weight": 0
+    },
+    {
+      "extent": 12,
+      "id": "quick-look-close",
+      "nativeName": "close",
+      "pixelHeight": 64,
+      "pixelWidth": 64,
+      "pointSize": 12,
+      "rendering": "bundle artwork",
+      "source": "\/System\/Library\/Frameworks\/QuickLookUI.framework\/close",
+      "weight": 0
+    },
+    {
+      "extent": 12,
+      "id": "quick-look-fullscreen",
+      "nativeName": "fullscreen",
+      "pixelHeight": 64,
+      "pixelWidth": 64,
+      "pointSize": 12,
+      "rendering": "bundle artwork",
+      "source": "\/System\/Library\/Frameworks\/QuickLookUI.framework\/fullscreen",
       "weight": 0
     },
     {

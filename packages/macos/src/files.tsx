@@ -1,6 +1,7 @@
 import {
 	type ComponentPropsWithRef,
 	type CSSProperties,
+	type FocusEvent,
 	type KeyboardEvent,
 	type MouseEvent,
 	type ReactNode,
@@ -9,6 +10,11 @@ import {
 	useState,
 } from "react";
 import { MacFileIcon, type MacFileIconName } from "./file-icons";
+import {
+	focusFileTarget,
+	isAdditiveSelection,
+	requestFilePreview,
+} from "./file-interactions";
 import { FileLabel } from "./file-label";
 import { fileGridNeighbor, selectFileIds } from "./file-selection";
 import { MacFileThumbnail, type MacFileThumbnailProps } from "./file-thumbnail";
@@ -100,6 +106,7 @@ export interface MacFileGridProps {
 	items: readonly MacFile[];
 	label?: string;
 	onOpen?: (id: string) => void;
+	onQuickLook?: (id: string) => void;
 	onSelectionChange: (ids: string[]) => void;
 	selectedIds: readonly string[];
 	showExtensions?: boolean;
@@ -168,13 +175,11 @@ function typeaheadTarget(
 		now - history.time < 700 && history.text !== key ? history.text + key : key;
 	const index = items.findIndex((item) => item.id === id);
 	const ordered = [...items.slice(index + 1), ...items.slice(0, index + 1)];
-	return {
-		id: ordered.find(
-			(item) => !item.disabled && item.name.toLocaleLowerCase().startsWith(text)
-		)?.id,
-		text,
-		time: now,
-	};
+	history.text = text;
+	history.time = now;
+	return ordered.find(
+		(item) => !item.disabled && item.name.toLocaleLowerCase().startsWith(text)
+	)?.id;
 }
 
 export function MacFileGrid({
@@ -182,6 +187,7 @@ export function MacFileGrid({
 	selectedIds,
 	onSelectionChange,
 	onOpen,
+	onQuickLook,
 	label = "Files",
 	active = true,
 	showExtensions = true,
@@ -221,7 +227,7 @@ export function MacFileGrid({
 			const button = fileButton(event.target);
 			const id = button?.dataset.fileId;
 			if (id && !button.disabled) {
-				select(id, event.shiftKey, event.metaKey || event.ctrlKey);
+				select(id, event.shiftKey, isAdditiveSelection(event));
 			} else if (event.target === event.currentTarget) {
 				anchor.current = undefined;
 				onSelectionChange([]);
@@ -244,7 +250,10 @@ export function MacFileGrid({
 			if (!id || event.nativeEvent.isComposing) {
 				return;
 			}
-			const additive = event.metaKey || event.ctrlKey;
+			const additive = isAdditiveSelection(event);
+			if (requestFilePreview(event, id, onQuickLook)) {
+				return;
+			}
 			const buttons = [
 				...event.currentTarget.querySelectorAll<HTMLButtonElement>(
 					"button[data-file-id]:not(:disabled)"
@@ -267,10 +276,7 @@ export function MacFileGrid({
 				return;
 			}
 			const typed = typeaheadTarget(event, items, id, typeahead.current);
-			if (typed) {
-				typeahead.current = typed;
-			}
-			const next = navigationTarget(event.key, buttons, id) ?? typed?.id;
+			const next = navigationTarget(event.key, buttons, id) ?? typed;
 			if (event.key.startsWith("Arrow") || next) {
 				event.preventDefault();
 			}
@@ -278,12 +284,17 @@ export function MacFileGrid({
 				return;
 			}
 			const button = buttons.find((entry) => entry.dataset.fileId === next);
-			button?.focus({ preventScroll: true });
-			button?.scrollIntoView({ block: "nearest", inline: "nearest" });
+			focusFileTarget(button);
 			select(next, event.shiftKey, event.shiftKey && additive);
 		},
-		[enabledIds, items, onOpen, onSelectionChange, select]
+		[enabledIds, items, onOpen, onQuickLook, onSelectionChange, select]
 	);
+	const focus = useCallback((event: FocusEvent<HTMLFieldSetElement>) => {
+		const id = fileButton(event.target)?.dataset.fileId;
+		if (id) {
+			setFocusId(id);
+		}
+	}, []);
 	return (
 		// biome-ignore lint/a11y/noNoninteractiveElementInteractions: Delegated events come from the native file buttons; the group also clears selection on its empty background.
 		<fieldset
@@ -292,6 +303,7 @@ export function MacFileGrid({
 			data-active={active}
 			onClick={click}
 			onDoubleClick={open}
+			onFocus={focus}
 			onKeyDown={keyDown}
 			style={style}
 		>

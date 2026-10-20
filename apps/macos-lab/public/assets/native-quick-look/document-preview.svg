@@ -1,0 +1,45 @@
+<svg
+	height="792"
+	viewBox="0 0 612 792"
+	width="612"
+	xmlns="http://www.w3.org/2000/svg"
+>
+	<title>Studio project brief</title>
+	<rect fill="#fff" height="792" width="612" />
+	<g font-family="Helvetica, Arial, sans-serif">
+		<text fill="#626a72" font-size="10" letter-spacing="2" x="56" y="64">
+			ANYWAY / STUDIO NOTES
+		</text>
+		<path d="M56 86H556" stroke="#d9dfe5" />
+		<text fill="#1f2933" font-size="34" font-weight="700" x="56" y="144">
+			A quieter workspace.
+		</text>
+		<text fill="#6b7280" font-size="13" x="56" y="176">
+			Project brief / October 2026
+		</text>
+		<rect fill="#eaf0f3" height="220" rx="2" width="500" x="56" y="210" />
+		<circle cx="306" cy="320" fill="#7f9cae" r="70" />
+		<circle cx="360" cy="288" fill="#b6c8d2" r="44" />
+		<text fill="#1f2933" font-size="19" font-weight="700" x="56" y="480">
+			Small details. Familiar behavior.
+		</text>
+		<g fill="#58616b" font-size="13">
+			<text x="56" y="510">
+				A study of native surfaces, clear hierarchy, and the interactions
+			</text>
+			<text x="56" y="531">
+				that make a desktop feel comfortable from the first click.
+			</text>
+			<text x="56" y="578">01 Observe the system.</text>
+			<text x="56" y="604">02 Match the geometry.</text>
+			<text x="56" y="630">03 Refine the motion.</text>
+		</g>
+		<path d="M56 710H556" stroke="#d9dfe5" />
+		<text fill="#89919a" font-size="10" x="56" y="738">
+			Demonstration page image. No PDF parsing.
+		</text>
+		<text fill="#89919a" font-size="10" text-anchor="end" x="550" y="738">
+			01
+		</text>
+	</g>
+</svg>
