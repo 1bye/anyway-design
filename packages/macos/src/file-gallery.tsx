@@ -17,30 +17,12 @@ import {
 	fileGalleryTags,
 	type MacFileGalleryItem,
 } from "./file-gallery-model";
-import { MacFileIcon } from "./file-icons";
+import { MacFileIcon, MacFolderPreviewIcon } from "./file-icons";
 import { FILE_KIND_LABELS } from "./file-list-tree";
 import { MacFileThumbnail } from "./file-thumbnail";
 import { MacFileGrid } from "./files";
 
 export type { MacFileGalleryItem } from "./file-gallery-model";
-
-const FOLDER_PREVIEW = new URL(
-	"./assets/native-file-icons/folder-preview.png",
-	import.meta.url
-).href;
-
-function GalleryFolderIcon() {
-	return (
-		<img
-			alt=""
-			className="mac-file-icon"
-			draggable={false}
-			height={64}
-			src={FOLDER_PREVIEW}
-			width={64}
-		/>
-	);
-}
 
 export interface MacFileGalleryAction {
 	disabled?: boolean;
@@ -58,6 +40,7 @@ export interface MacFileGalleryProps {
 	label?: string;
 	onAction?: (actionId: string, selectedIds: string[]) => void;
 	onEditTags?: (selectedIds: string[]) => void;
+	onGetInfo?: (id: string) => void;
 	onOpen?: (id: string) => void;
 	onQuickLook?: (id: string) => void;
 	onSelectionChange: (ids: string[]) => void;
@@ -203,6 +186,7 @@ function GalleryInformation({
 
 /** Gallery works on supplied previews and metadata; opening remains a callback. */
 export function MacFileGallery({
+	onGetInfo,
 	items,
 	selectedIds,
 	onSelectionChange,
@@ -224,7 +208,7 @@ export function MacFileGallery({
 		() =>
 			items.map((entry) =>
 				entry.kind === "folder" && !entry.icon
-					? { ...entry, icon: <GalleryFolderIcon /> }
+					? { ...entry, icon: <MacFolderPreviewIcon /> }
 					: entry
 			),
 		[items]
@@ -326,6 +310,7 @@ export function MacFileGallery({
 						active={active}
 						items={displayItems}
 						label={`${label} filmstrip`}
+						onGetInfo={onGetInfo}
 						onOpen={onOpen}
 						onQuickLook={onQuickLook}
 						onSelectionChange={onSelectionChange}

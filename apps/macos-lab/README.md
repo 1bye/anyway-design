@@ -411,3 +411,25 @@ the comparison does not use screenshot art inside React. Text thumbnail art is
 from Quick Look on the generated Notes.txt. The native side is fixed; only the
 four light single-selection presets are calibrated. Native tag editing,
 Quick Action execution, and document decoding are not included.
+
+### Finder Get Info study
+
+Open `/?view=file-info-reference` for live `MacGetInfoPanel` beside unaltered
+native Tahoe Get Info captures. Image, Folder, and With preview presets restore
+the native state. Fit / 1× / 1.5× / 2× zoom, title/general/name detail crops,
+and synchronized scrolling keep both sides aligned. Source dimensions and
+provenance are recorded in `public/assets/native-file-info/SOURCES.md`.
+
+The workbench opens a modeless `MacGetInfo` from Icon, List, Columns, or Gallery
+with Get Info or Command/Control-I. Edit the full name with Return/blur, undo
+the draft with Escape, or close with the red control or Command/Control-W.
+Validation includes sibling collisions; Fail next rename exercises recovery
+from a synchronous callback error. Rename callbacks are counted to reveal
+duplicate submission. Closing unfinished name edits discards them.
+
+General flags, Hide extension, Comments, and Open with update local React state.
+Tags and Change All report callbacks; Sharing & Permissions is read-only.
+Narrow/dark controls exercise the browser and inspector. The native light
+compact and expanded-preview states are calibrated; dark appearance and other
+expanded section interiors remain first passes. There is no filesystem access,
+OS permission/association mutation, window dragging, or multi-file inspector.

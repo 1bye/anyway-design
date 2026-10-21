@@ -906,3 +906,72 @@ The lab compares genuine Tahoe light captures at 1050 × 658 points; dark,
 multiple-selection stacks, responsive behavior, and Sequoia have no separate
 native calibration. Native vibrancy, font rasterization, and image color
 management can still affect the comparison.
+
+## Finder Get Info
+
+`MacGetInfo` and embedded `MacGetInfoPanel` from `@anyway-design/macos/file-info`
+share the native 349-point inspector. Supply a `MacFileInfoItem` (the existing
+file-list item plus optional inspector metadata):
+
+```tsx
+<MacGetInfo
+  file={inspectedFile}
+  open={infoOpen}
+  onOpenChange={setInfoOpen}
+  onRename={renameFile}
+  validateRename={checkName}
+  onInfoChange={updateFileInfo}
+  returnFocus={getSelectedFileElement}
+/>
+```
+
+The floating dialog is modeless: outside clicks and Escape keep it open.
+Close and Command/Control-W dismiss and restore focus. Its body scrolls within
+the viewport. There is no drag/resize or multiple-file aggregate inspector in
+this first pass. `MacGetInfoPanel` requires `onClose` and can be embedded
+directly. `active`, `onMinimize`, `onZoom`, `className`, and `style` are supported.
+
+`general` and `moreInfo` are arrays of `{ label, value }` with unique labels.
+Without `general`, Kind and any supplied size/date are displayed; no location,
+byte count, or date is invented. An empty array deliberately omits those rows.
+The summary uses `name`, `sizeLabel`, `modifiedLabel`, and optional `icon`.
+`preview.src` supplies an aspect-fitted image; missing/failed previews fall back
+to native file/folder artwork. The component does not decode documents.
+
+General, More Info, and Name & Extension start expanded. Use controlled
+`expandedSections` / `onExpandedSectionsChange`, or seed
+`defaultExpandedSections` with `general`, `more`, `name`, `comments`,
+`open-with`, `preview`, `permissions`. Sections are keyboard-operable and retain
+their content when collapsed. Optional sections appear only with supplied data.
+
+The permanent name field includes the extension. Return or blur validates and
+calls the synchronous `onRename(id, name)` once; update the controlled file name
+to acknowledge it. Empty names, separators, and control characters are rejected;
+`validateRename` adds caller checks such as sibling collisions. Synchronous
+callback errors display inline and preserve the draft. Escape discards the
+draft and keeps the inspector open. Closing by pointer also discards unfinished
+name edits. Without `onRename` the field is read-only; `locked` disables it.
+Async persistence and extension-change confirmation belong to the caller.
+
+`onInfoChange(id, patch)` reports `extensionHidden`, `locked`, `shared`,
+`stationeryPad`, `comments`, or `applicationId`. These remain caller-controlled;
+without a handler the flags/select are disabled and Comments is read-only.
+`fileInfoDisplayName(file)` from `file-info-model` hides the final extension for
+display without changing the canonical name. Folders, dotfiles, extensionless
+names, and trailing dots have no hideable extension.
+
+`applications: [{ id, label }]`, `applicationId`, and `defaultApplicationId`
+configure Open with. `onChangeAll(id)` handles its optional association command.
+`onEditTags(id)` delegates tag editing. `permissions: { summary, entries }`
+supplies a read-only Name/Privilege table; each entry has `id`, `name`, and
+`privilege`. These callbacks do not invoke macOS services or modify host files.
+
+Icon, List, Columns, and Gallery accept optional `onGetInfo(id)` for
+Command/Control-I on a focused enabled file. Repeats are consumed without
+reopening. The caller chooses which file to inspect and owns `open`; the
+inspector does not follow unrelated selection changes automatically.
+
+The lab's light image/folder/preview presets use genuine local Tahoe captures.
+Dark appearance and the expanded Comments, Open with, and permissions contents
+are not separately calibrated. Font rasterization and small icon artwork may
+still differ from native rendering.

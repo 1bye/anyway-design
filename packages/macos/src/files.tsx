@@ -13,6 +13,7 @@ import { MacFileIcon, type MacFileIconName } from "./file-icons";
 import {
 	focusFileTarget,
 	isAdditiveSelection,
+	requestFileInfo,
 	requestFileOpen,
 	requestFilePreview,
 } from "./file-interactions";
@@ -110,6 +111,7 @@ export interface MacFileGridProps extends MacFileRenameProps {
 	className?: string;
 	items: readonly MacFile[];
 	label?: string;
+	onGetInfo?: (id: string) => void;
 	onNewFolder?: () => void;
 	onOpen?: (id: string) => void;
 	onQuickLook?: (id: string) => void;
@@ -189,6 +191,7 @@ function typeaheadTarget(
 }
 
 export function MacFileGrid({
+	onGetInfo,
 	items,
 	selectedIds,
 	onSelectionChange,
@@ -274,6 +277,7 @@ export function MacFileGrid({
 			}
 			const additive = isAdditiveSelection(event);
 			if (
+				requestFileInfo(event, id, onGetInfo) ||
 				rename.key(event, id) ||
 				requestFileOpen(event, id, onOpen) ||
 				requestFilePreview(event, id, onQuickLook)
@@ -309,6 +313,7 @@ export function MacFileGrid({
 			select(next, event.shiftKey, event.shiftKey && additive);
 		},
 		[
+			onGetInfo,
 			enabledIds,
 			items,
 			onOpen,

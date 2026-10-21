@@ -67,3 +67,29 @@ export function requestFileOpen(
 	}
 	return true;
 }
+
+export function requestFileInfo(
+	event: PreviewKey & {
+		defaultPrevented?: boolean;
+		nativeEvent?: { isComposing?: boolean };
+	},
+	id: string,
+	onGetInfo?: (id: string) => void
+): boolean {
+	if (
+		!onGetInfo ||
+		event.defaultPrevented ||
+		event.nativeEvent?.isComposing ||
+		event.key.toLowerCase() !== "i" ||
+		!(event.metaKey || event.ctrlKey) ||
+		event.altKey ||
+		event.shiftKey
+	) {
+		return false;
+	}
+	event.preventDefault();
+	if (!event.repeat) {
+		onGetInfo(id);
+	}
+	return true;
+}

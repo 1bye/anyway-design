@@ -3464,3 +3464,364 @@
 	color: #000;
 	background: #a5c8f6;
 }
+
+.mac-get-info-panel {
+	display: flex;
+	flex-direction: column;
+	width: 349px;
+	max-width: 100%;
+	max-height: inherit;
+	overflow: hidden;
+	font-size: 11px;
+	font-weight: 500;
+	color: var(--mac-text);
+	background: var(--mac-surface);
+	border-bottom: 1px solid var(--mac-line);
+	border-radius: 12px;
+	box-shadow:
+		0 0 0 0.5px var(--mac-line),
+		0 6px 18px rgb(0 0 0 / 12%);
+}
+.mac-get-info-titlebar {
+	display: flex;
+	flex: 0 0 32px;
+	gap: 4px;
+	align-items: center;
+	padding: 0 9px;
+	border-bottom: 1px solid var(--mac-line);
+}
+.mac-get-info-titlebar .mac-traffic-lights {
+	gap: 9px;
+	margin-right: 10px;
+}
+.mac-get-info-titlebar .mac-traffic-lights button {
+	width: 14px;
+	height: 14px;
+}
+.mac-get-info-title-icon {
+	flex: 0 0 16px;
+	width: 16px;
+	height: 16px;
+}
+.mac-get-info-title-icon > :is(img, svg) {
+	width: 16px;
+	height: 16px;
+	object-fit: contain;
+}
+.mac-get-info-titlebar h2 {
+	min-width: 0;
+	margin: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 13px;
+	font-weight: 600;
+	line-height: 18px;
+	color: color-mix(in srgb, var(--mac-text) 75%, var(--mac-surface));
+	white-space: nowrap;
+}
+.mac-get-info-body {
+	min-height: 0;
+	overflow: auto;
+	scrollbar-width: thin;
+}
+.mac-get-info-summary {
+	display: grid;
+	grid-template-columns: 32px minmax(0, 1fr) auto;
+	gap: 3px 6px;
+	align-items: center;
+	padding: 7px 8px 8px 11px;
+}
+.mac-get-info-summary > span:first-child {
+	grid-row: span 2;
+	width: 32px;
+	height: 32px;
+}
+.mac-get-info-summary > span:first-child > :is(img, svg) {
+	width: 32px;
+	height: 32px;
+	object-fit: contain;
+}
+.mac-get-info-summary strong,
+.mac-get-info-size {
+	font-size: 13px;
+	line-height: 16px;
+}
+.mac-get-info-summary strong {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-weight: 700;
+	white-space: nowrap;
+}
+.mac-get-info-summary p {
+	grid-column: 2 / -1;
+	margin: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-size: 11px;
+	line-height: 14px;
+	color: var(--mac-secondary);
+	white-space: nowrap;
+}
+.mac-get-info-tags {
+	display: flex;
+	gap: 4px;
+	align-items: flex-start;
+	width: calc(100% - 8px);
+	min-height: 33px;
+	padding: 0 2px;
+	margin: 3px 4px 4px;
+	font: inherit;
+	font-size: 12px;
+	line-height: 18px;
+	color: var(--mac-secondary);
+	text-align: left;
+	background: var(--mac-surface);
+	border: 1px solid var(--mac-line);
+	border-radius: 0;
+}
+.macos .mac-get-info-tags:disabled {
+	color: var(--mac-secondary);
+	opacity: 1;
+}
+.mac-get-info-tags > span {
+	display: inline-flex;
+	gap: 4px;
+	align-items: center;
+	padding: 2px 5px;
+	background: var(--mac-selected);
+	border-radius: 5px;
+}
+.mac-get-info-tags i {
+	width: 7px;
+	height: 7px;
+	border-radius: 50%;
+}
+.mac-get-info-section {
+	border-top: 1px solid var(--mac-line);
+}
+.mac-get-info-section h3 {
+	margin: 0;
+	font: inherit;
+	font-weight: 600;
+}
+.mac-get-info-section h3 button {
+	display: flex;
+	gap: 5px;
+	align-items: center;
+	width: 100%;
+	min-height: 19px;
+	padding: 1px 9px 2px;
+	font: inherit;
+	line-height: 16px;
+	text-align: left;
+	background: transparent;
+	border: 0;
+}
+.mac-get-info-section h3 .mac-window-symbol {
+	flex: 0 0 8px;
+	width: 8px;
+	color: var(--mac-secondary);
+}
+.mac-get-info-section [aria-expanded="true"] .mac-window-symbol {
+	transform: rotate(90deg);
+}
+.mac-get-info-details {
+	margin: 0;
+	line-height: 14px;
+}
+.mac-get-info-details > div {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr);
+	gap: 4px;
+}
+.mac-get-info-details dt {
+	text-align: right;
+	white-space: nowrap;
+}
+.mac-get-info-details dd {
+	margin: 0;
+	overflow-wrap: anywhere;
+}
+.mac-get-info-details[data-general="true"] > div {
+	grid-template-columns: 60px minmax(0, 1fr);
+}
+.mac-get-info-details[data-general="true"] dd {
+	padding-right: 32px;
+}
+.mac-get-info-general {
+	padding: 6px 8px 5px;
+}
+.mac-get-info-flags {
+	margin: 10px 0 0 47px;
+}
+.mac-get-info-checkbox {
+	display: flex;
+	gap: 4px;
+	align-items: center;
+	min-height: 20px;
+	font-size: 11px;
+	line-height: 14px;
+}
+.mac-get-info-checkbox input {
+	flex: 0 0 14px;
+	width: 14px;
+	height: 14px;
+	padding: 0;
+	margin: 0;
+	appearance: none;
+	background: color-mix(in srgb, var(--mac-text) 10%, var(--mac-surface));
+	border: 0;
+	border-radius: 5px;
+}
+.mac-get-info-checkbox input:checked {
+	background-color: var(--mac-accent);
+}
+.mac-get-info-checkbox-box {
+	position: relative;
+	display: flex;
+	flex: 0 0 14px;
+	width: 14px;
+	height: 14px;
+}
+.mac-get-info-checkbox-box .mac-window-symbol {
+	position: absolute;
+	top: 1.5px;
+	left: 1.5px;
+	color: #fff;
+	pointer-events: none;
+}
+.mac-get-info-checkbox-box input:not(:checked) + .mac-window-symbol {
+	display: none;
+}
+.mac-get-info-checkbox input:disabled {
+	opacity: 0.5;
+}
+.mac-get-info-more {
+	padding: 6px 12px 7px;
+}
+.mac-get-info-name {
+	padding: 4px 11px 0;
+}
+.mac-get-info-name input {
+	width: 100%;
+	height: 26px;
+	padding: 3px 6px;
+	font: inherit;
+	font-size: 13px;
+	line-height: 18px;
+	color: var(--mac-text);
+	background: var(--mac-surface);
+	border: 1px solid color-mix(in srgb, var(--mac-line) 45%, transparent);
+	border-radius: 8px;
+	box-shadow: inset 0 0 1px var(--mac-line);
+}
+.macos .mac-get-info-name input:focus-visible {
+	outline-offset: 0;
+}
+.macos .mac-get-info-name input::selection {
+	color: var(--mac-text);
+	background: color-mix(in srgb, var(--mac-accent) 30%, var(--mac-surface));
+}
+.mac-get-info-name input[aria-invalid="true"] {
+	border-color: #ff453a;
+}
+.mac-get-info-name p {
+	margin: 5px 0;
+	color: #e34d46;
+}
+.mac-get-info-hide-extension {
+	margin: 6px 16px 4px;
+}
+.mac-get-info-comments {
+	padding: 6px 4px 4px;
+}
+.mac-get-info-comments textarea {
+	display: block;
+	width: 100%;
+	height: 46px;
+	padding: 4px;
+	font: inherit;
+	color: var(--mac-text);
+	resize: vertical;
+	background: var(--mac-surface);
+	border: 1px solid var(--mac-line);
+	border-radius: 0;
+}
+.mac-get-info-open-with {
+	padding: 6px 15px 8px;
+}
+.mac-get-info-open-with select {
+	width: 100%;
+	height: 22px;
+	padding: 0 8px;
+	font: inherit;
+	font-size: 12px;
+	color: var(--mac-text);
+	background: var(--mac-selected);
+	border: 0;
+	border-radius: 6px;
+}
+.mac-get-info-open-with p {
+	margin: 4px 0 8px;
+	line-height: 14px;
+}
+.mac-get-info-open-with button {
+	padding: 3px 10px;
+	font: inherit;
+	background: var(--mac-selected);
+	border: 0;
+	border-radius: 8px;
+}
+.macos .mac-get-info-open-with button:disabled {
+	opacity: 0.4;
+}
+.mac-get-info-preview {
+	display: grid;
+	place-items: center;
+	padding: 5px 16px 8px;
+}
+.mac-get-info-preview > img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+	border-radius: 6px;
+}
+.mac-get-info-preview .mac-file-column-fallback .mac-file-icon {
+	width: 256px;
+	height: 256px;
+}
+.mac-get-info-permissions {
+	padding: 6px 14px 10px;
+}
+.mac-get-info-permissions p {
+	margin: 0 0 8px;
+}
+.mac-get-info-permissions table {
+	width: 100%;
+	font-size: 11px;
+	text-align: left;
+	border-collapse: collapse;
+	border: 1px solid var(--mac-line);
+}
+.mac-get-info-permissions th,
+.mac-get-info-permissions td {
+	padding: 3px 7px;
+	font-weight: 400;
+	border-right: 1px solid var(--mac-line);
+}
+.mac-get-info-permissions tbody tr:nth-child(even) {
+	background: var(--mac-selected);
+}
+.mac-get-info-dialog {
+	position: fixed;
+	top: 24px;
+	left: 50%;
+	z-index: 55;
+	width: min(349px, calc(100vw - 32px));
+	max-height: calc(100dvh - 48px);
+	outline: 0;
+	transform: translateX(-50%);
+}
+.mac-get-info-dialog:focus-visible {
+	outline: 0;
+}

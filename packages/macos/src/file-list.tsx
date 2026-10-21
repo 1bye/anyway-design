@@ -16,6 +16,7 @@ import { MacFileIcon } from "./file-icons";
 import {
 	focusFileTarget,
 	isAdditiveSelection,
+	requestFileInfo,
 	requestFileOpen,
 	requestFilePreview,
 } from "./file-interactions";
@@ -69,6 +70,7 @@ export interface MacFileListProps extends MacFileRenameProps {
 	multiple?: boolean;
 	onColumnWidthsChange?: (widths: ColumnWidths) => void;
 	onExpandedChange?: (ids: string[]) => void;
+	onGetInfo?: (id: string) => void;
 	onNewFolder?: () => void;
 	onOpen?: (id: string) => void;
 	onQuickLook?: (id: string) => void;
@@ -333,6 +335,7 @@ function useColumnResize(
 }
 
 export function MacFileList({
+	onGetInfo,
 	items,
 	selectedIds,
 	onSelectionChange,
@@ -611,6 +614,7 @@ export function MacFileList({
 			}
 			const additive = isAdditiveSelection(event);
 			if (
+				requestFileInfo(event, id, onGetInfo) ||
 				arrow(event, id) ||
 				rename.key(event, id) ||
 				requestFileOpen(event, id, onOpen) ||
@@ -650,6 +654,7 @@ export function MacFileList({
 			select(next, event.shiftKey, event.shiftKey && additive);
 		},
 		[
+			onGetInfo,
 			sorted,
 			ids,
 			onOpen,

@@ -13,6 +13,28 @@ const FILE_ICONS = {
 } as const;
 export type MacFileIconName = keyof typeof FILE_ICONS;
 
+const FOLDER_PREVIEW = new URL(
+	"./assets/native-file-icons/folder-preview.png",
+	import.meta.url
+).href;
+
+export function MacFolderPreviewIcon({
+	className = "",
+	...props
+}: Omit<ComponentPropsWithRef<"img">, "src">) {
+	return (
+		<img
+			alt=""
+			className={`mac-file-icon ${className}`}
+			draggable={false}
+			height={64}
+			src={FOLDER_PREVIEW}
+			width={64}
+			{...props}
+		/>
+	);
+}
+
 export interface MacFileIconProps
 	extends Omit<ComponentPropsWithRef<"img">, "src"> {
 	name: MacFileIconName;

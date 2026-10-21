@@ -38,6 +38,7 @@ export interface MacFileColumnsProps extends MacFileRenameProps {
 	label?: string;
 	multiple?: boolean;
 	onColumnWidthsChange?: (widths: number[]) => void;
+	onGetInfo?: (id: string) => void;
 	onNewFolder?: (parentId: string | undefined) => void;
 	onOpen?: (id: string) => void;
 	onQuickLook?: (id: string) => void;
@@ -59,6 +60,7 @@ interface BrowserColumnProps extends MacFileRenameProps {
 	index: number;
 	label: string;
 	multiple: boolean;
+	onGetInfo?: (id: string) => void;
 	onOpen?: (id: string) => void;
 	onQuickLook?: (id: string) => void;
 	onResize: (index: number, width: number) => void;
@@ -131,6 +133,7 @@ function columnSelection(
 }
 
 export function MacFileColumns({
+	onGetInfo,
 	items,
 	value,
 	onValueChange,
@@ -301,6 +304,7 @@ export function MacFileColumns({
 					}
 					label={path[index - 1]?.name ?? label}
 					multiple={multiple}
+					onGetInfo={onGetInfo}
 					onOpen={onOpen}
 					onQuickLook={onQuickLook}
 					onRename={onRename}

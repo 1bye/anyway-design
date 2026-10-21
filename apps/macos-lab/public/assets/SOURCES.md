@@ -95,3 +95,7 @@ Mac, displaying generated demo files only. See
   folder, and expanded information states. Includes a native Quick Look
   thumbnail of generated demo text. See the directory's `SOURCES.md` for
   provenance, crop geometry, and calibrated states.
+
+- `native-file-info/`: Unaltered native Finder Get Info windows for an image,
+  folder, and expanded preview, plus the generated image's Icon Services art.
+  See the directory's `SOURCES.md` for provenance, dimensions, and limitations.

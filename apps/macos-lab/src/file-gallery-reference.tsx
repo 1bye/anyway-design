@@ -383,6 +383,7 @@ export function FileGalleryReferenceComparison() {
 					appearance are first passes, without separate native calibration.
 				</p>
 				<p>
+					<a href="/?view=file-info-reference">Compare Get Info ↗</a> ·{" "}
 					<a href="/?view=file-columns-reference">Compare Columns ↗</a> ·{" "}
 					<a href="/?view=new-folder-reference">Compare New Folder ↗</a>
 				</p>
