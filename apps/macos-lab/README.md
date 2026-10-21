@@ -7,6 +7,28 @@ The lab consumes `@anyway-design/macos`, a standalone React workspace package.
 It includes separate Sequoia and Tahoe presets for the desktop composition,
 menu bar, Dock, window chrome, tabs, buttons, and switches.
 
+The default page is the **component playground**, with 40 searchable entries
+covering windows and navigation, menus and overlays, form controls, feedback,
+Finder workflows, and native artwork. Each entry has a working preview,
+editable props, a copyable React usage example, and a native-comparison link.
+Use `/?component=date-picker`, for example, to link directly to a component.
+The older desktop lab remains at `/?view=desktop-lab`; all native-reference
+routes remain available.
+
+The shared inspector changes preset, appearance, accent color, and accessibility
+preferences across previews. Canvas width, background, and Fit / Actual size
+help inspect smaller containers. Initial-value changes restart the example; other props update live.
+Reset restores its props and in-memory interactions. File previews support
+selection, renaming, folder creation, Quick Look, and Get Info using sample data.
+The thumbnail example also accepts a local image without uploading it.
+Usage examples include imports and the stylesheet; replace sample data and
+`/assets/…` paths with your own assets. They are integration starters rather than
+the complete demo composition. Run `bun run --cwd apps/macos-lab check-playground`
+to type-check generated examples for every entry and inspector option. Tahoe
+remains the calibrated reference; other preset states need separate calibration.
+
+## Desktop lab and native studies
+
 Use the property inspector to change appearance, wallpaper, accent, window
 activation, Dock size/magnification/position, reduced motion, and reduced
 transparency. Compare displays both presets with the same settings. Code
