@@ -36,6 +36,8 @@ and the portal container so menus retain their styles in embedded previews.
 | `tabs` | `MacTabs`: `tabs`, `value`, `onValueChange`, `variant`, `label`, `onAdd`, `onClose`, `onReorder` |
 | `controls` | `MacButton`, `MacTextField`, `MacSearchField`, `MacSwitch`: `label`, `checked` / `defaultChecked`, `onCheckedChange`, `size`, native input props |
 | `segmented-control` | `MacSegmentedControl`: `label`, `items`, `value` / `defaultValue`, `onValueChange`, `size`, `disabled`, `readOnly`, `required`, `name`, `form`, `inputRef` |
+| `date-picker` | `MacDatePicker`: `label`, `mode`, `value` / `defaultValue`, `onValueChange`, `min`, `max`, `size`, `hourCycle`, `calendar`, `disabled`, `readOnly`, `name`, `form` |
+| `calendar` | `MacCalendar`: `label`, `value` / `defaultValue`, `onValueChange`, `min`, `max`, `today`, `disabled`, `readOnly`, `name`, `form` |
 | `checkbox` | `MacCheckbox`: `label`, `checked` / `defaultChecked`, `onCheckedChange`, `indeterminate`, `disabled`, `readOnly`, `active` |
 | `radio` | `MacRadioGroup`: `label`, `value` / `defaultValue`, `onValueChange`, `name`; `MacRadio`: `label`, `value`, `disabled`, `active` |
 | `slider` | `MacSlider`: `label`, `value` / `defaultValue`, `onValueChange`, `onValueCommitted`, `min`, `max`, `step`, `largeStep`, `tickMarks`, `disabled`, `active` |
@@ -1368,3 +1370,62 @@ refs, keyboard interaction, custom accents, reduced motion, and shared tabs.
 Native switch dragging, exact animation timing, non-blue accent calibration,
 and Sequoia remain outside this pass. Multi-select and momentary segment modes
 are not implemented.
+
+### Date and time pickers
+
+`MacDatePicker` renders editable date/time segments with a separate stepper.
+`mode="date"` uses `YYYY-MM-DD`, `mode="time"` uses `HH:mm`, and
+`mode="datetime"` uses `YYYY-MM-DDTHH:mm`. Values describe local calendar
+components without parsing into a local JavaScript timestamp or converting
+time zones. Supply valid zero-padded strings, with years from 0001–9999.
+Invalid values or reversed min/max bounds throw a descriptive error.
+Keep the value's format consistent with its mode; remount an uncontrolled
+picker when switching modes.
+
+```tsx
+import { MacDatePicker } from "@anyway-design/macos/date-picker";
+import { MacCalendar } from "@anyway-design/macos/calendar";
+
+<MacDatePicker
+  label="Appointment"
+  mode="datetime"
+  value={appointment}
+  onValueChange={(next, details) => {
+    if (locked) details.cancel();
+    else setAppointment(next);
+  }}
+  min="2026-10-10T09:00"
+  max="2026-11-15T18:00"
+  name="appointment"
+/>;
+<MacDatePicker label="Reminder time" mode="time" defaultValue="14:35" hourCycle="h23" size="small" />;
+<MacCalendar label="Departure" defaultValue="2026-10-20" name="departure" />;
+```
+
+Click a segment and type, use Up/Down to increment it, and Left/Right to move
+between segments. A/P changes the 12-hour period. Year edits commit after
+four digits or on blur, so an intermediate year cannot discard a leap day.
+Month/year edits clamp the day to the destination month's length; time
+stepping carries into the next day for datetime values and wraps for time-only
+values. `min`/`max` clamp edits and disable out-of-range calendar dates.
+
+Space or Option+Down opens a date field's calendar; `calendar={false}` removes
+this affordance. A focusable calendar trigger is also available to assistive
+technology and keyboard users. The overlay uses Base UI for outside dismissal,
+Escape, positioning, and return focus. Calendar arrows move by day/week,
+Home/End move to the week's edges, Page Up/Down changes months, and Shift+Page
+Up/Down changes years. Enter/Space selects the focused day. The header's
+center dot navigates to today's month. There is one tab stop among day buttons.
+
+`readOnly` preserves navigation but prevents changes; `disabled` removes fields
+from native form submission. Named controls submit the ISO value, and an
+uncanceled form reset restores uncontrolled defaults, including drafts. Changes
+receive `{ event, isCanceled, cancel() }`; calling `cancel()` preserves the value.
+Without a supplied default, the picker starts at the local date/time at mount.
+`today` overrides the calendar's current-day marker for deterministic previews.
+
+Both sizes match genuine Tahoe captures in the lab. This pass supports single,
+nonempty Gregorian dates with US month/day/year order, 12-hour time by default,
+and optional `hourCycle="h23"`. Other locales/calendars, empty-value editing,
+date intervals, native overlay attachment geometry, and mouse hold-repeat timing
+remain for a later pass. No native APIs run in the browser.

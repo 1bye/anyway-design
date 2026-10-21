@@ -5061,3 +5061,286 @@
 	outline: 3px solid var(--mac-toggle-focus);
 	outline-offset: 0;
 }
+
+.mac-date-picker {
+	position: relative;
+	top: 2px;
+	display: inline-flex;
+	gap: 7.5px;
+	align-items: center;
+	width: max-content;
+	min-width: 0;
+	height: 26px;
+	padding: 0;
+	margin: 0;
+	font-size: 13px;
+	-webkit-font-smoothing: auto;
+	line-height: normal;
+	border: 0;
+}
+.mac-date-field {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	height: 24px;
+	padding: 0 0.5px;
+	color: var(--mac-text);
+	white-space: pre;
+	background: var(--mac-surface);
+	border: 1px solid rgb(0 0 0 / 5%);
+	border-radius: 6px;
+}
+.mac-date-picker[data-mode="time"] .mac-date-field {
+	justify-content: flex-end;
+	min-width: 57.5px;
+}
+.mac-date-picker[data-mode="datetime"] .mac-date-field {
+	padding-inline: 1.25px;
+}
+.mac-date-part {
+	display: inline-flex;
+	align-items: center;
+}
+.mac-date-segment-wrap {
+	position: relative;
+	display: inline-block;
+	min-width: 1ch;
+	height: 18px;
+}
+.mac-date-measure {
+	visibility: hidden;
+}
+.macos .mac-date-segment {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	min-width: 0;
+	height: 18px;
+	padding: 0;
+	margin: 0;
+	color: inherit;
+	text-align: center;
+	appearance: none;
+	outline: none;
+	background: transparent;
+	border: 0;
+	border-radius: 3px;
+	box-shadow: none;
+}
+.mac-date-segment::selection {
+	color: #fff;
+	background: var(--mac-accent);
+}
+.mac-date-picker:disabled {
+	color: #bfbfbf;
+}
+.mac-date-picker:disabled .mac-date-field {
+	color: #bfbfbf;
+}
+.mac-date-segment:disabled {
+	-webkit-text-fill-color: currentColor;
+	opacity: 1;
+}
+.mac-date-stepper {
+	display: flex;
+	flex: 0 0 13px;
+	flex-direction: column;
+	width: 13px;
+	height: 20px;
+	overflow: hidden;
+	background: #ededed;
+	border-radius: 4px;
+}
+.mac-date-stepper button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 13px;
+	height: 10px;
+	padding: 0;
+	color: #555;
+	background: transparent;
+	border: 0;
+}
+.mac-date-stepper button:first-child {
+	border-bottom: 0.5px solid rgb(0 0 0 / 10%);
+}
+.mac-date-stepper button:first-child .mac-window-symbol {
+	transform: rotate(180deg);
+}
+.macos .mac-date-stepper button:active:not(:disabled) {
+	background: var(--mac-selected);
+}
+.macos .mac-date-stepper button:disabled {
+	opacity: 0.4;
+}
+.mac-date-picker[data-size="small"] {
+	gap: 6.5px;
+	height: 22px;
+	font-size: 11px;
+}
+.mac-date-picker[data-size="small"] .mac-date-field {
+	height: 22px;
+	border-radius: 6px;
+}
+.mac-date-picker[data-size="small"][data-mode="time"] .mac-date-field {
+	min-width: 50px;
+}
+.mac-date-picker[data-size="small"][data-mode="datetime"] .mac-date-field {
+	padding-inline: 0.875px;
+}
+.mac-date-picker[data-size="small"] .mac-date-stepper {
+	height: 16px;
+}
+.mac-date-picker[data-size="small"] .mac-date-stepper button {
+	height: 8px;
+}
+.mac-date-calendar-trigger {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	border: 0;
+	clip-path: inset(50%);
+}
+.mac-date-calendar-trigger:focus-visible {
+	top: 100%;
+	z-index: 2;
+	width: 24px;
+	height: 24px;
+	background: var(--mac-surface);
+	border-radius: 4px;
+	clip-path: none;
+}
+[data-appearance="dark"] .mac-date-field {
+	background: #2c2c2c;
+	border-color: rgb(255 255 255 / 5%);
+}
+[data-appearance="dark"] .mac-date-picker:disabled .mac-date-field {
+	color: #626262;
+}
+[data-appearance="dark"] .mac-date-stepper {
+	background: #303030;
+}
+[data-appearance="dark"] .mac-date-stepper button {
+	color: #ddd;
+}
+.mac-date-positioner {
+	z-index: 90;
+}
+.mac-date-popup {
+	padding: 5px;
+	outline: none;
+	background: var(--mac-surface);
+	border-radius: 8px;
+	box-shadow:
+		0 8px 24px rgb(0 0 0 / 20%),
+		0 0 0 0.5px var(--mac-line);
+}
+.mac-calendar {
+	width: 138.5px;
+	padding: 2px;
+	font-size: 10px;
+	-webkit-font-smoothing: auto;
+	line-height: normal;
+	background: #fff;
+	border: 0.5px solid var(--mac-line);
+}
+[data-appearance="dark"] .mac-calendar {
+	background: #242424;
+}
+.mac-calendar-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	height: 19px;
+}
+.mac-calendar-header strong {
+	font-size: 13px;
+	font-weight: 700;
+}
+.mac-calendar-navigation {
+	display: flex;
+}
+.mac-calendar-navigation button {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 14px;
+	height: 18px;
+	padding: 0;
+	color: var(--mac-secondary);
+	background: transparent;
+	border: 0;
+}
+.mac-calendar-previous,
+.mac-calendar-next {
+	width: 0;
+	height: 0;
+	border-top: 3.5px solid transparent;
+	border-bottom: 3.5px solid transparent;
+}
+.mac-calendar-previous {
+	border-right: 6px solid currentColor;
+}
+.mac-calendar-next {
+	border-left: 6px solid currentColor;
+}
+.mac-calendar-today-dot {
+	width: 7px;
+	height: 7px;
+	background: currentColor;
+	border-radius: 50%;
+}
+.mac-calendar table {
+	width: 100%;
+	table-layout: fixed;
+	border-spacing: 0;
+}
+.mac-calendar th {
+	height: 16px;
+	padding: 0;
+	font-weight: 700;
+	color: var(--mac-secondary);
+	text-align: center;
+	border-bottom: 0.5px solid var(--mac-line);
+}
+.mac-calendar td {
+	height: 18px;
+	padding: 0;
+	text-align: center;
+}
+.mac-calendar td button {
+	width: 18px;
+	height: 16px;
+	padding: 0;
+	font-size: 10px;
+	color: inherit;
+	text-align: center;
+	background: transparent;
+	border: 0;
+	border-radius: 3px;
+}
+.mac-calendar td [data-outside] {
+	color: color-mix(in srgb, var(--mac-text) 35%, var(--mac-surface));
+}
+.mac-calendar td [aria-current="date"] {
+	color: var(--mac-accent);
+}
+.mac-calendar td [aria-pressed="true"] {
+	background: #ddd;
+}
+[data-appearance="dark"] .mac-calendar td [aria-pressed="true"] {
+	background: #565656;
+}
+.macos .mac-calendar button:focus-visible {
+	outline-width: 2px;
+	outline-offset: 0;
+}
+.macos .mac-calendar button:disabled {
+	opacity: 0.4;
+}

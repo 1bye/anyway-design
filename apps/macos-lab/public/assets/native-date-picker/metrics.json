@@ -1,0 +1,354 @@
+{
+  "normal-light": {
+    "appearance": "light",
+    "controls": [
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 26,
+        "id": "picker-0-0",
+        "width": 96.5,
+        "x": 168,
+        "y": 80
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 22,
+        "id": "picker-0-1",
+        "width": 84,
+        "x": 410,
+        "y": 80
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 26,
+        "id": "picker-1-0",
+        "width": 81.5,
+        "x": 168,
+        "y": 124
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 22,
+        "id": "picker-1-1",
+        "width": 71,
+        "x": 410,
+        "y": 124
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 26,
+        "id": "picker-2-0",
+        "width": 160,
+        "x": 168,
+        "y": 168
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 22,
+        "id": "picker-2-1",
+        "width": 139,
+        "x": 410,
+        "y": 168
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": false,
+        "height": 26,
+        "id": "picker-3-0",
+        "width": 96.5,
+        "x": 168,
+        "y": 212
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": false,
+        "height": 22,
+        "id": "picker-3-1",
+        "width": 84,
+        "x": 410,
+        "y": 212
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 148,
+        "id": "calendar",
+        "width": 138.5,
+        "x": 168,
+        "y": 280
+      }
+    ],
+    "focused": false,
+    "system": "Version 26.6.2 (Build 25G83)"
+  },
+  "normal-dark": {
+    "appearance": "dark",
+    "controls": [
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 26,
+        "id": "picker-0-0",
+        "width": 96.5,
+        "x": 168,
+        "y": 80
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 22,
+        "id": "picker-0-1",
+        "width": 84,
+        "x": 410,
+        "y": 80
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 26,
+        "id": "picker-1-0",
+        "width": 81.5,
+        "x": 168,
+        "y": 124
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 22,
+        "id": "picker-1-1",
+        "width": 71,
+        "x": 410,
+        "y": 124
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 26,
+        "id": "picker-2-0",
+        "width": 160,
+        "x": 168,
+        "y": 168
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 22,
+        "id": "picker-2-1",
+        "width": 139,
+        "x": 410,
+        "y": 168
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": false,
+        "height": 26,
+        "id": "picker-3-0",
+        "width": 96.5,
+        "x": 168,
+        "y": 212
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": false,
+        "height": 22,
+        "id": "picker-3-1",
+        "width": 84,
+        "x": 410,
+        "y": 212
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 148,
+        "id": "calendar",
+        "width": 138.5,
+        "x": 168,
+        "y": 280
+      }
+    ],
+    "focused": false,
+    "system": "Version 26.6.2 (Build 25G83)"
+  },
+  "focus-light": {
+    "appearance": "light",
+    "controls": [
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 26,
+        "id": "picker-0-0",
+        "width": 96.5,
+        "x": 168,
+        "y": 80
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 22,
+        "id": "picker-0-1",
+        "width": 84,
+        "x": 410,
+        "y": 80
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 26,
+        "id": "picker-1-0",
+        "width": 81.5,
+        "x": 168,
+        "y": 124
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 22,
+        "id": "picker-1-1",
+        "width": 71,
+        "x": 410,
+        "y": 124
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 26,
+        "id": "picker-2-0",
+        "width": 160,
+        "x": 168,
+        "y": 168
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 22,
+        "id": "picker-2-1",
+        "width": 139,
+        "x": 410,
+        "y": 168
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": false,
+        "height": 26,
+        "id": "picker-3-0",
+        "width": 96.5,
+        "x": 168,
+        "y": 212
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": false,
+        "height": 22,
+        "id": "picker-3-1",
+        "width": 84,
+        "x": 410,
+        "y": 212
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 148,
+        "id": "calendar",
+        "width": 138.5,
+        "x": 168,
+        "y": 280
+      }
+    ],
+    "focused": true,
+    "system": "Version 26.6.2 (Build 25G83)"
+  },
+  "focus-dark": {
+    "appearance": "dark",
+    "controls": [
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 26,
+        "id": "picker-0-0",
+        "width": 96.5,
+        "x": 168,
+        "y": 80
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 22,
+        "id": "picker-0-1",
+        "width": 84,
+        "x": 410,
+        "y": 80
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 26,
+        "id": "picker-1-0",
+        "width": 81.5,
+        "x": 168,
+        "y": 124
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 22,
+        "id": "picker-1-1",
+        "width": 71,
+        "x": 410,
+        "y": 124
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 26,
+        "id": "picker-2-0",
+        "width": 160,
+        "x": 168,
+        "y": 168
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 22,
+        "id": "picker-2-1",
+        "width": 139,
+        "x": 410,
+        "y": 168
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": false,
+        "height": 26,
+        "id": "picker-3-0",
+        "width": 96.5,
+        "x": 168,
+        "y": 212
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": false,
+        "height": 22,
+        "id": "picker-3-1",
+        "width": 84,
+        "x": 410,
+        "y": 212
+      },
+      {
+        "date": "2026-10-20T14:35:00Z",
+        "enabled": true,
+        "height": 148,
+        "id": "calendar",
+        "width": 138.5,
+        "x": 168,
+        "y": 280
+      }
+    ],
+    "focused": true,
+    "system": "Version 26.6.2 (Build 25G83)"
+  }
+}

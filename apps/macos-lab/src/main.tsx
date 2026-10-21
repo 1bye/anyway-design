@@ -3,6 +3,7 @@ import { createRoot } from "react-dom/client";
 import { AlertReferenceComparison } from "./alert-reference";
 import { App } from "./app";
 import { ControlsReferenceComparison } from "./controls-reference";
+import { DatePickerReferenceComparison } from "./date-picker-reference";
 import { DockGlassPlayground } from "./dock-glass-playground";
 import { DockReferenceComparison } from "./dock-reference";
 import { FileColumnsReferenceComparison } from "./file-columns-reference";
@@ -72,5 +73,7 @@ if (view === "dock-reference") {
 	page = <TextFieldsReferenceComparison />;
 } else if (view === "toggle-controls-reference") {
 	page = <ToggleControlsReferenceComparison />;
+} else if (view === "date-picker-reference") {
+	page = <DatePickerReferenceComparison />;
 }
 createRoot(root).render(<StrictMode>{page}</StrictMode>);

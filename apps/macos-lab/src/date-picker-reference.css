@@ -1,0 +1,43 @@
+.date-study .input-study-live,
+.date-study .input-study-native {
+	width: 680px;
+	height: 568px;
+}
+.date-study .input-study-native img {
+	width: 680px;
+}
+.date-study-canvas {
+	position: relative;
+	width: 680px;
+	height: 568px;
+	background: var(--mac-surface);
+}
+.date-study-picker,
+.date-study-calendar {
+	position: absolute;
+}
+.date-study-picker[data-reference-focus="true"] [data-segment="month"] {
+	color: #fff;
+	background: var(--mac-accent);
+}
+.date-workbench-fields {
+	display: grid;
+	gap: 18px;
+}
+.date-workbench-field {
+	display: grid;
+	gap: 6px;
+}
+.input-workbench-form .mac-date-picker {
+	display: inline-flex;
+	gap: 7.5px;
+}
+.date-workbench-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-top: 14px;
+}
+.date-workbench-form {
+	margin-top: 20px;
+}

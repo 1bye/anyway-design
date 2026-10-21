@@ -309,6 +309,9 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 				<a className="copy-button" href="/?view=toggle-controls-reference">
 					Switches & segmented controls ↗
 				</a>
+				<a className="copy-button" href="/?view=date-picker-reference">
+					Date & time pickers ↗
+				</a>
 			</>
 		);
 	}

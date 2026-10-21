@@ -617,3 +617,30 @@ browser smoke checks cover the change without adding dependencies.
 
 Native drag gestures, exact transition timing, non-blue accent matching,
 Sequoia calibration, multi-select, and momentary segments are outside this pass.
+
+Open [the date and time study](http://127.0.0.1:3006/?view=date-picker-reference)
+from **Controls → Date & time pickers**. `MacDatePicker` and `MacCalendar` sit
+beside genuine `NSDatePicker` captures from the local Tahoe 26.6.2 system.
+Shared zoom, synchronized scrolling, Fields/Calendar crops, light/dark
+appearance, and the selected-month preset preserve native point geometry.
+The four original 2× JPEGs retain their color profiles; only CSS crops them.
+
+The native fixture contains regular/small date, time, combined date/time, and
+disabled fields plus a Gregorian calendar. It fixes October 20, 2026 at
+2:35 PM and marks October 21 as today. The workbench exercises controlled
+and uncontrolled local ISO values, 12/24-hour time, segment typing and stepping,
+calendar keyboard navigation, min/max dates, disabled/read-only controls,
+cancelable changes, and normal/canceled form reset. Submission reports local
+form data and does not save to the system.
+
+Pure date tests cover leap years and centuries, month-end edits, year limits,
+time rollover, strict parsing, bounds, six-week cells, and calendar keyboard
+navigation. Browser checks cover opening and dismissing the calendar, day/month
+navigation, selection and focus return, typing, meridiem changes, bounds,
+24-hour display, form omission, canceled changes, and reset. Native self-checks
+assert nine picker frames, fixed dates, and disabled states. Source/provenance
+and control metrics are in `public/assets/native-date-picker/SOURCES.md`.
+
+This first pass uses nonempty Gregorian dates in US order. Native overlay
+attachment, stepper mouse hold-repeat timing, and other calendar/locale layouts
+are not calibrated. Tooltips remain deferred.
