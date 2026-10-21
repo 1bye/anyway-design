@@ -189,8 +189,8 @@ export const PLAYGROUND_ENTRIES: readonly PlaygroundEntry[] = [
 		"Files & Finder",
 		"finder",
 		"MacFinder",
-		"window-reference",
-		"Reusable Finder with caller-owned files, configurable sidebar and views, Quick Look, Get Info, and configurable file actions.",
+		"finder-drag-reference",
+		"Reusable Finder with caller-owned files, four views, Quick Look, Get Info, file actions, and spring-loaded folder drag and drop.",
 		[
 			active,
 			{ initial: "Documents", key: "title", label: "Folder name" },

@@ -362,6 +362,63 @@ and context-menu actions. Built-in IDs are `open`, `quick-look`, `info`, `rename
 `new-folder`, and `select-all`; custom IDs must differ from these and view IDs.
 The same IDs work with `MacFinderHandle.command`.
 
+### Finder drag and drop
+
+Supply `onMove(ids, parentId)` to enable desktop pointer drags in Icons, List,
+Columns, and Gallery. Update the matching files' `parentId` values in the callback:
+
+```tsx
+<MacFinder
+  files={files}
+  rootId="workspace"
+  onMove={(ids, parentId) => {
+    setFiles((previous) => previous.map((file) =>
+      ids.includes(file.id) ? { ...file, parentId } : file));
+  }}
+  canDrop={({ destination }) => destination.id !== "read-only-folder"}
+  springLoadDelay={800}
+  onImport={(incoming, parentId) => importFiles(incoming, parentId)}
+/>
+```
+
+Dragging a selected item carries the selected group; an unselected item starts
+its own group. A translucent artwork stack and count follow the pointer without
+rendering React on every move. Valid folders highlight in file views, the sidebar,
+and the path bar. Empty folder backgrounds and individual column backgrounds
+also accept drops. Scrollable views scroll near their edges. Holding over a
+valid folder opens it after `springLoadDelay` milliseconds (default 800);
+Columns preserves its ancestor columns. This delay is an estimate pending a
+native screen recording. Escape, pointer cancellation, focus loss, or releasing
+outside a valid target cancels. Temporary hover navigation then returns to the
+starting tab state, including history and selection.
+
+Moves are validated again on release. Locked/disabled items and destinations,
+the root, non-folder targets, cycles, and existing sibling names are rejected.
+Name checks are case-insensitive and Unicode-normalized; collisions reject the
+whole move and never overwrite. Selected descendants travel with their selected
+parent, so callbacks contain only top-level moved IDs. Items already in the
+destination are excluded. `canDrop({ destination, files, external })` can further
+restrict targets; it cannot override those checks. Keep it synchronous and free
+of side effects, as it also runs while hovering.
+
+`onImport(files, parentId)` receives browser `File` objects for external drops.
+External filenames and bytes are unavailable during hover, so `files` in
+`canDrop` is empty when `external` is true. The caller owns decoding, duplicate
+names, file-type restrictions, upload, and persistence; this component performs
+none of these operations. Folder imports are rejected. Omit `onImport` to
+disable external imports, or `onMove` to disable internal drags independently.
+The playground imports metadata and local image previews in memory, revoking
+its object URLs on unmount. Its imported-name suffixes avoid overwriting.
+
+Internal dragging stays within one `MacFinder`; it does not export real files
+to native applications or transfer files between separate Finder components.
+The pointer preview remains mounted while spring navigation replaces file rows.
+The lab's [drag comparison](http://127.0.0.1:3006/?view=finder-drag-reference)
+shows genuine Tahoe folder feedback. macOS's separate floating drag surface is
+absent from the native window capture, so stack appearance and timing remain
+first-pass approximations. Existing keyboard navigation and file actions remain
+available independently of pointer dragging.
+
 Each Dock item's `icon` accepts an image URL or a React element, such as an
 inline SVG. Custom artwork should fill the supplied square canvas and include
 its intended transparent margins. `size` measures this canvas, not the opaque

@@ -8,6 +8,8 @@ import type {
 	MacFinderFileActions,
 } from "./finder-actions";
 import { FinderContent } from "./finder-content";
+import { FinderDragPreview } from "./finder-drag-preview";
+import type { MacFinderDropContext } from "./finder-drop";
 import { FinderFooter } from "./finder-footer";
 import {
 	createFinderTab,
@@ -31,6 +33,7 @@ export type {
 	MacFinderActionContext,
 	MacFinderFileActions,
 } from "./finder-actions";
+export type { MacFinderDropContext } from "./finder-drop";
 export type {
 	MacFinderCollection,
 	MacFinderFile,
@@ -56,6 +59,8 @@ export interface MacFinderProps
 		| "title"
 		| "variant"
 	> {
+	/** Further restrict writable folder targets. External file details arrive only in onImport. */
+	canDrop?: (context: MacFinderDropContext) => boolean;
 	collections?: readonly MacFinderCollection[];
 	defaultLocation?: string;
 	defaultTabs?: readonly MacFinderInitialTab[];
@@ -70,8 +75,12 @@ export interface MacFinderProps
 	) => void;
 	/** Append this proposed folder to files. Omit to disable folder creation. */
 	onCreateFolder?: (folder: MacFinderFile) => void;
+	/** Import browser File objects into the destination; decoding and persistence belong to the caller. */
+	onImport?: (files: readonly File[], parentId: string) => void;
 	onInfoChange?: MacGetInfoProps["onInfoChange"];
 	onLocationChange?: (id: string) => void;
+	/** Update these files' parentId values. Omit to disable internal dragging. */
+	onMove?: (ids: readonly string[], parentId: string) => void;
 	onOpen?: (id: string) => void;
 	/** Update files with the renamed item. Omit to disable renaming. */
 	onRename?: (id: string, name: string) => void;
@@ -85,6 +94,8 @@ export interface MacFinderProps
 	showTabs?: boolean;
 	showToolbar?: boolean;
 	sidebarGroups?: WindowSidebarGroup[];
+	/** Delay in milliseconds before a valid hovered folder opens. Defaults to 800. */
+	springLoadDelay?: number;
 	toolbarDisabled?: boolean;
 	validateRename?: MacFileRenameProps["validateRename"];
 	views?: readonly MacFinderView[];
@@ -129,7 +140,12 @@ export function MacFinder(props: MacFinderProps) {
 	} = browser;
 	const content = <FinderContent browser={browser} />;
 	return (
-		<div className="mac-finder-window" onKeyDownCapture={key} ref={root}>
+		<div
+			className="mac-finder-window"
+			onKeyDownCapture={key}
+			ref={root}
+			{...browser.drag.handlers}
+		>
 			<MacWindow
 				{...browser.props}
 				footer={
@@ -253,6 +269,13 @@ export function MacFinder(props: MacFinderProps) {
 				</div>
 			</MacWindow>
 			<FinderOverlays browser={browser} />
+			<FinderDragPreview
+				image={browser.drag.image}
+				position={browser.drag.position}
+			/>
+			<span aria-live="polite" className="mac-finder-drag-status" role="status">
+				{browser.drag.status}
+			</span>
 		</div>
 	);
 }

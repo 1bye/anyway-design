@@ -5577,3 +5577,121 @@
 	overflow-wrap: anywhere;
 	white-space: pre-wrap;
 }
+
+.mac-finder-drag-preview {
+	--mac-file-font-size: 13px;
+	--mac-file-line-height: 16px;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 100000;
+	width: 112px;
+	height: 100px;
+	pointer-events: none;
+	transform-origin: 0 0;
+	will-change: transform;
+}
+.mac-finder-drag-preview .mac-finder-drag-item {
+	position: absolute;
+	top: calc(var(--drag-layer) * -5px);
+	left: calc(var(--drag-layer) * 5px - 24px);
+	width: 112px;
+	opacity: 0.8;
+	filter: drop-shadow(0 2px 3px #0003);
+}
+.mac-finder-drag-item .mac-file-artwork {
+	background: transparent;
+}
+.mac-finder-drag-item:not(:last-of-type) .mac-file-caption {
+	visibility: hidden;
+}
+.mac-finder-drag-count {
+	position: absolute;
+	top: 48px;
+	left: 48px;
+	display: grid;
+	place-items: center;
+	min-width: 19px;
+	height: 19px;
+	padding: 0 4px;
+	font-size: 12px;
+	font-weight: 600;
+	color: white;
+	background: #e83c38;
+	border: 1px solid #fff9;
+	border-radius: 20px;
+	box-shadow: 0 1px 2px #0004;
+}
+.mac-finder-drag-preview[data-drop-allowed="false"] {
+	opacity: 0.65;
+}
+.mac-finder-window[data-finder-dragging] {
+	cursor: grabbing;
+	user-select: none;
+}
+.mac-finder-window[data-finder-dragging] * {
+	cursor: grabbing;
+}
+.mac-file-item[data-finder-drop-target] .mac-file-artwork {
+	background: color-mix(in srgb, var(--mac-text) 15%, transparent);
+	box-shadow: 0 0 0 5px color-mix(in srgb, var(--mac-text) 15%, transparent);
+}
+.mac-file-item[data-finder-drop-target] .mac-file-name {
+	color: #fff;
+	background: var(--mac-accent);
+	border-radius: 4px;
+}
+:is(tr, .mac-sidebar-item, [data-finder-location-id])[data-finder-drop-target] {
+	color: #fff;
+	background: var(--mac-accent);
+	border-radius: 6px;
+	box-shadow: inset 0 0 0 1px #fff4;
+}
+:is(.mac-finder-browser, .mac-file-browser-column)[data-finder-drop-target] {
+	outline: 2px solid color-mix(in srgb, var(--mac-accent) 55%, transparent);
+	outline-offset: -3px;
+}
+[data-finder-spring-loading] {
+	animation: mac-finder-spring 0.8s ease-in-out;
+}
+@keyframes mac-finder-spring {
+	0%,
+	45%,
+	75%,
+	100% {
+		opacity: 1;
+	}
+	60%,
+	90% {
+		opacity: 0.5;
+	}
+}
+.mac-finder-drag-status {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	clip-path: inset(50%);
+}
+@media (prefers-reduced-motion: reduce) {
+	[data-finder-spring-loading] {
+		animation: none;
+	}
+}
+.macos[data-reduce-motion] [data-finder-spring-loading] {
+	animation: none;
+}
+.mac-finder-window[data-finder-dragging][data-finder-drop-allowed="false"] * {
+	cursor: not-allowed;
+}
+.mac-finder-window
+	.mac-file-list[data-active]
+	.mac-file-list-table
+	tbody
+	tr[data-file-id][data-finder-drop-target]
+	td {
+	color: white;
+	background: var(--mac-accent);
+}

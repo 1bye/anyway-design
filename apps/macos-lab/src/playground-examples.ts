@@ -277,6 +277,7 @@ function finderExample(
 			? ""
 			: `onRename={(id, name) => setFiles((previous) => previous.map((file) => file.id === id ? { ...file, name } : file))}
   onCreateFolder={(folder) => setFiles((previous) => [...previous, folder])}
+  onMove={(ids, parentId) => setFiles((previous) => previous.map((file) => ids.includes(file.id) ? { ...file, parentId } : file))}
   onInfoChange={(id, changes) => setFiles((previous) => previous.map((file) => file.id === id ? { ...file, ...changes } : file))}`
 	}
   onLocationChange={(id) => console.info("Navigate", id)}

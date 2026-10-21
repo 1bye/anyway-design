@@ -33,7 +33,8 @@ The grouping menu offers Kind, Date Modified, Size, Tags, and None. Its Sort By
 submenu sets Name, Kind, Date Modified, Size, and ascending/descending order.
 The same state drives Icons, List, Columns, and Gallery. List column headers
 update the toolbar sort state. These controls use sample files in memory;
-Share and Tags remain preview callbacks. No user files are read or changed.
+Share and Tags remain preview callbacks. Sample interactions never change user
+files on disk; explicit external drops read metadata and local image previews.
 Keyboard commands: ⌘/Ctrl-F for search, ⌘/Ctrl-[ and ] or Option-Left/Right
 for history, ⌘/Ctrl-1 through 4 for views, and ⇧⌘/Ctrl-N for New Folder.
 `bun run --cwd packages/macos test` checks the shared browser state model.
@@ -50,6 +51,25 @@ menu from the keyboard. The toolbar's More menu uses the same actions. The
 Custom file actions switch adds a caller-owned “Mark as Reviewed” operation;
 Read only disables data mutations. Get Info edits update the same fixture array,
 and Quick Look uses supplied image or text previews without accessing user files.
+
+Finder drag and drop uses `onMove` to update `parentId` in the same fixture array.
+Selected groups have a translucent preview stack and count. File folders,
+physical sidebar locations, the path bar, and empty folder/column backgrounds
+accept valid moves. Hold over a folder for 800ms to open it; ancestor columns
+remain available. Escape, focus loss, or an invalid release cancels and restores
+temporary hover navigation. Read only omits both move and import callbacks.
+External file drops add metadata and local image object URLs in memory, without
+uploading; folders are rejected. The package validates internal cycles, locked
+items, stale IDs, and duplicate names before calling `onMove`.
+
+Open `/?view=finder-drag-reference` for the paired folder-feedback comparison.
+Both panels share logical scale and zoom. The right side is a crop captured
+from genuine native Tahoe Finder while the user held a drag in the isolated
+`Anyway-Drag-Reference` fixture. The window capture omits macOS's separate
+floating drag image; the native stack and spring-loading timing are therefore
+not calibrated. Other views, sidebar targets, and light appearance remain live
+examples without matched native captures. See
+`public/assets/native-finder-drag/SOURCES.md` for provenance and limitations.
 
 The shared inspector changes preset, appearance, accent color, and accessibility
 preferences across previews. Canvas width, background, and Fit / Actual size

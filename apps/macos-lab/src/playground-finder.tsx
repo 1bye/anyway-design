@@ -5,8 +5,9 @@ import {
 	type MacFinderHandle,
 	type MacFinderProps,
 } from "@anyway-design/macos/finder";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createFinderFiles } from "./finder-browser-data";
+import { finderImports } from "./finder-import";
 import { PLAYGROUND_SIDEBAR } from "./playground-data";
 
 export type FinderHandle = MacFinderHandle;
@@ -44,6 +45,15 @@ export function PlaygroundFinder({
 }: FinderExampleProps) {
 	const [items, setItems] = useState(() => createFinderFiles(Date.now()));
 	const root = useRef<HTMLDivElement>(null);
+	const objectUrls = useRef<string[]>([]);
+	useEffect(
+		() => () => {
+			for (const url of objectUrls.current) {
+				URL.revokeObjectURL(url);
+			}
+		},
+		[]
+	);
 	useLayoutEffect(() => {
 		const selector = [
 			".mac-finder-tabs",
@@ -113,6 +123,20 @@ export function PlaygroundFinder({
 								onEvent(`onCreateFolder → ${folder.name}`);
 							}
 				}
+				onImport={
+					readOnly
+						? undefined
+						: (incoming, parentId) => {
+								const imported = finderImports(
+									incoming,
+									parentId,
+									files,
+									objectUrls.current
+								);
+								setItems((previous) => [...previous, ...imported]);
+								onEvent(`onImport → ${imported.length} files → ${parentId}`);
+							}
+				}
 				onInfoChange={
 					readOnly
 						? undefined
@@ -129,6 +153,18 @@ export function PlaygroundFinder({
 					onEvent(
 						`onNavigate → ${files.find((file) => file.id === id)?.name ?? id}`
 					)
+				}
+				onMove={
+					readOnly
+						? undefined
+						: (ids, parentId) => {
+								setItems((previous) =>
+									previous.map((file) =>
+										ids.includes(file.id) ? { ...file, parentId } : file
+									)
+								);
+								onEvent(`onMove → ${ids.join(", ")} → ${parentId}`);
+							}
 				}
 				onOpen={(id) =>
 					onEvent(

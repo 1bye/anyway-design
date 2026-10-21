@@ -43,6 +43,7 @@ export function WindowSidebar({
 						<button
 							aria-current={selected === item.id ? "page" : undefined}
 							className="mac-sidebar-item"
+							data-finder-location-id={item.id}
 							data-id={item.id}
 							key={item.id}
 							onClick={select}

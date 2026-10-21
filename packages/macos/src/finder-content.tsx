@@ -87,6 +87,7 @@ function FinderFiles({ browser }: { browser: FinderBrowser }) {
 		return (
 			<MacFileColumns
 				{...fileProps}
+				multiple
 				onNewFolder={
 					browser.onCreateFolder
 						? (id) => browser.fileActions.run("new-folder", [], id ?? location)
@@ -103,7 +104,7 @@ function FinderFiles({ browser }: { browser: FinderBrowser }) {
 					)
 				}
 				sort={tab.sort}
-				value={tab.column}
+				value={tab.column ?? tab.selected.at(-1)}
 			/>
 		);
 	}

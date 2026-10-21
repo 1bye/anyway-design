@@ -1,0 +1,44 @@
+.finder-drag-viewport {
+	height: calc(258px * var(--drag-study-zoom));
+	overflow: auto;
+	background: #edf0f2;
+}
+.finder-drag-scene {
+	width: 372px;
+	height: 258px;
+	padding: 12px;
+	zoom: var(--drag-study-zoom);
+}
+.finder-drag-scene > img {
+	display: block;
+	width: 348px;
+	max-width: none;
+	height: 234px;
+}
+.finder-drag-scene .mac-window {
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+}
+.finder-drag-scene .mac-window .mac-window-titlebar,
+.finder-drag-scene .mac-window .mac-window-footer {
+	display: none;
+}
+.finder-drag-scene .mac-window .mac-window-content {
+	padding: 0;
+}
+.finder-drag-scene .mac-window .mac-finder-browser > .mac-file-grid {
+	--mac-file-column-width: 112px;
+	--mac-file-column-gap: 0px;
+	--mac-file-row-height: 112px;
+	--mac-file-row-gap: 0px;
+	--mac-file-grid-padding: 12px 4px;
+	--mac-file-icon-size: 64px;
+	--mac-file-font-size: 13px;
+	grid-template-columns: repeat(3, 112px);
+}
+.finder-drag-scene .mac-finder-browser > .mac-file-grid .mac-file-caption {
+	flex-shrink: 0;
+	width: max-content;
+	max-width: 124px;
+}

@@ -32,6 +32,7 @@ export function FinderFooter({
 							{file.kind === "folder" ? (
 								<button
 									aria-current={file.id === location ? "location" : undefined}
+									data-finder-location-id={file.id}
 									onClick={() => navigate(file.id)}
 									type="button"
 								>

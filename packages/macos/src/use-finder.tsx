@@ -30,6 +30,7 @@ import {
 	selectFinderColumn,
 	stepFinderHistory,
 } from "./finder-model";
+import { useFinderDrag } from "./use-finder-drag";
 import { useFinderFileActions } from "./use-finder-file-actions";
 
 const EMPTY_COLLECTIONS: readonly MacFinderCollection[] = [];
@@ -73,6 +74,10 @@ export function useFinder({
 	onAction,
 	fileActions: configuration,
 	onInfoChange,
+	onMove,
+	onImport,
+	canDrop,
+	springLoadDelay = 800,
 	ref,
 	...props
 }: MacFinderProps) {
@@ -197,6 +202,50 @@ export function useFinder({
 		[tab.group, now]
 	);
 	const select = (selected: string[]) => updateTab({ selected });
+	const drag = useFinderDrag({
+		canDrop,
+		columnRootId: tab.columnRoot ?? location,
+		files: items,
+		locationId: location,
+		onImport,
+		onMove,
+		onSelect: (ids, sourceId) => {
+			if (tab.view === "columns" && sourceId) {
+				commit(
+					selectFinderColumn(
+						tab,
+						items.find((file) => file.id === sourceId),
+						ids,
+						collections
+					)
+				);
+			} else {
+				select(ids);
+			}
+		},
+		onSpringOpen: (id) => {
+			if (tab.view === "columns") {
+				commit(
+					selectFinderColumn(
+						tab,
+						items.find((file) => file.id === id),
+						[],
+						collections
+					)
+				);
+			} else {
+				navigate(id);
+			}
+		},
+		restore: () => {
+			commit(tab);
+		},
+		root,
+		selectedIds: tab.selected,
+		springLoadDelay: Number.isFinite(springLoadDelay)
+			? Math.max(0, springLoadDelay)
+			: 800,
+	});
 	const query = (value: string) => {
 		const ids = new Set(
 			finderLocationFiles(items, location, value, collections).map(
@@ -435,6 +484,7 @@ export function useFinder({
 		command,
 		commit,
 		create,
+		drag,
 		fileActions,
 		fileProps,
 		groupBy,
