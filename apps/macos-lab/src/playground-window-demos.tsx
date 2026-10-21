@@ -2,6 +2,7 @@
 import { MacCheckbox } from "@anyway-design/macos/checkbox";
 import { MacButton } from "@anyway-design/macos/controls";
 import { Dock } from "@anyway-design/macos/dock";
+import type { MacFinderView } from "@anyway-design/macos/finder";
 import { MacContextMenu, MacMenuButton } from "@anyway-design/macos/menu";
 import { AppleMark, MenuBar } from "@anyway-design/macos/menu-bar";
 import { MacPopover, MacPopoverClose } from "@anyway-design/macos/popover";
@@ -98,6 +99,8 @@ export function WindowDemo(props: PlaygroundDemoProps) {
 	return (
 		<PlaygroundFinder
 			active={Boolean(props.values.active)}
+			defaultView={(props.values.view ?? "icons") as MacFinderView}
+			key={String(props.values.view ?? "icons")}
 			onClose={() => action("onClose → window closed")}
 			onEvent={props.onEvent}
 			onMinimize={() => action("onMinimize → window minimized")}
@@ -105,15 +108,22 @@ export function WindowDemo(props: PlaygroundDemoProps) {
 				setZoomed(!zoomed);
 				props.onEvent(`onZoom → ${!zoomed}`);
 			}}
+			readOnly={Boolean(props.values.readOnly)}
 			showSidebar={Boolean(props.values.sidebar)}
+			showTabs={props.values.tabs !== false}
 			showToolbar={Boolean(props.values.toolbar)}
-			sidebarWidth={Number(props.values.sidebarWidth)}
+			sidebarWidth={Number(props.values.sidebarWidth ?? 165)}
 			style={{
 				height: zoomed ? 480 : 450,
 				maxWidth: "calc(100% - 40px)",
 				width: zoomed ? 760 : 740,
 			}}
 			title={String(props.values.title)}
+			views={
+				{ "gallery-only": ["gallery"], "icons-and-list": ["icons", "list"] }[
+					String(props.values.views)
+				] as MacFinderView[] | undefined
+			}
 			zoomed={zoomed}
 		/>
 	);

@@ -44,6 +44,7 @@ const DEMOS: Record<string, ComponentType<PlaygroundDemoProps>> = {
 	"file-list": FilesDemo,
 	"file-rename": FilesDemo,
 	"file-thumbnail": ThumbnailDemo,
+	finder: WindowDemo,
 	"folder-list": FilesDemo,
 	"get-info": InfoDemo,
 	menu: MenuDemo,
@@ -62,6 +63,7 @@ const DEMOS: Record<string, ComponentType<PlaygroundDemoProps>> = {
 };
 const WALLPAPER = new Set([
 	"dock",
+	"finder",
 	"window",
 	"menu-bar",
 	"traffic-lights",

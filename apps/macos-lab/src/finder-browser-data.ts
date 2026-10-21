@@ -1,7 +1,7 @@
-import type { FinderFile } from "./finder-browser-model";
+import type { MacFinderFile } from "@anyway-design/macos/finder";
 import { PLAYGROUND_FILES } from "./playground-data";
 
-export function createFinderFiles(now: number): FinderFile[] {
+export function createFinderFiles(now: number): MacFinderFile[] {
 	const day = 86_400_000;
 	return [
 		{ id: "home", kind: "folder", name: "Home" },

@@ -2,20 +2,36 @@ import { expect, test } from "bun:test";
 import {
 	arrangeFinderFiles,
 	createFinderTab,
-	type FinderFile,
+	finderCanNavigate,
 	finderColumnItems,
 	finderGroupLabel,
 	finderLocation,
 	finderLocationFiles,
 	finderPath,
 	finderShortcut,
+	type MacFinderFile,
 	navigateFinderTab,
+	resolveFinderTab,
 	selectFinderColumn,
 	stepFinderHistory,
-} from "../src/finder-browser-model";
+} from "../src/finder-model";
 
+const collections = [
+	{
+		filter: (file: MacFinderFile) => file.shared === true,
+		id: "shared",
+		label: "Shared",
+	},
+	{
+		filter: (file: MacFinderFile) =>
+			file.tags?.some((tag) => tag.label === "Work") ?? false,
+		id: "work",
+		label: "Work",
+	},
+	{ filter: () => false, id: "urgent", label: "Urgent" },
+];
 const now = new Date(2026, 9, 21, 12).getTime();
-const files: FinderFile[] = [
+const files: MacFinderFile[] = [
 	{ id: "home", kind: "folder", name: "Home" },
 	{ id: "documents", kind: "folder", name: "Documents", parentId: "home" },
 	{ id: "downloads", kind: "folder", name: "Downloads", parentId: "home" },
@@ -94,13 +110,13 @@ test("search stays within the current subtree, includes names and tags, and virt
 	expect(
 		finderLocationFiles(files, "documents", "work").map((file) => file.id)
 	).toEqual(["brief"]);
-	expect(finderLocationFiles(files, "shared").map((file) => file.id)).toEqual([
-		"nested",
-	]);
-	expect(finderLocationFiles(files, "work").map((file) => file.id)).toEqual([
-		"brief",
-	]);
-	expect(finderLocationFiles(files, "urgent")).toEqual([]);
+	expect(
+		finderLocationFiles(files, "shared", "", collections).map((file) => file.id)
+	).toEqual(["nested"]);
+	expect(
+		finderLocationFiles(files, "work", "", collections).map((file) => file.id)
+	).toEqual(["brief"]);
+	expect(finderLocationFiles(files, "urgent", "", collections)).toEqual([]);
 	expect(finderLocationFiles(files, "documents", "missing")).toEqual([]);
 });
 
@@ -208,4 +224,109 @@ test("column navigation records history while retaining ancestors and file selec
 	]);
 	expect(searching.query).toBe("brief");
 	expect(searching.history).toEqual(["documents"]);
+});
+
+test("arbitrary folder and collection IDs work without playground locations", () => {
+	const custom: MacFinderFile[] = [
+		{ id: "tenant:42", kind: "folder", name: "Acme" },
+		{
+			id: "specs:9",
+			kind: "folder",
+			name: "Specifications",
+			parentId: "tenant:42",
+		},
+		{
+			id: "leaf:7",
+			kind: "text",
+			name: "Overview.txt",
+			parentId: "specs:9",
+			preview: { text: "Supplied content" },
+		},
+		{
+			disabled: true,
+			id: "locked",
+			kind: "folder",
+			name: "Locked",
+			parentId: "tenant:42",
+		},
+	];
+	const views = [
+		{
+			filter: (file: MacFinderFile) => file.kind === "text",
+			id: "saved:important",
+			label: "Important",
+		},
+	];
+	expect(finderCanNavigate(custom, views, "specs:9")).toBe(true);
+	expect(finderCanNavigate(custom, views, "saved:important")).toBe(true);
+	expect(finderCanNavigate(custom, views, "locked")).toBe(false);
+	expect(finderCanNavigate(custom, views, "documents")).toBe(false);
+	expect(
+		finderLocationFiles(custom, "saved:important", "overview", views).map(
+			(file) => file.id
+		)
+	).toEqual(["leaf:7"]);
+	const tab = createFinderTab("custom", "specs:9");
+	const tree = finderColumnItems(
+		custom,
+		finderLocationFiles(custom, "specs:9"),
+		tab,
+		now
+	);
+	expect(tree[0].preview?.text).toBe("Supplied content");
+	const collectionTab = {
+		...tab,
+		history: ["saved:important"],
+		view: "columns" as const,
+	};
+	expect(
+		selectFinderColumn(collectionTab, custom[2], ["leaf:7"], views).history
+	).toEqual(["saved:important"]);
+});
+
+test("dataset changes prune removed history and selection while respecting allowed views", () => {
+	const tab = {
+		...navigateFinderTab(
+			navigateFinderTab(createFinderTab("one", "home"), "projects"),
+			"downloads"
+		),
+		column: "brief",
+		columnRoot: "projects",
+		selected: ["brief", "nested"],
+		view: "gallery" as const,
+	};
+	const remaining = files.filter(
+		(file) => !["projects", "brief"].includes(file.id)
+	);
+	const next = resolveFinderTab(tab, remaining, [], "home", [
+		"list",
+		"columns",
+	]);
+	expect(next.history).toEqual(["home", "downloads"]);
+	expect(next.selected).toEqual(["nested"]);
+	expect(next.column).toBeUndefined();
+	expect(next.columnRoot).toBeUndefined();
+	expect(next.view).toBe("list");
+	expect(finderLocation(stepFinderHistory(next, -1))).toBe("home");
+	const removed = resolveFinderTab(
+		{ ...tab, index: 1, query: "brief", searchOpen: true },
+		remaining,
+		[],
+		"home",
+		["icons"]
+	);
+	expect(finderLocation(removed)).toBe("home");
+	expect(removed.query).toBe("");
+	expect(removed.searchOpen).toBe(false);
+	expect(removed.selected).toEqual([]);
+	expect(
+		resolveFinderTab(
+			createFinderTab("gone", "missing"),
+			remaining,
+			[],
+			"home",
+			["icons"]
+		).history
+	).toEqual(["home"]);
+	expect(tab.history).toEqual(["home", "projects", "downloads"]);
 });

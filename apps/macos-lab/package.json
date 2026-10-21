@@ -6,8 +6,7 @@
     "build": "vite build",
     "check-playground": "bun scripts/check-playground-examples.ts",
     "check-types": "tsc --noEmit",
-    "dev": "vite --host 127.0.0.1",
-    "test": "bun test tests"
+    "dev": "vite --host 127.0.0.1"
   },
   "dependencies": {
     "@anyway-design/macos": "workspace:*",

@@ -1,21 +1,19 @@
-import { groupFileItems } from "@anyway-design/macos/file-groups";
-import type {
-	MacFileListItem,
-	MacFileSort,
-} from "@anyway-design/macos/file-list";
-import { sortFileList } from "@anyway-design/macos/file-list-sort";
-import { FILE_KIND_LABELS } from "@anyway-design/macos/file-list-tree";
+import type { MacFileGalleryItem } from "./file-gallery";
+import { groupFileItems } from "./file-groups";
+import type { MacFileListItem, MacFileSort } from "./file-list";
+import { sortFileList } from "./file-list-sort";
+import { FILE_KIND_LABELS } from "./file-list-tree";
 
-export type FinderView = "icons" | "list" | "columns" | "gallery";
-export type FinderGroup = "none" | "kind" | "date" | "size" | "tags";
-export interface FinderFile extends Omit<MacFileListItem, "children"> {
+export type MacFinderView = "icons" | "list" | "columns" | "gallery";
+export type MacFinderGroup = "none" | "kind" | "date" | "size" | "tags";
+export interface MacFinderFile extends Omit<MacFileGalleryItem, "children"> {
 	parentId?: string;
 	shared?: boolean;
 }
-export interface FinderTab {
+export interface MacFinderTab {
 	column?: string;
 	columnRoot?: string;
-	group: FinderGroup;
+	group: MacFinderGroup;
 	history: string[];
 	id: string;
 	index: number;
@@ -23,15 +21,75 @@ export interface FinderTab {
 	searchOpen: boolean;
 	selected: string[];
 	sort: MacFileSort;
-	view: FinderView;
+	view: MacFinderView;
 }
-export const FINDER_VIRTUAL_LOCATIONS = new Set([
-	"recents",
-	"shared",
-	"urgent",
-	"work",
-	"vacation",
-]);
+/** A virtual sidebar location, such as Recents or a tag collection. IDs must not collide with files. */
+export interface MacFinderCollection {
+	filter: (file: MacFinderFile) => boolean;
+	id: string;
+	label: string;
+}
+export const FINDER_VIEWS: readonly MacFinderView[] = [
+	"icons",
+	"list",
+	"columns",
+	"gallery",
+];
+
+export function finderCanNavigate(
+	files: readonly MacFinderFile[],
+	collections: readonly MacFinderCollection[],
+	id: string
+): boolean {
+	return (
+		collections.some((entry) => entry.id === id) ||
+		files.some(
+			(file) => file.id === id && file.kind === "folder" && !file.disabled
+		)
+	);
+}
+
+/** Resolve removed folders, stale selections, and newly restricted views without mutating caller data. */
+export function resolveFinderTab(
+	tab: MacFinderTab,
+	files: readonly MacFinderFile[],
+	collections: readonly MacFinderCollection[],
+	rootId: string,
+	views: readonly MacFinderView[]
+): MacFinderTab {
+	const history = tab.history.filter((id) =>
+		finderCanNavigate(files, collections, id)
+	);
+	const preceding = tab.history
+		.slice(0, tab.index + 1)
+		.filter((id) => finderCanNavigate(files, collections, id)).length;
+	const current = {
+		...tab,
+		history: history.length ? history : [rootId],
+		index: Math.max(0, preceding - 1),
+	};
+	const changed = finderLocation(current) !== finderLocation(tab);
+	const ids = new Set(
+		files.filter((file) => !file.disabled).map((file) => file.id)
+	);
+	return {
+		...current,
+		column:
+			!changed && current.column && ids.has(current.column)
+				? current.column
+				: undefined,
+		columnRoot:
+			!changed &&
+			current.columnRoot &&
+			finderCanNavigate(files, collections, current.columnRoot)
+				? current.columnRoot
+				: undefined,
+		query: changed ? "" : current.query,
+		searchOpen: !changed && current.searchOpen,
+		selected: changed ? [] : current.selected.filter((id) => ids.has(id)),
+		view: views.includes(current.view) ? current.view : (views[0] ?? "icons"),
+	};
+}
 
 export function finderShortcut(event: {
 	key: string;
@@ -74,7 +132,7 @@ export function finderShortcut(event: {
 	}
 }
 
-export function createFinderTab(id: string, location: string): FinderTab {
+export function createFinderTab(id: string, location: string): MacFinderTab {
 	return {
 		group: "none",
 		history: [location],
@@ -87,10 +145,13 @@ export function createFinderTab(id: string, location: string): FinderTab {
 		view: "icons",
 	};
 }
-export function finderLocation(tab: FinderTab): string {
-	return tab.history[tab.index] ?? "documents";
+export function finderLocation(tab: MacFinderTab): string {
+	return tab.history[tab.index] ?? tab.history[0] ?? "";
 }
-export function navigateFinderTab(tab: FinderTab, location: string): FinderTab {
+export function navigateFinderTab(
+	tab: MacFinderTab,
+	location: string
+): MacFinderTab {
 	if (finderLocation(tab) === location) {
 		return {
 			...tab,
@@ -113,7 +174,10 @@ export function navigateFinderTab(tab: FinderTab, location: string): FinderTab {
 		selected: [],
 	};
 }
-export function stepFinderHistory(tab: FinderTab, step: number): FinderTab {
+export function stepFinderHistory(
+	tab: MacFinderTab,
+	step: number
+): MacFinderTab {
 	const index = Math.max(0, Math.min(tab.history.length - 1, tab.index + step));
 	return index === tab.index
 		? tab
@@ -129,11 +193,15 @@ export function stepFinderHistory(tab: FinderTab, step: number): FinderTab {
 }
 
 export function selectFinderColumn(
-	tab: FinderTab,
-	file: FinderFile | undefined,
-	selected: string[]
-): FinderTab {
-	if (tab.query.trim() || FINDER_VIRTUAL_LOCATIONS.has(finderLocation(tab))) {
+	tab: MacFinderTab,
+	file: MacFinderFile | undefined,
+	selected: string[],
+	collections: readonly MacFinderCollection[] = []
+): MacFinderTab {
+	if (
+		tab.query.trim() ||
+		collections.some((entry) => entry.id === finderLocation(tab))
+	) {
 		return { ...tab, column: file?.id, selected };
 	}
 	const root = tab.columnRoot ?? finderLocation(tab);
@@ -147,10 +215,10 @@ export function selectFinderColumn(
 }
 
 export function finderPath(
-	files: readonly FinderFile[],
+	files: readonly MacFinderFile[],
 	id: string
-): FinderFile[] {
-	const path: FinderFile[] = [];
+): MacFinderFile[] {
+	const path: MacFinderFile[] = [];
 	const seen = new Set<string>();
 	let file = files.find((entry) => entry.id === id);
 	while (file && !seen.has(file.id)) {
@@ -162,32 +230,25 @@ export function finderPath(
 }
 
 export function finderLocationFiles(
-	files: readonly FinderFile[],
+	files: readonly MacFinderFile[],
 	location: string,
-	query = ""
-): FinderFile[] {
-	const virtual = FINDER_VIRTUAL_LOCATIONS.has(location);
+	query = "",
+	collections: readonly MacFinderCollection[] = []
+): MacFinderFile[] {
+	const collection = collections.find((entry) => entry.id === location);
 	const text = query.trim().toLocaleLowerCase();
 	return files.filter((file) => {
 		if (!file.parentId) {
 			return false;
 		}
 		let included = file.parentId === location;
-		if (text && !virtual) {
+		if (text && !collection) {
 			included = finderPath(files, file.id)
 				.slice(0, -1)
 				.some((parent) => parent.id === location);
 		}
-		if (location === "recents") {
-			included = file.kind !== "folder";
-		}
-		if (location === "shared") {
-			included = file.shared === true;
-		}
-		if (["urgent", "work", "vacation"].includes(location)) {
-			included =
-				file.tags?.some((tag) => tag.label.toLocaleLowerCase() === location) ??
-				false;
+		if (collection) {
+			included = collection.filter(file);
 		}
 		return (
 			included &&
@@ -238,7 +299,7 @@ function finderDateGroup(file: MacFileListItem, now: number): string {
 
 export function finderGroupLabel(
 	file: MacFileListItem,
-	group: FinderGroup,
+	group: MacFinderGroup,
 	now: number
 ): string {
 	if (group === "kind") {
@@ -259,7 +320,7 @@ export function finderGroupLabel(
 export function arrangeFinderFiles<T extends MacFileListItem>(
 	items: readonly T[],
 	sort: MacFileSort,
-	group: FinderGroup,
+	group: MacFinderGroup,
 	now: number
 ): T[] {
 	const sorted = sortFileList(
@@ -276,12 +337,12 @@ export function arrangeFinderFiles<T extends MacFileListItem>(
 }
 
 export function finderColumnItems(
-	files: readonly FinderFile[],
-	items: readonly FinderFile[],
-	tab: FinderTab,
+	files: readonly MacFinderFile[],
+	items: readonly MacFinderFile[],
+	tab: MacFinderTab,
 	now: number,
 	ancestors = new Set<string>()
-): MacFileListItem[] {
+): (MacFinderFile & { children?: readonly MacFileListItem[] })[] {
 	return arrangeFinderFiles(items, tab.sort, tab.group, now).map((file) => {
 		const children = files.filter((child) => child.parentId === file.id);
 		return {

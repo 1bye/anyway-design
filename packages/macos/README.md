@@ -224,9 +224,85 @@ their first appearance in the supplied items, and each file appears once.
 Grid and list keyboard navigation and selection span group boundaries;
 Columns groups each folder, and Gallery labels its filmstrip groups.
 Supply sorted items to Grid/Gallery and use the controlled `sort` prop on
-List/Columns to keep the toolbar and file views synchronized. The lab's Finder
-example owns navigation, search, and sort state; the library components still
-operate only on caller-supplied files and callbacks.
+List/Columns to keep the toolbar and file views synchronized. `MacFinder` composes these primitives and owns navigation, search, and sort
+state. Files and mutations remain caller-owned.
+
+## Reusable Finder
+
+```tsx
+import { useState } from "react";
+import { MacOSEnvironment } from "@anyway-design/macos/environment";
+import { MacFinder, type MacFinderFile } from "@anyway-design/macos/finder";
+import "@anyway-design/macos/styles.css";
+
+export function FileBrowser() {
+  const [files, setFiles] = useState<MacFinderFile[]>([
+    { id: "workspace", name: "Workspace", kind: "folder" },
+    { id: "designs", parentId: "workspace", name: "Designs", kind: "folder" },
+    { id: "brief", parentId: "designs", name: "Brief.pdf", kind: "pdf",
+      preview: { text: "Your document content" } },
+  ]);
+  return (
+    <MacOSEnvironment preset="tahoe">
+      <MacFinder
+        files={files}
+        rootId="workspace"
+        defaultLocation="designs"
+        views={["icons", "list", "columns", "gallery"]}
+        sidebarGroups={[{ id: "favorites", label: "Favorites", items: [
+          { id: "workspace", label: "Workspace" },
+          { id: "designs", label: "Designs" },
+        ] }]}
+        onOpen={(id) => console.info("Open", id)}
+        onRename={(id, name) => setFiles((previous) => previous.map(
+          (file) => file.id === id ? { ...file, name } : file
+        ))}
+        onCreateFolder={(folder) => setFiles((previous) => [...previous, folder])}
+        style={{ width: 800, height: 520 }}
+      />
+    </MacOSEnvironment>
+  );
+}
+```
+
+`files` is a flat hierarchy with unique IDs and `parentId` references. Include
+the root folder itself; its ID and name can be anything. Supply thumbnails and
+optional Gallery `preview` content through each file. No demo assets, file
+contents, or native filesystem access are embedded in this component.
+
+- `sidebarGroups` uses `WindowSidebarGroup[]`, including optional React icons.
+  Item IDs navigate to folders or configured collections. Omit it to list the
+  root's immediate enabled folders; pass `[]` for an empty sidebar.
+- `collections` accepts `{ id, label, filter(file) }` virtual locations such as
+  Recents or tags. Use IDs distinct from file IDs. Search within a folder includes
+  descendants; search within a collection filters its matching files.
+- `defaultLocation`, `defaultView`, and `defaultTabs` configure initial state.
+  A tab is `{ id, location, selectedIds?, view? }`; tab IDs must be unique.
+  Each tab retains its own history, search, selection, view, grouping, and sort.
+  `views` restricts the view menu and keyboard shortcuts; an empty array enables
+  all four views. If the current view is removed, the first allowed view wins.
+- `showSidebar`, `showToolbar`, `showTabs`, `showExtensions`, `sidebarWidth`,
+  window `style`, active state, and traffic-light callbacks configure presentation.
+- `onOpen(id)` handles leaf files; folders navigate internally.
+  `onRename(id, name)` requests a rename after sibling-name validation.
+  `validateRename` can add app-specific validation.
+- `onCreateFolder(folder)` receives a complete proposed folder with a unique ID,
+  parent ID, and an available “untitled folder” name. Append it to `files` in
+  the callback; Finder selects it and starts inline renaming when available.
+  Gallery switches to an allowed editable view for this; Gallery-only keeps
+  the generated name. Omit mutation callbacks to disable those operations.
+- `onLocationChange`, `onSelectionChange`, and `onViewChange` report interaction
+  changes. `onAction(id, selectedIds)` handles Share/Tags and observes toolbar
+  commands. A `ref` exposing `MacFinderHandle` supports `navigate(folderId)` and
+  `command("new-folder" | "rename" | "open" | "select-all" | view)` for app menus.
+
+Update `files` synchronously in rename/create callbacks; persistence can happen
+in the parent. Finder never mutates the supplied array or writes to disk.
+Navigation and selection are internal; the callbacks are notifications, not
+controlled-state setters. Removed/disabled selections are excluded and removed
+locations fall back to a surviving history location or `rootId`.
+See the [Finder playground](http://127.0.0.1:3006/?component=finder) for editable
+configuration and a copyable example using only public imports.
 
 Each Dock item's `icon` accepts an image URL or a React element, such as an
 inline SVG. Custom artwork should fill the supplied square canvas and include

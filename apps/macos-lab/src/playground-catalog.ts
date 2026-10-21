@@ -182,6 +182,38 @@ export const PLAYGROUND_ENTRIES: readonly PlaygroundEntry[] = [
 		800,
 		520
 	),
+
+	defineEntry(
+		"finder",
+		"Finder",
+		"Files & Finder",
+		"finder",
+		"MacFinder",
+		"window-reference",
+		"Reusable Finder with caller-owned files, configurable sidebar and views, and Open, Rename, and New Folder callbacks.",
+		[
+			active,
+			{ initial: "Documents", key: "title", label: "Folder name" },
+			{
+				initial: "icons",
+				key: "view",
+				label: "Initial view",
+				options: ["icons", "list", "columns", "gallery"],
+			},
+			{
+				initial: "all",
+				key: "views",
+				label: "Available views",
+				options: ["all", "icons-and-list", "gallery-only"],
+			},
+			{ initial: true, key: "sidebar", label: "Show sidebar" },
+			{ initial: true, key: "toolbar", label: "Show toolbar" },
+			{ initial: true, key: "tabs", label: "Show tabs" },
+			{ initial: false, key: "readOnly", label: "Read only" },
+		],
+		800,
+		520
+	),
 	defineEntry(
 		"traffic-lights",
 		"Traffic lights",

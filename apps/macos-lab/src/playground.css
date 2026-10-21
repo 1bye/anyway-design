@@ -593,13 +593,6 @@ main.pg-main {
 	background: #f4f4f4e8;
 	border-radius: 14px;
 }
-.pg-finder-tabs {
-	height: 100%;
-	min-height: 0;
-}
-.pg-finder-window {
-	display: contents;
-}
 .pg-finder-crop {
 	position: relative;
 	overflow: hidden;

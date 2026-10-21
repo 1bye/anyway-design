@@ -7,7 +7,7 @@ The lab consumes `@anyway-design/macos`, a standalone React workspace package.
 It includes separate Sequoia and Tahoe presets for the desktop composition,
 menu bar, Dock, window chrome, tabs, buttons, and switches.
 
-The default page is the **component playground**, with 40 searchable entries
+The default page is the **component playground**, with 41 searchable entries
 covering windows and navigation, menus and overlays, form controls, feedback,
 Finder workflows, and native artwork. Each entry has a working preview,
 editable props, a copyable React usage example, and a native-comparison link.
@@ -15,7 +15,7 @@ Use `/?component=date-picker`, for example, to link directly to a component.
 The older desktop lab remains at `/?view=desktop-lab`; all native-reference
 routes remain available.
 
-Desktop and Window use the Finder composition: back/forward controls, view
+Desktop, Window, and Finder consume the public `MacFinder` component: back/forward controls, view
 and grouping menus, Share/Tags/More, search, document tabs, and the floating
 sidebar. The shared toolbar layout is also used by the Apple comparison.
 Toolbar shows a window-header crop; Sidebar centers the sidebar itself in a
@@ -36,7 +36,13 @@ update the toolbar sort state. These controls use sample files in memory;
 Share and Tags remain preview callbacks. No user files are read or changed.
 Keyboard commands: ⌘/Ctrl-F for search, ⌘/Ctrl-[ and ] or Option-Left/Right
 for history, ⌘/Ctrl-1 through 4 for views, and ⇧⌘/Ctrl-N for New Folder.
-`bun run --cwd apps/macos-lab test` checks the browser state model.
+`bun run --cwd packages/macos test` checks the shared browser state model.
+
+`/?component=finder` exposes the reusable API: restrict available views, choose
+an initial view, hide the sidebar/toolbar/tabs, and omit mutation callbacks with
+Read only. The lab owns its fixture array and updates it in `onRename` and
+`onCreateFolder`; Desktop menus and Dock navigation use `MacFinderHandle`.
+The library has no dependency on playground data, styles, or reference assets.
 
 The shared inspector changes preset, appearance, accent color, and accessibility
 preferences across previews. Canvas width, background, and Fit / Actual size
