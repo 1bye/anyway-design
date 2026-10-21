@@ -266,7 +266,7 @@ function finderExample(
   ${showSidebar ? `sidebar={${sidebar}}` : ""}
   ${showToolbar ? `toolbarLeading={${leading}} toolbar={${toolbar}}` : ""}
 >
-  <MacTabs label="Finder tabs" value={tab} onValueChange={setTab} tabs={[{ id: "documents", label: "Documents", content: <MacFileGrid items={${items}} selectedIds={selected} onSelectionChange={setSelected} /> }, { id: "home", label: "Home", content: <p>Home folder content</p> }]} />
+  <MacTabs label="Finder tabs" value={tab} onValueChange={setTab} tabs={[{ id: "documents", label: "Documents", content: <MacFileGrid items={${items}} selectedIds={selected} onSelectionChange={setSelected} showExtensions={false} /> }, { id: "home", label: "Home", content: <p>Home folder content</p> }]} />
 </MacWindow>`;
 	const imports = [
 		'import { MacWindow } from "@anyway-design/macos/window";',

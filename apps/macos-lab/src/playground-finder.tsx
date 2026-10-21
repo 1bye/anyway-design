@@ -96,6 +96,7 @@ export function PlaygroundFinder({
 		},
 		renamingId: creation.renamingId,
 		selectedIds: selected,
+		showExtensions: false,
 		validateRename: creation.validate,
 	};
 	let files = <MacFileGrid {...fileProps} />;

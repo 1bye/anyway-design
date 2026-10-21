@@ -23,6 +23,8 @@ const files: MacFileListItem[] = [
 		size: 240_000,
 		sizeLabel: "240 KB",
 		tags: [{ color: "#30b956", label: "Approved" }],
+		thumbnail: "/assets/native-quick-look/document-preview.svg",
+		thumbnailFit: "cover",
 	},
 	{
 		id: "notes",
@@ -30,6 +32,8 @@ const files: MacFileListItem[] = [
 		name: "Meeting notes.txt",
 		size: 1082,
 		sizeLabel: "1 KB",
+		thumbnail: "/assets/native-file-gallery/notes-thumbnail.png",
+		thumbnailFit: "cover",
 	},
 	{
 		id: "clouds",

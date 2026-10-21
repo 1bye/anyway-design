@@ -78,7 +78,7 @@
 	height: 347px;
 }
 
-.window-study .window-study-live .mac-window {
+.window-study .window-study-live .mac-window[data-variant="finder"] {
 	--mac-window-titlebar-height: 41px;
 	--mac-window-sidebar-material: rgb(255 255 255 / 68%);
 	--mac-traffic-close: #ec6765;

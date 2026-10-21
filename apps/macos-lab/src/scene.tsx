@@ -486,6 +486,7 @@ function FinderFiles({
 					setSelectedFolders(ids);
 				}}
 				selectedIds={selectedFolders}
+				showExtensions={false}
 				value={column}
 			/>
 		);
@@ -507,6 +508,7 @@ function FinderFiles({
 				onOpen={openFolder}
 				onSelectionChange={setSelectedFolders}
 				selectedIds={selectedFolders}
+				showExtensions={false}
 			/>
 		);
 	}
@@ -517,6 +519,7 @@ function FinderFiles({
 			onOpen={openFolder}
 			onSelectionChange={setSelectedFolders}
 			selectedIds={selectedFolders}
+			showExtensions={false}
 		/>
 	);
 }

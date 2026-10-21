@@ -1553,6 +1553,10 @@
 	--mac-toolbar-indicator-size: 13px;
 	--mac-toolbar-chevron-size: 16px;
 	background: linear-gradient(100deg, #f1f1f1, #fcfcfc 42%, #f6f6f6);
+	box-shadow:
+		0 0 0 0.5px rgb(0 0 0 / 25%),
+		0 24px 60px -10px rgb(0 0 0 / 34%),
+		0 6px 18px rgb(0 0 0 / 14%);
 }
 
 [data-preset="tahoe"][data-appearance="dark"]
@@ -1600,6 +1604,32 @@
 	border-radius: 0;
 }
 
+/* Finder keeps its icon pitch when the window grows, instead of stretching cells. */
+[data-preset="tahoe"]
+:where(
+	.mac-window[data-variant="finder"] .mac-window-content > .mac-file-grid,
+	.mac-window[data-variant="finder"] .mac-tab-panel > .mac-file-grid
+) {
+	--mac-file-column-width: 116px;
+	--mac-file-row-height: 116px;
+	--mac-file-row-gap: 0px;
+	--mac-file-column-gap: 0px;
+	--mac-file-grid-padding: 16px 2px 12px;
+	--mac-file-label-gap: 7px;
+	--mac-file-line-height: 17px;
+	grid-template-columns: repeat(
+			auto-fill,
+			min(100%, var(--mac-file-column-width))
+		);
+	background: transparent;
+}
+
+[data-preset="tahoe"]
+	:where(.mac-window[data-variant="finder"] .mac-file-artwork)
+	> .mac-file-thumbnail {
+	box-shadow: 0 1.5px 3px rgb(0 0 0 / 24%);
+}
+
 [data-preset="tahoe"] [data-sidebar="true"] .mac-window-sidebar {
 	z-index: 1;
 	grid-area: 1 / 1 / -1 / 2;
@@ -1620,12 +1650,20 @@
 		var(--mac-window-radius) -
 		var(--mac-window-sidebar-inset)
 	);
+	box-shadow:
+		inset 0 0 0 0.5px rgb(255 255 255 / 45%),
+		3px 0 8px rgb(0 0 0 / 3%),
+		10px 0 28px rgb(0 0 0 / 7%);
 	backdrop-filter: blur(20px) saturate(1.15);
 }
 
 [data-preset="tahoe"][data-appearance="dark"] .mac-window-sidebar {
 	--mac-window-sidebar-material: rgb(55 55 55 / 65%);
 	border-color: rgb(255 255 255 / 10%);
+	box-shadow:
+		inset 0 0 0 0.5px rgb(255 255 255 / 4%),
+		3px 0 8px rgb(0 0 0 / 12%),
+		10px 0 28px rgb(0 0 0 / 20%);
 }
 
 [data-preset="tahoe"] .mac-window[data-active="false"] {
@@ -1710,7 +1748,9 @@
 	padding: 0;
 	border-color: rgb(255 255 255 / 60%);
 	border-radius: 99px;
-	box-shadow: 0 3px 20px rgb(0 0 0 / 3%);
+	box-shadow:
+		0 2px 6px rgb(0 0 0 / 2%),
+		0 6px 24px rgb(0 0 0 / 6%);
 }
 
 [data-preset="tahoe"] .mac-window[data-active="false"] .mac-toolbar-group {
@@ -2028,6 +2068,12 @@
 [data-preset="tahoe"] .mac-tab-strip {
 	background: var(--mac-surface);
 	box-shadow: none;
+}
+
+[data-preset="tahoe"]
+	:where(.mac-window[data-variant="finder"])
+	:is(.mac-window-content, .mac-tab-strip) {
+	background: transparent;
 }
 
 [data-preset="tahoe"] .mac-tab-strip .mac-tab-list {

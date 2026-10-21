@@ -212,6 +212,12 @@ The lab's [Tahoe window comparison](../../apps/macos-lab/README.md) normalizes
 Apple's published image separately; its smaller dimensions and colors are
 image-specific calibration values, not claims about OS defaults.
 
+The Tahoe `finder` variant uses fixed 116px icon-grid cells with a 16px top
+inset, so resizing reflows icons without spreading them across the window.
+The file-grid CSS variables still control icon size, pitch, and label spacing.
+The inset sidebar casts a soft shadow onto the content; toolbar groups and
+active Finder windows have separate elevation shadows in both appearances.
+
 Each Dock item's `icon` accepts an image URL or a React element, such as an
 inline SVG. Custom artwork should fill the supplied square canvas and include
 its intended transparent margins. `size` measures this canvas, not the opaque
