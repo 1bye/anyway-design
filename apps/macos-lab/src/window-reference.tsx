@@ -27,7 +27,7 @@ import {
 } from "./window-reference-assets";
 import "./dock-reference.css";
 import "./window-reference.css";
-import { FinderActions } from "./finder-actions";
+import { FinderToolbar } from "./finder-toolbar";
 import {
 	FileIconWorkbench,
 	FileThumbnailWorkbench,
@@ -36,57 +36,6 @@ import { WindowReferenceTabs } from "./window-reference-tabs";
 
 type WindowDetail = keyof typeof WINDOW_REFERENCE_CROPS;
 const SCENE_INSET = 24;
-
-function ReferenceToolbar({
-	onAction,
-	onMenuAction,
-	onMenuOpenChange,
-}: {
-	onAction: (event: MouseEvent<HTMLButtonElement>) => void;
-	onMenuAction: (id: string) => void;
-	onMenuOpenChange: (open: boolean) => void;
-}) {
-	return (
-		<>
-			<WindowToolbarGroup label="View">
-				<WindowToolbarButton label="Change view" onClick={onAction}>
-					<WindowSymbol name="icon-view" />
-					<WindowSymbol
-						className="window-study-small-symbol"
-						name="chevron-up-down"
-					/>
-				</WindowToolbarButton>
-			</WindowToolbarGroup>
-			<WindowToolbarGroup label="Arrange">
-				<WindowToolbarButton label="Group items" onClick={onAction}>
-					<WindowSymbol name="group" />
-					<WindowSymbol
-						className="window-study-small-symbol"
-						name="chevron-down"
-					/>
-				</WindowToolbarButton>
-			</WindowToolbarGroup>
-			<WindowToolbarGroup label="File actions">
-				<WindowToolbarButton label="Share" onClick={onAction}>
-					<WindowSymbol name="share" />
-				</WindowToolbarButton>
-				<WindowToolbarButton label="Tags" onClick={onAction}>
-					<WindowSymbol name="tag" />
-				</WindowToolbarButton>
-				<FinderActions
-					filename="Agreement for Services"
-					onAction={onMenuAction}
-					onOpenChange={onMenuOpenChange}
-				/>
-			</WindowToolbarGroup>
-			<WindowToolbarGroup label="Search">
-				<WindowToolbarButton label="Search" onClick={onAction}>
-					<WindowSymbol name="search" />
-				</WindowToolbarButton>
-			</WindowToolbarGroup>
-		</>
-	);
-}
 
 export function WindowReferenceComparison() {
 	const [zoom, setZoom] = useState("fit");
@@ -265,10 +214,10 @@ export function WindowReferenceComparison() {
 		</WindowToolbarGroup>
 	);
 	const toolbar = (
-		<ReferenceToolbar
-			onAction={toolbarAction}
-			onMenuAction={menuAction}
-			onMenuOpenChange={setMenuOpen}
+		<FinderToolbar
+			filename="Agreement for Services"
+			onAction={menuAction}
+			onOpenChange={setMenuOpen}
 		/>
 	);
 	const sceneStyle = {
@@ -418,6 +367,7 @@ export function WindowReferenceComparison() {
 									title="Documents"
 									toolbar={toolbar}
 									toolbarLeading={leading}
+									variant="finder"
 								>
 									<WindowReferenceTabs
 										compact={compactTabs}

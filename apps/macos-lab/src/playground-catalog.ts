@@ -165,7 +165,7 @@ export const PLAYGROUND_ENTRIES: readonly PlaygroundEntry[] = [
 		"window",
 		"MacWindow",
 		"window-reference",
-		"Native window chrome with a toolbar, optional sidebar, and traffic-light actions.",
+		"A Finder window with grouped toolbar controls, document tabs, an optional sidebar, and traffic-light actions.",
 		[
 			active,
 			{ initial: "Documents", key: "title", label: "Title" },
@@ -199,8 +199,10 @@ export const PLAYGROUND_ENTRIES: readonly PlaygroundEntry[] = [
 		"window-toolbar",
 		"WindowToolbarGroup, WindowToolbarButton",
 		"window-reference",
-		"Grouped toolbar actions using native system glyphs.",
-		[disabled]
+		"Finder’s navigation, view, grouping, file actions, and search in their window context.",
+		[disabled],
+		840,
+		340
 	),
 	defineEntry(
 		"sidebar",
@@ -209,10 +211,10 @@ export const PLAYGROUND_ENTRIES: readonly PlaygroundEntry[] = [
 		"window-sidebar",
 		"WindowSidebar",
 		"window-reference",
-		"Grouped navigation, system icons, and live selection.",
+		"The floating Finder sidebar, centered in a cropped window corner with live selection.",
 		[],
 		640,
-		460
+		540
 	),
 	defineEntry(
 		"tabs",

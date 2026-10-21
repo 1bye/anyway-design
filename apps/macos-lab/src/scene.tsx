@@ -11,6 +11,8 @@ import {
 	MacOSEnvironment,
 	type MacOSPreset,
 } from "@anyway-design/macos/environment";
+import { MacFileColumns } from "@anyway-design/macos/file-columns";
+import { MacFileGallery } from "@anyway-design/macos/file-gallery";
 import {
 	MacFileList,
 	type MacFileListItem,
@@ -25,16 +27,7 @@ import { MacTabs } from "@anyway-design/macos/tabs";
 import { MacWindow, type MacWindowProps } from "@anyway-design/macos/window";
 import { WindowSidebar } from "@anyway-design/macos/window-sidebar";
 import {
-	WindowSymbol,
-	type WindowSymbolName,
-} from "@anyway-design/macos/window-symbol";
-import {
-	WindowToolbarButton,
-	WindowToolbarGroup,
-} from "@anyway-design/macos/window-toolbar";
-import {
 	BatteryFull,
-	Cloud,
 	House,
 	Search,
 	SlidersHorizontal,
@@ -49,7 +42,12 @@ import {
 	useState,
 } from "react";
 import { DOCK_ITEMS } from "./dock-items";
-import { FinderActions } from "./finder-actions";
+import {
+	FinderNavigation,
+	FinderToolbar,
+	type FinderView,
+} from "./finder-toolbar";
+import { PLAYGROUND_FILES, PLAYGROUND_SIDEBAR } from "./playground-data";
 export type ComponentName =
 	| "desktop"
 	| "menu-bar"
@@ -156,59 +154,7 @@ const MENUS: MacMenu[] = [
 		label: "Window",
 	},
 ];
-const SIDEBAR: { icon: WindowSymbolName; label: string }[] = [
-	{ icon: "recents", label: "Recents" },
-	{ icon: "favorites", label: "Favorites" },
-	{ icon: "desktop", label: "Desktop" },
-	{ icon: "document", label: "Documents" },
-	{ icon: "downloads", label: "Downloads" },
-];
-const FINDER_SIDEBAR_GROUPS = [
-	{
-		id: "favorites",
-		items: SIDEBAR.map(({ icon, label }) => ({
-			icon: <WindowSymbol name={icon} />,
-			id: label,
-			label,
-		})),
-		label: "Favorites",
-	},
-	{
-		id: "cloud",
-		items: [
-			{
-				icon: <WindowSymbol name="cloud" />,
-				id: "iCloud Drive",
-				label: "iCloud Drive",
-			},
-		],
-		label: "iCloud",
-	},
-	{
-		id: "tags",
-		items: [
-			{
-				icon: <span className="finder-tag-dot" />,
-				id: "Personal",
-				label: "Personal",
-			},
-			{
-				icon: <span className="finder-tag-dot finder-tag-work" />,
-				id: "Work",
-				label: "Work",
-			},
-		],
-		label: "Tags",
-	},
-];
-const INITIAL_FOLDERS = [
-	"Applications",
-	"Design resources",
-	"Projects",
-	"Screenshots",
-	"Wallpapers",
-	"Weekend ideas",
-];
+const INITIAL_FOLDERS = PLAYGROUND_FILES.map((file) => file.name);
 function ControlsExample() {
 	const displayNameId = useId();
 	const [notifications, setNotifications] = useState(true);
@@ -279,7 +225,7 @@ export function DesktopScene({
 	const [tab, setTab] = useState("all");
 	const [folders, setFolders] = useState(INITIAL_FOLDERS);
 	const [selectedFolders, setSelectedFolders] = useState<string[]>([]);
-	const [listView, setListView] = useState(false);
+	const [finderView, setFinderView] = useState<FinderView>("icons");
 	const [sidebarVisible, setSidebarVisible] = useState(true);
 	const [notice, setNotice] = useState("");
 	const [app, setApp] = useState("Finder");
@@ -311,13 +257,13 @@ export function DesktopScene({
 				setWindowVisible(true);
 				break;
 			case "icons":
-				setListView(false);
+				setFinderView("icons");
 				break;
 			case "list":
-				setListView(true);
+				setFinderView("list");
 				break;
 			case "select-all":
-				setSelectedFolders(folders);
+				setSelectedFolders(visibleFolders);
 				break;
 			case "toggle-sidebar":
 				setSidebarVisible((value) => !value);
@@ -334,61 +280,56 @@ export function DesktopScene({
 	}
 	const isControls = component === "controls" || app === "Settings";
 	const showWindow = component !== "dock" && component !== "menu-bar";
-	const windowTitle = isControls ? "Preferences" : selected;
+	const finderTitle = tab === "recent" ? "Home" : selected;
+	const windowTitle = isControls ? "Preferences" : finderTitle;
+	const visibleFolders = folders.filter(
+		(name) =>
+			tab !== "recent" ||
+			!PLAYGROUND_FILES.some(
+				(file) => file.name === name && file.kind !== "folder"
+			)
+	);
 	const folderContent = (
 		<FinderFiles
-			folders={folders}
-			listView={listView}
+			folders={visibleFolders}
+			onFileOpen={(id) => setNotice(`Open callback → ${id}`)}
 			selectedFolders={selectedFolders}
 			setSelected={setSelected}
 			setSelectedFolders={setSelectedFolders}
-			tab={tab}
+			view={finderView}
 		/>
 	);
 	const tabs = [
-		{ content: folderContent, id: "all", label: "All files" },
-		{ content: folderContent, id: "recent", label: "Recent" },
-		{
-			content: (
-				<div className="empty-folder">
-					<Cloud size={40} />
-					<h3>Nothing shared yet</h3>
-					<p>Your shared files will appear here.</p>
-				</div>
-			),
-			id: "shared",
-			label: "Shared",
-		},
+		{ content: folderContent, id: "all", label: selected },
+		{ content: folderContent, id: "recent", label: "Home" },
 	];
 	const sidebar = (
 		<WindowSidebar
-			groups={FINDER_SIDEBAR_GROUPS}
-			onSelect={setSelected}
-			selected={selected}
+			groups={PLAYGROUND_SIDEBAR}
+			onSelect={(id) => {
+				const item = PLAYGROUND_SIDEBAR.flatMap((group) => group.items).find(
+					(entry) => entry.id === id
+				);
+				setSelected(item?.label ?? "Documents");
+				setTab("all");
+			}}
+			selected={tab === "recent" ? undefined : selected.toLowerCase()}
 		/>
 	);
 	const toolbarLeading = (
-		<WindowToolbarGroup label="Navigation">
-			<WindowToolbarButton
-				label="Go to Documents"
-				onClick={() => setSelected("Documents")}
-			>
-				<WindowSymbol name="chevron-left" />
-			</WindowToolbarButton>
-			<WindowToolbarButton
-				label="Go to Downloads"
-				onClick={() => setSelected("Downloads")}
-			>
-				<WindowSymbol name="chevron-right" />
-			</WindowToolbarButton>
-		</WindowToolbarGroup>
+		<FinderNavigation
+			backDisabled={selected === "Documents"}
+			onBack={() => {
+				setSelected("Documents");
+				setTab("all");
+			}}
+		/>
 	);
 	const toolbar = (
 		<FinderToolbar
-			listView={listView}
 			onAction={(id) => setNotice(`${id} activated`)}
-			setApp={setApp}
-			setListView={setListView}
+			onViewChange={setFinderView}
+			view={finderView}
 		/>
 	);
 	return (
@@ -438,9 +379,10 @@ export function DesktopScene({
 						<div className="scene-window" data-zoomed={zoomed}>
 							<MacWindow
 								active={settings.active}
+								variant={isControls ? "standard" : "finder"}
 								{...getWindowChrome({
 									app,
-									count: folders.length,
+									count: visibleFolders.length,
 									isControls,
 									sidebar,
 									sidebarVisible,
@@ -499,35 +441,65 @@ export function DesktopScene({
 
 function FinderFiles({
 	folders,
-	tab,
-	listView,
+	onFileOpen,
+	view,
 	selectedFolders,
 	setSelectedFolders,
 	setSelected,
 }: {
 	folders: string[];
-	tab: string;
-	listView: boolean;
+	view: FinderView;
+	onFileOpen: (id: string) => void;
 	selectedFolders: string[];
 	setSelectedFolders: (value: string[]) => void;
 	setSelected: (value: string) => void;
 }) {
-	const visibleFolders = folders.filter(
-		(_, index) => tab !== "recent" || index < 3
-	);
+	const [column, setColumn] = useState<string>();
 	const openFolder = useCallback(
 		(folder: string) => {
+			if (
+				PLAYGROUND_FILES.some(
+					(file) => file.name === folder && file.kind !== "folder"
+				)
+			) {
+				onFileOpen(folder);
+				return;
+			}
 			setSelected(folder);
 			setSelectedFolders([]);
 		},
-		[setSelected, setSelectedFolders]
+		[onFileOpen, setSelected, setSelectedFolders]
 	);
-	const items: MacFileListItem[] = visibleFolders.map((name) => ({
+	const items: MacFileListItem[] = folders.map((name) => ({
+		...PLAYGROUND_FILES.find((file) => file.name === name),
 		id: name,
-		kind: "folder",
+		kind: PLAYGROUND_FILES.find((file) => file.name === name)?.kind ?? "folder",
 		name,
 	}));
-	if (listView) {
+	if (view === "columns") {
+		return (
+			<MacFileColumns
+				items={items}
+				onOpen={openFolder}
+				onValueChange={(id, ids) => {
+					setColumn(id);
+					setSelectedFolders(ids);
+				}}
+				selectedIds={selectedFolders}
+				value={column}
+			/>
+		);
+	}
+	if (view === "gallery") {
+		return (
+			<MacFileGallery
+				items={items}
+				onSelectionChange={setSelectedFolders}
+				selectedIds={selectedFolders}
+			/>
+		);
+	}
+	if (view === "list") {
 		return (
 			<MacFileList
 				items={items}
@@ -546,36 +518,6 @@ function FinderFiles({
 			onSelectionChange={setSelectedFolders}
 			selectedIds={selectedFolders}
 		/>
-	);
-}
-
-function FinderToolbar({
-	listView,
-	setListView,
-	setApp,
-	onAction,
-}: {
-	listView: boolean;
-	onAction: (id: string) => void;
-	setListView: React.Dispatch<React.SetStateAction<boolean>>;
-	setApp: (value: string) => void;
-}) {
-	return (
-		<WindowToolbarGroup label="View options">
-			<WindowToolbarButton
-				label={listView ? "Show icons" : "Show list"}
-				onClick={() => setListView((value) => !value)}
-			>
-				<WindowSymbol name={listView ? "icon-view" : "list-view"} />
-			</WindowToolbarButton>
-			<WindowToolbarButton
-				label="Open preferences"
-				onClick={() => setApp("Settings")}
-			>
-				<WindowSymbol name="settings" />
-			</WindowToolbarButton>
-			<FinderActions filename="selection" onAction={onAction} />
-		</WindowToolbarGroup>
 	);
 }
 
@@ -675,7 +617,9 @@ function getWindowChrome({
 	"footer" | "sidebar" | "title" | "toolbar" | "toolbarLeading"
 > {
 	return {
-		footer: isControls ? undefined : `${count} items · 128.4 GB available`,
+		footer: isControls
+			? undefined
+			: `${count} ${count === 1 ? "item" : "items"} · 128.4 GB available`,
 		sidebar: !isControls && sidebarVisible ? sidebar : undefined,
 		title: app === "Finder" || isControls ? title : app,
 		toolbar: isControls ? undefined : toolbar,

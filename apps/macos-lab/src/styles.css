@@ -381,11 +381,11 @@ h1 {
 	display: block;
 	width: 8px;
 	height: 8px;
-	background: #ff6a66;
+	background: #ff302b;
 	border-radius: 50%;
 }
 .finder-tag-work {
-	background: #78c66b;
+	background: #ff9300;
 }
 .mac-tabs[data-variant="segmented"] {
 	padding-top: 20px;

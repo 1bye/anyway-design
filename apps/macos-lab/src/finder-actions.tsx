@@ -131,10 +131,12 @@ export function useFinderMenu(
 }
 
 export function FinderActions({
+	disabled = false,
 	onAction,
 	filename,
 	...props
 }: {
+	disabled?: boolean;
 	filename?: string;
 	onAction?: (id: string) => void;
 } & Omit<MacMenuButtonProps, "items" | "trigger" | "onAction">) {
@@ -145,7 +147,7 @@ export function FinderActions({
 			items={menu.items}
 			onAction={menu.action}
 			trigger={
-				<WindowToolbarButton label="More actions">
+				<WindowToolbarButton disabled={disabled} label="More actions">
 					<WindowSymbol name="ellipsis" />
 				</WindowToolbarButton>
 			}

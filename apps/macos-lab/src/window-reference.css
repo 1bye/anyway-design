@@ -85,7 +85,6 @@
 	--mac-traffic-minimize: #f2ca44;
 	--mac-traffic-zoom: #65c466;
 	font-size: 10.5px;
-	background: linear-gradient(100deg, #f1f1f1, #fcfcfc 42%, #f6f6f6);
 	border-color: #c2c2c2;
 	box-shadow: none;
 }
@@ -131,7 +130,7 @@
 	opacity: 0.35;
 }
 
-.window-study-live .mac-toolbar-button:has(.window-study-small-symbol) {
+.window-study-live .mac-toolbar-button:has(.mac-toolbar-indicator) {
 	padding-inline: 4px;
 }
 
@@ -154,12 +153,12 @@
 	height: 15px;
 }
 
-.window-study-live .mac-toolbar-button > .window-study-small-symbol {
+.window-study-live .mac-toolbar-button > .mac-toolbar-indicator {
 	width: 9px;
 	mask-size: 10px 10px;
 }
 
-.window-study-live .window-study-small-symbol[data-symbol="chevron-up-down"] {
+.window-study-live .mac-toolbar-indicator[data-symbol="chevron-up-down"] {
 	mask-size: 13px 13px;
 }
 

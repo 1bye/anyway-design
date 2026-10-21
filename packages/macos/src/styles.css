@@ -1478,10 +1478,13 @@
 }
 
 .mac-window-titlebar h2 {
-	flex-shrink: 0;
+	min-width: 0;
 	margin: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	font-size: 14px;
 	font-weight: 600;
+	white-space: nowrap;
 }
 
 .mac-window[data-active="false"] .mac-window-titlebar {
@@ -1490,6 +1493,7 @@
 
 .mac-window-toolbar {
 	display: flex;
+	flex-shrink: 0;
 	gap: 14px;
 	align-items: center;
 	margin-left: auto;
@@ -1538,6 +1542,22 @@
 	display: grid;
 	grid-template-rows: var(--mac-window-titlebar-height) minmax(0, 1fr) auto;
 	grid-template-columns: var(--mac-window-sidebar-width) minmax(0, 1fr);
+}
+
+[data-preset="tahoe"] .mac-window[data-variant="finder"] {
+	--mac-toolbar-button-size: 34px;
+	--mac-toolbar-icon-size: 19px;
+	--mac-toolbar-button-padding: 8px;
+	--mac-toolbar-composite-padding: 5px;
+	--mac-toolbar-indicator-width: 11px;
+	--mac-toolbar-indicator-size: 13px;
+	--mac-toolbar-chevron-size: 16px;
+	background: linear-gradient(100deg, #f1f1f1, #fcfcfc 42%, #f6f6f6);
+}
+
+[data-preset="tahoe"][data-appearance="dark"]
+	.mac-window[data-variant="finder"] {
+	background: linear-gradient(100deg, #2b2b2b, #303030 42%, #292929);
 }
 
 [data-preset="tahoe"] .mac-window-titlebar {
@@ -1630,14 +1650,14 @@
 	border-radius: 7px;
 }
 
-.mac-toolbar-group .mac-toolbar-button {
+.mac-toolbar-button {
 	display: inline-flex;
 	gap: 4px;
 	align-items: center;
 	justify-content: center;
-	min-width: 28px;
-	height: 28px;
-	padding: 0 7px;
+	min-width: var(--mac-toolbar-button-size, 28px);
+	height: var(--mac-toolbar-button-size, 28px);
+	padding: 0 var(--mac-toolbar-button-padding, 7px);
 	color: inherit;
 	background: transparent;
 	border: 0;
@@ -1646,12 +1666,35 @@
 
 .mac-toolbar-button > svg,
 .mac-toolbar-button > .mac-window-symbol {
-	width: 16px;
-	height: 16px;
+	width: var(--mac-toolbar-icon-size, 16px);
+	height: var(--mac-toolbar-icon-size, 16px);
 }
 
 .mac-toolbar-button > svg:not(.mac-window-symbol) {
 	stroke-width: 1.6;
+}
+
+.mac-toolbar-button:has(.mac-toolbar-indicator) {
+	padding-inline: var(--mac-toolbar-composite-padding, 4px);
+}
+.mac-toolbar-button > .mac-toolbar-indicator {
+	width: var(--mac-toolbar-indicator-width, 9px);
+	mask-size: var(--mac-toolbar-indicator-size, 10px)
+		var(--mac-toolbar-indicator-size, 10px);
+}
+.mac-toolbar-button > .mac-toolbar-indicator[data-symbol="chevron-up-down"] {
+	mask-size: var(--mac-toolbar-chevron-size, 13px)
+		var(--mac-toolbar-chevron-size, 13px);
+}
+.mac-toolbar-back {
+	position: relative;
+}
+.mac-toolbar-back::after {
+	position: absolute;
+	inset: 6px 0 6px auto;
+	width: 0.5px;
+	content: "";
+	background: var(--mac-line);
 }
 
 .mac-toolbar-button:disabled {
@@ -1752,6 +1795,7 @@
 }
 
 .mac-traffic-lights button {
+	position: relative;
 	display: grid;
 	place-items: center;
 	width: 12px;
@@ -1771,8 +1815,11 @@
 	background: var(--mac-traffic-zoom, #28c840);
 }
 .mac-traffic-lights svg {
-	width: 12px;
-	height: 12px;
+	position: absolute;
+	inset: 0;
+	display: block;
+	width: 100%;
+	height: 100%;
 	opacity: 0;
 	stroke: rgb(0 0 0 / 60%);
 	stroke-width: 1.2;

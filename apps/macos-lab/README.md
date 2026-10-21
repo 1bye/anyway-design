@@ -15,6 +15,15 @@ Use `/?component=date-picker`, for example, to link directly to a component.
 The older desktop lab remains at `/?view=desktop-lab`; all native-reference
 routes remain available.
 
+Desktop and Window use the Finder composition: back/forward controls, view
+and grouping menus, Share/Tags/More, search, document tabs, and the floating
+sidebar. The shared toolbar layout is also used by the Apple comparison.
+Toolbar shows a window-header crop; Sidebar centers the sidebar itself in a
+window-corner crop. Offscreen controls in these crops are inert, so keyboard
+focus stays on the component being demonstrated. The complete Window example
+supports view switching, tab creation/closing/reordering, selection, and inline
+renaming. Actions such as Share and search report preview callbacks.
+
 The shared inspector changes preset, appearance, accent color, and accessibility
 preferences across previews. Canvas width, background, and Fit / Actual size
 help inspect smaller containers. Initial-value changes restart the example; other props update live.

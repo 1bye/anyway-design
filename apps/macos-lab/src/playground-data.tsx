@@ -121,12 +121,28 @@ export const PLAYGROUND_MENU: MacMenuEntry[] = [
 ];
 export const PLAYGROUND_SIDEBAR = [
 	{
-		id: "favorites",
+		id: "pinned",
 		items: [
 			{
 				icon: <WindowSymbol name="recents" />,
 				id: "recents",
 				label: "Recents",
+			},
+			{ icon: <WindowSymbol name="shared" />, id: "shared", label: "Shared" },
+		],
+	},
+	{
+		id: "favorites",
+		items: [
+			{
+				icon: <WindowSymbol name="applications" />,
+				id: "applications",
+				label: "Applications",
+			},
+			{
+				icon: <WindowSymbol name="desktop" />,
+				id: "desktop",
+				label: "Desktop",
 			},
 			{
 				icon: <WindowSymbol name="document" />,
@@ -138,13 +154,32 @@ export const PLAYGROUND_SIDEBAR = [
 				id: "downloads",
 				label: "Downloads",
 			},
-			{
-				icon: <WindowSymbol name="cloud" />,
-				id: "cloud",
-				label: "iCloud Drive",
-			},
 		],
 		label: "Favorites",
+	},
+	{ id: "locations", items: [], label: "Locations" },
+	{
+		id: "tags",
+		items: [
+			{
+				icon: <span className="finder-tag-dot" />,
+				id: "urgent",
+				label: "Urgent",
+			},
+			{
+				icon: <span className="finder-tag-dot finder-tag-work" />,
+				id: "work",
+				label: "Work",
+			},
+			{
+				icon: (
+					<span className="finder-tag-dot" style={{ background: "#f5c300" }} />
+				),
+				id: "vacation",
+				label: "Vacation",
+			},
+		],
+		label: "Tags",
 	},
 ];
 export const PLAYGROUND_SYMBOLS = Object.keys(

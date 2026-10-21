@@ -29,7 +29,7 @@ and the portal container so menus retain their styles in embedded previews.
 | `dock` | `Dock`: `items`, `size`, `magnification`, `position`, `adaptive`, `autoHide`, `revealDelay`, `hideDelay`, `onActivate`, `glass`, `glassBackdrop` |
 | `menu-bar` | `MenuBar`: `menus`, `status`, `onAction`; `AppleMark` |
 | `menu` | `MacMenuButton`, `MacContextMenu`: `trigger`, `items`, `onAction`, `positionerProps`; `MacMenuButton` also accepts `open`, `defaultOpen`, `onOpenChange` |
-| `window` | `MacWindow`: `title`, `sidebar`, `sidebarWidth`, `toolbarLeading`, `toolbar`, `footer`, `active`, window action callbacks; `TrafficLights` |
+| `window` | `MacWindow`: `title`, `variant`, `sidebar`, `sidebarWidth`, `toolbarLeading`, `toolbar`, `footer`, `active`, window action callbacks; `TrafficLights` |
 | `window-toolbar` | `WindowToolbarGroup`: `label`, `children`; `WindowToolbarButton`: `label`, native button props |
 | `window-sidebar` | `WindowSidebar`: `groups`, `selected`, `onSelect`, `label` |
 | `window-symbol` | `WindowSymbol`: `name`, `size`, span props; `WindowSymbolName` |
@@ -120,6 +120,7 @@ import { WindowSymbol } from "@anyway-design/macos/window-symbol";
 import { WindowToolbarButton, WindowToolbarGroup } from "@anyway-design/macos/window-toolbar";
 
 <MacWindow
+  variant="finder"
   title={selected}
   sidebarWidth={165}
   sidebar={
@@ -161,6 +162,14 @@ controlled and announced with `aria-current`. Toolbar groups are named
 fieldsets, and buttons retain native disabled, keyboard, and click behavior.
 Omit `sidebar` to use the full content width. `active={false}` mutes the chrome
 and traffic lights. Reduced transparency removes the sidebar backdrop blur.
+
+Use `variant="finder"` for Finder's light or dark chrome surface and 34px
+Tahoe toolbar controls with 19px glyphs. The default `"standard"` variant
+retains the generic app-window material. A toolbar button also works outside
+a group. For a compound view/group button, give the trailing `WindowSymbol`
+the `mac-toolbar-indicator` class; `mac-toolbar-back` adds the divider in a
+back/forward group. Controls, glyphs, padding, and disclosure sizes can be
+adjusted with the `--mac-toolbar-*` tokens in the shared stylesheet.
 
 `WindowSymbol` supplies 41 native Tahoe glyphs for controls, tabs, the toolbar, sidebar, and
 menus. AppKit renders them at 4× into transparent 64 × 64 PNGs on a 16px canvas;

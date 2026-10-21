@@ -2,26 +2,17 @@
 import { MacCheckbox } from "@anyway-design/macos/checkbox";
 import { MacButton } from "@anyway-design/macos/controls";
 import { Dock } from "@anyway-design/macos/dock";
-import { MacFileGrid } from "@anyway-design/macos/files";
 import { MacContextMenu, MacMenuButton } from "@anyway-design/macos/menu";
 import { AppleMark, MenuBar } from "@anyway-design/macos/menu-bar";
 import { MacPopover, MacPopoverClose } from "@anyway-design/macos/popover";
 import { MacTabs } from "@anyway-design/macos/tabs";
-import { MacWindow, TrafficLights } from "@anyway-design/macos/window";
-import { WindowSidebar } from "@anyway-design/macos/window-sidebar";
+import { TrafficLights } from "@anyway-design/macos/window";
 import { WindowSymbol } from "@anyway-design/macos/window-symbol";
-import {
-	WindowToolbarButton,
-	WindowToolbarGroup,
-} from "@anyway-design/macos/window-toolbar";
 import { useRef, useState } from "react";
 import { DOCK_ITEMS } from "./dock-items";
 import type { PlaygroundDemoProps } from "./playground-catalog";
-import {
-	PLAYGROUND_FILES,
-	PLAYGROUND_MENU,
-	PLAYGROUND_SIDEBAR,
-} from "./playground-data";
+import { PLAYGROUND_MENU } from "./playground-data";
+import { PlaygroundFinder } from "./playground-finder";
 import { DesktopScene } from "./scene";
 
 export function DesktopDemo({ environment }: PlaygroundDemoProps) {
@@ -77,34 +68,22 @@ export function DockDemo({ values, onEvent }: PlaygroundDemoProps) {
 }
 export function ToolbarDemo({ values, onEvent }: PlaygroundDemoProps) {
 	return (
-		<div className="pg-toolbar-example">
-			<WindowToolbarGroup label="File actions">
-				{(["share", "tag", "trash"] as const).map((name) => (
-					<WindowToolbarButton
-						disabled={Boolean(values.disabled)}
-						key={name}
-						label={name}
-						onClick={() => onEvent(`onClick → ${name}`)}
-					>
-						<WindowSymbol name={name} />
-					</WindowToolbarButton>
-				))}
-			</WindowToolbarGroup>
-			<MacMenuButton
-				items={PLAYGROUND_MENU}
-				onAction={(id) => onEvent(`onAction → ${id}`)}
-				trigger={
-					<WindowToolbarButton label="More actions">
-						<WindowSymbol name="ellipsis" />
-					</WindowToolbarButton>
-				}
+		<section
+			aria-label="Finder toolbar close-up"
+			className="pg-finder-crop pg-finder-toolbar-crop"
+		>
+			<PlaygroundFinder
+				focus="toolbar"
+				onEvent={onEvent}
+				sidebarWidth={165}
+				style={{ height: 430, width: 760 }}
+				title="Documents"
+				toolbarDisabled={Boolean(values.disabled)}
 			/>
-		</div>
+		</section>
 	);
 }
 export function WindowDemo(props: PlaygroundDemoProps) {
-	const [selected, setSelected] = useState("documents");
-	const [files, setFiles] = useState<string[]>(["brief"]);
 	const [visible, setVisible] = useState(true);
 	const [zoomed, setZoomed] = useState(false);
 	const action = (name: string) => {
@@ -117,41 +96,26 @@ export function WindowDemo(props: PlaygroundDemoProps) {
 		);
 	}
 	return (
-		<MacWindow
+		<PlaygroundFinder
 			active={Boolean(props.values.active)}
-			footer={`${PLAYGROUND_FILES.length} items`}
 			onClose={() => action("onClose → window closed")}
+			onEvent={props.onEvent}
 			onMinimize={() => action("onMinimize → window minimized")}
 			onZoom={() => {
 				setZoomed(!zoomed);
 				props.onEvent(`onZoom → ${!zoomed}`);
 			}}
-			sidebar={
-				props.values.sidebar ? (
-					<WindowSidebar
-						groups={PLAYGROUND_SIDEBAR}
-						onSelect={setSelected}
-						selected={selected}
-					/>
-				) : undefined
-			}
+			showSidebar={Boolean(props.values.sidebar)}
+			showToolbar={Boolean(props.values.toolbar)}
 			sidebarWidth={Number(props.values.sidebarWidth)}
 			style={{
-				height: zoomed ? 480 : 420,
+				height: zoomed ? 480 : 450,
 				maxWidth: "calc(100% - 40px)",
-				width: zoomed ? 760 : 670,
+				width: zoomed ? 760 : 740,
 			}}
 			title={String(props.values.title)}
-			toolbar={props.values.toolbar ? <ToolbarDemo {...props} /> : undefined}
 			zoomed={zoomed}
-		>
-			<MacFileGrid
-				items={PLAYGROUND_FILES}
-				onOpen={(id) => props.onEvent(`onOpen → ${id}`)}
-				onSelectionChange={setFiles}
-				selectedIds={files}
-			/>
-		</MacWindow>
+		/>
 	);
 }
 export function TrafficDemo({ values, onEvent }: PlaygroundDemoProps) {
@@ -167,18 +131,19 @@ export function TrafficDemo({ values, onEvent }: PlaygroundDemoProps) {
 	);
 }
 export function SidebarDemo({ onEvent }: PlaygroundDemoProps) {
-	const [selected, setSelected] = useState("documents");
 	return (
-		<div className="pg-sidebar-example">
-			<WindowSidebar
-				groups={PLAYGROUND_SIDEBAR}
-				onSelect={(id) => {
-					setSelected(id);
-					onEvent(`onSelect → ${id}`);
-				}}
-				selected={selected}
+		<section
+			aria-label="Finder sidebar in a window corner"
+			className="pg-finder-crop pg-finder-sidebar-crop"
+		>
+			<PlaygroundFinder
+				focus="sidebar"
+				onEvent={onEvent}
+				sidebarWidth={165}
+				style={{ height: 440, width: 760 }}
+				title="Documents"
 			/>
-		</div>
+		</section>
 	);
 }
 export function TabsDemo({ values, onEvent }: PlaygroundDemoProps) {

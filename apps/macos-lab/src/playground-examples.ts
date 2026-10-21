@@ -175,10 +175,6 @@ const EXAMPLES: Record<string, Example> = {
 			? ['import { WindowSymbol } from "@anyway-design/macos/window-symbol";']
 			: [],
 	}),
-	sidebar: () => ({
-		body: '<WindowSidebar groups={[{ id: "favorites", label: "Favorites", items: [{ id: "documents", label: "Documents" }, { id: "downloads", label: "Downloads" }] }]} selected={selected} onSelect={setSelected} />',
-		state: 'const [selected, setSelected] = useState("documents");',
-	}),
 	slider: (v) => ({
 		body:
 			'<MacSlider label="Volume" name="volume" min={0} max={100} defaultValue={' +
@@ -237,41 +233,63 @@ const EXAMPLES: Record<string, Example> = {
 			json(v.value) +
 			"} />",
 	}),
-	toolbar: (v) => ({
-		body:
-			'<WindowToolbarGroup label="File actions"><WindowToolbarButton label="Share"' +
-			attrs(v, ["disabled"]) +
-			' onClick={() => console.info("Share")}><WindowSymbol name="share" /></WindowToolbarButton><WindowToolbarButton label="Tags"' +
-			attrs(v, ["disabled"]) +
-			'><WindowSymbol name="tag" /></WindowToolbarButton></WindowToolbarGroup>',
-		imports: [
-			'import { WindowSymbol } from "@anyway-design/macos/window-symbol";',
-		],
-	}),
 	"traffic-lights": (v) => ({
 		body:
 			"<TrafficLights" +
 			attrs(v, ["active"]) +
 			' onClose={() => console.info("Close")} onMinimize={() => console.info("Minimize")} onZoom={() => console.info("Zoom")} />',
 	}),
-	window: (v) => ({
-		body:
-			"<MacWindow" +
-			attrs(v, ["title", "active", "sidebarWidth"]) +
-			(v.sidebar
-				? ' sidebar={<WindowSidebar groups={[{ id: "favorites", label: "Favorites", items: [{ id: "documents", label: "Documents" }] }]} selected="documents" onSelect={() => {}} />}'
-				: "") +
-			(v.toolbar
-				? ' toolbar={<WindowToolbarGroup label="Actions"><WindowToolbarButton label="Share"><WindowSymbol name="share" /></WindowToolbarButton></WindowToolbarGroup>}'
-				: "") +
-			"><div style={{ padding: 24 }}>Your app content</div></MacWindow>",
-		imports: [
-			'import { WindowSidebar } from "@anyway-design/macos/window-sidebar";',
-			'import { WindowToolbarGroup, WindowToolbarButton } from "@anyway-design/macos/window-toolbar";',
-			'import { WindowSymbol } from "@anyway-design/macos/window-symbol";',
-		],
-	}),
 };
+
+function finderExample(
+	entry: PlaygroundEntry,
+	values: PlaygroundValues
+): ExampleFragment {
+	const showSidebar = entry.id !== "window" || values.sidebar;
+	const showToolbar = entry.id !== "window" || values.toolbar;
+	const disabledProps = ` disabled={${Boolean(values.disabled)}}`;
+	const toolbar = `<>
+  <WindowToolbarGroup label="View"><MacMenuButton items={[{ id: "icons", label: "as Icons", checked: true, closeOnClick: true }, { id: "list", label: "as List", closeOnClick: true }]} onAction={(id) => console.info(id)} trigger={<WindowToolbarButton label="Change view"${disabledProps}><WindowSymbol name="icon-view" /><WindowSymbol className="mac-toolbar-indicator" name="chevron-up-down" /></WindowToolbarButton>} /></WindowToolbarGroup>
+  <WindowToolbarGroup label="Arrange"><WindowToolbarButton label="Group items"${disabledProps}><WindowSymbol name="group" /><WindowSymbol className="mac-toolbar-indicator" name="chevron-down" /></WindowToolbarButton></WindowToolbarGroup>
+  <WindowToolbarGroup label="File actions"><WindowToolbarButton label="Share"${disabledProps}><WindowSymbol name="share" /></WindowToolbarButton><WindowToolbarButton label="Tags"${disabledProps}><WindowSymbol name="tag" /></WindowToolbarButton><MacMenuButton items={${menu}} onAction={(id) => console.info(id)} trigger={<WindowToolbarButton label="More actions"${disabledProps}><WindowSymbol name="ellipsis" /></WindowToolbarButton>} /></WindowToolbarGroup>
+  <WindowToolbarGroup label="Search"><WindowToolbarButton label="Search"${disabledProps}><WindowSymbol name="search" /></WindowToolbarButton></WindowToolbarGroup>
+</>`;
+	const sidebar =
+		'<WindowSidebar label="Finder sidebar" selected={location} onSelect={setLocation} groups={[{ id: "pinned", items: [{ id: "recents", label: "Recents", icon: <WindowSymbol name="recents" /> }, { id: "shared", label: "Shared", icon: <WindowSymbol name="shared" /> }] }, { id: "favorites", label: "Favorites", items: [{ id: "applications", label: "Applications", icon: <WindowSymbol name="applications" /> }, { id: "desktop", label: "Desktop", icon: <WindowSymbol name="desktop" /> }, { id: "documents", label: "Documents", icon: <WindowSymbol name="document" /> }, { id: "downloads", label: "Downloads", icon: <WindowSymbol name="downloads" /> }] }]} />';
+	const leading =
+		'<WindowToolbarGroup label="Navigation"><WindowToolbarButton className="mac-toolbar-back" label="Back" disabled><WindowSymbol name="chevron-left" /></WindowToolbarButton><WindowToolbarButton label="Forward" disabled><WindowSymbol name="chevron-right" /></WindowToolbarButton></WindowToolbarGroup>';
+	const style =
+		entry.id === "desktop"
+			? '{ position: "absolute", left: 100, top: 76, width: 800, height: 470 }'
+			: '{ width: 740, maxWidth: "100%", height: 450 }';
+	let body = `<MacWindow variant="finder" title={${json(values.title ?? "Documents")}} active={${json(values.active ?? true)}} sidebarWidth={${json(values.sidebarWidth ?? 165)}} style={${style}}
+  ${showSidebar ? `sidebar={${sidebar}}` : ""}
+  ${showToolbar ? `toolbarLeading={${leading}} toolbar={${toolbar}}` : ""}
+>
+  <MacTabs label="Finder tabs" value={tab} onValueChange={setTab} tabs={[{ id: "documents", label: "Documents", content: <MacFileGrid items={${items}} selectedIds={selected} onSelectionChange={setSelected} /> }, { id: "home", label: "Home", content: <p>Home folder content</p> }]} />
+</MacWindow>`;
+	const imports = [
+		'import { MacWindow } from "@anyway-design/macos/window";',
+		'import { WindowSidebar } from "@anyway-design/macos/window-sidebar";',
+		'import { WindowSymbol } from "@anyway-design/macos/window-symbol";',
+		'import { WindowToolbarGroup, WindowToolbarButton } from "@anyway-design/macos/window-toolbar";',
+		'import { MacMenuButton } from "@anyway-design/macos/menu";',
+		'import { MacTabs } from "@anyway-design/macos/tabs";',
+		'import { MacFileGrid } from "@anyway-design/macos/files";',
+	];
+	if (entry.id === "desktop") {
+		body = `<div style={{ position: "absolute", inset: 0, background: "url('/assets/clouds.webp') center / cover" }} />\n<MenuBar menus={[{ id: "file", label: "File", items: ${menu} }]} />\n${body}\n<Dock items={${json(DOCK_ITEMS)}} />`;
+		imports.push(
+			'import { MenuBar } from "@anyway-design/macos/menu-bar";',
+			'import { Dock } from "@anyway-design/macos/dock";'
+		);
+	}
+	return {
+		body,
+		imports,
+		state: `${showSidebar ? 'const [location, setLocation] = useState("documents");\n' : ""}const [tab, setTab] = useState("documents");\nconst [selected, setSelected] = useState<string[]>(["brief"]);`,
+	};
+}
 
 function fileExample(
 	entry: PlaygroundEntry,
@@ -488,19 +506,8 @@ export function playgroundExample(
 				" onActivate={(id) => console.info(id)} />",
 		};
 	}
-	if (entry.id === "desktop") {
-		fragment = {
-			body: `<MenuBar menus={[{ id: "file", label: "File", items: ${menu} }]} />
-<MacWindow title="Documents" style={{ position: "absolute", left: 160, top: 100 }}><MacFileGrid items={${items}} selectedIds={selected} onSelectionChange={setSelected} /></MacWindow>
-<Dock items={${json(DOCK_ITEMS)}} />`,
-			imports: [
-				'import { MacWindow } from "@anyway-design/macos/window";',
-				'import { MacFileGrid } from "@anyway-design/macos/files";',
-				'import { MenuBar } from "@anyway-design/macos/menu-bar";',
-				'import { Dock } from "@anyway-design/macos/dock";',
-			],
-			state: "const [selected, setSelected] = useState<string[]>([]);",
-		};
+	if (["desktop", "window", "toolbar", "sidebar"].includes(entry.id)) {
+		fragment = finderExample(entry, values);
 	}
 	if (!fragment) {
 		throw new Error(`Missing playground example: ${entry.id}`);

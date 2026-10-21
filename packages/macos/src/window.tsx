@@ -58,6 +58,7 @@ export interface MacWindowProps extends TrafficLightsProps {
 	title: string;
 	toolbar?: ReactNode;
 	toolbarLeading?: ReactNode;
+	variant?: "standard" | "finder";
 	zoomed?: boolean;
 }
 
@@ -70,6 +71,7 @@ export function MacWindow({
 	toolbarLeading,
 	footer,
 	active = true,
+	variant = "standard",
 	zoomed = false,
 	style,
 	...actions
@@ -81,6 +83,7 @@ export function MacWindow({
 			className="mac-window"
 			data-active={active}
 			data-sidebar={Boolean(sidebar)}
+			data-variant={variant}
 			data-zoomed={zoomed}
 			style={
 				{
