@@ -1,0 +1,146 @@
+{
+  "bottom-light": {
+    "contentHeight": 164,
+    "contentWidth": 240,
+    "dark": false,
+    "side": "bottom",
+    "system": "Version 26.6.2 (Build 25G83)",
+    "windows": [
+      {
+        "class": "_NSPopoverWindow",
+        "contentHeight": 164,
+        "contentWidth": 240,
+        "height": 190,
+        "top": 308,
+        "width": 266,
+        "x": 207
+      }
+    ]
+  },
+  "top-light": {
+    "contentHeight": 164,
+    "contentWidth": 240,
+    "dark": false,
+    "side": "top",
+    "system": "Version 26.6.2 (Build 25G83)",
+    "windows": [
+      {
+        "class": "_NSPopoverWindow",
+        "contentHeight": 164,
+        "contentWidth": 240,
+        "height": 190,
+        "top": 86,
+        "width": 266,
+        "x": 207
+      }
+    ]
+  },
+  "right-light": {
+    "contentHeight": 164,
+    "contentWidth": 240,
+    "dark": false,
+    "side": "right",
+    "system": "Version 26.6.2 (Build 25G83)",
+    "windows": [
+      {
+        "class": "_NSPopoverWindow",
+        "contentHeight": 164,
+        "contentWidth": 240,
+        "height": 190,
+        "top": 197,
+        "width": 266,
+        "x": 400
+      }
+    ]
+  },
+  "left-light": {
+    "contentHeight": 164,
+    "contentWidth": 240,
+    "dark": false,
+    "side": "left",
+    "system": "Version 26.6.2 (Build 25G83)",
+    "windows": [
+      {
+        "class": "_NSPopoverWindow",
+        "contentHeight": 164,
+        "contentWidth": 240,
+        "height": 190,
+        "top": 197,
+        "width": 266,
+        "x": 14
+      }
+    ]
+  },
+  "bottom-dark": {
+    "contentHeight": 164,
+    "contentWidth": 240,
+    "dark": true,
+    "side": "bottom",
+    "system": "Version 26.6.2 (Build 25G83)",
+    "windows": [
+      {
+        "class": "_NSPopoverWindow",
+        "contentHeight": 164,
+        "contentWidth": 240,
+        "height": 190,
+        "top": 308,
+        "width": 266,
+        "x": 207
+      }
+    ]
+  },
+  "top-dark": {
+    "contentHeight": 164,
+    "contentWidth": 240,
+    "dark": true,
+    "side": "top",
+    "system": "Version 26.6.2 (Build 25G83)",
+    "windows": [
+      {
+        "class": "_NSPopoverWindow",
+        "contentHeight": 164,
+        "contentWidth": 240,
+        "height": 190,
+        "top": 86,
+        "width": 266,
+        "x": 207
+      }
+    ]
+  },
+  "right-dark": {
+    "contentHeight": 164,
+    "contentWidth": 240,
+    "dark": true,
+    "side": "right",
+    "system": "Version 26.6.2 (Build 25G83)",
+    "windows": [
+      {
+        "class": "_NSPopoverWindow",
+        "contentHeight": 164,
+        "contentWidth": 240,
+        "height": 190,
+        "top": 197,
+        "width": 266,
+        "x": 400
+      }
+    ]
+  },
+  "left-dark": {
+    "contentHeight": 164,
+    "contentWidth": 240,
+    "dark": true,
+    "side": "left",
+    "system": "Version 26.6.2 (Build 25G83)",
+    "windows": [
+      {
+        "class": "_NSPopoverWindow",
+        "contentHeight": 164,
+        "contentWidth": 240,
+        "height": 190,
+        "top": 197,
+        "width": 266,
+        "x": 14
+      }
+    ]
+  }
+}

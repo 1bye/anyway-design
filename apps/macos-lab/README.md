@@ -539,3 +539,25 @@ Numeric normalization tests cover clamping, custom maximums, and nonfinite
 inputs. Native fixture validation checks 14 public AppKit indicator views.
 Exact easing, high-frame-rate timing, inactive tints, and Sequoia calibration
 remain outside this pass. No dependency was added.
+
+
+### Tahoe popovers
+
+Open `/?view=popover-reference` for live `MacPopover` beside eight genuine
+Tahoe `NSPopover` window captures: bottom, top, right, and left in light/dark.
+Both sides use identical 240 × 164-point content, a 120 × 32-point anchor,
+and shared Fit / 1× / 1.5× / 2× zoom. CSS crops the original full-window JPEGs
+to their measured popover frames; the original captures remain unaltered.
+Reset native match reopens the live panel and resets its local checkbox.
+
+The workbench checks four directions, first-control focus, checkbox editing,
+Tab navigation, Done/Escape/outside dismissal, focus return, and flipping at
+both container edges. Reduced motion and reduced transparency can be toggled.
+The reusable panel provides accessible title/description, live backdrop blur,
+scrollable content, and environment-scoped portals. No dependency was added.
+
+`packages/macos/scripts/popover-reference.swift --validate` self-checks the
+native content. Provenance, native geometry, and original JPEGs live under
+`public/assets/native-overlays`. Native material, keyboard focus-ring details,
+exact animation timing, and Sequoia need further calibration. Tooltips were
+explicitly deferred; no tooltip component or reference is included.

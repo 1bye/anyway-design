@@ -300,6 +300,9 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 				<a className="copy-button" href="/?view=progress-reference">
 					Progress bars & spinners ↗
 				</a>
+				<a className="copy-button" href="/?view=popover-reference">
+					Popovers ↗
+				</a>
 			</>
 		);
 	}

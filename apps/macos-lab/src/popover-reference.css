@@ -1,0 +1,113 @@
+.popover-study-viewport {
+	height: calc(222px * var(--popover-study-scale));
+	overflow: auto;
+	background: #edf0f2;
+}
+.popover-study-scene {
+	position: relative;
+	width: calc(298px * var(--popover-study-scale));
+	height: calc(222px * var(--popover-study-scale));
+	margin-inline: auto;
+	overflow: clip;
+	isolation: isolate;
+}
+.macos.popover-study-live,
+.popover-study-native {
+	position: absolute;
+	left: calc(var(--popover-study-left) * var(--popover-study-scale));
+	width: 680px;
+	max-width: none;
+	transform: scale(var(--popover-study-scale));
+	transform-origin: top left;
+}
+.macos.popover-study-live {
+	top: calc(var(--popover-study-top) * var(--popover-study-scale));
+	height: 520px;
+}
+.popover-study-native {
+	top: calc(var(--popover-native-top) * var(--popover-study-scale));
+	width: auto;
+	height: 552px;
+}
+.popover-study-canvas {
+	position: relative;
+	width: 680px;
+	height: 520px;
+	background: #fff;
+}
+[data-appearance="dark"] .popover-study-canvas {
+	background: #242424;
+}
+.popover-study-title,
+.popover-study-description {
+	position: absolute;
+	left: 24px;
+	width: 632px;
+	padding-left: 2px;
+	margin: 0;
+	font-size: 13px;
+	line-height: 16px;
+}
+.popover-study-title {
+	top: 20px;
+	font-weight: 700;
+}
+.popover-study-description {
+	top: 52px;
+}
+.popover-study-anchor {
+	position: absolute;
+	top: 244px;
+	left: 280px;
+	width: 120px;
+}
+.popover-study-anchor > button {
+	width: 120px;
+}
+.popover-study-direction {
+	position: absolute;
+	top: 440px;
+	width: 128px;
+}
+.popover-options-checkbox {
+	display: flex;
+	margin-top: 10px;
+}
+.popover-options-footer {
+	display: flex;
+	justify-content: flex-end;
+	margin-top: 16px;
+}
+.mac-popover-panel .popover-options-footer .mac-button {
+	width: 80px;
+	min-height: 28px;
+	padding-block: 6px;
+	font-size: 13px;
+	line-height: 16px;
+}
+.popover-workbench-surface {
+	min-height: 400px;
+	padding: 48px 24px 24px;
+	overflow: clip;
+	background: var(--mac-surface);
+	border: 1px solid var(--mac-line);
+	border-radius: 18px;
+	isolation: isolate;
+	transform: translateZ(0);
+}
+.popover-workbench-row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 24px;
+	justify-content: center;
+}
+.popover-workbench-edges {
+	display: flex;
+	justify-content: space-between;
+	margin: 140px -20px 24px;
+}
+.popover-workbench-result {
+	min-height: 20px;
+	margin: 0;
+	color: var(--mac-secondary);
+}

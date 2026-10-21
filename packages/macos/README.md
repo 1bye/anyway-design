@@ -43,6 +43,7 @@ and the portal container so menus retain their styles in embedded previews.
 | `combo-box` | `MacComboBox`: `label`, `items`, `value` / `defaultValue`, `onValueChange`, `mode`, `size`, `placeholder`, `disabled`, `readOnly`, `open` / `defaultOpen`, `onOpenChange` |
 | `alert` | `MacAlert`, `MacAlertPanel`: `title`, `description`, `severity`, `actions`, `defaultAction`, `cancelAction`, `onAction`, `suppression`, `icon`, `presentation`; `MacAlert` adds `open`, `onOpenChange`, `returnFocus` |
 | `progress` | `MacProgressBar`: `label`, `value`, `max`, `size`, `running`, `hidesWhenStopped`, `active`; `MacSpinner`: `label`, `size`, `running`, `hidesWhenStopped` |
+| `popover` | `MacPopover`: `title`, `description`, `trigger`, `children`, `open` / `defaultOpen`, `onOpenChange`, `positionerProps`, `initialFocus`, `returnFocus`; `MacPopoverPanel`, `MacPopoverClose` |
 | `files` | `MacFileItem`, `MacFileGrid`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `active`, `showExtensions` |
 | `file-gallery` | `MacFileGallery`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `onQuickLook`, `showInfo`, `actions`, `onAction`, `onEditTags` |
 | `file-list` | `MacFileList`: recursive `items`, `expandedIds`, `defaultExpandedIds`, `onExpandedChange`, `selectedIds`, `onSelectionChange`, `onOpen`, `sort`, `defaultSort`, `onSortChange`, `columns`, `columnWidths`, `onColumnWidthsChange`, `resizable`, `active`, `showExtensions`, `minRows` |
@@ -1204,3 +1205,50 @@ and running/stopped states against local NSProgressIndicator captures. It also
 includes playable native motion samples and a transfer workbench. Geometry is
 measured from native AppKit frames; motion is a first pass based on roughly
 8–12fps recordings. Exact easing, inactive tint, and Sequoia remain uncalibrated.
+
+
+### Popovers
+
+```tsx
+import { MacPopover, MacPopoverClose } from "@anyway-design/macos/popover";
+import { MacButton } from "@anyway-design/macos/controls";
+import { MacCheckbox } from "@anyway-design/macos/checkbox";
+
+<MacPopover title="View Options"
+  description="Choose how this folder is displayed."
+  trigger={<MacButton>Options</MacButton>}
+  positionerProps={{ side: "bottom" }}>
+  <MacCheckbox label="Show hidden items" />
+  <MacPopoverClose>Done</MacPopoverClose>
+</MacPopover>
+```
+
+Render inside `MacOSEnvironment`. The installed Base UI Popover handles
+nonmodal dialog semantics, focus navigation, Escape, outside-click/focus
+dismissal, and return to the trigger. Opening focuses the first available
+control. `initialFocus` and `returnFocus` accept Base UI focus targets; passing
+`initialFocus={false}` prevents automatic focus movement for embedded previews.
+A focusable React element is required for `trigger`.
+
+`open` / `defaultOpen` / `onOpenChange` support controlled or uncontrolled
+visibility. `MacPopoverClose` is a `MacButton` that closes its containing
+popover; its optional `onClick` handles caller work. Neither component invokes
+OS actions. Child controls own their state and remain mounted only while the
+popover is open. Persist edits in the caller when they should survive closing.
+
+The default panel is 240px wide with 16px padding, 20px corners, a curved arrow,
+and a 13px anchor gap. `positionerProps` accepts `side`, `align`, `sideOffset`,
+`alignOffset`, `collisionAvoidance`, `collisionBoundary`, and `collisionPadding`.
+All four directions can flip or shift to remain inside clipping boundaries.
+The panel scrolls when height is constrained. `className` and `style` customize
+the panel, including its width; arrange arbitrary child content in the caller.
+`MacPopoverPanel` renders just the named panel for embedded compositions,
+without a trigger, arrow, focus management, or dismissal.
+
+Portals retain the environment appearance and stay within scaled desktop
+previews. Reduced transparency uses a solid surface without backdrop blur;
+reduced motion removes entry/exit transitions. The lab's
+`/?view=popover-reference` compares four directions in light/dark against eight
+unaltered local `NSPopover` captures, with keyboard and edge-collision examples.
+Native focus-ring details, desktop-dependent material, exact transition timing,
+and Sequoia are not separately calibrated. Tooltips are outside this pass.
