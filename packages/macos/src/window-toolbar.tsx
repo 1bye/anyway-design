@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ComponentPropsWithRef, ReactNode } from "react";
 
 export function WindowToolbarGroup({
 	children,
@@ -15,7 +15,7 @@ export function WindowToolbarGroup({
 }
 
 export interface WindowToolbarButtonProps
-	extends ButtonHTMLAttributes<HTMLButtonElement> {
+	extends ComponentPropsWithRef<"button"> {
 	label: string;
 }
 

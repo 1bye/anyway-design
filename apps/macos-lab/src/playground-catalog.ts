@@ -165,7 +165,7 @@ export const PLAYGROUND_ENTRIES: readonly PlaygroundEntry[] = [
 		"window",
 		"MacWindow",
 		"window-reference",
-		"A Finder window with grouped toolbar controls, document tabs, an optional sidebar, and traffic-light actions.",
+		"A Finder browser with search, per-tab Back/Forward history, a clickable path bar, and sorting and grouping across all four file views.",
 		[
 			active,
 			{ initial: "Documents", key: "title", label: "Title" },

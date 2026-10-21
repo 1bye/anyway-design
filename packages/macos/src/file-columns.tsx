@@ -20,6 +20,7 @@ import {
 } from "./file-column-model";
 import { MacFileColumnPreview } from "./file-column-preview";
 import { FileColumnResize } from "./file-column-resize";
+import type { MacFileGroupBy } from "./file-groups";
 import { MacFileList, type MacFileSort } from "./file-list";
 import { requestNewFolder } from "./file-new-folder";
 import type { MacFileRenameProps } from "./file-rename";
@@ -34,6 +35,7 @@ export interface MacFileColumnsProps extends MacFileRenameProps {
 	className?: string;
 	columnWidth?: number;
 	columnWidths?: readonly number[];
+	groupBy?: MacFileGroupBy;
 	items: readonly MacFileColumnItem[];
 	label?: string;
 	multiple?: boolean;
@@ -57,6 +59,7 @@ export interface MacFileColumnsProps extends MacFileRenameProps {
 interface BrowserColumnProps extends MacFileRenameProps {
 	active: boolean;
 	column: FileBrowserColumn;
+	groupBy?: MacFileGroupBy;
 	index: number;
 	label: string;
 	multiple: boolean;
@@ -135,6 +138,7 @@ function columnSelection(
 export function MacFileColumns({
 	onGetInfo,
 	items,
+	groupBy,
 	value,
 	onValueChange,
 	label = "Files",
@@ -298,6 +302,7 @@ export function MacFileColumns({
 				<BrowserColumn
 					active={active && column.items.some((file) => file.id === value)}
 					column={column}
+					groupBy={groupBy}
 					index={index}
 					key={
 						column.parentId === undefined ? "root" : `folder:${column.parentId}`

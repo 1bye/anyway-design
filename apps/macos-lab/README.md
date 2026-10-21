@@ -22,7 +22,21 @@ Toolbar shows a window-header crop; Sidebar centers the sidebar itself in a
 window-corner crop. Offscreen controls in these crops are inert, so keyboard
 focus stays on the component being demonstrated. The complete Window example
 supports view switching, tab creation/closing/reordering, selection, and inline
-renaming. Actions such as Share and search report preview callbacks.
+renaming. Search expands in the toolbar, filters the current folder and its
+descendants by name or tag, and clears with Cancel or Escape. Each tab retains
+its own navigation history, query, view, sort, group, and selection. Back/Forward
+handles folder, sidebar, and path-bar navigation, including column selections.
+Navigating after Back discards the forward branch. The path bar follows the
+selected file and its actual parent folders; every folder segment is clickable.
+
+The grouping menu offers Kind, Date Modified, Size, Tags, and None. Its Sort By
+submenu sets Name, Kind, Date Modified, Size, and ascending/descending order.
+The same state drives Icons, List, Columns, and Gallery. List column headers
+update the toolbar sort state. These controls use sample files in memory;
+Share and Tags remain preview callbacks. No user files are read or changed.
+Keyboard commands: ⌘/Ctrl-F for search, ⌘/Ctrl-[ and ] or Option-Left/Right
+for history, ⌘/Ctrl-1 through 4 for views, and ⇧⌘/Ctrl-N for New Folder.
+`bun run --cwd apps/macos-lab test` checks the browser state model.
 
 The shared inspector changes preset, appearance, accent color, and accessibility
 preferences across previews. Canvas width, background, and Fit / Actual size

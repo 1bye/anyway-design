@@ -1,6 +1,7 @@
 import {
 	type CSSProperties,
 	type FocusEvent,
+	Fragment,
 	type KeyboardEvent,
 	type MouseEvent,
 	type PointerEvent,
@@ -12,6 +13,7 @@ import {
 	useRef,
 	useState,
 } from "react";
+import { groupFileItems, type MacFileGroupBy } from "./file-groups";
 import { MacFileIcon } from "./file-icons";
 import {
 	focusFileTarget,
@@ -64,6 +66,7 @@ export interface MacFileListProps extends MacFileRenameProps {
 	defaultSort?: MacFileSort;
 	expandedIds?: readonly string[];
 	folderDisclosure?: "toggle" | "indicator";
+	groupBy?: MacFileGroupBy;
 	items: readonly MacFileListItem[];
 	label?: string;
 	minRows?: number;
@@ -337,6 +340,7 @@ function useColumnResize(
 export function MacFileList({
 	onGetInfo,
 	items,
+	groupBy,
 	selectedIds,
 	onSelectionChange,
 	onNewFolder,
@@ -377,7 +381,31 @@ export function MacFileList({
 	const sort = controlledSort ?? internalSort;
 	const widths = columnWidths ?? internalWidths;
 	const expandedIds = controlledExpandedIds ?? internalExpandedIds;
-	const allRows = useMemo(() => flattenFileList(items, sort), [items, sort]);
+	const groups = useMemo(
+		() => groupFileItems(items, groupBy),
+		[items, groupBy]
+	);
+	const groupedRows = useMemo(
+		() =>
+			groups.map((group) => ({
+				label: group.label,
+				rows: flattenFileList(group.items, sort),
+			})),
+		[groups, sort]
+	);
+	const headings = useMemo(
+		() =>
+			new Map(
+				groupedRows
+					.filter((group) => group.label !== undefined)
+					.map((group) => [group.rows[0]?.file.id, group.label])
+			),
+		[groupedRows]
+	);
+	const allRows = useMemo(
+		() => groupedRows.flatMap((group) => group.rows),
+		[groupedRows]
+	);
 	const rows = useMemo(
 		() => visibleFileListRows(allRows, expandedIds),
 		[allRows, expandedIds]
@@ -766,49 +794,59 @@ export function MacFileList({
 				</thead>
 				<tbody>
 					{rows.map(({ file, depth, parentId, position, siblingCount }) => (
-						<tr
-							aria-disabled={file.disabled || undefined}
-							aria-expanded={
-								file.kind === "folder"
-									? !file.disabled && expandedIds.includes(file.id)
-									: undefined
-							}
-							aria-level={depth + 1}
-							aria-posinset={position}
-							aria-selected={selectedIds.includes(file.id)}
-							aria-setsize={siblingCount}
-							data-file-id={file.id}
-							data-parent-id={parentId}
-							data-renaming={rename.id === file.id || undefined}
-							key={file.id}
-							tabIndex={file.id === tabStop ? 0 : -1}
-						>
-							{columns.map((column) => (
-								<td data-column={column} key={column}>
-									{column === "name" ? (
-										<FileListName
-											depth={depth}
-											editor={
-												rename.id === file.id && onRename ? (
-													<FileRenameField
-														file={file}
-														onCommit={onRename}
-														onEnd={rename.end}
-														validate={validateRename}
-													/>
-												) : undefined
-											}
-											expanded={!file.disabled && expandedIds.includes(file.id)}
-											file={file}
-											folderDisclosure={folderDisclosure}
-											showExtensions={showExtensions}
-										/>
-									) : (
-										cellValue(file, column)
-									)}
-								</td>
-							))}
-						</tr>
+						<Fragment key={file.id}>
+							{headings.has(file.id) ? (
+								<tr className="mac-file-list-group">
+									<th colSpan={columns.length} scope="rowgroup">
+										{headings.get(file.id)}
+									</th>
+								</tr>
+							) : null}
+							<tr
+								aria-disabled={file.disabled || undefined}
+								aria-expanded={
+									file.kind === "folder"
+										? !file.disabled && expandedIds.includes(file.id)
+										: undefined
+								}
+								aria-level={depth + 1}
+								aria-posinset={position}
+								aria-selected={selectedIds.includes(file.id)}
+								aria-setsize={siblingCount}
+								data-file-id={file.id}
+								data-parent-id={parentId}
+								data-renaming={rename.id === file.id || undefined}
+								tabIndex={file.id === tabStop ? 0 : -1}
+							>
+								{columns.map((column) => (
+									<td data-column={column} key={column}>
+										{column === "name" ? (
+											<FileListName
+												depth={depth}
+												editor={
+													rename.id === file.id && onRename ? (
+														<FileRenameField
+															file={file}
+															onCommit={onRename}
+															onEnd={rename.end}
+															validate={validateRename}
+														/>
+													) : undefined
+												}
+												expanded={
+													!file.disabled && expandedIds.includes(file.id)
+												}
+												file={file}
+												folderDisclosure={folderDisclosure}
+												showExtensions={showExtensions}
+											/>
+										) : (
+											cellValue(file, column)
+										)}
+									</td>
+								))}
+							</tr>
+						</Fragment>
 					))}
 					{Array.from(
 						{ length: Math.max(0, minRows - sorted.length) },

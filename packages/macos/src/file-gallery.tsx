@@ -17,6 +17,7 @@ import {
 	fileGalleryTags,
 	type MacFileGalleryItem,
 } from "./file-gallery-model";
+import type { MacFileGroupBy } from "./file-groups";
 import { MacFileIcon, MacFolderPreviewIcon } from "./file-icons";
 import { FILE_KIND_LABELS } from "./file-list-tree";
 import { MacFileThumbnail } from "./file-thumbnail";
@@ -36,6 +37,7 @@ export interface MacFileGalleryProps {
 	active?: boolean;
 	className?: string;
 	defaultExpandedInfo?: boolean;
+	groupBy?: MacFileGroupBy;
 	items: readonly MacFileGalleryItem[];
 	label?: string;
 	onAction?: (actionId: string, selectedIds: string[]) => void;
@@ -188,6 +190,7 @@ function GalleryInformation({
 export function MacFileGallery({
 	onGetInfo,
 	items,
+	groupBy,
 	selectedIds,
 	onSelectionChange,
 	onOpen,
@@ -308,6 +311,7 @@ export function MacFileGallery({
 					</section>
 					<MacFileGrid
 						active={active}
+						groupBy={groupBy}
 						items={displayItems}
 						label={`${label} filmstrip`}
 						onGetInfo={onGetInfo}

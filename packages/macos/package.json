@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "exports": {
+    "./file-groups": "./src/file-groups.ts",
     "./file-list-sort": "./src/file-list-sort.ts",
     "./file-list-tree": "./src/file-list-tree.ts",
     "./styles.css": "./src/styles.css",

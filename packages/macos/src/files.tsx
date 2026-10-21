@@ -2,13 +2,16 @@ import {
 	type ComponentPropsWithRef,
 	type CSSProperties,
 	type FocusEvent,
+	Fragment,
 	type KeyboardEvent,
 	type MouseEvent,
 	type ReactNode,
 	useCallback,
+	useMemo,
 	useRef,
 	useState,
 } from "react";
+import { groupFileItems, type MacFileGroupBy } from "./file-groups";
 import { MacFileIcon, type MacFileIconName } from "./file-icons";
 import {
 	focusFileTarget,
@@ -109,6 +112,7 @@ export function MacFileItem({
 export interface MacFileGridProps extends MacFileRenameProps {
 	active?: boolean;
 	className?: string;
+	groupBy?: MacFileGroupBy;
 	items: readonly MacFile[];
 	label?: string;
 	onGetInfo?: (id: string) => void;
@@ -192,7 +196,8 @@ function typeaheadTarget(
 
 export function MacFileGrid({
 	onGetInfo,
-	items,
+	items: sourceItems,
+	groupBy,
 	selectedIds,
 	onSelectionChange,
 	onNewFolder,
@@ -208,6 +213,14 @@ export function MacFileGrid({
 	className = "",
 	style,
 }: MacFileGridProps) {
+	const groups = useMemo(
+		() => groupFileItems(sourceItems, groupBy),
+		[sourceItems, groupBy]
+	);
+	const items = useMemo(
+		() => groups.flatMap((group) => [...group.items]),
+		[groups]
+	);
 	const rename = useFileRename({
 		items,
 		onRename,
@@ -336,6 +349,7 @@ export function MacFileGrid({
 			aria-label={label}
 			className={`mac-file-grid ${className}`}
 			data-active={active}
+			data-grouped={groupBy ? true : undefined}
 			onClick={click}
 			onDoubleClick={open}
 			onFocus={focus}
@@ -343,26 +357,33 @@ export function MacFileGrid({
 			style={style}
 			tabIndex={enabledIds.length ? undefined : 0}
 		>
-			{items.map((file) => (
-				<div className="mac-file-grid-item" key={file.id}>
-					<MacFileItem
-						data-file-id={file.id}
-						data-renaming={rename.id === file.id || undefined}
-						file={file}
-						selected={selectedIds.includes(file.id)}
-						showExtensions={showExtensions}
-						tabIndex={rename.id !== file.id && file.id === tabStop ? 0 : -1}
-					/>
-					{rename.id === file.id && onRename ? (
-						<FileRenameField
-							file={file}
-							multiline
-							onCommit={onRename}
-							onEnd={rename.end}
-							validate={validateRename}
-						/>
-					) : null}
-				</div>
+			{groups.map((group) => (
+				<Fragment key={group.label ?? "ungrouped"}>
+					{group.label === undefined ? null : (
+						<h3 className="mac-file-group-heading">{group.label}</h3>
+					)}
+					{group.items.map((file) => (
+						<div className="mac-file-grid-item" key={file.id}>
+							<MacFileItem
+								data-file-id={file.id}
+								data-renaming={rename.id === file.id || undefined}
+								file={file}
+								selected={selectedIds.includes(file.id)}
+								showExtensions={showExtensions}
+								tabIndex={rename.id !== file.id && file.id === tabStop ? 0 : -1}
+							/>
+							{rename.id === file.id && onRename ? (
+								<FileRenameField
+									file={file}
+									multiline
+									onCommit={onRename}
+									onEnd={rename.end}
+									validate={validateRename}
+								/>
+							) : null}
+						</div>
+					))}
+				</Fragment>
 			))}
 		</fieldset>
 	);

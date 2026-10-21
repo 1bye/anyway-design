@@ -218,6 +218,16 @@ The file-grid CSS variables still control icon size, pitch, and label spacing.
 The inset sidebar casts a soft shadow onto the content; toolbar groups and
 active Finder windows have separate elevation shadows in both appearances.
 
+`MacFileGrid`, `MacFileList`, `MacFileColumns`, and `MacFileGallery` accept
+an optional `groupBy(file)` function that returns a group label. Groups retain
+their first appearance in the supplied items, and each file appears once.
+Grid and list keyboard navigation and selection span group boundaries;
+Columns groups each folder, and Gallery labels its filmstrip groups.
+Supply sorted items to Grid/Gallery and use the controlled `sort` prop on
+List/Columns to keep the toolbar and file views synchronized. The lab's Finder
+example owns navigation, search, and sort state; the library components still
+operate only on caller-supplied files and callbacks.
+
 Each Dock item's `icon` accepts an image URL or a React element, such as an
 inline SVG. Custom artwork should fill the supplied square canvas and include
 its intended transparent margins. `size` measures this canvas, not the opaque
