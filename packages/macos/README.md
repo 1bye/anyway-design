@@ -35,6 +35,10 @@ and the portal container so menus retain their styles in embedded previews.
 | `window-symbol` | `WindowSymbol`: `name`, `size`, span props; `WindowSymbolName` |
 | `tabs` | `MacTabs`: `tabs`, `value`, `onValueChange`, `variant`, `label`, `onAdd`, `onClose`, `onReorder` |
 | `controls` | `MacButton`, `MacTextField`, `MacSearchField`, `MacSwitch` |
+| `checkbox` | `MacCheckbox`: `label`, `checked` / `defaultChecked`, `onCheckedChange`, `indeterminate`, `disabled`, `readOnly`, `active` |
+| `radio` | `MacRadioGroup`: `label`, `value` / `defaultValue`, `onValueChange`, `name`; `MacRadio`: `label`, `value`, `disabled`, `active` |
+| `slider` | `MacSlider`: `label`, `value` / `defaultValue`, `onValueChange`, `onValueCommitted`, `min`, `max`, `step`, `largeStep`, `tickMarks`, `disabled`, `active` |
+| `stepper` | `MacStepper`: `label`, `value` / `defaultValue`, `onValueChange`, `onValueCommitted`, `min`, `max`, `step`, `disabled`, `readOnly`, `required` |
 | `files` | `MacFileItem`, `MacFileGrid`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `active`, `showExtensions` |
 | `file-gallery` | `MacFileGallery`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `onQuickLook`, `showInfo`, `actions`, `onAction`, `onEditTags` |
 | `file-list` | `MacFileList`: recursive `items`, `expandedIds`, `defaultExpandedIds`, `onExpandedChange`, `selectedIds`, `onSelectionChange`, `onOpen`, `sort`, `defaultSort`, `onSortChange`, `columns`, `columnWidths`, `onColumnWidthsChange`, `resizable`, `active`, `showExtensions`, `minRows` |
@@ -150,7 +154,7 @@ fieldsets, and buttons retain native disabled, keyboard, and click behavior.
 Omit `sidebar` to use the full content width. `active={false}` mutes the chrome
 and traffic lights. Reduced transparency removes the sidebar backdrop blur.
 
-`WindowSymbol` supplies 39 native Tahoe glyphs for controls, tabs, the toolbar, sidebar, and
+`WindowSymbol` supplies 41 native Tahoe glyphs for controls, tabs, the toolbar, sidebar, and
 menus. AppKit renders them at 4× into transparent 64 × 64 PNGs on a 16px canvas;
 CSS masks inherit `currentColor`, including selection, disabled, and highlighted
 states. The component renders a decorative `span` (previously an SVG); its
@@ -342,6 +346,73 @@ input attributes apply to the input. Composition keystrokes are left to the IME.
 The lab's controls study records the native comparison's limits: only inactive
 AppKit geometry and neutral states are calibrated. Active accent, hover, and
 focus-ring appearance still require a corresponding native capture.
+
+## Checkbox, radio, slider, and stepper
+
+Import the new controls directly from `checkbox`, `radio`, `slider`, and
+`stepper`. Render them inside `MacOSEnvironment`, including the shared CSS.
+They use the existing Base UI dependency for keyboard, pointer, and form
+behavior, with a shared native-form-reset adapter. No dependency was added.
+
+```tsx
+<MacCheckbox label="Include metadata" name="metadata" defaultChecked />
+<MacCheckbox label="All formats" checked={all} indeterminate={some && !all}
+  onCheckedChange={selectAll} />
+<MacRadioGroup label="Quality" name="quality" value={quality}
+  onValueChange={setQuality}>
+  <MacRadio label="Compact" value="compact" />
+  <MacRadio label="Original" value="original" />
+</MacRadioGroup>
+<MacSlider label="Compression" name="compression" min={0} max={100}
+  value={compression} onValueChange={setCompression} />
+<MacSlider label="Scale" defaultValue={25} step={25} tickMarks={5} />
+<MacStepper label="Copies" name="copies" min={0} max={9}
+  value={copies} onValueChange={setCopies} />
+```
+
+Checkboxes accept controlled `checked` or uncontrolled `defaultChecked`.
+`indeterminate` is a separate caller-controlled mixed state: clear it in the
+change handler when the underlying selection becomes all or none. Mixed is
+not a third submitted value. Radios belong in `MacRadioGroup`; its values are
+strings and `label` names the group. Space toggles a checkbox; arrows select
+enabled radios and skip disabled ones. Visible choice labels are React nodes.
+Readonly choices stay focusable and report no value changes. `active={false}`
+gives choices, sliders, and stepper arrows the inactive neutral tint independently of focus.
+
+Sliders are horizontal, single-thumb controls. `label` supplies the accessible
+name; `id` identifies the root rather than its hidden input. Arrows step,
+Home/End reach the bounds, and Page Up/Down or Shift-arrows use `largeStep`
+(default 10). Pointer track presses and dragging update `onValueChange`;
+`onValueCommitted` reports completed gestures. `tickMarks` adds evenly spaced
+decorative marks (2–101), hiding the mark aligned with the thumb; it does not
+change snapping. Set `step` explicitly,
+such as 25 for five values across 0–100. Supply finite min < max and a positive
+step. CSS width defaults to 160px and can be overridden. Range and vertical
+sliders are not part of this API.
+
+Steppers bind a right-aligned editable field to two repeating arrow buttons.
+`onValueChange` receives `number | null`; null represents an empty field. Bounds
+disable the relevant arrow. Arrow Up/Down step, Home/End reach supplied bounds,
+and held pointer presses repeat until release or a bound. Decimal/negative
+values, `smallStep`, `largeStep`, `locale`, `format`, and `allowOutOfRange` follow
+Base UI Number Field props. `id` identifies the editable input. Increment and
+decrement labels default to `Increase ${label}` / `Decrease ${label}` and can
+be overridden. The default is bounded stepping, without wraparound or scrubbing.
+
+`name`, `form`, `required`, `disabled`, and `inputRef` support form integration.
+Disabled controls do not submit. For steppers, `inputRef` points to the numeric
+form/validation input; the visible field is identified by `id`. Values with
+`defaultChecked` / `defaultValue` reset through a normal form reset without
+calling change callbacks. Controlled values remain caller-owned: restore them
+in the form's `onReset`. Reset also clears partial numeric drafts. Cancellation
+of a reset or a Base UI change event is respected. If needed, change callbacks
+receive Base UI event details and can call `details.cancel()`.
+
+The lab's `/?view=input-controls-reference` compares actual local Tahoe active
+window captures and inactive AppKit renders in both light and dark. Regular
+size is calibrated; small/mini sizes and Sequoia are not. Focus/hover/pressed
+appearance and repeat timing are first passes without separate native capture.
+Existing compact Get Info and dialog checkbox styles are unchanged.
 
 ## File items
 

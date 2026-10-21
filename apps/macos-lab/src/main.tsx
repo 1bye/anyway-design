@@ -10,6 +10,7 @@ import { FileGalleryReferenceComparison } from "./file-gallery-reference";
 import { FileInfoReferenceComparison } from "./file-info-reference";
 import { FileListReferenceComparison } from "./file-list-reference";
 import { FileRenameReferenceComparison } from "./file-rename-reference";
+import { InputControlsReferenceComparison } from "./input-controls-reference";
 import { MenuReferenceComparison } from "./menu-reference";
 import { NewFolderReferenceComparison } from "./new-folder-reference";
 import { QuickLookReferenceComparison } from "./quick-look-reference";
@@ -51,5 +52,7 @@ if (view === "dock-reference") {
 	page = <FileGalleryReferenceComparison />;
 } else if (view === "file-info-reference") {
 	page = <FileInfoReferenceComparison />;
+} else if (view === "input-controls-reference") {
+	page = <InputControlsReferenceComparison />;
 }
 createRoot(root).render(<StrictMode>{page}</StrictMode>);

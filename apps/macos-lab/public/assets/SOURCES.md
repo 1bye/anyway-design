@@ -99,3 +99,8 @@ Mac, displaying generated demo files only. See
 - `native-file-info/`: Unaltered native Finder Get Info windows for an image,
   folder, and expanded preview, plus the generated image's Icon Services art.
   See the directory's `SOURCES.md` for provenance, dimensions, and limitations.
+
+- `native-input-controls/`: Native Tahoe checkbox, radio, slider, and stepper
+  fixtures in light/dark and active/inactive states. Active references are
+  actual window captures; inactive references are AppKit renders. See the
+  directory's `SOURCES.md` for provenance and geometry.

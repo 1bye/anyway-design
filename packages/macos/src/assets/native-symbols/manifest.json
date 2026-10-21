@@ -47,6 +47,17 @@
       "weight": 0
     },
     {
+      "extent": 10,
+      "id": "checkbox-check",
+      "nativeName": "checkmark",
+      "pixelHeight": 64,
+      "pixelWidth": 64,
+      "pointSize": 16,
+      "rendering": "monochrome",
+      "source": "NSImage(systemSymbolName: checkmark)",
+      "weight": 0.56000000238418579
+    },
+    {
       "extent": 12,
       "id": "chevron-down",
       "nativeName": "chevron.down",
@@ -408,6 +419,17 @@
       "rendering": "monochrome",
       "source": "NSImage(systemSymbolName: folder.badge.person.crop)",
       "weight": 0.23000000417232513
+    },
+    {
+      "extent": 11,
+      "id": "stepper-chevron-down",
+      "nativeName": "chevron.down",
+      "pixelHeight": 64,
+      "pixelWidth": 64,
+      "pointSize": 16,
+      "rendering": "monochrome",
+      "source": "NSImage(systemSymbolName: chevron.down)",
+      "weight": 0.40000000596046448
     },
     {
       "extent": 15,

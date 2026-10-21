@@ -400,6 +400,11 @@ export function ControlsReferenceComparison() {
 			</div>
 			<div className="dock-study-notes">
 				<p>
+					<a href="/?view=input-controls-reference">
+						Compare checkboxes, radios, sliders, and steppers ↗
+					</a>
+				</p>
+				<p>
 					The reference is an inactive AppKit window rendered on macOS 26.6.2
 					(25G83). Pressed buttons use AppKit’s highlighted state; fields in
 					that column contain text. Hover and focus are interactive on the live

@@ -7,6 +7,10 @@ export const NATIVE_SYMBOLS = {
 	).href,
 	archive: new URL("./assets/native-symbols/archive.png", import.meta.url).href,
 	check: new URL("./assets/native-symbols/check.png", import.meta.url).href,
+	"checkbox-check": new URL(
+		"./assets/native-symbols/checkbox-check.png",
+		import.meta.url
+	).href,
 	"chevron-down": new URL(
 		"./assets/native-symbols/chevron-down.png",
 		import.meta.url
@@ -75,6 +79,10 @@ export const NATIVE_SYMBOLS = {
 		.href,
 	share: new URL("./assets/native-symbols/share.png", import.meta.url).href,
 	shared: new URL("./assets/native-symbols/shared.png", import.meta.url).href,
+	"stepper-chevron-down": new URL(
+		"./assets/native-symbols/stepper-chevron-down.png",
+		import.meta.url
+	).href,
 	tag: new URL("./assets/native-symbols/tag.png", import.meta.url).href,
 	trash: new URL("./assets/native-symbols/trash.png", import.meta.url).href,
 } as const;

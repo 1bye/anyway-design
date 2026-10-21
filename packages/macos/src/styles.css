@@ -3825,3 +3825,286 @@
 .mac-get-info-dialog:focus-visible {
 	outline: 0;
 }
+
+.mac-choice {
+	--mac-choice-empty: #e6e6e6;
+	--mac-choice-fill: var(--mac-accent);
+	--mac-choice-mark: #fff;
+	--mac-choice-disabled-fill: color-mix(
+		in srgb,
+		var(--mac-choice-fill) 35%,
+		var(--mac-surface)
+	);
+	display: inline-flex;
+	gap: 6px;
+	align-items: center;
+	width: fit-content;
+	min-height: 20px;
+	font-size: 13px;
+	line-height: 20px;
+	user-select: none;
+}
+.mac-choice[data-active="false"] {
+	--mac-choice-fill: #d9d9d9;
+	--mac-choice-mark: #303030;
+	--mac-choice-disabled-fill: color-mix(
+		in srgb,
+		var(--mac-choice-fill) 50%,
+		var(--mac-surface)
+	);
+}
+[data-appearance="dark"] .mac-choice {
+	--mac-choice-empty: #343434;
+}
+[data-appearance="dark"] .mac-choice[data-active="false"] {
+	--mac-choice-fill: #3e3e3e;
+	--mac-choice-mark: #ddd;
+}
+.mac-choice-control {
+	position: relative;
+	display: inline-grid;
+	flex: 0 0 16px;
+	place-items: center;
+	width: 16px;
+	height: 16px;
+	color: var(--mac-choice-mark);
+	outline: none;
+	background: var(--mac-choice-empty);
+	border-radius: 6px;
+}
+.mac-choice-control:is([data-checked], [data-indeterminate]) {
+	background: var(--mac-choice-fill);
+}
+.mac-choice-control:active:not([data-disabled], [data-readonly]) {
+	filter: brightness(0.9);
+}
+.mac-choice:has([data-disabled]) {
+	color: color-mix(in srgb, var(--mac-text) 30%, var(--mac-surface));
+}
+.mac-choice-control[data-disabled] {
+	background: color-mix(
+		in srgb,
+		var(--mac-choice-empty) 50%,
+		var(--mac-surface)
+	);
+}
+.mac-choice-control[data-disabled]:is([data-checked], [data-indeterminate]) {
+	color: color-mix(
+		in srgb,
+		var(--mac-choice-mark) 65%,
+		var(--mac-choice-disabled-fill)
+	);
+	background: var(--mac-choice-disabled-fill);
+}
+.mac-choice[data-active="false"]
+	.mac-choice-control[data-disabled]:is([data-checked], [data-indeterminate]) {
+	color: color-mix(
+		in srgb,
+		var(--mac-choice-mark) 35%,
+		var(--mac-choice-disabled-fill)
+	);
+}
+.mac-choice-control:focus-visible {
+	outline: 3px solid color-mix(in srgb, var(--mac-accent) 45%, transparent);
+	outline-offset: 2px;
+}
+.mac-checkbox-indicator {
+	display: grid;
+	place-items: center;
+}
+.mac-checkbox-mixed {
+	display: none;
+	width: 7px;
+	height: 2px;
+	background: currentColor;
+	border-radius: 1px;
+}
+.mac-checkbox[data-indeterminate] .mac-checkbox-mixed {
+	display: block;
+}
+.mac-checkbox[data-indeterminate] .mac-window-symbol {
+	display: none;
+}
+.mac-radio-group {
+	display: grid;
+	gap: 6px;
+	justify-items: start;
+}
+.mac-radio {
+	border-radius: 50%;
+}
+.mac-radio-indicator {
+	width: 5px;
+	height: 5px;
+	background: currentColor;
+	border-radius: 50%;
+}
+.mac-slider {
+	--mac-slider-track: #e6e6e6;
+	--mac-slider-fill: var(--mac-accent);
+	--mac-slider-knob: #fff;
+	width: 160px;
+	max-width: 100%;
+	touch-action: pan-y;
+	user-select: none;
+}
+.mac-slider[data-active="false"] {
+	--mac-slider-fill: #c4c4c4;
+}
+[data-appearance="dark"] .mac-slider {
+	--mac-slider-track: #343434;
+	--mac-slider-knob: #dedede;
+}
+[data-appearance="dark"] .mac-slider[data-active="false"] {
+	--mac-slider-fill: #666;
+}
+.mac-slider[data-disabled] {
+	--mac-slider-fill: #e2e2e2;
+}
+.mac-slider[data-active="false"][data-disabled] {
+	--mac-slider-fill: #d0d0d0;
+}
+[data-appearance="dark"] .mac-slider[data-disabled] {
+	--mac-slider-fill: #393939;
+}
+[data-appearance="dark"] .mac-slider[data-active="false"][data-disabled] {
+	--mac-slider-fill: #3d3d3d;
+}
+.mac-slider-control {
+	position: relative;
+	display: flex;
+	align-items: center;
+	width: 100%;
+	height: 24px;
+}
+.mac-slider[data-ticked="true"] .mac-slider-control {
+	height: 30px;
+}
+.mac-slider-track {
+	width: 100%;
+	height: 6px;
+	overflow: hidden;
+	background: var(--mac-slider-track);
+	border-radius: 999px;
+}
+.mac-slider-fill {
+	height: 100%;
+	background: var(--mac-slider-fill);
+	border-radius: inherit;
+}
+.mac-slider-thumb {
+	top: 50%;
+	width: 20px;
+	height: 16px;
+	outline: none;
+	background: var(--mac-slider-knob);
+	border-radius: 999px;
+	box-shadow:
+		0 1px 3px rgb(0 0 0 / 10%),
+		0 0 12px rgb(0 0 0 / 7%);
+}
+[data-appearance="dark"] .mac-slider-thumb {
+	box-shadow: none;
+}
+.mac-slider-thumb:has(:focus-visible) {
+	outline: 3px solid color-mix(in srgb, var(--mac-accent) 45%, transparent);
+	outline-offset: 2px;
+}
+.mac-slider-ticks {
+	position: absolute;
+	top: calc(50% + 7px);
+	right: 10px;
+	left: 10px;
+	pointer-events: none;
+}
+.mac-slider-ticks i {
+	position: absolute;
+	width: 2px;
+	height: 2px;
+	background: color-mix(in srgb, var(--mac-text) 30%, var(--mac-surface));
+	border-radius: 0.5px;
+	transform: translateX(-50%);
+}
+.mac-slider-ticks i[data-covered="true"] {
+	visibility: hidden;
+}
+.mac-slider[data-disabled] .mac-slider-ticks {
+	opacity: 0.4;
+}
+.mac-stepper {
+	display: inline-flex;
+	gap: 8px;
+	align-items: center;
+	width: 83px;
+	max-width: 100%;
+	min-height: 28px;
+}
+.mac-stepper .mac-stepper-input {
+	flex: 1 1 56px;
+	width: 56px;
+	min-width: 0;
+	height: 24px;
+	padding: 2px 6px;
+	font-size: 13px;
+	text-align: right;
+}
+.mac-stepper .mac-stepper-input:not(:focus-visible) {
+	border-color: color-mix(in srgb, var(--mac-text) 6%, var(--mac-surface));
+}
+[data-appearance="dark"] .mac-stepper .mac-stepper-input {
+	background: color-mix(in srgb, var(--mac-text) 3%, var(--mac-surface));
+}
+.mac-stepper-buttons {
+	display: flex;
+	flex: 0 0 19px;
+	flex-direction: column;
+	width: 19px;
+	height: 26px;
+	overflow: hidden;
+	background: color-mix(in srgb, var(--mac-text) 8%, var(--mac-surface));
+	border-radius: 6px;
+}
+.mac-stepper-buttons button {
+	position: relative;
+	display: flex;
+	flex: 1 0 13px;
+	align-items: center;
+	justify-content: center;
+	width: 19px;
+	height: 13px;
+	padding: 0;
+	color: var(--mac-text);
+	background: transparent;
+	border: 0;
+}
+.mac-stepper-increment::after {
+	position: absolute;
+	right: 3px;
+	bottom: 0;
+	left: 3px;
+	height: 1px;
+	content: "";
+	background: var(--mac-line);
+}
+.mac-stepper-increment .mac-window-symbol {
+	transform: rotate(180deg);
+}
+.macos .mac-stepper-buttons button:active:not(:disabled) {
+	background: var(--mac-selected);
+}
+.macos .mac-stepper-buttons button:disabled {
+	opacity: 0.3;
+}
+.mac-stepper[data-active="false"] .mac-stepper-buttons button {
+	color: color-mix(in srgb, var(--mac-text) 60%, var(--mac-surface));
+}
+.mac-stepper[data-disabled] .mac-stepper-buttons {
+	background: color-mix(in srgb, var(--mac-text) 1.5%, var(--mac-surface));
+}
+.mac-stepper[data-disabled] .mac-stepper-input {
+	color: color-mix(in srgb, var(--mac-text) 30%, var(--mac-surface));
+	opacity: 1;
+}
+.macos .mac-stepper-buttons button:focus-visible {
+	outline-offset: -3px;
+}

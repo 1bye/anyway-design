@@ -433,3 +433,33 @@ Narrow/dark controls exercise the browser and inspector. The native light
 compact and expanded-preview states are calibrated; dark appearance and other
 expanded section interiors remain first passes. There is no filesystem access,
 OS permission/association mutation, window dragging, or multi-file inspector.
+
+### Tahoe input controls study
+
+Open `/?view=input-controls-reference` for reusable `MacCheckbox`,
+`MacRadioGroup` / `MacRadio`, `MacSlider`, and `MacStepper` beside actual native
+AppKit controls. Active light/dark references are genuine window captures;
+inactive light/dark references are offscreen AppKit renders. The comparison
+clips the active window's 32-point title bar in CSS, retaining the unaltered
+original PNGs. Provenance and measured geometry are in
+`public/assets/native-input-controls/SOURCES.md`.
+
+Shared Fit / 1× / 1.5× / 2× zoom and family detail crops compare regular-size
+unchecked, selected, mixed, disabled, ticked, and bounded states. Reset native
+match restores the live fixture. Native references stay fixed while the live
+controls are interactive. Dark and Active window affect both sides.
+
+The workbench exercises a mixed parent checkbox, independent named values,
+radio arrow navigation skipping a disabled option, slider pointer and keyboard
+input/commit callbacks, stepper bounds, decimal stepping, read-only/disabled
+states, custom accents, and FormData submission. Controlled reset restores
+values and incomplete numeric drafts; the separate uncontrolled form checks
+native reset without wiring individual state. Disabled fields are omitted
+from submission. Values stay in local React state.
+
+Browser smoke checks cover mixed→all→none, radio navigation, Home/End/Page Up,
+slider dragging to 100, held stepper presses reaching the bound, required empty
+fields, decimal values, form submission and both reset modes. Focus rings,
+hover/pressed treatment, and repeat timing have no separate native calibration.
+Range/vertical sliders, small/mini controls, wrapping steppers, and Sequoia
+calibration are outside this pass.

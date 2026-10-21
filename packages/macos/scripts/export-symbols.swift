@@ -17,6 +17,7 @@ let symbols: [Symbol] = [
     .init(id: "applications", name: "appstore", extent: 13.5, weight: .medium, privateGlyph: true),
     .init(id: "archive", name: "zipper.page", extent: 12.5),
     .init(id: "check", name: "checkmark", extent: 12),
+    .init(id: "checkbox-check", name: "checkmark", extent: 10, weight: .heavy),
     .init(id: "chevron-down", name: "chevron.down", extent: 12, weight: .bold),
     .init(id: "chevron-left", name: "chevron.left", extent: 12, weight: .medium),
     .init(id: "chevron-right", name: "chevron.right", extent: 12, weight: .medium),
@@ -50,6 +51,7 @@ let symbols: [Symbol] = [
     .init(id: "settings", name: "slider.horizontal.3"),
     .init(id: "share", name: "square.and.arrow.up", extent: 15),
     .init(id: "shared", name: "folder.badge.person.crop", extent: 16, weight: .medium),
+    .init(id: "stepper-chevron-down", name: "chevron.down", extent: 11, weight: .bold),
     .init(id: "tag", name: "tag", extent: 15),
     .init(id: "trash", name: "trash"),
 ]

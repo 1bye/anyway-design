@@ -284,9 +284,14 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 	}
 	if (component === "controls") {
 		return (
-			<a className="copy-button" href="/?view=controls-reference">
-				<Columns2 size={14} /> Compare with native AppKit
-			</a>
+			<>
+				<a className="copy-button" href="/?view=controls-reference">
+					<Columns2 size={14} /> Buttons & fields
+				</a>
+				<a className="copy-button" href="/?view=input-controls-reference">
+					<Columns2 size={14} /> Checkboxes, radios, sliders & steppers
+				</a>
+			</>
 		);
 	}
 	return null;
