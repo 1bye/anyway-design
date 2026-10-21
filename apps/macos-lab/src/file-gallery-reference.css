@@ -1,0 +1,41 @@
+.gallery-study .dock-study-heading {
+	margin: 16px 0 16px;
+}
+.gallery-study .dock-study-heading h1 {
+	font-size: 28px;
+}
+.gallery-study .dock-study-panel > footer {
+	min-height: 40px;
+	padding-block: 11px;
+}
+.gallery-study .dock-study-jump {
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+.gallery-study .dock-study-jump [aria-pressed="true"] {
+	background: #eaf1f5;
+	border-color: #b4c9d5;
+}
+.gallery-study-viewport {
+	height: calc(var(--gallery-study-height) * var(--gallery-study-zoom));
+	max-height: 650px;
+	overflow: auto;
+	background: #edf0f2;
+}
+.gallery-study-scene {
+	position: relative;
+	width: var(--gallery-study-width);
+	height: var(--gallery-study-height);
+	overflow: hidden;
+	zoom: var(--gallery-study-zoom);
+}
+.gallery-study-live,
+.gallery-study-native {
+	position: absolute;
+	top: var(--gallery-study-top);
+	left: var(--gallery-study-left);
+	width: 1050px;
+	max-width: none;
+	height: 658px;
+}

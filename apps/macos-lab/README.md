@@ -386,3 +386,28 @@ stay intact. New Folder is available again from the empty browser. Escape
 cancels the naming sheet first. Data changes stay in React state; callbacks do
 not open or save actual files. The temporary native fixture contains only
 generated folders and demo text.
+
+### Finder Gallery study
+
+Open `/?view=file-gallery-reference` for Gallery beside actual native Tahoe
+Finder captures of the same image, text file, and folder. More information
+matches the expanded native metadata state. Fit / 1× / 1.5× / 2× zoom,
+Whole Gallery / Preview / Information / Filmstrip crops, and synchronized
+scrolling inspect both sides at the same scale. Presets restore the native
+light/inactive state. Provenance and measurements are recorded in
+`public/assets/native-file-gallery/SOURCES.md`.
+
+The live side uses the reusable `MacFileGallery`, existing file-grid selection,
+and the existing Quick Look dialog. Try arrows, Home/End, typeahead, range
+selection, Command/Control-click, and Select All. A long filmstrip includes a
+disabled item and 30 extra images. Narrow and dark controls exercise layout;
+the pane hides at 500px. Failed preview shows the icon fallback. Empty clears
+selection and shows an empty state. Quick actions and Add Tags report callbacks.
+Space opens Quick Look; closing restores focus to its selected filmstrip file.
+
+Preview images, text, thumbnails, metadata, and file operations remain caller
+supplied. Gallery's large folder fallback is exported from native Icon Services;
+the comparison does not use screenshot art inside React. Text thumbnail art is
+from Quick Look on the generated Notes.txt. The native side is fixed; only the
+four light single-selection presets are calibrated. Native tag editing,
+Quick Action execution, and document decoding are not included.

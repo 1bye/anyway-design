@@ -267,6 +267,17 @@
       "weight": 0
     },
     {
+      "extent": 14,
+      "id": "more-circle",
+      "nativeName": "ellipsis.circle",
+      "pixelHeight": 64,
+      "pixelWidth": 64,
+      "pointSize": 16,
+      "rendering": "monochrome",
+      "source": "NSImage(systemSymbolName: ellipsis.circle)",
+      "weight": 0
+    },
+    {
       "extent": 11.5,
       "id": "open",
       "nativeName": "arrow.up.forward.app",
@@ -275,6 +286,17 @@
       "pointSize": 16,
       "rendering": "monochrome",
       "source": "NSImage(systemSymbolName: arrow.up.forward.app)",
+      "weight": 0
+    },
+    {
+      "extent": 16,
+      "id": "photos",
+      "nativeName": "photo.on.rectangle.angled",
+      "pixelHeight": 64,
+      "pixelWidth": 64,
+      "pointSize": 16,
+      "rendering": "monochrome",
+      "source": "NSImage(systemSymbolName: photo.on.rectangle.angled)",
       "weight": 0
     },
     {

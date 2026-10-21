@@ -6,6 +6,7 @@ import { DockGlassPlayground } from "./dock-glass-playground";
 import { DockReferenceComparison } from "./dock-reference";
 import { FileColumnsReferenceComparison } from "./file-columns-reference";
 import { FileDialogReferenceComparison } from "./file-dialog-reference";
+import { FileGalleryReferenceComparison } from "./file-gallery-reference";
 import { FileListReferenceComparison } from "./file-list-reference";
 import { FileRenameReferenceComparison } from "./file-rename-reference";
 import { MenuReferenceComparison } from "./menu-reference";
@@ -45,5 +46,7 @@ if (view === "dock-reference") {
 	page = <FileColumnsReferenceComparison />;
 } else if (view === "new-folder-reference") {
 	page = <NewFolderReferenceComparison />;
+} else if (view === "file-gallery-reference") {
+	page = <FileGalleryReferenceComparison />;
 }
 createRoot(root).render(<StrictMode>{page}</StrictMode>);

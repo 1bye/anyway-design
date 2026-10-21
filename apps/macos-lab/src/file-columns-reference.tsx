@@ -233,6 +233,7 @@ export function FileColumnsReferenceComparison() {
 				</label>
 			</div>
 			<div className="window-study-controls">
+				<a href="/?view=file-gallery-reference">Compare Gallery ↗</a>
 				<a href="/?view=new-folder-reference">Compare New Folder ↗</a>
 				<button onClick={createAtSelection} type="button">
 					New Folder

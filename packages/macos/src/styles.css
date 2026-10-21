@@ -3063,6 +3063,307 @@
 	opacity: 0.45;
 }
 
+.mac-file-gallery {
+	height: 100%;
+	min-height: 180px;
+	container-type: inline-size;
+	color: var(--mac-text);
+	background: var(--mac-surface);
+}
+.mac-file-gallery[data-active="false"] {
+	color: color-mix(in srgb, var(--mac-text) 80%, var(--mac-surface));
+}
+.mac-file-gallery-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) var(--mac-gallery-info-width, 240px);
+	height: 100%;
+}
+.mac-file-gallery[data-info="false"] .mac-file-gallery-layout {
+	grid-template-columns: minmax(0, 1fr);
+}
+.mac-file-gallery-browser {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	min-height: 0;
+}
+.mac-file-gallery-stage {
+	display: grid;
+	flex: 1;
+	min-width: 0;
+	min-height: 0;
+	padding: var(--mac-gallery-preview-padding, 32px);
+	overflow: hidden;
+}
+.mac-file-gallery-stack {
+	position: relative;
+	min-width: 0;
+	min-height: 0;
+}
+.mac-file-gallery-art {
+	position: absolute;
+	inset: 0;
+	display: grid;
+	place-items: center;
+	min-width: 0;
+	min-height: 0;
+}
+.mac-file-gallery-art > img {
+	display: block;
+	max-width: 100%;
+	max-height: 100%;
+	object-fit: contain;
+	border-radius: 5px;
+}
+.mac-file-gallery-art[data-presentation="document"] > img {
+	border-radius: 0;
+	box-shadow: 0 1px 12px rgb(0 0 0 / 15%);
+}
+.mac-file-gallery-art > pre {
+	width: 100%;
+	height: 100%;
+	padding: 3px 7px;
+	margin: 0;
+	overflow: auto;
+	font:
+		12px / 13px Menlo,
+		monospace;
+	color: var(--mac-text);
+	overflow-wrap: anywhere;
+	white-space: pre-wrap;
+	background: var(--mac-surface);
+	border: 1px solid var(--mac-line);
+	border-radius: 6px;
+}
+.mac-file-gallery-art .mac-file-column-fallback {
+	align-content: center;
+	width: 100%;
+	height: 100%;
+}
+.mac-file-gallery-art .mac-file-column-fallback .mac-file-icon {
+	width: min(100%, 504px);
+	height: min(100%, 504px);
+	object-fit: contain;
+	filter: drop-shadow(0 3px 5px rgb(0 0 0 / 24%));
+}
+/* shortcut: the static three-item stack needs native captures before calibrating its geometry or transitions. */
+.mac-file-gallery-stack[data-multiple="true"] {
+	margin: 36px 48px;
+}
+.mac-file-gallery-stack[data-multiple="true"]
+	.mac-file-gallery-art:first-child {
+	transform: rotate(-8deg) translateX(-18px);
+}
+.mac-file-gallery-stack[data-multiple="true"]
+	.mac-file-gallery-art:nth-child(2) {
+	transform: rotate(8deg) translateX(18px);
+}
+.mac-file-gallery-stack[data-multiple="true"] .mac-file-gallery-art:last-child {
+	transform: none;
+}
+.mac-file-gallery-empty {
+	align-self: center;
+	margin: 0;
+	color: var(--mac-secondary);
+	text-align: center;
+}
+.mac-file-gallery .mac-file-grid {
+	--mac-file-icon-size: 48px;
+	position: relative;
+	display: flex;
+	flex: 0 0 62px;
+	gap: 5px;
+	align-items: center;
+	min-height: 0;
+	padding: 3px 5px 5px;
+	overflow: auto hidden;
+	scrollbar-width: thin;
+}
+.mac-file-gallery .mac-file-grid-item {
+	flex: 0 0 54px;
+	height: 54px;
+}
+.mac-file-gallery .mac-file-item {
+	display: grid;
+	place-items: center;
+	padding: 3px;
+	border-radius: 7px;
+}
+.mac-file-gallery .mac-file-item[aria-pressed="true"] {
+	background: color-mix(in srgb, var(--mac-text) 29%, transparent);
+}
+.mac-file-gallery .mac-file-item[aria-pressed="true"] .mac-file-artwork {
+	background: transparent;
+}
+.mac-file-gallery .mac-file-artwork .mac-file-thumbnail {
+	border-radius: 0;
+	box-shadow: none;
+}
+.mac-file-gallery .mac-file-caption {
+	display: none;
+}
+.macos .mac-file-gallery .mac-file-item:focus-visible {
+	outline: 2px solid var(--mac-accent);
+	outline-offset: -2px;
+}
+.mac-file-gallery-aside {
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	min-height: 0;
+	background: color-mix(in srgb, var(--mac-text) 2.5%, var(--mac-surface));
+	border-left: 1px solid var(--mac-line);
+}
+.mac-file-gallery-information {
+	flex: 1;
+	min-height: 0;
+	padding: 24px 10px 12px;
+	overflow: auto;
+	font-size: 13px;
+}
+.mac-file-gallery-heading {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	min-height: 42px;
+	margin-bottom: 19px;
+}
+.mac-file-gallery-small-art {
+	display: grid;
+	flex: 0 0 48px;
+	place-items: center;
+	height: 42px;
+}
+.mac-file-gallery-small-art > :is(img, svg) {
+	width: 48px;
+	height: 48px;
+	object-fit: contain;
+}
+.mac-file-gallery-small-art > .mac-file-thumbnail {
+	width: auto;
+	max-width: 42px;
+	height: auto;
+	max-height: 42px;
+}
+.mac-file-gallery-heading > div {
+	min-width: 0;
+}
+.mac-file-gallery-heading h3 {
+	margin: 0;
+	font-size: 15px;
+	font-weight: 600;
+	line-height: 19px;
+	overflow-wrap: anywhere;
+}
+.mac-file-gallery-heading p {
+	margin: 3px 0 0;
+	font-size: 13px;
+	line-height: 17px;
+	color: var(--mac-secondary);
+}
+.mac-file-gallery-information h4 {
+	margin: 0;
+	font-size: 13px;
+	font-weight: 600;
+}
+.mac-file-gallery-info-title {
+	display: flex;
+	gap: 6px;
+	align-items: center;
+	justify-content: space-between;
+	min-height: 20px;
+}
+.mac-file-gallery-info-title button {
+	flex-shrink: 0;
+	padding: 0;
+	font: inherit;
+	font-size: 11px;
+	color: var(--mac-accent);
+	background: transparent;
+	border: 0;
+}
+.mac-file-gallery-information dl {
+	margin: 3px 0 0;
+	font-size: 11px;
+	font-weight: 600;
+}
+.mac-file-gallery-information dl > div {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr);
+	gap: 8px;
+	align-items: center;
+	min-height: 23px;
+	border-bottom: 1px solid var(--mac-line);
+}
+.mac-file-gallery-information dl > div:last-child {
+	border-bottom: 0;
+}
+.mac-file-gallery-information dt {
+	color: var(--mac-secondary);
+}
+.mac-file-gallery-information dd {
+	margin: 0;
+	text-align: right;
+	overflow-wrap: anywhere;
+}
+.mac-file-gallery-information .mac-file-gallery-tags-title {
+	margin: 20px 0 7px;
+}
+.mac-file-gallery-no-tags {
+	margin: 0;
+	color: var(--mac-secondary);
+}
+.mac-file-gallery-add-tags {
+	width: 100%;
+	min-height: 33px;
+	padding: 0;
+	font: inherit;
+	color: var(--mac-secondary);
+	text-align: left;
+	background: var(--mac-surface);
+	border: 0;
+}
+.mac-file-gallery-actions {
+	display: flex;
+	flex: 0 0 70px;
+	align-items: stretch;
+	justify-content: center;
+	background: var(--mac-surface);
+}
+.mac-file-gallery-actions button {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 8px;
+	align-items: center;
+	max-width: 90px;
+	padding: 12px 6px 4px;
+	font: inherit;
+	font-size: 11px;
+	line-height: 14px;
+	color: var(--mac-secondary);
+	background: transparent;
+	border: 0;
+	border-radius: 6px;
+}
+.mac-file-gallery-actions button:hover {
+	background: var(--mac-selected);
+}
+.macos .mac-file-gallery-actions button:disabled {
+	opacity: 0.4;
+}
+@container (max-width: 500px) {
+	.mac-file-gallery-layout {
+		grid-template-columns: minmax(0, 1fr);
+	}
+	.mac-file-gallery-aside {
+		display: none;
+	}
+	.mac-file-gallery-stage {
+		padding: 16px;
+	}
+}
+
 .mac-new-folder-panel {
 	width: 321px;
 	max-width: 100%;

@@ -3,7 +3,7 @@ import type { MacFileColumnItem } from "./file-column-model";
 import { MacFileIcon } from "./file-icons";
 import { FILE_KIND_LABELS } from "./file-list-tree";
 
-function FileColumnArt({ file }: { file: MacFileColumnItem }) {
+export function FileColumnArt({ file }: { file: MacFileColumnItem }) {
 	const [failed, setFailed] = useState(false);
 	const fail = useCallback(() => setFailed(true), []);
 	if (file.preview?.src && !failed) {

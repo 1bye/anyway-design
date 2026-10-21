@@ -36,6 +36,7 @@ and the portal container so menus retain their styles in embedded previews.
 | `tabs` | `MacTabs`: `tabs`, `value`, `onValueChange`, `variant`, `label`, `onAdd`, `onClose`, `onReorder` |
 | `controls` | `MacButton`, `MacTextField`, `MacSearchField`, `MacSwitch` |
 | `files` | `MacFileItem`, `MacFileGrid`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `active`, `showExtensions` |
+| `file-gallery` | `MacFileGallery`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `onQuickLook`, `showInfo`, `actions`, `onAction`, `onEditTags` |
 | `file-list` | `MacFileList`: recursive `items`, `expandedIds`, `defaultExpandedIds`, `onExpandedChange`, `selectedIds`, `onSelectionChange`, `onOpen`, `sort`, `defaultSort`, `onSortChange`, `columns`, `columnWidths`, `onColumnWidthsChange`, `resizable`, `active`, `showExtensions`, `minRows` |
 | `quick-look` | `MacQuickLook`: `items`, `value`, `onValueChange`, `open`, `onOpenChange`, `onOpenFile`, `onShare`, `onMarkup`, `returnFocus`, `style`; `MacQuickLookPanel` for embedded previews |
 | `file-icons` | `MacFileIcon`: `name` (`folder`, `document`, `pdf`, `image`, `archive`, `text`), native image props |
@@ -149,14 +150,14 @@ fieldsets, and buttons retain native disabled, keyboard, and click behavior.
 Omit `sidebar` to use the full content width. `active={false}` mutes the chrome
 and traffic lights. Reduced transparency removes the sidebar backdrop blur.
 
-`WindowSymbol` supplies 36 native Tahoe glyphs for controls, tabs, the toolbar, sidebar, and
+`WindowSymbol` supplies 39 native Tahoe glyphs for controls, tabs, the toolbar, sidebar, and
 menus. AppKit renders them at 4× into transparent 64 × 64 PNGs on a 16px canvas;
 CSS masks inherit `currentColor`, including selection, disabled, and highlighted
 states. The component renders a decorative `span` (previously an SVG); its
 containing control supplies the accessible label. Custom React icons remain
 supported in every slot.
 
-The checked-in assets were extracted on macOS 26.6.2 (25G83). Thirty-two use
+The checked-in assets were extracted on macOS 26.6.2 (25G83). Thirty-five use
 the public system-symbol API; Applications and Make Alias use the installed
 `CoreGlyphsPrivate.bundle` through AppKit's bundle image loader. No native or
 private API runs in the browser. Bundlers resolve the static asset URLs.
@@ -850,3 +851,58 @@ permissions at persistence time. Without the callback, creation UI is omitted.
 mount, and `active={false}` reproduces inactive input selection in a reference.
 The modal traps focus and supports `returnFocus`. These components do not
 read or write the host filesystem.
+
+## Finder Gallery view
+
+`MacFileGallery` from `@anyway-design/macos/file-gallery` displays a flat list
+of `MacFileGalleryItem` in the supplied order, with a fitted preview, horizontal
+filmstrip, and optional information pane:
+
+```tsx
+<MacFileGallery
+  items={files}
+  selectedIds={selection}
+  onSelectionChange={setSelection}
+  onOpen={openFile}
+  onQuickLook={previewFile}
+/>
+```
+
+Supply stable, unique IDs. Items share file-list fields and the column preview's `preview.src`, `alt`,
+`text`, and `details`. `preview.moreDetails` enables Show More; the optional
+`defaultExpandedInfo` seeds its state for each selection. Metadata values are
+caller supplied. Additional detail labels must be unique. `thumbnail` supplies
+the filmstrip and header artwork; a preview image takes precedence in the main
+area, then supplied text, then a thumbnail, then the native icon. A failed
+preview falls back to the icon and announces that it is unavailable. Source
+changes reset failure state. `presentation: "document"` gives a supplied page
+image square corners and a paper shadow. This does not decode PDFs or generate
+thumbnails. `renderPreview(file)` can replace the main artwork.
+
+Click selects, Command/Control-click toggles, and Shift extends a range. The
+existing file grid supplies Left/Right, Home/End, typeahead, Select All, and
+Escape clearing. Disabled files are excluded. Double-click, Return, and
+Command/Control-O report `onOpen`; unmodified Space reports `onQuickLook` when
+supplied. No inline rename session is started in this first Gallery pass.
+Only one filmstrip item is a tab stop. Overflow scrolls horizontally, and the
+focused/selected cell is revealed after selection or container resizing.
+Removed and disabled selections are cleared through `onSelectionChange`.
+Multi-selection displays up to three stacked previews, shared metadata, and common tags;
+its stacking geometry is an approximation rather than a calibrated preset.
+
+`showInfo={false}` omits the pane; containers at or below 500px also hide it
+and reduce preview padding. Tags are read-only. `onEditTags(ids)` enables an
+Add Tags command for an untagged selection; the caller owns its editor and
+updated tags. Optional `actions` contain `{ id, label, icon, disabled? }`;
+`onAction(actionId, ids)` handles their commands in visual selection order.
+Actions appear only with a nonempty enabled selection and a callback. They
+never invoke macOS services. Custom icons are supported; Gallery's default
+folder artwork is a separate high-resolution native export.
+
+Render in a sized `MacOSEnvironment`. `active`, `label`, `className`, and
+`style` configure presentation. CSS variables `--mac-gallery-info-width`
+(default 240px) and `--mac-gallery-preview-padding` (32px) adjust geometry.
+The lab compares genuine Tahoe light captures at 1050 × 658 points; dark,
+multiple-selection stacks, responsive behavior, and Sequoia have no separate
+native calibration. Native vibrancy, font rasterization, and image color
+management can still affect the comparison.

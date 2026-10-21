@@ -90,3 +90,8 @@ Mac, displaying generated demo files only. See
 - `native-new-folder/`: Genuine Tahoe Finder inline naming and AppKit Open/Save
   New Folder sheets, including the duplicate-name state. See the directory's
   `SOURCES.md` for fixture provenance, crop coordinates, and reproduction.
+
+- `native-file-gallery/`: Genuine Tahoe Finder Gallery captures for image, text,
+  folder, and expanded information states. Includes a native Quick Look
+  thumbnail of generated demo text. See the directory's `SOURCES.md` for
+  provenance, crop geometry, and calibrated states.

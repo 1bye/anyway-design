@@ -1,10 +1,10 @@
 # Native Tahoe symbols
 
 Exported locally on macOS 26.6.2 (build 25G83) with
-`packages/macos/scripts/export-symbols.swift`. All 37 icons are native raster
+`packages/macos/scripts/export-symbols.swift`. All 39 icons are native raster
 exports. No screenshot tracing or hand-drawn paths are used.
 
-- 33 symbols: AppKit `NSImage(systemSymbolName:accessibilityDescription:)`.
+- 35 symbols: AppKit `NSImage(systemSymbolName:accessibilityDescription:)`.
 - `applications` (`appstore`) and `alias` (`square.dashed.and.alias`):
   AppKit `NSImage(symbolName:bundle:variableValue:)`, loading
   `/System/Library/PrivateFrameworks/SFSymbols.framework/Versions/A/Resources/CoreGlyphsPrivate.bundle`.

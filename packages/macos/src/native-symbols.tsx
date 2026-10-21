@@ -49,7 +49,12 @@ export const NATIVE_SYMBOLS = {
 	"list-view": new URL("./assets/native-symbols/list-view.png", import.meta.url)
 		.href,
 	markup: new URL("./assets/native-symbols/markup.png", import.meta.url).href,
+	"more-circle": new URL(
+		"./assets/native-symbols/more-circle.png",
+		import.meta.url
+	).href,
 	open: new URL("./assets/native-symbols/open.png", import.meta.url).href,
+	photos: new URL("./assets/native-symbols/photos.png", import.meta.url).href,
 	plus: new URL("./assets/native-symbols/plus.png", import.meta.url).href,
 	"quick-look-close": new URL(
 		"./assets/native-symbols/quick-look-close.png",
