@@ -221,12 +221,20 @@ export function MacMenuButton({
 
 // Base UI opens at pointer coordinates; keyboard invocation anchors to the target.
 function openContextMenuFromKeyboard(event: KeyboardEvent<HTMLElement>) {
-	if (event.key !== "ContextMenu" && !(event.shiftKey && event.key === "F10")) {
+	if (
+		event.defaultPrevented ||
+		(event.key !== "ContextMenu" && !(event.shiftKey && event.key === "F10"))
+	) {
+		return;
+	}
+	const target =
+		event.target instanceof HTMLElement ? event.target : event.currentTarget;
+	if (target.closest("input, textarea, select, [contenteditable='true']")) {
 		return;
 	}
 	event.preventDefault();
-	const rect = event.currentTarget.getBoundingClientRect();
-	event.currentTarget.dispatchEvent(
+	const rect = target.getBoundingClientRect();
+	target.dispatchEvent(
 		new MouseEvent("contextmenu", {
 			bubbles: true,
 			clientX: rect.left + rect.width / 2,

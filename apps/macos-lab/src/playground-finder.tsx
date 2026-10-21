@@ -11,6 +11,7 @@ import { PLAYGROUND_SIDEBAR } from "./playground-data";
 
 export type FinderHandle = MacFinderHandle;
 interface FinderExampleProps extends Omit<MacFinderProps, "files" | "rootId"> {
+	customActions?: boolean;
 	focus?: "toolbar" | "sidebar";
 	onEvent: (message: string) => void;
 	readOnly?: boolean;
@@ -37,6 +38,7 @@ export function PlaygroundFinder({
 	onEvent,
 	title = "Documents",
 	readOnly = false,
+	customActions = false,
 	ref,
 	...props
 }: FinderExampleProps) {
@@ -63,19 +65,64 @@ export function PlaygroundFinder({
 			? { ...file, name: title }
 			: file
 	);
+	const canReview = customActions && !readOnly;
 	return (
 		<div ref={root} style={{ display: "contents" }}>
 			<MacFinder
 				collections={COLLECTIONS}
 				defaultTabs={TABS}
+				fileActions={
+					customActions
+						? ({ defaultActions, selectedFiles }) => [
+								...defaultActions,
+								{
+									disabled: readOnly || !selectedFiles.length,
+									id: "mark-reviewed",
+									label: "Mark as Reviewed",
+									separatorBefore: true,
+								},
+							]
+						: undefined
+				}
 				files={files}
-				onAction={(id) => onEvent(`onAction → ${id}`)}
+				onAction={(id, ids) => {
+					if (id === "mark-reviewed" && canReview) {
+						setItems((previous) =>
+							previous.map((file) =>
+								ids.includes(file.id)
+									? {
+											...file,
+											tags: [
+												...(file.tags ?? []).filter(
+													(tag) => tag.label !== "Reviewed"
+												),
+												{ color: "#30b956", label: "Reviewed" },
+											],
+										}
+									: file
+							)
+						);
+					}
+					onEvent(`onAction → ${id} · ${ids.join(", ")}`);
+				}}
 				onCreateFolder={
 					readOnly
 						? undefined
 						: (folder) => {
 								setItems((previous) => [...previous, folder]);
 								onEvent(`onCreateFolder → ${folder.name}`);
+							}
+				}
+				onInfoChange={
+					readOnly
+						? undefined
+						: (id, changes) => {
+								setItems((previous) =>
+									previous.map((file) =>
+										file.id === id ? { ...file, ...changes } : file
+									)
+								);
+								onEvent(`onInfoChange → ${id}`);
 							}
 				}
 				onLocationChange={(id) =>

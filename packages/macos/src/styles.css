@@ -5561,3 +5561,19 @@
 .mac-finder-window {
 	display: contents;
 }
+
+.mac-finder-browser {
+	height: 100%;
+	min-height: 0;
+}
+.mac-quick-look-text {
+	min-height: 100%;
+	padding: 36px;
+	margin: 0;
+	font:
+		14px / 1.6 ui-monospace,
+		monospace;
+	color: #202020;
+	overflow-wrap: anywhere;
+	white-space: pre-wrap;
+}

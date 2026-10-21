@@ -267,7 +267,7 @@ export function FileBrowser() {
 
 `files` is a flat hierarchy with unique IDs and `parentId` references. Include
 the root folder itself; its ID and name can be anything. Supply thumbnails and
-optional Gallery `preview` content through each file. No demo assets, file
+optional `preview` content through each file for Gallery and Quick Look. No demo assets, file
 contents, or native filesystem access are embedded in this component.
 
 - `sidebarGroups` uses `WindowSidebarGroup[]`, including optional React icons.
@@ -303,6 +303,64 @@ controlled-state setters. Removed/disabled selections are excluded and removed
 locations fall back to a surviving history location or `rootId`.
 See the [Finder playground](http://127.0.0.1:3006/?component=finder) for editable
 configuration and a copyable example using only public imports.
+
+### Finder file actions and inspectors
+
+Finder's More menu and right-click menus share the built-in Open, Quick Look,
+Get Info, Rename, New Folder, and Select All actions. Right-clicking an unselected
+file selects it; right-clicking a selected file preserves the selected group.
+Empty space clears selection and offers actions for that folder, including the
+correct parent when targeting an ancestor column. Shift-F10 or the Context Menu
+key opens the same menu at the focused file. Text editors retain their native
+text-editing context menus.
+
+With a file focused, **Space** opens Quick Look. Its arrows browse the visible
+files in the same order (or only the selected group for a multi-selection).
+Space or Escape closes the preview and returns focus to the file. **⌘/Ctrl-I**
+opens Get Info for one selected file, or the current folder when focus is on
+window controls with no selection. **⌘/Ctrl-W** closes Get Info. Get Info keeps
+its native behavior of ignoring Escape. Both use the existing calibrated panels.
+
+`preview.src` is an image preview URL, including rasterized document pages;
+`preview.text` supplies plain document content. Quick Look uses an explicit
+preview first, then `thumbnail`, then the native file icon when unavailable.
+It does not fetch or decode PDF/Office file bytes. `onOpen` handles the preview's
+Open button. Get Info displays supplied file metadata and the actual parent path.
+It forwards name changes through `onRename` and metadata edits through
+`onInfoChange(id, changes)`; update `files` in those callbacks. Without those
+callbacks the corresponding fields are read-only. `MacFinderFile` accepts the
+metadata fields from `MacFileInfoItem`, including comments and locked state.
+
+Configure both menus with `fileActions`, either a `MacMenuEntry[]` or a factory:
+
+```tsx
+<MacFinder
+  files={files}
+  rootId="workspace"
+  fileActions={({ defaultActions, selectedFiles }) => [
+    ...defaultActions,
+    { id: "export", label: "Export…", separatorBefore: true,
+      disabled: !selectedFiles.length },
+  ]}
+  onAction={(id, selectedIds, context) => {
+    if (id === "export") {
+      exportFiles(selectedIds, context.locationId);
+    }
+  }}
+/>
+```
+
+The factory receives `{ defaultActions, selectedFiles, selectedIds, locationId }`.
+Return a filtered list to hide actions, append your own items or submenus, or set
+`disabled` on an action. Built-in capability checks still apply; a configured
+Rename cannot enable renaming without `onRename` or unlock a locked file.
+Removing a menu entry leaves its keyboard shortcut available; explicitly disable
+it to disable its shortcut too. Custom `shortcut` strings are display hints;
+attach custom keyboard handlers in the consuming app if needed.
+`onAction` receives the validated target IDs and context for keyboard, toolbar,
+and context-menu actions. Built-in IDs are `open`, `quick-look`, `info`, `rename`,
+`new-folder`, and `select-all`; custom IDs must differ from these and view IDs.
+The same IDs work with `MacFinderHandle.command`.
 
 Each Dock item's `icon` accepts an image URL or a React element, such as an
 inline SVG. Custom artwork should fill the supplied square canvas and include

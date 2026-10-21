@@ -10,6 +10,7 @@ import type { MacFileGroupBy } from "./file-groups";
 import { MacFileIcon } from "./file-icons";
 import { fileNewFolderError, fileNewFolderName } from "./file-new-folder";
 import type { MacFinderInitialTab, MacFinderProps } from "./finder";
+import { finderActionEnabled } from "./finder-actions";
 import {
 	createFinderTab,
 	FINDER_VIEWS,
@@ -26,9 +27,10 @@ import {
 	type MacFinderView,
 	navigateFinderTab,
 	resolveFinderTab,
+	selectFinderColumn,
 	stepFinderHistory,
 } from "./finder-model";
-import type { MacMenuEntry } from "./menu";
+import { useFinderFileActions } from "./use-finder-file-actions";
 
 const EMPTY_COLLECTIONS: readonly MacFinderCollection[] = [];
 
@@ -69,6 +71,8 @@ export function useFinder({
 	onViewChange,
 	onSelectionChange,
 	onAction,
+	fileActions: configuration,
+	onInfoChange,
 	ref,
 	...props
 }: MacFinderProps) {
@@ -120,9 +124,6 @@ export function useFinder({
 		(file) => file.id === location && file.kind === "folder" && !file.disabled
 	);
 	const canCreate = Boolean(onCreateFolder && physical);
-	const canRename = Boolean(
-		onRename && selectedFile && !selectedFile.disabled && editableView
-	);
 
 	const label = (id: string): string =>
 		items.find((file) => file.id === id)?.name ??
@@ -262,8 +263,11 @@ export function useFinder({
 			parentId,
 		};
 		onCreateFolder(folder);
-		updateTab({
+		commit({
+			...navigateFinderTab(tab, parentId),
 			column: tab.view === "columns" ? folder.id : undefined,
+			columnRoot:
+				tab.view === "columns" ? (tab.columnRoot ?? location) : undefined,
 			query: "",
 			searchOpen: false,
 			selected: [folder.id],
@@ -282,28 +286,82 @@ export function useFinder({
 			onOpen?.(id);
 		}
 	};
-	const command = (id: string) => {
-		if (id === "new-folder") {
-			create();
-		} else if (id === "select-all") {
-			select(visible.filter((file) => !file.disabled).map((file) => file.id));
-		} else if (FINDER_VIEWS.includes(id as MacFinderView)) {
-			changeView(id as MacFinderView);
-		} else if (id === "rename" && canRename) {
-			if (tab.view === "gallery" && editableView) {
+	const fileActions = useFinderFileActions({
+		capabilities: {
+			create: Boolean(onCreateFolder),
+			open: Boolean(onOpen),
+			rename: Boolean(onRename && editableView),
+			selectAll: Boolean(visible.length || tree.length),
+		},
+		columnRootId: tab.columnRoot ?? location,
+		configuration,
+		files: items,
+		locationId: location,
+		onAction,
+		onCreate: create,
+		onOpen: open,
+		onRename: (id) => {
+			if (!(onRename && editableView)) {
+				return;
+			}
+			if (tab.view === "gallery") {
 				changeView(editableView);
 			}
-			setRenamingId(tab.selected[0]);
-		} else if (id === "open" && tab.selected.length === 1) {
-			open(tab.selected[0]);
+			setRenamingId(id);
+		},
+		onSelect: (ids, column) => {
+			if (tab.view === "columns" && column) {
+				commit(
+					selectFinderColumn(
+						tab,
+						items.find((file) => file.id === column),
+						ids,
+						collections
+					)
+				);
+			} else {
+				select(ids);
+			}
+		},
+		onSelectAll: (parentId) => {
+			const source =
+				parentId === location
+					? visible
+					: finderLocationFiles(items, parentId, "", collections);
+			select(source.filter((file) => !file.disabled).map((file) => file.id));
+		},
+		root,
+		selectedIds: tab.selected,
+		viewIds: tree.map((file) => file.id),
+	});
+	const command = (id: string) => {
+		if (FINDER_VIEWS.includes(id as MacFinderView)) {
+			changeView(id as MacFinderView);
 		}
-		onAction?.(id, tab.selected);
+		fileActions.run(id);
 	};
+
 	useImperativeHandle(ref, () => ({ command, navigate }));
+	const navigationShortcuts: Record<string, () => void> = {
+		back: () => history(-1),
+		forward: () => history(1),
+		search: () => search(true),
+	};
+
 	const key = (event: KeyboardEvent<HTMLDivElement>) => {
-		if (toolbarDisabled || event.nativeEvent.isComposing) {
+		if (
+			toolbarDisabled ||
+			event.nativeEvent.isComposing ||
+			!(event.target instanceof Node) ||
+			!root.current?.contains(event.target)
+		) {
 			return;
 		}
+		if (fileActions.key(event)) {
+			event.stopPropagation();
+			return;
+		}
+
 		const shortcut = finderShortcut(event);
 		if (
 			!shortcut ||
@@ -319,12 +377,9 @@ export function useFinder({
 		if (event.repeat) {
 			return;
 		}
-		if (shortcut === "search") {
-			search(true);
-		} else if (shortcut === "back") {
-			history(-1);
-		} else if (shortcut === "forward") {
-			history(1);
+		const action = navigationShortcuts[shortcut];
+		if (action) {
+			action();
 		} else {
 			command(shortcut);
 		}
@@ -334,15 +389,23 @@ export function useFinder({
 		groupBy,
 		items: tree,
 		label: `${label(location)} files`,
-		onNewFolder: canCreate ? () => create() : undefined,
-		onOpen: open,
-		onRename,
+		onGetInfo: fileActions.requestInfo,
+		onNewFolder: canCreate ? () => fileActions.run("new-folder") : undefined,
+		onOpen: fileActions.requestOpen,
+		onQuickLook: fileActions.requestPreview,
+		onRename:
+			finderActionEnabled(fileActions.actions, "rename") === false
+				? undefined
+				: onRename,
 		onRenamingChange: setRenamingId,
 		onSelectionChange: select,
 		renamingId,
 		selectedIds: tab.selected,
 		showExtensions,
 		validateRename: (id: string, name: string) =>
+			(items.find((file) => file.id === id)?.locked
+				? "The file is locked."
+				: undefined) ??
 			validateRename?.(id, name) ??
 			fileNewFolderError(
 				name,
@@ -361,30 +424,8 @@ export function useFinder({
 		[...finderPath(items, location)]
 			.reverse()
 			.find((file) => sidebarIds.has(file.id))?.id ?? location;
-	const actions: MacMenuEntry[] = [
-		{
-			disabled: !selectedFile || (selectedFile.kind !== "folder" && !onOpen),
-			id: "open",
-			label: "Open",
-		},
-		{
-			disabled: !canCreate,
-			id: "new-folder",
-			label: "New Folder",
-			shortcut: "⇧⌘N",
-		},
-		{ disabled: !canRename, id: "rename", label: "Rename" },
-		{
-			disabled: !visible.length,
-			id: "select-all",
-			label: "Select All",
-			separatorBefore: true,
-			shortcut: "⌘A",
-		},
-	];
-
 	return {
-		actions,
+		actions: fileActions.actions,
 		activate,
 		activeTab,
 		allowedViews,
@@ -394,6 +435,7 @@ export function useFinder({
 		command,
 		commit,
 		create,
+		fileActions,
 		fileProps,
 		groupBy,
 		groups,
@@ -404,6 +446,9 @@ export function useFinder({
 		location,
 		navigate,
 		onCreateFolder,
+		onInfoChange,
+		onOpen,
+		onRename,
 		open,
 		path,
 		physical,

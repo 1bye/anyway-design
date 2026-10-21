@@ -1,6 +1,12 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Finder chrome delegates to its shared controller. */
+
 import type { Ref } from "react";
+import type { MacGetInfoProps } from "./file-info";
 import type { MacFileRenameProps } from "./file-rename";
+import type {
+	MacFinderActionContext,
+	MacFinderFileActions,
+} from "./finder-actions";
 import { FinderContent } from "./finder-content";
 import { FinderFooter } from "./finder-footer";
 import {
@@ -11,6 +17,7 @@ import {
 	type MacFinderView,
 	resolveFinderTab,
 } from "./finder-model";
+import { FinderOverlays } from "./finder-overlays";
 import { MacFinderNavigation, MacFinderToolbar } from "./finder-toolbar";
 import { MacTabs } from "./tabs";
 import { useFinder } from "./use-finder";
@@ -20,6 +27,10 @@ export interface MacFinderHandle {
 	command: (id: string) => void;
 	navigate: (id: string) => void;
 }
+export type {
+	MacFinderActionContext,
+	MacFinderFileActions,
+} from "./finder-actions";
 export type {
 	MacFinderCollection,
 	MacFinderFile,
@@ -49,11 +60,17 @@ export interface MacFinderProps
 	defaultLocation?: string;
 	defaultTabs?: readonly MacFinderInitialTab[];
 	defaultView?: MacFinderView;
+	fileActions?: MacFinderFileActions;
 	/** Caller-owned flat hierarchy. IDs must be unique; parentId points to a folder in this array. */
 	files: readonly MacFinderFile[];
-	onAction?: (id: string, selectedIds: readonly string[]) => void;
+	onAction?: (
+		id: string,
+		selectedIds: readonly string[],
+		context: MacFinderActionContext
+	) => void;
 	/** Append this proposed folder to files. Omit to disable folder creation. */
 	onCreateFolder?: (folder: MacFinderFile) => void;
+	onInfoChange?: MacGetInfoProps["onInfoChange"];
 	onLocationChange?: (id: string) => void;
 	onOpen?: (id: string) => void;
 	/** Update files with the renamed item. Omit to disable renaming. */
@@ -235,6 +252,7 @@ export function MacFinder(props: MacFinderProps) {
 					)}
 				</div>
 			</MacWindow>
+			<FinderOverlays browser={browser} />
 		</div>
 	);
 }

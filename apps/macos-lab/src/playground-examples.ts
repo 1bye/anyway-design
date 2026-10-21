@@ -267,10 +267,17 @@ function finderExample(
   sidebarGroups={[{ id: "favorites", label: "Favorites", items: [{ id: "workspace", label: "Workspace" }, { id: "documents", label: "Documents" }] }]}
   onOpen={(id) => console.info("Open", id)}
   ${
+		values.customActions
+			? `fileActions={({ defaultActions, selectedFiles }) => [...defaultActions, { id: "mark-reviewed", label: "Mark as Reviewed", disabled: ${readOnly} || !selectedFiles.length, separatorBefore: true }]}
+  onAction={(id, ids) => { ${readOnly ? "console.info(id, ids);" : 'if (id === "mark-reviewed") { setFiles((previous) => previous.map((file) => ids.includes(file.id) ? { ...file, tags: [{ color: "#30b956", label: "Reviewed" }] } : file)); }'} }}`
+			: ""
+	}
+  ${
 		readOnly
 			? ""
 			: `onRename={(id, name) => setFiles((previous) => previous.map((file) => file.id === id ? { ...file, name } : file))}
-  onCreateFolder={(folder) => setFiles((previous) => [...previous, folder])}`
+  onCreateFolder={(folder) => setFiles((previous) => [...previous, folder])}
+  onInfoChange={(id, changes) => setFiles((previous) => previous.map((file) => file.id === id ? { ...file, ...changes } : file))}`
 	}
   onLocationChange={(id) => console.info("Navigate", id)}
   style={${style}}

@@ -3,13 +3,35 @@ import { MacFileColumns } from "./file-columns";
 import { MacFileGallery } from "./file-gallery";
 import { MacFileList } from "./file-list";
 import { MacFileGrid } from "./files";
+import { finderActionEnabled } from "./finder-actions";
 import { selectFinderColumn } from "./finder-model";
+import { MacContextMenu } from "./menu";
 import type { useFinder } from "./use-finder";
 import { WindowSymbol } from "./window-symbol";
 
 type FinderBrowser = ReturnType<typeof useFinder>;
 export function FinderContent({ browser }: { browser: FinderBrowser }) {
-	const { visible, tree, tab, canCreate, create } = browser;
+	return (
+		<MacContextMenu
+			items={browser.fileActions.menuItems}
+			onAction={browser.fileActions.contextAction}
+			trigger={
+				<div
+					className="mac-finder-browser"
+					onContextMenuCapture={browser.fileActions.contextMenu}
+					tabIndex={-1}
+				>
+					<FinderBody browser={browser} />
+				</div>
+			}
+		/>
+	);
+}
+function FinderBody({ browser }: { browser: FinderBrowser }) {
+	const { visible, tree, tab } = browser;
+	const canCreate =
+		browser.canCreate &&
+		finderActionEnabled(browser.actions, "new-folder") !== false;
 	if (!(visible.length || (tab.view === "columns" && tree.length))) {
 		let hint = "There are no files to display.";
 		if (canCreate) {
@@ -26,7 +48,10 @@ export function FinderContent({ browser }: { browser: FinderBrowser }) {
 				</strong>
 				<span>{hint}</span>
 				{canCreate && !tab.query.trim() ? (
-					<button onClick={() => create()} type="button">
+					<button
+						onClick={() => browser.fileActions.run("new-folder")}
+						type="button"
+					>
 						New Folder
 					</button>
 				) : null}
@@ -40,14 +65,12 @@ function FinderFiles({ browser }: { browser: FinderBrowser }) {
 		fileProps,
 		tab,
 		updateTab,
-		create,
 		commit,
 		items,
 		collections,
 		location,
 		tree,
 		groupBy,
-		open,
 		select,
 	} = browser;
 	if (tab.view === "list") {
@@ -65,7 +88,9 @@ function FinderFiles({ browser }: { browser: FinderBrowser }) {
 			<MacFileColumns
 				{...fileProps}
 				onNewFolder={
-					browser.onCreateFolder ? (id) => create(id ?? location) : undefined
+					browser.onCreateFolder
+						? (id) => browser.fileActions.run("new-folder", [], id ?? location)
+						: undefined
 				}
 				onValueChange={(column, selected) =>
 					commit(
@@ -88,7 +113,9 @@ function FinderFiles({ browser }: { browser: FinderBrowser }) {
 				active={browser.props.active}
 				groupBy={groupBy}
 				items={tree}
-				onOpen={open}
+				onGetInfo={browser.fileActions.requestInfo}
+				onOpen={browser.fileActions.requestOpen}
+				onQuickLook={browser.fileActions.requestPreview}
 				onSelectionChange={select}
 				selectedIds={tab.selected}
 			/>

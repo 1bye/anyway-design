@@ -1,12 +1,15 @@
 import type { MacFileGalleryItem } from "./file-gallery";
 import { groupFileItems } from "./file-groups";
+import type { MacFileInfoItem } from "./file-info";
 import type { MacFileListItem, MacFileSort } from "./file-list";
 import { sortFileList } from "./file-list-sort";
 import { FILE_KIND_LABELS } from "./file-list-tree";
 
 export type MacFinderView = "icons" | "list" | "columns" | "gallery";
 export type MacFinderGroup = "none" | "kind" | "date" | "size" | "tags";
-export interface MacFinderFile extends Omit<MacFileGalleryItem, "children"> {
+export interface MacFinderFile
+	extends Omit<MacFileGalleryItem, "children">,
+		Omit<MacFileInfoItem, "children" | "preview"> {
 	parentId?: string;
 	shared?: boolean;
 }

@@ -101,6 +101,7 @@ function BrowserColumn({
 		<div
 			className="mac-file-browser-column"
 			data-column-index={index}
+			data-finder-parent-id={column.parentId}
 			style={{ width }}
 		>
 			<MacFileList

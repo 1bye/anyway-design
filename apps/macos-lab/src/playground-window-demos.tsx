@@ -99,6 +99,7 @@ export function WindowDemo(props: PlaygroundDemoProps) {
 	return (
 		<PlaygroundFinder
 			active={Boolean(props.values.active)}
+			customActions={Boolean(props.values.customActions)}
 			defaultView={(props.values.view ?? "icons") as MacFinderView}
 			key={String(props.values.view ?? "icons")}
 			onClose={() => action("onClose → window closed")}

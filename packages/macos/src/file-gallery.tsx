@@ -290,6 +290,7 @@ export function MacFileGallery({
 								{(file ? [file] : files.slice(-3)).map((entry) => (
 									<div
 										className="mac-file-gallery-art"
+										data-file-id={entry.id}
 										data-presentation={entry.preview?.presentation ?? "image"}
 										key={`${entry.id}:${entry.preview?.src ?? entry.thumbnail ?? ""}`}
 									>

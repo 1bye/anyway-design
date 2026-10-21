@@ -44,6 +44,13 @@ Read only. The lab owns its fixture array and updates it in `onRename` and
 `onCreateFolder`; Desktop menus and Dock navigation use `MacFinderHandle`.
 The library has no dependency on playground data, styles, or reference assets.
 
+Finder also connects Quick Look (Space), Get Info (⌘/Ctrl-I), and right-click
+menus across Icons, List, Columns, and Gallery. Shift-F10 opens a file's context
+menu from the keyboard. The toolbar's More menu uses the same actions. The
+Custom file actions switch adds a caller-owned “Mark as Reviewed” operation;
+Read only disables data mutations. Get Info edits update the same fixture array,
+and Quick Look uses supplied image or text previews without accessing user files.
+
 The shared inspector changes preset, appearance, accent color, and accessibility
 preferences across previews. Canvas width, background, and Fit / Actual size
 help inspect smaller containers. Initial-value changes restart the example; other props update live.

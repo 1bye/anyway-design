@@ -20,7 +20,8 @@ export interface MacQuickLookItem extends MacFile {
 	preview?: {
 		alt?: string;
 		presentation?: "image" | "document";
-		src: string;
+		src?: string;
+		text?: string;
 	};
 	subtitle?: string;
 }
@@ -49,7 +50,7 @@ function QuickLookContent({ item }: { item: MacQuickLookItem }) {
 		setLoading(false);
 	}, []);
 	const loaded = useCallback(() => setLoading(false), []);
-	if (!item.preview || failed) {
+	if ((!item.preview?.src && item.preview?.text === undefined) || failed) {
 		return (
 			<div className="mac-quick-look-fallback">
 				{item.icon ?? <MacFileIcon name={item.kind ?? "document"} />}
@@ -62,11 +63,19 @@ function QuickLookContent({ item }: { item: MacQuickLookItem }) {
 			</div>
 		);
 	}
+	if (item.preview?.text !== undefined) {
+		return (
+			<div className="mac-quick-look-preview" data-presentation="document">
+				<pre className="mac-quick-look-text">{item.preview.text}</pre>
+			</div>
+		);
+	}
+
 	return (
 		<div
 			aria-busy={loading}
 			className="mac-quick-look-preview"
-			data-presentation={item.preview.presentation ?? "image"}
+			data-presentation={item.preview?.presentation ?? "image"}
 		>
 			{loading ? (
 				<span className="mac-quick-look-loading" role="status">
@@ -75,11 +84,11 @@ function QuickLookContent({ item }: { item: MacQuickLookItem }) {
 			) : null}
 			{/* biome-ignore lint/a11y/noNoninteractiveElementInteractions lint/correctness/useImageSize: Image lifecycle events handle failures; the fixed preview viewport reserves layout space without knowing source dimensions. */}
 			<img
-				alt={item.preview.alt ?? item.name}
+				alt={item.preview?.alt ?? item.name}
 				draggable={false}
 				onError={fail}
 				onLoad={loaded}
-				src={item.preview.src}
+				src={item.preview?.src}
 			/>
 		</div>
 	);
@@ -283,11 +292,13 @@ export function MacQuickLook({
 	const goPrevious = useCallback(() => {
 		if (previous) {
 			onValueChange(previous.id);
+			popup.current?.focus({ preventScroll: true });
 		}
 	}, [previous, onValueChange]);
 	const goNext = useCallback(() => {
 		if (next) {
 			onValueChange(next.id);
+			popup.current?.focus({ preventScroll: true });
 		}
 	}, [next, onValueChange]);
 	const keyDown = useCallback(

@@ -13,9 +13,17 @@ export function createFinderFiles(now: number): MacFinderFile[] {
 		})),
 		...PLAYGROUND_FILES.map((file, index) => ({
 			...file,
+			comments:
+				file.id === "brief" ? "Project overview and next steps." : undefined,
 			modifiedAt: now - index * day * 3,
 			modifiedLabel: undefined,
 			parentId: "documents",
+			preview:
+				file.id === "notes"
+					? {
+							text: "Meeting notes\n\nReview the Tahoe components.\nConnect the file actions.\nShare the next prototype.",
+						}
+					: undefined,
 			shared: file.id === "agreement",
 		})),
 		{

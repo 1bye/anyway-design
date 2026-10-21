@@ -190,7 +190,7 @@ export const PLAYGROUND_ENTRIES: readonly PlaygroundEntry[] = [
 		"finder",
 		"MacFinder",
 		"window-reference",
-		"Reusable Finder with caller-owned files, configurable sidebar and views, and Open, Rename, and New Folder callbacks.",
+		"Reusable Finder with caller-owned files, configurable sidebar and views, Quick Look, Get Info, and configurable file actions.",
 		[
 			active,
 			{ initial: "Documents", key: "title", label: "Folder name" },
@@ -210,6 +210,7 @@ export const PLAYGROUND_ENTRIES: readonly PlaygroundEntry[] = [
 			{ initial: true, key: "toolbar", label: "Show toolbar" },
 			{ initial: true, key: "tabs", label: "Show tabs" },
 			{ initial: false, key: "readOnly", label: "Read only" },
+			{ initial: true, key: "customActions", label: "Custom file actions" },
 		],
 		800,
 		520
