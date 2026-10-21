@@ -277,10 +277,24 @@ export const PLAYGROUND_ENTRIES: readonly PlaygroundEntry[] = [
 		"menu-bar",
 		"MenuBar, AppleMark",
 		"menu-reference",
-		"Application menus, nested commands, shortcuts, and keyboard navigation.",
-		[],
+		"Tahoe application menus and native status glyphs, with Battery, Wi-Fi, Spotlight, and Control Center panels.",
+		[
+			{
+				initial: 85,
+				key: "batteryLevel",
+				label: "Battery level",
+				max: 100,
+				min: 0,
+			},
+			{ initial: false, key: "charging", label: "Charging" },
+			{
+				initial: false,
+				key: "showPercentage",
+				label: "Show battery percentage",
+			},
+		],
 		800,
-		420
+		580
 	),
 	defineEntry(
 		"menu",

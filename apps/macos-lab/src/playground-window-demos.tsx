@@ -10,6 +10,7 @@ import { MacTabs } from "@anyway-design/macos/tabs";
 import { TrafficLights } from "@anyway-design/macos/window";
 import { WindowSymbol } from "@anyway-design/macos/window-symbol";
 import { useRef, useState } from "react";
+import { DesktopMenuStatus } from "./desktop-menu-status";
 import { DOCK_ITEMS } from "./dock-items";
 import type { PlaygroundDemoProps } from "./playground-catalog";
 import { PLAYGROUND_MENU } from "./playground-data";
@@ -210,7 +211,7 @@ export function TabsDemo({ values, onEvent }: PlaygroundDemoProps) {
 		</div>
 	);
 }
-export function MenuBarDemo({ onEvent }: PlaygroundDemoProps) {
+export function MenuBarDemo({ onEvent, values }: PlaygroundDemoProps) {
 	return (
 		<>
 			<MenuBar
@@ -230,7 +231,19 @@ export function MenuBarDemo({ onEvent }: PlaygroundDemoProps) {
 					{ id: "view", items: PLAYGROUND_MENU, label: "View" },
 				]}
 				onAction={(id) => onEvent(`onAction → ${id}`)}
-				status={<span>Wed 21 Oct&nbsp; 9:41</span>}
+				status={
+					<DesktopMenuStatus
+						batteryLevel={Number(values.batteryLevel ?? 85)}
+						charging={Boolean(values.charging)}
+						onAction={(id) => onEvent(`onAction → ${id}`)}
+						onStatusChange={(value) =>
+							onEvent(
+								`Status → Wi-Fi ${value.wifi ? "on" : "off"}, brightness ${value.brightness}%, sound ${value.volume}%`
+							)
+						}
+						showPercentage={Boolean(values.showPercentage)}
+					/>
+				}
 			/>
 			<div className="pg-wallpaper-caption">
 				<strong>Everything in its place.</strong>

@@ -1014,3 +1014,11 @@ fieldset {
 	margin: 0;
 	border: 0;
 }
+
+.scene-display-shade {
+	position: absolute;
+	inset: 0;
+	z-index: 35;
+	pointer-events: none;
+	background: #000;
+}

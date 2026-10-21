@@ -16,6 +16,29 @@ let symbols: [Symbol] = [
     .init(id: "alias", name: "square.dashed.and.alias", extent: 12.5, privateGlyph: true),
     .init(id: "applications", name: "appstore", extent: 13.5, weight: .medium, privateGlyph: true),
     .init(id: "archive", name: "zipper.page", extent: 12.5),
+    .init(id: "battery-empty", name: "battery.0percent", extent: 14.5),
+    .init(id: "battery-fill", name: "battery.100percent", extent: 14.5),
+    .init(id: "battery-charging", name: "battery.100percent.bolt", extent: 14.5),
+    .init(id: "bluetooth", name: "bluetooth", extent: 14, privateGlyph: true),
+    .init(id: "brightness", name: "sun.max.fill", extent: 14),
+    .init(id: "control-center", name: "switch.2", extent: 14.5, weight: .medium),
+    .init(id: "display", name: "display", extent: 14),
+    .init(id: "folder", name: "folder", extent: 14),
+    .init(id: "focus", name: "moon.fill", extent: 13),
+    .init(id: "lock", name: "lock.fill", extent: 10),
+    .init(id: "speaker", name: "speaker.wave.2.fill", extent: 14),
+    .init(id: "wifi", name: "wifi", extent: 15, weight: .medium),
+    .init(id: "wifi-off", name: "wifi.slash", extent: 15),
+    .init(id: "airdrop", name: "airdrop", extent: 14, privateGlyph: true),
+    .init(id: "layers", name: "square.3.layers.3d", extent: 14),
+    .init(id: "appearance", name: "circle.lefthalf.filled", extent: 14),
+    .init(id: "capture", name: "viewfinder", extent: 14),
+    .init(id: "mirroring", name: "rectangle.on.rectangle", extent: 14),
+    .init(id: "stage-manager", name: "rectangle.leadinghalf.inset.filled", extent: 14),
+    .init(id: "play", name: "play.fill", extent: 14),
+    .init(id: "pause", name: "pause.fill", extent: 14),
+    .init(id: "backward", name: "backward.fill", extent: 14),
+    .init(id: "forward", name: "forward.fill", extent: 14),
     .init(id: "check", name: "checkmark", extent: 12),
     .init(id: "checkbox-check", name: "checkmark", extent: 10, weight: .heavy),
     .init(id: "chevron-down", name: "chevron.down", extent: 12, weight: .bold),
@@ -136,6 +159,27 @@ func export(_ symbol: Symbol) throws -> [String: Any] {
     try draw(NSImage(cgImage: cropped, size: bounds.size), in: NSRect(
         x: (canvas - width) / 2, y: (canvas - height) / 2, width: width, height: height
     ), on: target)
+    if symbol.id == "battery-fill" {
+        // Subtract the matching native outline to retain only AppKit's charge silhouette.
+        let outlinePNG = try Data(contentsOf: output.appendingPathComponent("battery-empty.png"))
+        guard let outline = NSBitmapImageRep(data: outlinePNG),
+              let outlineData = outline.bitmapData, let targetData = target.bitmapData,
+              outline.pixelsWide == target.pixelsWide, outline.pixelsHigh == target.pixelsHigh else {
+            throw CocoaError(.fileReadCorruptFile)
+        }
+        for y in 0..<target.pixelsHigh {
+            for x in 0..<target.pixelsWide {
+                let index = y * target.bytesPerRow + x * 4 + 3
+                let outlineIndex = y * outline.bytesPerRow + x * 4 + 3
+                targetData[index] = UInt8(max(0, Int(targetData[index]) - Int(outlineData[outlineIndex])))
+            }
+        }
+        let fillBounds = try alphaBounds(target)
+        guard fillBounds.minX > 7, fillBounds.maxX < 53,
+              fillBounds.minY > 21, fillBounds.maxY < 43 else {
+            throw CocoaError(.fileWriteUnknown)
+        }
+    }
     // Self-check every export: visible pixels, transparent corners, and expected dimensions.
     let actualBounds = try alphaBounds(target)
     // The clear symbol must retain the transparent X when used as an alpha mask.

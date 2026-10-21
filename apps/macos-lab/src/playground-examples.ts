@@ -103,11 +103,20 @@ const EXAMPLES: Record<string, Example> = {
 			"}</MacButton>} />",
 		imports: [buttonImport],
 	}),
-	"menu-bar": () => ({
+	"menu-bar": (v) => ({
 		body:
 			'<MenuBar menus={[{ id: "apple", accessibleLabel: "Apple", label: <AppleMark />, items: [{ id: "about", label: "About This Mac" }] }, { id: "file", label: "File", items: ' +
 			menu +
-			" }]} onAction={(id) => console.info(id)} status={<span>9:41</span>} />",
+			' }]} onAction={(id) => console.info(id)} status={<MacMenuBarStatus clock="Wed Oct 21  9:41 AM" showBatteryPercentage={' +
+			Boolean(v.showPercentage) +
+			"} defaultValue={{ batteryLevel: " +
+			Number(v.batteryLevel ?? 85) +
+			", batteryCharging: " +
+			Boolean(v.charging) +
+			' }} networks={[{ id: "studio", name: "Studio", secured: true }]} onAction={(id) => console.info(id)} />} />',
+		imports: [
+			'import { MacMenuBarStatus } from "@anyway-design/macos/menu-bar-status";',
+		],
 	}),
 	"pop-up-button": (v) => ({
 		body:
@@ -281,8 +290,9 @@ function finderExample(
 		'import type { MacFinderFile } from "@anyway-design/macos/finder";',
 	];
 	if (entry.id === "desktop") {
-		body = `<div style={{ position: "absolute", inset: 0, background: "url('/assets/clouds.webp') center / cover" }} />\n<MenuBar menus={[{ id: "file", label: "File", items: ${menu} }]} />\n${body}\n<Dock items={${json(DOCK_ITEMS)}} />`;
+		body = `<div style={{ position: "absolute", inset: 0, background: "url('/assets/clouds.webp') center / cover" }} />\n<MenuBar menus={[{ id: "file", label: "File", items: ${menu} }]} status={<MacMenuBarStatus />} />\n${body}\n<Dock items={${json(DOCK_ITEMS)}} />`;
 		imports.push(
+			'import { MacMenuBarStatus } from "@anyway-design/macos/menu-bar-status";',
 			'import { MenuBar } from "@anyway-design/macos/menu-bar";',
 			'import { Dock } from "@anyway-design/macos/dock";'
 		);

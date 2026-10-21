@@ -305,6 +305,8 @@ main.pg-main {
 	background: #f4f4f5;
 	border-radius: 7px;
 	isolation: isolate;
+	/* Keep backdrop samples inside the simulated screen, away from the inspector. */
+	backdrop-filter: blur(0);
 	transform-origin: top left;
 }
 .pg-canvas[data-appearance="dark"] {

@@ -17,14 +17,9 @@ import {
 	MenuBar,
 } from "@anyway-design/macos/menu-bar";
 import { MacWindow } from "@anyway-design/macos/window";
-import {
-	BatteryFull,
-	House,
-	Search,
-	SlidersHorizontal,
-	Wifi,
-} from "lucide-react";
+import { House, SlidersHorizontal } from "lucide-react";
 import { type CSSProperties, useEffect, useId, useRef, useState } from "react";
+import { DesktopMenuStatus } from "./desktop-menu-status";
 import { DOCK_ITEMS } from "./dock-items";
 import { type FinderHandle, PlaygroundFinder } from "./playground-finder";
 export type ComponentName =
@@ -205,6 +200,9 @@ export function DesktopScene({
 	const [sidebarVisible, setSidebarVisible] = useState(true);
 	const [notice, setNotice] = useState("");
 	const [app, setApp] = useState("Finder");
+	const [displayBrightness, setDisplayBrightness] = useState(70);
+	const [appearanceOverride, setAppearanceOverride] =
+		useState<MacOSAppearance>();
 
 	useEffect(() => {
 		if (!notice) {
@@ -215,6 +213,17 @@ export function DesktopScene({
 	}, [notice]);
 	function action(id: string) {
 		switch (id) {
+			case "appearance":
+				setAppearanceOverride((current) =>
+					(current ?? settings.appearance) === "light" ? "dark" : "light"
+				);
+				break;
+			case "battery-settings":
+			case "wifi-settings":
+			case "edit-controls":
+				setApp("Settings");
+				setWindowVisible(true);
+				break;
 			case "hide":
 			case "close":
 			case "minimize":
@@ -280,6 +289,7 @@ export function DesktopScene({
 			>
 				<MacOSEnvironment
 					{...settings}
+					appearance={appearanceOverride ?? settings.appearance}
 					className={`desktop-scene wallpaper-${settings.wallpaper}`}
 					style={
 						{
@@ -294,14 +304,18 @@ export function DesktopScene({
 						menus={MENUS}
 						onAction={action}
 						status={
-							<>
-								<BatteryFull />
-								<Wifi />
-								<Search />
-								<SlidersHorizontal />
-								<span>Tue 20 Oct&nbsp; 9:41</span>
-							</>
+							<DesktopMenuStatus
+								onAction={action}
+								onStatusChange={(value) =>
+									setDisplayBrightness(value.brightness)
+								}
+							/>
 						}
+					/>
+					<div
+						aria-hidden
+						className="scene-display-shade"
+						style={{ opacity: Math.max(0, (70 - displayBrightness) / 130) }}
 					/>
 					<SceneIntro component={component} />
 					{showWindow ? (

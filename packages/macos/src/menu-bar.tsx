@@ -38,6 +38,7 @@ export function MenuBar({ menus, status, onAction }: MenuBarProps) {
 						<Menu.Trigger
 							aria-label={menu.accessibleLabel}
 							className="mac-menu-trigger"
+							data-apple={menu.id === "apple" || undefined}
 						>
 							{menu.label}
 						</Menu.Trigger>

@@ -28,6 +28,8 @@ and the portal container so menus retain their styles in embedded previews.
 | `environment` | `MacOSEnvironment`: `preset`, `appearance`, `accentColor`, `reduceMotion`, `reduceTransparency`, `className`, `style` |
 | `dock` | `Dock`: `items`, `size`, `magnification`, `position`, `adaptive`, `autoHide`, `revealDelay`, `hideDelay`, `onActivate`, `glass`, `glassBackdrop` |
 | `menu-bar` | `MenuBar`: `menus`, `status`, `onAction`; `AppleMark` |
+| `menu-bar-status` | `MacMenuBarStatus`: Battery, Wi-Fi, Control Center, Spotlight, clock; `MacBatteryIcon` |
+| `spotlight` | `MacSpotlight`: caller-supplied searchable items, categories, selection callbacks |
 | `menu` | `MacMenuButton`, `MacContextMenu`: `trigger`, `items`, `onAction`, `positionerProps`; `MacMenuButton` also accepts `open`, `defaultOpen`, `onOpenChange` |
 | `window` | `MacWindow`: `title`, `variant`, `sidebar`, `sidebarWidth`, `toolbarLeading`, `toolbar`, `footer`, `active`, window action callbacks; `TrafficLights` |
 | `window-toolbar` | `WindowToolbarGroup`: `label`, `children`; `WindowToolbarButton`: `label`, native button props |
@@ -1691,3 +1693,63 @@ nonempty Gregorian dates with US month/day/year order, 12-hour time by default,
 and optional `hourCycle="h23"`. Other locales/calendars, empty-value editing,
 date intervals, native overlay attachment geometry, and mouse hold-repeat timing
 remain for a later pass. No native APIs run in the browser.
+
+
+## Tahoe desktop menu bar
+
+```tsx
+import { MenuBar, AppleMark } from "@anyway-design/macos/menu-bar";
+import { MacMenuBarStatus } from "@anyway-design/macos/menu-bar-status";
+
+<MenuBar
+  menus={[
+    { id: "apple", accessibleLabel: "Apple", label: <AppleMark />,
+      items: [{ id: "about", label: "About This Mac" }] },
+    { id: "app", label: "My App", items: [] },
+  ]}
+  status={<MacMenuBarStatus
+    clock="Wed Oct 21  9:41 AM"
+    defaultValue={{ batteryLevel: 85, wifi: true, networkId: "studio" }}
+    networks={[{ id: "studio", name: "Studio", secured: true }]}
+    searchItems={[{ id: "notes", category: "files", label: "Notes.txt" }]}
+    onValueChange={(status) => console.info(status)}
+    onSearchSelect={(item) => console.info("Open", item.id)}
+    onAction={(id) => console.info(id)}
+  />}
+/>
+```
+
+`MenuBar.status` still accepts any React node. The optional `MacMenuBarStatus`
+composition uses native system alpha masks exported from Tahoe. Its Battery
+and Wi-Fi panels use Base UI popovers with Escape, outside dismissal and
+focus return. The status buttons support Tab and Left/Right/Home/End. Control
+Center uses separate rounded glass tiles over a shared progressive backdrop blur
+that fades toward the surrounding desktop, with Wi-Fi drill-in, Bluetooth,
+AirDrop, Focus, brightness, volume and optional playback state. Focus adds its
+menu-bar indicator while active. Appearance, Stage Manager, Screen Mirroring,
+Screenshot, Edit Controls, and settings links emit `onAction` callbacks. The clock
+emits `notification-center` for the host app to open its notification view.
+
+Use `value: MacSystemStatus` plus `onValueChange` for caller-owned state, or
+`defaultValue` for internal state. Battery, brightness, and volume clamp to finite
+percentages; Wi-Fi off clears the selected network. A network defaults to known;
+set `known: false` to list it under the expandable Other Networks section.
+`showBatteryPercentage` adds the percentage beside the icon. Charging and Low
+Power Mode change the battery appearance. `mediaTitle` enables playback controls;
+Next/Previous emit callbacks. The clock is supplied text and does not run a timer.
+
+`MacSpotlight` is also available separately with `open`, `onOpenChange`, `items`,
+and `onSelect`. It searches supplied labels/subtitles and filters Applications,
+Files, Actions, or Clipboard categories. Arrow keys and Return select results;
+Escape dismisses. The page does not register macOS’s reserved Command-Space.
+All results, network names, and hardware states are caller-supplied or local UI
+state. These components never read the OS clipboard, scan networks, change system
+settings, record the screen, or play audio. Connect callbacks to your own runtime
+if needed.
+
+Visual references: Apple’s [Tahoe menu bar guide](https://support.apple.com/guide/mac-help/whats-in-the-menu-bar-mchlp1446/26/mac/26),
+[Control Center](https://support.apple.com/guide/mac-help/quickly-change-settings-mchl50f94f8f/26/mac/26),
+and [Spotlight](https://support.apple.com/guide/mac-help/search-with-spotlight-mchlp1008/26/mac/26).
+The transparent bar, silhouettes and separate pill tiles follow those published
+references. Panel tint and animation timing are browser approximations, not a
+pixel-calibrated capture of this Mac’s private status-menu surfaces.

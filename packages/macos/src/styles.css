@@ -1,3 +1,5 @@
+@import "./styles-menu-bar-status.css";
+
 .macos {
 	--mac-accent: #007aff;
 	--mac-text: #242424;
@@ -879,7 +881,7 @@
 	align-items: center;
 	justify-content: space-between;
 	height: 27px;
-	padding: 0 15px;
+	padding: 0 8px;
 	color: #fff;
 	text-shadow: 0 1px 3px rgb(0 0 0 / 18%);
 	background: rgb(255 255 255 / 22%);
@@ -910,6 +912,11 @@
 	background: none;
 	border: 0;
 	border-radius: 4px;
+}
+
+.mac-menu-trigger[data-apple="true"] {
+	width: 25px;
+	padding: 0 4px;
 }
 
 .mac-menu-trigger svg {
