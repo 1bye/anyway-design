@@ -73,5 +73,11 @@ export function useControlValue<
 		},
 		[onChange, uncontrolled]
 	);
-	return { change, inputRef, resetKey, value: uncontrolled ? internal : value };
+	return {
+		change,
+		input,
+		inputRef,
+		resetKey,
+		value: uncontrolled ? internal : value,
+	};
 }

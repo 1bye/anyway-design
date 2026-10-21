@@ -4108,3 +4108,225 @@
 .macos .mac-stepper-buttons button:focus-visible {
 	outline-offset: -3px;
 }
+
+.macos .mac-popup-trigger {
+	display: inline-flex;
+	gap: 8px;
+	align-items: center;
+	justify-content: space-between;
+	width: 176px;
+	max-width: 100%;
+	height: 24px;
+	padding: 0 8px 0 12px;
+	font-size: 13px;
+	line-height: 18px;
+	color: var(--mac-text);
+	text-align: left;
+	background: #ededed;
+	border: 0;
+	border-radius: 6px;
+}
+.mac-popup-value {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.mac-popup-option-label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.mac-popup-icon {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+}
+.macos .mac-popup-trigger[data-size="small"] {
+	height: 20px;
+	padding-left: 10px;
+	font-size: 11px;
+	border-radius: 5px;
+}
+.mac-popup-trigger[data-size="small"] .mac-window-symbol {
+	width: 12px;
+	height: 12px;
+}
+[data-appearance="dark"] .mac-popup-trigger {
+	background: #343434;
+}
+.macos .mac-popup-trigger[data-disabled] {
+	color: color-mix(in srgb, var(--mac-text) 30%, var(--mac-surface));
+	background: color-mix(in srgb, var(--mac-text) 3%, var(--mac-surface));
+}
+.mac-popup-trigger[data-active="false"] {
+	color: var(--mac-secondary);
+}
+.mac-popup-trigger:active:not([data-disabled]) {
+	background: var(--mac-selected);
+}
+.mac-selection-popup.mac-menu-popup {
+	width: max-content;
+	min-width: calc(var(--anchor-width) - 1.5px);
+	padding: 4px;
+	border-color: rgb(0 0 0 / 3%);
+	border-radius: 12px;
+	box-shadow: 0 3px 10px rgb(0 0 0 / 5%);
+}
+.mac-selection-list {
+	max-height: min(280px, var(--available-height));
+	overflow-y: auto;
+	overscroll-behavior: contain;
+	outline: none;
+}
+[data-appearance="dark"] .mac-selection-popup.mac-menu-popup {
+	background: rgb(24 24 24 / 93%);
+	border-color: rgb(255 255 255 / 12%);
+	box-shadow: 0 3px 10px rgb(0 0 0 / 10%);
+}
+.mac-selection-popup .mac-selection-item {
+	grid-template-columns: 12px minmax(0, 1fr);
+	gap: 4px;
+	min-height: 24px;
+	padding: 2px 3px;
+	white-space: nowrap;
+	border-radius: 7px;
+}
+.mac-selection-check {
+	display: grid;
+	place-items: center;
+	width: 12px;
+	height: 16px;
+}
+.mac-selection-item[data-highlighted] {
+	/* Native menus and combo lists use different accent tints. */
+	background: color-mix(in srgb, var(--mac-accent) 85%, white);
+}
+[data-appearance="dark"] .mac-selection-item[data-highlighted] {
+	background: hsl(
+		from var(--mac-accent) calc(h + 6) calc(s * 0.77) calc(l + 6)
+	);
+}
+.mac-selection-item[data-selected] {
+	font-weight: 500;
+}
+.mac-selection-scroll {
+	display: grid;
+	place-items: center;
+	height: 16px;
+}
+.mac-selection-scroll-up .mac-window-symbol {
+	transform: rotate(180deg);
+}
+.mac-combo-box {
+	display: inline-flex;
+	gap: 3px;
+	align-items: center;
+	width: 176px;
+	max-width: 100%;
+	height: 26px;
+	padding: 3px 4px 3px 6px;
+	font-size: 13px;
+	background: var(--mac-surface);
+	border: 1px solid color-mix(in srgb, var(--mac-text) 6%, var(--mac-surface));
+	border-radius: 6px;
+}
+.macos .mac-combo-input {
+	width: 100%;
+	min-width: 0;
+	height: 20px;
+	padding: 0;
+	line-height: 20px;
+	color: inherit;
+	outline: none;
+	background: transparent;
+	border: 0;
+}
+.macos .mac-combo-input:focus-visible {
+	outline: none;
+}
+.mac-combo-box:has(input:focus-visible):not([data-popup-open]) {
+	outline: 3px solid color-mix(in srgb, var(--mac-accent) 50%, transparent);
+	outline-offset: 0;
+}
+.macos .mac-combo-trigger {
+	display: flex;
+	flex: 0 0 23px;
+	align-items: center;
+	justify-content: center;
+	width: 23px;
+	height: 18px;
+	padding: 0;
+	background: #ededed;
+	border: 0;
+	border-radius: 5px;
+}
+.mac-combo-box[data-size="small"] {
+	height: 22px;
+	font-size: 11px;
+}
+.mac-combo-box[data-size="small"] .mac-combo-trigger {
+	flex-basis: 19px;
+	width: 19px;
+	height: 14px;
+	border-radius: 4px;
+}
+[data-appearance="dark"] .mac-combo-box {
+	background: color-mix(in srgb, var(--mac-text) 3%, var(--mac-surface));
+}
+[data-appearance="dark"] .mac-combo-trigger {
+	background: #343434;
+}
+.mac-combo-box[data-disabled] {
+	color: color-mix(in srgb, var(--mac-text) 25%, var(--mac-surface));
+}
+.mac-combo-box[data-disabled] .mac-combo-trigger {
+	color: color-mix(in srgb, var(--mac-text) 30%, var(--mac-surface));
+	background: color-mix(in srgb, var(--mac-text) 3%, var(--mac-surface));
+}
+.mac-combo-box[data-active="false"] {
+	color: var(--mac-secondary);
+}
+.mac-combo-popup.mac-menu-popup {
+	--mac-combo-highlight: color-mix(in srgb, var(--mac-accent) 85%, black);
+	width: calc(var(--anchor-width) + 10px);
+	min-width: 100px;
+	padding: 5px 4px;
+	background: rgb(222 222 222 / 95%);
+	border: 0;
+	border-radius: 14px;
+	box-shadow: 0 3px 10px rgb(0 0 0 / 5%);
+}
+[data-appearance="dark"] .mac-combo-popup.mac-menu-popup {
+	--mac-combo-highlight: hsl(
+		from var(--mac-accent) calc(h + 4) s calc(l * 0.85)
+	);
+	background: rgb(87 87 87 / 96%);
+	box-shadow: 0 3px 10px rgb(0 0 0 / 5%);
+}
+.mac-combo-popup .mac-combo-item {
+	display: block;
+	min-height: 18px;
+	padding: 0 11px;
+	line-height: 18px;
+	white-space: nowrap;
+	border-radius: 999px;
+}
+.mac-combo-item[data-current="true"] {
+	font-weight: 500;
+}
+.mac-combo-popup:not(:has([data-highlighted]))
+	.mac-combo-item[data-current="true"] {
+	color: white;
+	background: var(--mac-combo-highlight);
+}
+.mac-combo-popup .mac-combo-item[data-highlighted] {
+	background: var(--mac-combo-highlight);
+}
+.mac-combo-empty {
+	padding: 6px 11px;
+	font-size: 12px;
+	color: var(--mac-secondary);
+}
+.mac-combo-empty:empty {
+	display: none;
+}

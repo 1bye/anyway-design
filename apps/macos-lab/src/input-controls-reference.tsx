@@ -231,6 +231,9 @@ export function InputControlsReferenceComparison() {
 					<a href="/?view=controls-reference">
 						Compare buttons and text fields ↗
 					</a>
+					<a href="/?view=selection-controls-reference">
+						Compare pop-up buttons and combo boxes ↗
+					</a>
 				</p>
 			</div>
 			<InputControlsWorkbench dark={dark} />

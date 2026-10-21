@@ -463,3 +463,30 @@ fields, decimal values, form submission and both reset modes. Focus rings,
 hover/pressed treatment, and repeat timing have no separate native calibration.
 Range/vertical sliders, small/mini controls, wrapping steppers, and Sequoia
 calibration are outside this pass.
+
+### Tahoe pop-up buttons and combo boxes
+
+Open `/?view=selection-controls-reference` for reusable `MacPopUpButton` and
+`MacComboBox` beside six genuine local Tahoe AppKit captures. The comparison
+has Closed, Pop-up menu, and Combo-box list states in light/dark, regular/small
+controls, disabled examples, synchronized scrolling, family crops, and shared
+Fit / 1× / 1.5× / 2× zoom. The native PNGs remain unaltered; the 32-point title
+bar is clipped in CSS. Pointer artwork in the native references is retained.
+
+The pop-up uses fixed choices, a checkmark, disabled rows, typeahead, and
+selected-row placement over the trigger. The combo accepts custom strings
+and shows a denser native-style list over the editable field. Optional
+`mode="list"` filters suggestions and displays a configurable empty message.
+The workbench covers controlled selection/text, a 64-option uncontrolled
+pop-up with disabled choices, and an uncontrolled filtered combo. FormData,
+native form reset, read-only, disabled, and required values are supported.
+
+Browser smoke checks cover keyboard option selection, long-list scrolling
+and End navigation, custom text submission, Escape retaining text, empty
+suggestions, controlled/uncontrolled form reset, read-only keypresses, and
+disabled fields being omitted from submission. The native fixture validates
+its controls with `selection-controls-reference.swift --validate`.
+
+Native focus/hover details, transition timing, and exact keyboard conventions
+still need dedicated calibration. Mini controls, Sequoia, grouped/multiple
+selection, and virtualized lists are outside this pass. No dependency was added.

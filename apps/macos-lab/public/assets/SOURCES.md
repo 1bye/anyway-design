@@ -104,3 +104,8 @@ Mac, displaying generated demo files only. See
   fixtures in light/dark and active/inactive states. Active references are
   actual window captures; inactive references are AppKit renders. See the
   directory's `SOURCES.md` for provenance and geometry.
+
+- `native-selection-controls/`: Six unaltered Tahoe window captures of
+  NSPopUpButton and NSComboBox in light/dark appearances, closed and open.
+  Includes regular/small and disabled controls. See the directory's
+  `SOURCES.md` for native fixture geometry and reproduction.

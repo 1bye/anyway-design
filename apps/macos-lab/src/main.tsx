@@ -14,6 +14,7 @@ import { InputControlsReferenceComparison } from "./input-controls-reference";
 import { MenuReferenceComparison } from "./menu-reference";
 import { NewFolderReferenceComparison } from "./new-folder-reference";
 import { QuickLookReferenceComparison } from "./quick-look-reference";
+import { SelectionControlsReferenceComparison } from "./selection-controls-reference";
 import { WindowReferenceComparison } from "./window-reference";
 import "@anyway-design/macos/styles.css";
 import "./styles.css";
@@ -54,5 +55,7 @@ if (view === "dock-reference") {
 	page = <FileInfoReferenceComparison />;
 } else if (view === "input-controls-reference") {
 	page = <InputControlsReferenceComparison />;
+} else if (view === "selection-controls-reference") {
+	page = <SelectionControlsReferenceComparison />;
 }
 createRoot(root).render(<StrictMode>{page}</StrictMode>);

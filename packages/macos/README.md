@@ -39,6 +39,8 @@ and the portal container so menus retain their styles in embedded previews.
 | `radio` | `MacRadioGroup`: `label`, `value` / `defaultValue`, `onValueChange`, `name`; `MacRadio`: `label`, `value`, `disabled`, `active` |
 | `slider` | `MacSlider`: `label`, `value` / `defaultValue`, `onValueChange`, `onValueCommitted`, `min`, `max`, `step`, `largeStep`, `tickMarks`, `disabled`, `active` |
 | `stepper` | `MacStepper`: `label`, `value` / `defaultValue`, `onValueChange`, `onValueCommitted`, `min`, `max`, `step`, `disabled`, `readOnly`, `required` |
+| `pop-up-button` | `MacPopUpButton`: `label`, `items`, `value` / `defaultValue`, `onValueChange`, `placeholder`, `size`, `disabled`, `readOnly`, `open` / `defaultOpen`, `onOpenChange` |
+| `combo-box` | `MacComboBox`: `label`, `items`, `value` / `defaultValue`, `onValueChange`, `mode`, `size`, `placeholder`, `disabled`, `readOnly`, `open` / `defaultOpen`, `onOpenChange` |
 | `files` | `MacFileItem`, `MacFileGrid`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `active`, `showExtensions` |
 | `file-gallery` | `MacFileGallery`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `onQuickLook`, `showInfo`, `actions`, `onAction`, `onEditTags` |
 | `file-list` | `MacFileList`: recursive `items`, `expandedIds`, `defaultExpandedIds`, `onExpandedChange`, `selectedIds`, `onSelectionChange`, `onOpen`, `sort`, `defaultSort`, `onSortChange`, `columns`, `columnWidths`, `onColumnWidthsChange`, `resizable`, `active`, `showExtensions`, `minRows` |
@@ -1046,3 +1048,55 @@ The lab's light image/folder/preview presets use genuine local Tahoe captures.
 Dark appearance and the expanded Comments, Open with, and permissions contents
 are not separately calibrated. Font rasterization and small icon artwork may
 still differ from native rendering.
+
+## Pop-up buttons and editable combo boxes
+
+```tsx
+import { MacPopUpButton } from "@anyway-design/macos/pop-up-button";
+import { MacComboBox } from "@anyway-design/macos/combo-box";
+
+<MacPopUpButton label="Quality" name="quality" defaultValue="automatic"
+  items={[
+    { value: "automatic", label: "Automatic" },
+    { value: "high", label: "High Quality" },
+    { value: "unavailable", label: "Unavailable", disabled: true },
+  ]} />
+<MacComboBox label="Destination" name="destination" defaultValue="Documents"
+  items={["Documents", "Downloads", "Desktop"]} />
+```
+
+Render inside `MacOSEnvironment`. `MacPopUpButton` uses unique string-valued
+`items: { value, label, disabled?, separatorBefore? }[]`. `value` / `defaultValue`
+are strings or null; null displays `placeholder` (default Choose…). A change
+reports `(value, details)` through `onValueChange`. It uses the installed
+[Base UI Select](https://base-ui.com/react/components/select) for selection,
+keyboard typeahead, disabled skipping, focus, and form validation.
+
+`MacComboBox` accepts unique string suggestions and a string `value` /
+`defaultValue`. Choosing a suggestion or typing calls `onValueChange`; arbitrary
+text remains valid and submits unchanged. `mode="none"` (default) keeps all
+suggestions, matching the fixture's NSComboBox with completion disabled.
+`mode="list"` filters; Base UI's `both` and `inline` modes are also forwarded.
+`emptyLabel` configures the empty message and `triggerLabel` labels the arrow.
+It uses [Base UI Autocomplete](https://base-ui.com/react/components/autocomplete)
+to preserve free-form text rather than restricting input to known values.
+Escape dismisses suggestions without clearing the input. Input `Home` / `End`
+move the caret; arrows navigate suggestions and Enter chooses.
+
+Both support `size="regular" | "small"`, `label`, `className`, `style`,
+`disabled`, `readOnly`, `required`, `name`, `form`, `id`, `inputRef`, and
+`open` / `defaultOpen` / `onOpenChange`. `label` is the accessible name;
+render visible labels in the caller if needed. `inputRef` points to the
+pop-up's hidden form input or the combo's editable input. Native form reset
+restores uncontrolled defaults; reset controlled values in the form's
+`onReset`. Disabled values do not submit. Change/reset cancellation is respected.
+Width defaults to 176px and is configurable through `style`.
+
+Pop-up and combo lists overlap their controls using geometry from the native
+fixture; generic anchor positioning keeps them usable in scaled previews.
+Available viewport space limits list size, with collision avoidance and scrolling
+for long lists. `active={false}` provides a neutral inactive foreground.
+Native focus details, exact keyboard conventions, hover, and transition timing
+are not separately calibrated. The light/dark comparison and source provenance
+live in the lab at `/?view=selection-controls-reference`. Reference screenshots
+are never used as artwork by the reusable components.
