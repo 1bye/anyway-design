@@ -514,3 +514,28 @@ measured geometry, and ten unaltered captures are under
 captures. Pure action tests cover order and disabled/missing shortcuts.
 Exact transition timing, desktop-dependent material, independent multi-window
 sheet ownership, and Sequoia calibration remain outside this pass.
+
+### Tahoe progress bars and spinners
+
+Open `/?view=progress-reference` for reusable `MacProgressBar` and `MacSpinner`
+beside local Tahoe `NSProgressIndicator` captures. The 632 × 408-point fixture
+contains regular/small columns and seven rows: empty, 50%, complete,
+indeterminate, stopped bar, spinner, and stopped spinner. Light/dark stills
+and native motion recordings are available with shared zoom, family crops,
+and synchronized scrolling. The original 32-point title bar is clipped in CSS.
+
+Play motion runs the CSS animation beside a looping native clip assembled
+from 48 timed window captures. Sampling averages roughly 8–12fps; native and
+browser phases are independent. The still mode freezes the live comparison
+for visual inspection. System reduced-motion preferences disable playback
+and CSS motion. Provenance, native geometry, and timestamps are under
+`public/assets/native-progress`.
+
+The workbench exercises controlled progress, a simulated transfer with pause
+and restart, a full-width unknown-duration bar, and a spinner. Busy indicators
+support stop/resume, hidden stopped states, both sizes, custom bar accents,
+and reduced motion. Work is simulated in local state; no files are transferred.
+Numeric normalization tests cover clamping, custom maximums, and nonfinite
+inputs. Native fixture validation checks 14 public AppKit indicator views.
+Exact easing, high-frame-rate timing, inactive tints, and Sequoia calibration
+remain outside this pass. No dependency was added.

@@ -1,0 +1,134 @@
+.progress-study-viewport {
+	height: calc(var(--progress-study-height) * var(--progress-study-scale));
+	max-height: 650px;
+	overflow: auto;
+	background: #edf0f2;
+}
+.progress-study-scene {
+	position: relative;
+	width: calc(var(--progress-study-width) * var(--progress-study-scale));
+	height: calc(var(--progress-study-height) * var(--progress-study-scale));
+	margin-inline: auto;
+	overflow: clip;
+	clip-path: inset(calc(16px * var(--progress-study-scale)));
+}
+.macos.progress-study-live,
+.progress-study-native {
+	position: absolute;
+	top: calc(var(--progress-study-top) * var(--progress-study-scale));
+	left: calc(var(--progress-study-left) * var(--progress-study-scale));
+	width: 632px;
+	max-width: none;
+	height: 408px;
+	transform: scale(var(--progress-study-scale));
+	transform-origin: top left;
+}
+.progress-study-native {
+	overflow: hidden;
+}
+.progress-study-native img,
+.progress-study-native video {
+	position: absolute;
+	top: -32px;
+	width: 632px;
+	max-width: none;
+	height: 440px;
+}
+.progress-study-canvas {
+	position: relative;
+	width: 632px;
+	height: 408px;
+	background: #fff;
+}
+[data-appearance="dark"] .progress-study-canvas {
+	background: #1e1e1e;
+}
+.progress-study-title,
+.progress-study-column,
+.progress-study-row-label,
+.progress-study-footer {
+	position: absolute;
+	padding-left: 2px;
+	font-size: 11px;
+	font-weight: 400;
+	line-height: 16px;
+	color: var(--mac-secondary);
+}
+.progress-study-title {
+	top: 20px;
+	left: 24px;
+	font-weight: 600;
+}
+.progress-study-column {
+	top: 46px;
+	width: 176px;
+}
+.progress-study-row-label {
+	left: 24px;
+	width: 140px;
+}
+.progress-study-footer {
+	top: 376px;
+	left: 24px;
+}
+.progress-study-sample {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	width: 176px;
+	height: 32px;
+}
+.macos.progress-study-live [data-motion="false"] .mac-progress-fill,
+.macos.progress-study-live [data-motion="false"] .mac-spinner > i {
+	animation-play-state: paused;
+}
+.macos.progress-study-live [data-motion="false"] .mac-progress-fill {
+	animation-delay: -0.5s;
+}
+.progress-study-live[data-appearance="dark"]
+	[data-motion="false"]
+	.mac-progress-fill {
+	animation-delay: -1.7s;
+}
+.progress-workbench-surface {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 48px;
+	padding: 28px;
+	background: var(--mac-surface);
+	border: 1px solid var(--mac-line);
+	border-radius: 18px;
+}
+.progress-transfer > div:first-child {
+	display: flex;
+	gap: 16px;
+	justify-content: space-between;
+	margin-bottom: 10px;
+}
+.progress-transfer > div:first-child span {
+	color: var(--mac-secondary);
+}
+.progress-transfer > .mac-slider {
+	display: block;
+	margin-block: 16px;
+}
+.progress-transfer-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 10px;
+}
+.progress-busy > .mac-progress-bar {
+	margin-block: 10px 28px;
+}
+.progress-busy > div {
+	display: flex;
+	gap: 14px;
+	align-items: center;
+	min-height: 32px;
+}
+@media (max-width: 700px) {
+	.progress-workbench-surface {
+		grid-template-columns: 1fr;
+		gap: 32px;
+	}
+}

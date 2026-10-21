@@ -14,6 +14,7 @@ import { FileRenameReferenceComparison } from "./file-rename-reference";
 import { InputControlsReferenceComparison } from "./input-controls-reference";
 import { MenuReferenceComparison } from "./menu-reference";
 import { NewFolderReferenceComparison } from "./new-folder-reference";
+import { ProgressReferenceComparison } from "./progress-reference";
 import { QuickLookReferenceComparison } from "./quick-look-reference";
 import { SelectionControlsReferenceComparison } from "./selection-controls-reference";
 import { WindowReferenceComparison } from "./window-reference";
@@ -60,5 +61,7 @@ if (view === "dock-reference") {
 	page = <SelectionControlsReferenceComparison />;
 } else if (view === "alert-reference") {
 	page = <AlertReferenceComparison />;
+} else if (view === "progress-reference") {
+	page = <ProgressReferenceComparison />;
 }
 createRoot(root).render(<StrictMode>{page}</StrictMode>);

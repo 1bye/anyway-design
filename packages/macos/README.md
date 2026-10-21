@@ -42,6 +42,7 @@ and the portal container so menus retain their styles in embedded previews.
 | `pop-up-button` | `MacPopUpButton`: `label`, `items`, `value` / `defaultValue`, `onValueChange`, `placeholder`, `size`, `disabled`, `readOnly`, `open` / `defaultOpen`, `onOpenChange` |
 | `combo-box` | `MacComboBox`: `label`, `items`, `value` / `defaultValue`, `onValueChange`, `mode`, `size`, `placeholder`, `disabled`, `readOnly`, `open` / `defaultOpen`, `onOpenChange` |
 | `alert` | `MacAlert`, `MacAlertPanel`: `title`, `description`, `severity`, `actions`, `defaultAction`, `cancelAction`, `onAction`, `suppression`, `icon`, `presentation`; `MacAlert` adds `open`, `onOpenChange`, `returnFocus` |
+| `progress` | `MacProgressBar`: `label`, `value`, `max`, `size`, `running`, `hidesWhenStopped`, `active`; `MacSpinner`: `label`, `size`, `running`, `hidesWhenStopped` |
 | `files` | `MacFileItem`, `MacFileGrid`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `active`, `showExtensions` |
 | `file-gallery` | `MacFileGallery`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `onQuickLook`, `showInfo`, `actions`, `onAction`, `onEditTags` |
 | `file-list` | `MacFileList`: recursive `items`, `expandedIds`, `defaultExpandedIds`, `onExpandedChange`, `selectedIds`, `onSelectionChange`, `onOpen`, `sort`, `defaultSort`, `onSortChange`, `columns`, `columnWidths`, `onColumnWidthsChange`, `resizable`, `active`, `showExtensions`, `minRows` |
@@ -1160,3 +1161,46 @@ The lab at `/?view=alert-reference` compares five examples in light/dark with
 ten native captures and a modal workbench. Its surfaces match the captured
 Tahoe material. Exact animation timing, arbitrary desktop-dependent native
 material, and Sequoia are not calibrated in this pass.
+
+### Progress bars and spinners
+
+```tsx
+import { MacProgressBar, MacSpinner } from "@anyway-design/macos/progress";
+
+<MacProgressBar label="Copying files" value={45} max={100} />
+<MacProgressBar label="Checking available space" />
+<MacSpinner label="Loading preview" size="small" />
+```
+
+Render inside `MacOSEnvironment`. A numeric `value` is determinate; omitting it
+or passing null gives an indeterminate bar. Values clamp to 0…`max`; invalid
+numbers become zero, and a nonpositive/nonfinite maximum falls back to 100.
+A zero value retains Tahoe's tiny rounded cap while correctly exposing zero
+to assistive technology. `size="regular" | "small"` selects native geometry:
+20/12px bar frames with centered 8/6px tracks, or 32/16px spinners.
+Bar width defaults to 176px and can be changed with `style` or `className`.
+
+`running={false}` resets an indeterminate bar to its zero cap and pauses a
+spinner at its current phase. `hidesWhenStopped` defaults to false; when true,
+stopped busy indicators become invisible and leave the accessibility tree
+while retaining their layout space. Determinate bars ignore those animation
+props. The bar follows the environment accent; `active={false}` uses a neutral
+inactive tint. Spinner spokes use native-style neutral tones.
+
+Both components expose a labeled `progressbar` role. Determinate bars provide
+`aria-valuemin`, `aria-valuemax`, and a clamped `aria-valuenow`; busy indicators
+omit `aria-valuenow`. Native HTML props, refs, `aria-describedby`, and custom
+`aria-valuetext` are forwarded. Announce task completion in the caller when
+needed; the components do not create a live region that speaks every update.
+
+Animations run in CSS without JavaScript timers or per-frame React renders.
+Stopping the spinner pauses its cycle; resuming continues it. Environment
+`reduceMotion` or the system reduced-motion preference removes motion, keeping
+a static gradient of spokes and a static busy band. Hide completed indicators
+in the caller; a 100% bar stays visible by default.
+
+`/?view=progress-reference` compares light/dark, regular/small, empty/half/full,
+and running/stopped states against local NSProgressIndicator captures. It also
+includes playable native motion samples and a transfer workbench. Geometry is
+measured from native AppKit frames; motion is a first pass based on roughly
+8–12fps recordings. Exact easing, inactive tint, and Sequoia remain uncalibrated.

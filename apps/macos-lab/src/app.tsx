@@ -297,6 +297,9 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 				<a className="copy-button" href="/?view=alert-reference">
 					Alerts & confirmations ↗
 				</a>
+				<a className="copy-button" href="/?view=progress-reference">
+					Progress bars & spinners ↗
+				</a>
 			</>
 		);
 	}
