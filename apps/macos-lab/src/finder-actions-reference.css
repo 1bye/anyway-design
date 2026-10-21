@@ -1,0 +1,90 @@
+.finder-actions-viewport {
+	height: calc(224px * var(--actions-study-zoom));
+	overflow: auto;
+	background: #edf0f2;
+}
+.finder-actions-scene {
+	width: 534px;
+	height: 224px;
+	padding: 12px;
+	overflow: hidden;
+	zoom: var(--actions-study-zoom);
+}
+.finder-actions-scene > .macos {
+	width: 510px;
+	height: 200px;
+	overflow: hidden;
+}
+.finder-actions-scene > img {
+	display: block;
+	width: 510px;
+	max-width: none;
+	height: 200px;
+}
+.finder-actions-scene .mac-window {
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+}
+.finder-actions-scene .mac-window-titlebar,
+.finder-actions-scene .mac-window-footer {
+	display: none;
+}
+.finder-actions-scene .mac-window .mac-window-content {
+	padding: 0;
+}
+.finder-actions-scene .mac-file-list-table {
+	width: 920px !important;
+}
+.finder-actions-scene .mac-file-list-table col:first-child {
+	width: 510px !important;
+}
+.finder-actions-live-controls {
+	padding: 16px;
+	font-size: 13px;
+	color: #616970;
+}
+.finder-actions-live-controls .dock-study-jump {
+	flex-wrap: wrap;
+	margin-bottom: 12px;
+}
+.finder-actions-live-controls button {
+	padding: 6px 9px;
+	font-size: 12px;
+}
+.finder-actions-live-controls label {
+	display: flex;
+	gap: 5px;
+	align-items: center;
+}
+.finder-actions-live-controls output {
+	display: block;
+	margin: 12px 0;
+}
+.finder-actions-live-controls pre {
+	max-height: 220px;
+	overflow: auto;
+}
+.finder-actions-study .dock-study-jump [aria-pressed="true"] {
+	background: #eaf1f5;
+	border-color: #b4c9d5;
+}
+
+.finder-actions-live-controls :is(button, select) {
+	min-height: 28px;
+	padding: 5px 8px;
+	color: inherit;
+	background: white;
+	border: 1px solid #dedfe1;
+	border-radius: 6px;
+}
+.finder-actions-live-controls button:hover {
+	background: #f0f1f3;
+}
+.finder-actions-scene .mac-file-list {
+	--mac-list-header-height: 26px;
+	--mac-list-selection: #005bcd;
+}
+.finder-actions-study .dock-study-toolbar .dock-study-jump {
+	flex-wrap: wrap;
+}

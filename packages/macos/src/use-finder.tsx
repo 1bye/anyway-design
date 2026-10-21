@@ -30,8 +30,10 @@ import {
 	selectFinderColumn,
 	stepFinderHistory,
 } from "./finder-model";
+import { finderOperationSelection } from "./finder-operations";
 import { useFinderDrag } from "./use-finder-drag";
 import { useFinderFileActions } from "./use-finder-file-actions";
+import { useFinderOperations } from "./use-finder-operations";
 
 const EMPTY_COLLECTIONS: readonly MacFinderCollection[] = [];
 
@@ -65,16 +67,17 @@ export function useFinder({
 	showExtensions = false,
 	toolbarDisabled = false,
 	onOpen,
-	onRename,
-	onCreateFolder,
+	onRename: legacyRename,
+	onCreateFolder: legacyCreateFolder,
 	validateRename,
 	onLocationChange,
 	onViewChange,
 	onSelectionChange,
 	onAction,
 	fileActions: configuration,
-	onInfoChange,
-	onMove,
+	onInfoChange: legacyInfoChange,
+	onMove: legacyMove,
+	onFilesChange,
 	onImport,
 	canDrop,
 	springLoadDelay = 800,
@@ -128,7 +131,6 @@ export function useFinder({
 	const physical = items.some(
 		(file) => file.id === location && file.kind === "folder" && !file.disabled
 	);
-	const canCreate = Boolean(onCreateFolder && physical);
 
 	const label = (id: string): string =>
 		items.find((file) => file.id === id)?.name ??
@@ -202,6 +204,74 @@ export function useFinder({
 		[tab.group, now]
 	);
 	const select = (selected: string[]) => updateTab({ selected });
+	const operations = useFinderOperations({
+		canDrop,
+		files: items,
+		onFilesChange,
+		onResult: (change, next) => {
+			if (
+				change.action === "info" ||
+				change.action === "rename" ||
+				change.action === "new-folder"
+			) {
+				return;
+			}
+			let selected = [...change.ids];
+			if (change.operation === "paste" || change.operation === "move") {
+				selected = [];
+			}
+			if (change.operation === "trash" && change.action !== "undo") {
+				const rendered = [
+					...(root.current?.querySelectorAll<HTMLElement>(
+						"button[data-file-id], tr[data-file-id]"
+					) ?? []),
+				].flatMap((node) => (node.dataset.fileId ? [node.dataset.fileId] : []));
+				const index = Math.max(
+					0,
+					rendered.findIndex((id) => change.ids.includes(id))
+				);
+				const remaining = rendered.filter((id) =>
+					next.some((file) => file.id === id)
+				);
+				const neighbor = remaining[Math.min(index, remaining.length - 1)];
+				selected = neighbor ? [neighbor] : [];
+			}
+			selected = finderOperationSelection(next, selected, tab, collections);
+			if (tab.view === "columns" && selected[0]) {
+				commit(
+					selectFinderColumn(
+						tab,
+						next.find((file) => file.id === selected[0]),
+						selected,
+						collections
+					)
+				);
+			} else {
+				select(selected);
+			}
+			requestAnimationFrame(() => {
+				const nodes =
+					root.current?.querySelectorAll<HTMLElement>(
+						"button[data-file-id], tr[data-file-id]"
+					) ?? [];
+				const source = [...nodes].find(
+					(node) => node.dataset.fileId === selected[0]
+				);
+				if (!renamingId) {
+					(
+						source ??
+						root.current?.querySelector<HTMLElement>(".mac-finder-browser")
+					)?.focus({ preventScroll: true });
+				}
+			});
+		},
+		rootId,
+	});
+	const onCreateFolder = onFilesChange ? operations.create : legacyCreateFolder;
+	const onRename = onFilesChange ? operations.rename : legacyRename;
+	const onMove = onFilesChange ? operations.move : legacyMove;
+	const onInfoChange = onFilesChange ? operations.info : legacyInfoChange;
+	const canCreate = Boolean(onCreateFolder && physical);
 	const drag = useFinderDrag({
 		canDrop,
 		columnRootId: tab.columnRoot ?? location,
@@ -339,6 +409,7 @@ export function useFinder({
 		capabilities: {
 			create: Boolean(onCreateFolder),
 			open: Boolean(onOpen),
+			operations: operations.actions,
 			rename: Boolean(onRename && editableView),
 			selectAll: Boolean(visible.length || tree.length),
 		},
@@ -349,6 +420,7 @@ export function useFinder({
 		onAction,
 		onCreate: create,
 		onOpen: open,
+		onOperation: operations.run,
 		onRename: (id) => {
 			if (!(onRename && editableView)) {
 				return;
@@ -500,6 +572,7 @@ export function useFinder({
 		onOpen,
 		onRename,
 		open,
+		operations,
 		path,
 		physical,
 		props,

@@ -181,3 +181,72 @@ test("file shortcuts support native commands and leave modified Space and ordina
 		)
 	).toBeUndefined();
 });
+
+test("clipboard, duplicate, Trash and history shortcuts preserve modifier rules", () => {
+	const event = {
+		altKey: false,
+		ctrlKey: false,
+		key: "c",
+		metaKey: true,
+		shiftKey: false,
+	};
+	for (const [key, action] of [
+		["c", "copy"],
+		["v", "paste"],
+		["d", "duplicate"],
+		["Backspace", "trash"],
+		["Delete", "trash"],
+		["z", "undo"],
+	]) {
+		expect(finderFileShortcut({ ...event, key }, false)).toBe(action);
+	}
+	expect(finderFileShortcut({ ...event, altKey: true, key: "v" }, false)).toBe(
+		"move-here"
+	);
+	expect(
+		finderFileShortcut(
+			{ ...event, altKey: true, code: "KeyV", key: "√" },
+			false
+		)
+	).toBe("move-here");
+	expect(
+		finderFileShortcut({ ...event, key: "Z", shiftKey: true }, false)
+	).toBe("redo");
+	expect(
+		finderFileShortcut({ ...event, key: "v", shiftKey: true }, true)
+	).toBeUndefined();
+	expect(
+		finderFileShortcut({ ...event, altKey: true, key: "z" }, true)
+	).toBeUndefined();
+	expect(finderFileShortcut({ ...event, key: "x" }, true)).toBeUndefined();
+	expect(
+		finderFileShortcut({ ...event, metaKey: false }, true)
+	).toBeUndefined();
+});
+
+test("operation capabilities and configured disabled actions cannot be bypassed", () => {
+	const context = finderActionContext(files, ["a"], "root", {
+		...capabilities,
+		operations: ({ selectedIds }) => {
+			expect(selectedIds).toEqual(["a"]);
+			return [
+				{ disabled: true, id: "duplicate", label: "Duplicate" },
+				{ id: "copy", label: "Copy" },
+			];
+		},
+	});
+	const menu = finderConfiguredActions(context, [
+		{ disabled: false, id: "duplicate", label: "Duplicate" },
+		{ disabled: true, id: "copy", label: "Copy" },
+	]);
+	expect(finderActionEnabled(menu, "duplicate")).toBe(false);
+	expect(finderActionEnabled(menu, "copy")).toBe(false);
+	const locked = finderActionContext(
+		[{ ...files[0], locked: true }],
+		[],
+		"root",
+		capabilities
+	);
+	expect(finderActionEnabled(locked.defaultActions, "new-folder")).toBe(false);
+	expect(finderActionEnabled(locked.defaultActions, "info")).toBe(true);
+});

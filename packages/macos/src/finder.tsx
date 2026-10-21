@@ -19,6 +19,7 @@ import {
 	type MacFinderView,
 	resolveFinderTab,
 } from "./finder-model";
+import type { MacFinderChange } from "./finder-operations";
 import { FinderOverlays } from "./finder-overlays";
 import { MacFinderNavigation, MacFinderToolbar } from "./finder-toolbar";
 import { MacTabs } from "./tabs";
@@ -40,6 +41,7 @@ export type {
 	MacFinderGroup,
 	MacFinderView,
 } from "./finder-model";
+export type { MacFinderChange, MacFinderOperation } from "./finder-operations";
 
 export interface MacFinderInitialTab {
 	id: string;
@@ -73,8 +75,10 @@ export interface MacFinderProps
 		selectedIds: readonly string[],
 		context: MacFinderActionContext
 	) => void;
-	/** Append this proposed folder to files. Omit to disable folder creation. */
+	/** Legacy folder-creation callback. onFilesChange takes precedence when provided. */
 	onCreateFolder?: (folder: MacFinderFile) => void;
+	/** Enables complete editing and Undo/Redo. Update files synchronously. Takes precedence over legacy mutation callbacks. */
+	onFilesChange?: (files: MacFinderFile[], change: MacFinderChange) => void;
 	/** Import browser File objects into the destination; decoding and persistence belong to the caller. */
 	onImport?: (files: readonly File[], parentId: string) => void;
 	onInfoChange?: MacGetInfoProps["onInfoChange"];
@@ -142,7 +146,9 @@ export function MacFinder(props: MacFinderProps) {
 	return (
 		<div
 			className="mac-finder-window"
+			onCopyCapture={browser.fileActions.copy}
 			onKeyDownCapture={key}
+			onPasteCapture={browser.fileActions.paste}
 			ref={root}
 			{...browser.drag.handlers}
 		>
@@ -273,6 +279,9 @@ export function MacFinder(props: MacFinderProps) {
 				image={browser.drag.image}
 				position={browser.drag.position}
 			/>
+			<span aria-live="polite" className="mac-finder-drag-status" role="status">
+				{browser.operations.status}
+			</span>
 			<span aria-live="polite" className="mac-finder-drag-status" role="status">
 				{browser.drag.status}
 			</span>

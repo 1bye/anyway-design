@@ -1,4 +1,5 @@
 import {
+	type ClipboardEvent,
 	type KeyboardEvent,
 	type MouseEvent,
 	type RefObject,
@@ -27,6 +28,7 @@ interface FinderFileActionsOptions {
 	onAction: MacFinderProps["onAction"];
 	onCreate: (parentId: string) => void;
 	onOpen: (id: string) => void;
+	onOperation: (id: string, context: MacFinderActionContext) => void;
 	onRename: (id: string) => void;
 	onSelect: (ids: string[], column?: string) => void;
 	onSelectAll: (parentId: string) => void;
@@ -43,6 +45,7 @@ export function useFinderFileActions({
 	onAction,
 	onCreate,
 	onOpen,
+	onOperation,
 	onRename,
 	onSelect,
 	onSelectAll,
@@ -179,6 +182,9 @@ export function useFinderFileActions({
 		}
 		const handler = Object.hasOwn(handlers, id) ? handlers[id] : undefined;
 		handler?.(target);
+		if (!handler) {
+			onOperation(id, target);
+		}
 		onAction?.(id, target.selectedIds, target);
 	};
 
@@ -218,6 +224,29 @@ export function useFinderFileActions({
 			);
 		}
 		return true;
+	};
+	// WebKit can route Command-C/V directly through its native Edit commands.
+	const clipboard = (
+		event: ClipboardEvent<HTMLDivElement>,
+		action: "copy" | "paste"
+	) => {
+		if (
+			event.defaultPrevented ||
+			!(event.target instanceof Element) ||
+			!root.current?.contains(event.target) ||
+			event.target.closest("input, textarea, select, [contenteditable='true']")
+		) {
+			return;
+		}
+		event.preventDefault();
+		event.stopPropagation();
+		const id =
+			event.target.closest<HTMLElement>("[data-file-id]")?.dataset.fileId;
+		run(
+			action,
+			id ? finderContextSelection(selectedIds, id) : selectedIds,
+			columnParent(event.target) ?? locationId
+		);
 	};
 	const requestOpen = (id: string) =>
 		run("open", finderContextSelection(selectedIds, id));
@@ -271,6 +300,7 @@ export function useFinderFileActions({
 		contextAction: (id: string) =>
 			run(id, menuContext.selectedIds, menuContext.locationId),
 		contextMenu,
+		copy: (event: ClipboardEvent<HTMLDivElement>) => clipboard(event, "copy"),
 		info: {
 			file: infoFile,
 			onOpenChange: (open: boolean) =>
@@ -281,6 +311,7 @@ export function useFinderFileActions({
 		},
 		key,
 		menuItems,
+		paste: (event: ClipboardEvent<HTMLDivElement>) => clipboard(event, "paste"),
 		quickLook: {
 			getSourceElement: artwork,
 			items: quickLookItems,

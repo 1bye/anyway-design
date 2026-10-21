@@ -13,6 +13,7 @@ import { FileGalleryReferenceComparison } from "./file-gallery-reference";
 import { FileInfoReferenceComparison } from "./file-info-reference";
 import { FileListReferenceComparison } from "./file-list-reference";
 import { FileRenameReferenceComparison } from "./file-rename-reference";
+import { FinderActionsReferenceComparison } from "./finder-actions-reference";
 import { FinderDragReferenceComparison } from "./finder-drag-reference";
 import { InputControlsReferenceComparison } from "./input-controls-reference";
 import { MenuReferenceComparison } from "./menu-reference";
@@ -43,6 +44,8 @@ if (view === "desktop-lab") {
 	page = <WindowReferenceComparison />;
 } else if (view === "finder-drag-reference") {
 	page = <FinderDragReferenceComparison />;
+} else if (view === "finder-actions-reference") {
+	page = <FinderActionsReferenceComparison />;
 } else if (view === "menu-reference") {
 	page = <MenuReferenceComparison />;
 } else if (view === "controls-reference") {

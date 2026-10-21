@@ -254,10 +254,10 @@ export function FileBrowser() {
           { id: "designs", label: "Designs" },
         ] }]}
         onOpen={(id) => console.info("Open", id)}
-        onRename={(id, name) => setFiles((previous) => previous.map(
-          (file) => file.id === id ? { ...file, name } : file
-        ))}
-        onCreateFolder={(folder) => setFiles((previous) => [...previous, folder])}
+        onFilesChange={(nextFiles, change) => {
+          setFiles(nextFiles);
+          // Persist nextFiles or observe change.action / change.ids here.
+        }}
         style={{ width: 800, height: 520 }}
       />
     </MacOSEnvironment>
@@ -290,13 +290,13 @@ contents, or native filesystem access are embedded in this component.
   parent ID, and an available “untitled folder” name. Append it to `files` in
   the callback; Finder selects it and starts inline renaming when available.
   Gallery switches to an allowed editable view for this; Gallery-only keeps
-  the generated name. Omit mutation callbacks to disable those operations.
+  the generated name. Omit mutation callbacks and `onFilesChange` to disable those operations.
 - `onLocationChange`, `onSelectionChange`, and `onViewChange` report interaction
   changes. `onAction(id, selectedIds)` handles Share/Tags and observes toolbar
   commands. A `ref` exposing `MacFinderHandle` supports `navigate(folderId)` and
   `command("new-folder" | "rename" | "open" | "select-all" | view)` for app menus.
 
-Update `files` synchronously in rename/create callbacks; persistence can happen
+Update `files` synchronously in `onFilesChange` or legacy rename/create callbacks; persistence can happen
 in the parent. Finder never mutates the supplied array or writes to disk.
 Navigation and selection are internal; the callbacks are notifications, not
 controlled-state setters. Removed/disabled selections are excluded and removed
@@ -304,10 +304,54 @@ locations fall back to a surviving history location or `rootId`.
 See the [Finder playground](http://127.0.0.1:3006/?component=finder) for editable
 configuration and a copyable example using only public imports.
 
+### Clipboard, Trash, and Undo/Redo
+
+Supply `onFilesChange(nextFiles, change)` to enable Copy/Paste, Move Here,
+Duplicate, Move to Trash, and local Undo/Redo. This callback takes precedence
+over `onRename`, `onCreateFolder`, `onMove`, and `onInfoChange`; it also handles
+those existing operations so they enter the same history. Legacy mutation
+callbacks remain supported independently. `change` is a `MacFinderChange` with
+`action`, `operation`, `ids`, and a human-readable `label`. For Undo/Redo,
+`action` is `"undo"` or `"redo"` and `operation` identifies the original command.
+
+- **⌘C / ⌘V:** Copy selected records and paste them into the current physical
+  folder. Copies recursively include supplied descendants, remap every ID and
+  parent, and retain caller-owned preview/thumbnail references. Duplicate names
+  automatically use “copy”, “copy 2”, etc. before the extension; there is no
+  Replace confirmation. A local clipboard resolves the latest supplied records
+  at paste time. Deleted or disabled sources cannot be pasted.
+- **⌥⌘V:** Move copied items into the current folder, preserving IDs. Invalid
+  targets, locked folders, filename collisions, and recursive moves are rejected.
+- **⌘D:** Duplicate in place with fresh IDs and select the new copies.
+- **⌘⌫:** Remove selected records and their descendants from the supplied data.
+  The root and locked branches are protected. This is an in-memory Trash action;
+  it does not access macOS Trash or delete files on disk.
+- **⌘Z / ⇧⌘Z:** Undo/Redo up to 100 local operations, including rename, creation,
+  internal drag moves, and Get Info changes. A new edit clears Redo. History
+  reverses only fields changed by a command and preserves unrelated caller
+  updates. Conflicting edits, reused IDs, missing parents, cycles, and new
+  children that would be lost block a reversal atomically. History belongs to
+  the mounted Finder instance; it is not persistent or shared across instances.
+
+Ctrl equivalents work too. Commands are scoped to Finder; editable fields keep
+normal text clipboard and text Undo behavior. Menus and `ref.command(id)` use
+these same action IDs and capability checks. Read-only consumers can still copy
+selected records, but pasting and all mutations require `onFilesChange`.
+The clipboard contains only this component’s metadata, never OS clipboard files
+or file bytes. External imports and custom caller updates are not automatically
+recorded as undoable commands. Persist data outside the component as needed.
+
+The [file-actions comparison](http://127.0.0.1:3006/?view=finder-actions-reference)
+replays commands against generated files beside native Tahoe captures for
+Duplicate, Paste, Move Here, Trash, Undo, and Redo at the same logical scale.
+Native text icons reflect this Mac’s editor association; animation timing and
+native context-menu pixels are not calibrated by these still captures.
+
 ### Finder file actions and inspectors
 
 Finder's More menu and right-click menus share the built-in Open, Quick Look,
-Get Info, Rename, New Folder, and Select All actions. Right-clicking an unselected
+Get Info, Rename, New Folder, Select All, and the clipboard/history actions above.
+Right-clicking an unselected
 file selects it; right-clicking a selected file preserves the selected group.
 Empty space clears selection and offers actions for that folder, including the
 correct parent when targeting an ancestor column. Shift-F10 or the Context Menu
@@ -359,12 +403,14 @@ it to disable its shortcut too. Custom `shortcut` strings are display hints;
 attach custom keyboard handlers in the consuming app if needed.
 `onAction` receives the validated target IDs and context for keyboard, toolbar,
 and context-menu actions. Built-in IDs are `open`, `quick-look`, `info`, `rename`,
-`new-folder`, and `select-all`; custom IDs must differ from these and view IDs.
+`new-folder`, `select-all`, `copy`, `paste`, `move-here`, `duplicate`, `trash`,
+`undo`, and `redo`; custom IDs must differ from these and view IDs.
 The same IDs work with `MacFinderHandle.command`.
 
 ### Finder drag and drop
 
-Supply `onMove(ids, parentId)` to enable desktop pointer drags in Icons, List,
+Supply `onFilesChange` (including Undo/Redo) or legacy `onMove(ids, parentId)`
+to enable desktop pointer drags in Icons, List,
 Columns, and Gallery. Update the matching files' `parentId` values in the callback:
 
 ```tsx
@@ -406,7 +452,7 @@ External filenames and bytes are unavailable during hover, so `files` in
 `canDrop` is empty when `external` is true. The caller owns decoding, duplicate
 names, file-type restrictions, upload, and persistence; this component performs
 none of these operations. Folder imports are rejected. Omit `onImport` to
-disable external imports, or `onMove` to disable internal drags independently.
+disable external imports, or both `onMove` and `onFilesChange` to disable internal drags independently.
 The playground imports metadata and local image previews in memory, revoking
 its object URLs on unmount. Its imported-name suffixes avoid overwriting.
 

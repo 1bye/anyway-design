@@ -16,6 +16,7 @@ export type MacFinderFileActions =
 export interface FinderCapabilities {
 	create: boolean;
 	open: boolean;
+	operations?: (context: MacFinderActionContext) => readonly MacMenuEntry[];
 	rename: boolean;
 	selectAll: boolean;
 }
@@ -24,11 +25,34 @@ const FILE_SHORTCUTS = new Map([
 	["i", "info"],
 	["o", "open"],
 	["a", "select-all"],
+	["c", "copy"],
+	["v", "paste"],
+	["d", "duplicate"],
+	["z", "undo"],
+	["Backspace", "trash"],
+	["Delete", "trash"],
 ]);
+
+const ACTION_ORDER = [
+	"open",
+	"trash",
+	"info",
+	"rename",
+	"duplicate",
+	"quick-look",
+	"copy",
+	"paste",
+	"move-here",
+	"new-folder",
+	"select-all",
+	"undo",
+	"redo",
+];
 
 export function finderFileShortcut(
 	event: {
 		key: string;
+		code?: string;
 		metaKey: boolean;
 		ctrlKey: boolean;
 		altKey: boolean;
@@ -36,13 +60,24 @@ export function finderFileShortcut(
 	},
 	fileTarget: boolean
 ): string | undefined {
-	if (event.altKey || event.shiftKey) {
-		return;
-	}
 	if (event.metaKey || event.ctrlKey) {
-		return FILE_SHORTCUTS.get(event.key.toLowerCase());
+		const key = event.key.toLowerCase();
+		if (
+			event.altKey &&
+			!event.shiftKey &&
+			(key === "v" || event.code === "KeyV")
+		) {
+			return "move-here";
+		}
+		if (event.shiftKey && !event.altKey && key === "z") {
+			return "redo";
+		}
+		if (event.altKey || event.shiftKey) {
+			return;
+		}
+		return FILE_SHORTCUTS.get(event.key) ?? FILE_SHORTCUTS.get(key);
 	}
-	if (fileTarget && event.key === " ") {
+	if (fileTarget && event.key === " " && !event.altKey && !event.shiftKey) {
 		return "quick-look";
 	}
 }
@@ -127,7 +162,7 @@ export function finderActionContext(
 	}
 	defaultActions.push(
 		{
-			disabled: !(capabilities.create && folder),
+			disabled: !(capabilities.create && folder && !folder.locked),
 			id: "new-folder",
 			label: "New Folder",
 			separatorBefore: true,
@@ -140,12 +175,20 @@ export function finderActionContext(
 			shortcut: "⌘A",
 		}
 	);
-	return {
+	const context = {
 		defaultActions,
 		locationId,
 		selectedFiles,
 		selectedIds: selectedFiles.map((file) => file.id),
 	};
+	if (capabilities.operations) {
+		defaultActions.push(...capabilities.operations(context));
+
+		defaultActions.sort(
+			(a, b) => ACTION_ORDER.indexOf(a.id) - ACTION_ORDER.indexOf(b.id)
+		);
+	}
+	return context;
 }
 
 export function finderConfiguredActions(

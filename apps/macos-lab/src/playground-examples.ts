@@ -272,14 +272,7 @@ function finderExample(
   onAction={(id, ids) => { ${readOnly ? "console.info(id, ids);" : 'if (id === "mark-reviewed") { setFiles((previous) => previous.map((file) => ids.includes(file.id) ? { ...file, tags: [{ color: "#30b956", label: "Reviewed" }] } : file)); }'} }}`
 			: ""
 	}
-  ${
-		readOnly
-			? ""
-			: `onRename={(id, name) => setFiles((previous) => previous.map((file) => file.id === id ? { ...file, name } : file))}
-  onCreateFolder={(folder) => setFiles((previous) => [...previous, folder])}
-  onMove={(ids, parentId) => setFiles((previous) => previous.map((file) => ids.includes(file.id) ? { ...file, parentId } : file))}
-  onInfoChange={(id, changes) => setFiles((previous) => previous.map((file) => file.id === id ? { ...file, ...changes } : file))}`
-	}
+  ${readOnly ? "" : "onFilesChange={(nextFiles) => setFiles(nextFiles)}"}
   onLocationChange={(id) => console.info("Navigate", id)}
   style={${style}}
 />`;

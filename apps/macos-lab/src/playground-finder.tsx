@@ -115,12 +115,12 @@ export function PlaygroundFinder({
 					}
 					onEvent(`onAction → ${id} · ${ids.join(", ")}`);
 				}}
-				onCreateFolder={
+				onFilesChange={
 					readOnly
 						? undefined
-						: (folder) => {
-								setItems((previous) => [...previous, folder]);
-								onEvent(`onCreateFolder → ${folder.name}`);
+						: (next, change) => {
+								setItems(next);
+								onEvent(`${change.action} → ${change.label}`);
 							}
 				}
 				onImport={
@@ -137,51 +137,15 @@ export function PlaygroundFinder({
 								onEvent(`onImport → ${imported.length} files → ${parentId}`);
 							}
 				}
-				onInfoChange={
-					readOnly
-						? undefined
-						: (id, changes) => {
-								setItems((previous) =>
-									previous.map((file) =>
-										file.id === id ? { ...file, ...changes } : file
-									)
-								);
-								onEvent(`onInfoChange → ${id}`);
-							}
-				}
 				onLocationChange={(id) =>
 					onEvent(
 						`onNavigate → ${files.find((file) => file.id === id)?.name ?? id}`
 					)
 				}
-				onMove={
-					readOnly
-						? undefined
-						: (ids, parentId) => {
-								setItems((previous) =>
-									previous.map((file) =>
-										ids.includes(file.id) ? { ...file, parentId } : file
-									)
-								);
-								onEvent(`onMove → ${ids.join(", ")} → ${parentId}`);
-							}
-				}
 				onOpen={(id) =>
 					onEvent(
 						`onOpen → ${files.find((file) => file.id === id)?.name ?? id}`
 					)
-				}
-				onRename={
-					readOnly
-						? undefined
-						: (id, name) => {
-								setItems((previous) =>
-									previous.map((file) =>
-										file.id === id ? { ...file, name } : file
-									)
-								);
-								onEvent(`onRename → ${name}`);
-							}
 				}
 				onSelectionChange={(ids) =>
 					onEvent(`onSelectionChange → ${ids.join(", ")}`)
