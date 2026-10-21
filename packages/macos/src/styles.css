@@ -1835,11 +1835,6 @@
 	border-radius: 7px;
 }
 
-[data-preset="tahoe"] [data-variant="segmented"] .mac-tab-list,
-[data-preset="tahoe"] [data-variant="segmented"] .mac-tab {
-	border-radius: 20px;
-}
-
 .mac-tabs[data-variant="document"] {
 	--mac-tab-height: 30px;
 	--mac-tab-min-width: 90px;
@@ -2408,15 +2403,86 @@
 	opacity: 0.4;
 }
 [data-preset="tahoe"] .mac-switch {
-	width: 32px;
-	height: 19px;
+	--mac-switch-off: #e5e5e5;
+	--mac-switch-off-disabled: #f0f0f0;
+	--mac-switch-on-disabled: color-mix(in srgb, var(--mac-accent) 35%, #f0e6f9);
+	--mac-switch-thumb: white;
+	--mac-switch-on-thumb: white;
+	--mac-switch-disabled-thumb: white;
+	--mac-switch-travel: 18px;
+	--mac-toggle-focus: color-mix(in srgb, var(--mac-accent) 45%, transparent);
+	width: 54px;
+	height: 24px;
+	padding: 0;
+	background: var(--mac-switch-off);
+	background-clip: content-box;
+	border: 0;
+	border-radius: 999px;
+	transition: background-color 160ms;
 }
 [data-preset="tahoe"] .mac-switch::before {
-	width: 15px;
-	height: 15px;
+	top: 2px;
+	left: 2px;
+	width: 32px;
+	height: 20px;
+	background: var(--mac-switch-thumb);
+	border-radius: 999px;
+	box-shadow:
+		0 2px 8px rgb(0 0 0 / 12%),
+		0 0 0 0.5px rgb(0 0 0 / 3%);
+	transition:
+		transform 160ms cubic-bezier(0.25, 0.8, 0.25, 1),
+		background-color 160ms;
+}
+[data-preset="tahoe"] .mac-switch:checked {
+	background-color: var(--mac-accent);
 }
 [data-preset="tahoe"] .mac-switch:checked::before {
-	transform: translateX(13px);
+	background: var(--mac-switch-on-thumb);
+	transform: translateX(var(--mac-switch-travel));
+}
+[data-preset="tahoe"] .mac-switch:disabled {
+	background-color: var(--mac-switch-off-disabled);
+	opacity: 1;
+}
+[data-preset="tahoe"] .mac-switch:checked:disabled {
+	background-color: var(--mac-switch-on-disabled);
+}
+[data-preset="tahoe"] .mac-switch:disabled::before {
+	background: var(--mac-switch-disabled-thumb);
+}
+[data-preset="tahoe"] .mac-switch[data-size="small"] {
+	--mac-switch-travel: 14px;
+	padding: 2px 5px;
+	/* Keep the inset track's content-box radius circular at 10px. */
+	border-radius: 15px / 12px;
+}
+[data-preset="tahoe"] .mac-switch[data-size="small"]::before {
+	top: 4px;
+	left: 7px;
+	width: 26px;
+	height: 16px;
+}
+[data-preset="tahoe"][data-appearance="dark"] .mac-switch {
+	--mac-switch-off: #333;
+	--mac-switch-off-disabled: #292929;
+	--mac-switch-on-disabled: color-mix(in srgb, var(--mac-accent) 35%, #30303b);
+	--mac-switch-thumb: #e1e1e1;
+	--mac-switch-on-thumb: color-mix(in srgb, white 87%, var(--mac-accent));
+	--mac-switch-disabled-thumb: #dfdfdf;
+	--mac-toggle-focus: color-mix(
+		in srgb,
+		color-mix(in srgb, var(--mac-accent) 65%, white) 50%,
+		transparent
+	);
+}
+[data-preset="tahoe"][data-appearance="dark"]
+	.mac-switch:checked:disabled::before {
+	background: color-mix(in srgb, white 85%, var(--mac-switch-on-disabled));
+}
+[data-preset="tahoe"] .mac-switch:focus-visible {
+	outline: 3px solid var(--mac-toggle-focus);
+	outline-offset: 1px;
 }
 
 [data-reduce-transparency] .mac-dock-surface,
@@ -4874,4 +4940,124 @@
 }
 [data-reduce-transparency="true"] .mac-popover-panel {
 	backdrop-filter: none;
+}
+
+.mac-segmented-control {
+	display: inline-flex;
+	gap: 0;
+	align-items: stretch;
+	width: max-content;
+	max-width: 100%;
+	padding: 3px;
+	background: var(--mac-selected);
+	border-radius: 7px;
+}
+.mac-segmented-item {
+	position: relative;
+	display: inline-flex;
+	flex: 1;
+	gap: 4px;
+	align-items: center;
+	justify-content: center;
+	min-width: 0;
+	min-height: 27px;
+	padding: 4px 14px;
+	font-size: 12px;
+	line-height: 16px;
+	color: var(--mac-secondary);
+	cursor: default;
+	user-select: none;
+	outline: none;
+	background: transparent;
+	border: 0;
+	border-radius: 4px;
+}
+.mac-segmented-item:is([data-checked], [data-active]) {
+	color: var(--mac-text);
+	background: var(--mac-control);
+	box-shadow: 0 1px 3px rgb(0 0 0 / 14%);
+}
+.mac-segmented-label {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+[data-preset="tahoe"] .mac-segmented-control {
+	--mac-segmented-track: #ebebeb;
+	--mac-segmented-text: #242424;
+	--mac-segmented-disabled: #b2b2b2;
+	--mac-segmented-disabled-fill: color-mix(
+		in srgb,
+		var(--mac-accent) 35%,
+		#e0d8eb
+	);
+	--mac-toggle-focus: color-mix(in srgb, var(--mac-accent) 45%, transparent);
+	padding: 0;
+	background: var(--mac-segmented-track);
+	border-radius: 6px;
+}
+[data-preset="tahoe"] .mac-segmented-item {
+	min-height: 24px;
+	padding: 4px 8px;
+	margin-inline: 0.5px;
+	font-size: 13px;
+	font-weight: 400;
+	color: var(--mac-segmented-text);
+	border-radius: 6px;
+	box-shadow: none;
+	transition:
+		background-color 120ms,
+		color 120ms;
+}
+[data-preset="tahoe"] .mac-segmented-item:is([data-checked], [data-active]) {
+	font-weight: 500;
+	color: white;
+	background: var(--mac-accent);
+	box-shadow: inset 0 0 0 0.5px rgb(255 255 255 / 8%);
+}
+[data-preset="tahoe"] .mac-segmented-item[data-disabled] {
+	color: var(--mac-segmented-disabled);
+}
+[data-preset="tahoe"]
+	.mac-segmented-item[data-disabled]:is([data-checked], [data-active]) {
+	color: rgb(255 255 255 / 50%);
+	background: var(--mac-segmented-disabled-fill);
+}
+[data-preset="tahoe"] .mac-segmented-control[data-size="small"] {
+	border-radius: 4px;
+}
+[data-preset="tahoe"]
+	.mac-segmented-control[data-size="small"]
+	.mac-segmented-item {
+	min-height: 20px;
+	padding: 3px 10px;
+	font-size: 11px;
+	line-height: 14px;
+	border-radius: 4px;
+}
+[data-preset="tahoe"][data-appearance="dark"] .mac-segmented-control {
+	--mac-segmented-track: #303030;
+	--mac-segmented-text: #ddd;
+	--mac-segmented-disabled: #686868;
+	--mac-segmented-disabled-fill: color-mix(
+		in srgb,
+		var(--mac-accent) 35%,
+		#40404a
+	);
+	--mac-toggle-focus: color-mix(
+		in srgb,
+		color-mix(in srgb, var(--mac-accent) 65%, white) 50%,
+		transparent
+	);
+}
+[data-preset="tahoe"]
+	.mac-segmented-control[data-size="small"]
+	.mac-window-symbol {
+	width: 14px;
+	height: 14px;
+}
+[data-preset="tahoe"] .mac-segmented-item:focus-visible {
+	z-index: 1;
+	outline: 3px solid var(--mac-toggle-focus);
+	outline-offset: 0;
 }

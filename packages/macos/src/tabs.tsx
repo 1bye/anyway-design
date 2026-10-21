@@ -307,10 +307,14 @@ export function MacTabs({
 					value={value}
 				/>
 			) : (
-				<Tabs.List activateOnFocus aria-label={label} className="mac-tab-list">
+				<Tabs.List
+					activateOnFocus
+					aria-label={label}
+					className="mac-tab-list mac-segmented-control"
+				>
 					{tabs.map((tab) => (
 						<Tabs.Tab
-							className="mac-tab"
+							className="mac-tab mac-segmented-item"
 							disabled={tab.disabled}
 							key={tab.id}
 							value={tab.id}

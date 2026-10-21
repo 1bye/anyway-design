@@ -1,0 +1,51 @@
+.toggle-study .input-study-live,
+.toggle-study .input-study-native {
+	height: 500px;
+}
+.toggle-study-canvas {
+	position: relative;
+	width: 632px;
+	height: 500px;
+	background: var(--mac-surface);
+}
+.toggle-study-switch,
+.toggle-study-segments {
+	position: absolute;
+}
+.toggle-study-switch {
+	width: 54px;
+	height: 24px;
+}
+.toggle-study-native-footer {
+	top: 466px;
+}
+.toggle-study-switch[data-reference-focus="true"] .mac-switch {
+	outline: 3px solid var(--mac-toggle-focus);
+	outline-offset: 1px;
+}
+.toggle-study-segments[data-reference-focus="true"] [data-checked] {
+	z-index: 1;
+	outline: 3px solid var(--mac-toggle-focus);
+	outline-offset: 0;
+}
+.toggle-workbench-label {
+	margin: 10px 0 0;
+	color: var(--mac-secondary);
+}
+.toggle-workbench-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+	margin-top: 12px;
+}
+.toggle-workbench-defaults {
+	margin-top: 20px;
+}
+.toggle-workbench-tabs {
+	padding: 24px;
+	margin-top: 20px;
+	background: var(--mac-surface);
+	border: 1px solid var(--mac-line);
+	border-radius: 12px;
+}

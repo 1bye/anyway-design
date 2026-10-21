@@ -34,7 +34,8 @@ and the portal container so menus retain their styles in embedded previews.
 | `window-sidebar` | `WindowSidebar`: `groups`, `selected`, `onSelect`, `label` |
 | `window-symbol` | `WindowSymbol`: `name`, `size`, span props; `WindowSymbolName` |
 | `tabs` | `MacTabs`: `tabs`, `value`, `onValueChange`, `variant`, `label`, `onAdd`, `onClose`, `onReorder` |
-| `controls` | `MacButton`, `MacTextField`, `MacSearchField`, `MacSwitch` |
+| `controls` | `MacButton`, `MacTextField`, `MacSearchField`, `MacSwitch`: `label`, `checked` / `defaultChecked`, `onCheckedChange`, `size`, native input props |
+| `segmented-control` | `MacSegmentedControl`: `label`, `items`, `value` / `defaultValue`, `onValueChange`, `size`, `disabled`, `readOnly`, `required`, `name`, `form`, `inputRef` |
 | `checkbox` | `MacCheckbox`: `label`, `checked` / `defaultChecked`, `onCheckedChange`, `indeterminate`, `disabled`, `readOnly`, `active` |
 | `radio` | `MacRadioGroup`: `label`, `value` / `defaultValue`, `onValueChange`, `name`; `MacRadio`: `label`, `value`, `disabled`, `active` |
 | `slider` | `MacSlider`: `label`, `value` / `defaultValue`, `onValueChange`, `onValueCommitted`, `min`, `max`, `step`, `largeStep`, `tickMarks`, `disabled`, `active` |
@@ -1303,3 +1304,67 @@ submission, normal reset, and canceled reset. Native caret/selection rendering,
 font rasterization, non-Mac font fallbacks, and Sequoia are not calibrated.
 Recent-search menus, token fields, multiline editing, and validation-message
 styling are outside this pass.
+
+
+### Switches and segmented controls
+
+```tsx
+import { MacSwitch } from "@anyway-design/macos/controls";
+import { MacSegmentedControl } from "@anyway-design/macos/segmented-control";
+
+<MacSwitch label="Notifications" checked={enabled} onCheckedChange={setEnabled} />
+<MacSegmentedControl label="Summary period" name="period" defaultValue="week"
+  items={[
+    { value: "day", label: "Day" },
+    { value: "week", label: "Week" },
+    { value: "month", label: "Month", disabled: true },
+  ]} />
+```
+
+Render inside `MacOSEnvironment`. Both support `size="regular" | "small"`,
+light/dark appearance, the environment accent, and reduced motion. Switches
+use a 54 × 24px input frame. Small switches draw a centered 44 × 20px track;
+regular/small pill thumbs are 32 × 20px / 26 × 16px with 18px / 14px travel.
+Disabled tracks retain their bright thumb rather than fading the whole control.
+Switch motion uses CSS without JavaScript animation frames or timers.
+
+`MacSwitch` preserves its existing controlled `checked` / `onCheckedChange`
+API and adds native input props: `defaultChecked`, `name`, `value`, `form`,
+`disabled`, `readOnly`, `required`, `id`, `ref`, and standard event handlers.
+`ref` targets the checkbox input; `className` and `style` apply to its label
+wrapper. `label` stays constant between states. For a standalone switch use
+`label=""` with an explicit `aria-label`. Click or Space toggles the control.
+Read-only clicks and keypresses cannot change the value; disabled controls
+are unfocusable. A native checkbox supplies the switch's checked accessibility
+state, keeping uncontrolled changes and form resets synchronized.
+
+Checked, enabled switches submit `value` (default `on`); unchecked and disabled
+switches do not submit. Native form reset restores uncontrolled defaults without
+calling `onCheckedChange`. Controlled fields remain caller-owned; reset their
+state in the form's `onReset`. Existing switch callers need no API changes.
+
+`MacSegmentedControl` implements single-value selection with the existing
+Base UI radio group and shared reset hook. Give every item a unique string
+`value` and accessible string `label`. Optional `icon` replaces the visible
+text while preserving its accessible name. Each item can be `disabled`.
+Arrow keys select enabled items and skip disabled ones; Space selects the
+focused item. `onValueChange(value, details)` supports `details.cancel()`.
+`disabled`, `readOnly`, `required`, `name`, `form`, and `inputRef` are forwarded.
+The group `ref` targets its container; `inputRef` targets Base UI's form input.
+`className` and `style` apply to the group.
+
+Tahoe's rounded segmented style is 24px high, or 20px when small, with an
+accent-filled selected segment, muted disabled text, and native-style focus.
+The default width fits content; `style={{ width: 240 }}` distributes space
+equally. Narrow labels truncate with ellipsis and keep their accessible names.
+The existing `MacTabs variant="segmented"` shares this styling while retaining
+its tab/tabpanel semantics and controlled view switching. Value-only controls
+use `MacSegmentedControl`; document tabs retain their existing chrome.
+
+`/?view=toggle-controls-reference` compares regular/small, on/off, disabled,
+text/icon segments, disabled items/groups, and focus against six genuine local
+Tahoe captures. The workbench covers controlled/uncontrolled forms, cancellation,
+refs, keyboard interaction, custom accents, reduced motion, and shared tabs.
+Native switch dragging, exact animation timing, non-blue accent calibration,
+and Sequoia remain outside this pass. Multi-select and momentary segment modes
+are not implemented.

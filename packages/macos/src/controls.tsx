@@ -183,32 +183,61 @@ export function MacSearchField({
 		</span>
 	);
 }
-export interface MacSwitchProps {
-	checked: boolean;
-	disabled?: boolean;
+export interface MacSwitchProps
+	extends Omit<ComponentPropsWithRef<"input">, "size" | "type"> {
 	label: string;
-	onCheckedChange: (checked: boolean) => void;
+	onCheckedChange?: (checked: boolean) => void;
+	size?: "regular" | "small";
 }
+// shortcut: Native drag gestures and exact motion need a recording-based calibration pass.
 export function MacSwitch({
 	label,
-	checked,
 	onCheckedChange,
-	disabled = false,
+	onChange,
+	onClick,
+	readOnly,
+	size = "regular",
+	className = "",
+	style,
+	...props
 }: MacSwitchProps) {
 	const handleCheckedChange = useCallback(
-		(event: ChangeEvent<HTMLInputElement>) =>
-			onCheckedChange(event.target.checked),
-		[onCheckedChange]
+		(event: ChangeEvent<HTMLInputElement>) => {
+			if (
+				readOnly ||
+				event.defaultPrevented ||
+				event.nativeEvent.defaultPrevented
+			) {
+				return;
+			}
+			onChange?.(event);
+			if (!event.defaultPrevented) {
+				onCheckedChange?.(event.currentTarget.checked);
+			}
+		},
+		[onChange, onCheckedChange, readOnly]
+	);
+	const click = useCallback(
+		(event: MouseEvent<HTMLInputElement>) => {
+			onClick?.(event);
+			if (readOnly) {
+				event.preventDefault();
+			}
+		},
+		[onClick, readOnly]
 	);
 	return (
-		<label className="mac-switch-label">
-			<span>{label}</span>
+		<label className={`mac-switch-label ${className}`} style={style}>
+			{label ? <span>{label}</span> : null}
 			<input
-				aria-checked={checked}
-				checked={checked}
+				{...props}
+				aria-readonly={readOnly || undefined}
 				className="mac-switch"
-				disabled={disabled}
+				data-size={size}
 				onChange={handleCheckedChange}
+				onClick={click}
+				readOnly={readOnly}
+				// biome-ignore lint/a11y/useAriaPropsForRole: Native checked state supplies the switch state, including form reset.
 				role="switch"
 				type="checkbox"
 			/>

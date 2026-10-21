@@ -586,3 +586,34 @@ checks verify actual values and focus after actions. All values stay local.
 provenance are in `public/assets/native-text-fields`. Native caret/selection,
 font rasterization, non-Mac font fallbacks, and Sequoia need separate
 calibration. No dependency was added.
+
+
+### Tahoe switches and segmented controls
+
+Open `/?view=toggle-controls-reference` for refined `MacSwitch` and reusable
+`MacSegmentedControl` beside six local Tahoe AppKit captures. Normal, Switch
+focus, and Segment focus are available in light/dark. The 632 × 500pt fixture
+has regular/small columns and eight rows: switch off/on, disabled off/on,
+text segments, a disabled segment, a disabled group, and icon segments.
+Original 1264 × 1064 JPEGs retain their title bar and capture profile; CSS
+clips the 32pt title bar. Shared zoom, family detail crops, synchronized
+scrolling, and reset retain native point geometry. Focus presets hold the
+captured ring without stealing browser focus.
+
+The switch matches the native pill thumb, track sizing, disabled treatment,
+and dark on-state tint. Both switch frames are 54 × 24pt; small artwork is
+44 × 20pt centered in that frame. The rounded segmented style uses accent
+selection, 24/20pt height, equal-width items, native symbols, and disabled
+text/tints. `MacTabs variant="segmented"` reuses the style with tab semantics.
+
+The workbench verifies Space toggling, input refs, arrow selection, disabled
+item skipping, canceled selection, read-only values, disabled submission,
+controlled reset, uncontrolled reset, canceled reset, icon choices, custom
+accents, reduced motion, and tab panel navigation. Everything stays local.
+`packages/macos/scripts/toggle-controls-reference.swift --validate` self-checks
+eight switches and eight segmented controls; metrics and source provenance
+are under `public/assets/native-toggle-controls`. Existing package tests and
+browser smoke checks cover the change without adding dependencies.
+
+Native drag gestures, exact transition timing, non-blue accent matching,
+Sequoia calibration, multi-select, and momentary segments are outside this pass.

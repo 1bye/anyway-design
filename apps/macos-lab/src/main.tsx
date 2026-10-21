@@ -19,6 +19,7 @@ import { ProgressReferenceComparison } from "./progress-reference";
 import { QuickLookReferenceComparison } from "./quick-look-reference";
 import { SelectionControlsReferenceComparison } from "./selection-controls-reference";
 import { TextFieldsReferenceComparison } from "./text-fields-reference";
+import { ToggleControlsReferenceComparison } from "./toggle-controls-reference";
 import { WindowReferenceComparison } from "./window-reference";
 import "@anyway-design/macos/styles.css";
 import "./styles.css";
@@ -69,5 +70,7 @@ if (view === "dock-reference") {
 	page = <PopoverReferenceComparison />;
 } else if (view === "text-fields-reference") {
 	page = <TextFieldsReferenceComparison />;
+} else if (view === "toggle-controls-reference") {
+	page = <ToggleControlsReferenceComparison />;
 }
 createRoot(root).render(<StrictMode>{page}</StrictMode>);

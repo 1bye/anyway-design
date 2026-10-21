@@ -306,6 +306,9 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 				<a className="copy-button" href="/?view=text-fields-reference">
 					Text & search fields ↗
 				</a>
+				<a className="copy-button" href="/?view=toggle-controls-reference">
+					Switches & segmented controls ↗
+				</a>
 			</>
 		);
 	}
