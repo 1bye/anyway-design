@@ -86,3 +86,7 @@ Mac, displaying generated demo files only. See
 - `native-file-columns/`: Browser-only crops from genuine Tahoe Finder windows,
   showing a folder path and an image preview. See the directory's `SOURCES.md`
   for fixture provenance, crop coordinates, and measured geometry.
+
+- `native-new-folder/`: Genuine Tahoe Finder inline naming and AppKit Open/Save
+  New Folder sheets, including the duplicate-name state. See the directory's
+  `SOURCES.md` for fixture provenance, crop coordinates, and reproduction.

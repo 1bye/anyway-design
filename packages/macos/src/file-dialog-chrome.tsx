@@ -290,6 +290,7 @@ export function FileDialogFooter({
 	errorId,
 	onCancel,
 	canSubmit,
+	onNewFolder,
 }: {
 	fileTypes: readonly MacFileDialogType[];
 	saveMode: boolean;
@@ -299,9 +300,15 @@ export function FileDialogFooter({
 	errorId: string;
 	onCancel: () => void;
 	canSubmit: boolean;
+	onNewFolder?: () => void;
 }) {
 	return (
 		<footer className="mac-file-dialog-footer">
+			{onNewFolder ? (
+				<MacButton className="mac-file-dialog-new-folder" onClick={onNewFolder}>
+					New Folder
+				</MacButton>
+			) : null}
 			{fileTypes.length > 1 ? (
 				<label className="mac-file-dialog-type">
 					{saveMode ? "File Format:" : "Enable:"}

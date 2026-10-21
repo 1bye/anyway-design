@@ -1,0 +1,69 @@
+.new-folder-study .dock-study-jump {
+	padding: 0;
+	margin: 0;
+	border: 0;
+}
+.new-folder-study .dock-study-jump [aria-pressed="true"] {
+	background: #eaf1f5;
+	border-color: #b4c9d5;
+}
+.new-folder-viewport {
+	height: calc((var(--new-folder-height) + 48px) * var(--new-folder-zoom));
+	max-height: 600px;
+	overflow: auto;
+	background: #edf0f2;
+}
+.new-folder-scene {
+	position: relative;
+	width: calc(var(--new-folder-width) + 48px);
+	height: calc(var(--new-folder-height) + 48px);
+	overflow: hidden;
+	zoom: var(--new-folder-zoom);
+}
+.new-folder-live,
+.new-folder-native {
+	position: absolute;
+	top: 24px;
+	left: 24px;
+	width: var(--new-folder-width);
+	height: var(--new-folder-height);
+}
+.new-folder-live {
+	overflow: hidden;
+}
+.new-folder-native {
+	display: block;
+	max-width: none;
+}
+.new-folder-study[data-sheet] .new-folder-native {
+	border-radius: 26px;
+}
+.new-folder-live .mac-new-folder-panel {
+	--mac-surface: #fff;
+}
+.new-folder-workbench {
+	margin-top: 36px;
+}
+.new-folder-workbench h2 {
+	font-size: 24px;
+}
+.new-folder-workbench > p {
+	font-size: 13px;
+	line-height: 1.7;
+	color: #7a8088;
+}
+.new-folder-workbench-browser {
+	height: 300px;
+	overflow: auto;
+	border: 1px solid var(--mac-line);
+	border-radius: 12px;
+}
+.new-folder-output {
+	display: block;
+	padding: 16px;
+	margin-top: 20px;
+	font: 12px / 1.7 monospace;
+	white-space: pre-wrap;
+	background: #f0f1f3;
+	border-radius: 8px;
+}

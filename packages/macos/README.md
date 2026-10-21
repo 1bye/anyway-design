@@ -729,7 +729,8 @@ disables the browser popup transition.
 These Tahoe-calibrated components operate on supplied data and callbacks. They
 do not invoke the system file picker, parse documents, or read/write local files.
 The dialogs support List and Columns with plain tag text; native filesystem
-access, directory creation, Icon view, and Sequoia calibration are separate work.
+access, Icon view, and Sequoia calibration are separate work. Folder creation
+is available through the optional callback below.
 `MacFileList` also accepts `multiple={false}` for single-selection consumers and
 `columnLabels` to label supplied date values (the panel baseline uses Date Added).
 
@@ -794,3 +795,58 @@ Tahoe dark geometry is compared against real Finder captures in the lab;
 font rasterization, small-size icon artwork, and capture color profiles can differ.
 Native Quick Actions, tag-token editing, and Sequoia-specific calibration are
 not included. Open/Save reuse this browser through their View options menu.
+
+## New Folder creation
+
+Finder views (`MacFileGrid`, `MacFileList`, `MacFileColumns`) accept optional
+`onNewFolder`. Command/Control-Shift-N invokes it once per press, including from
+an empty browser. Nothing is intercepted when the callback is absent. The grid
+and list report the action in the caller's current directory. Columns pass the
+selected folder ID, or a file's containing folder ID; `undefined` means the
+supplied root. Multiple selections use the containing folder.
+
+The caller inserts the new folder immediately, selects its stable ID, and sets
+controlled `renamingId` to that ID. Reuse `onRename`, `onRenamingChange`, and
+`validateRename` for the existing inline editor. Return commits; Escape keeps
+the already-created folder with its generated name. This matches Finder's
+creation model. In Icon and List views creation is a sibling action; Columns
+follow the current folder path. The lab's `use-finder-folder-creation.ts` is a
+small sample data adapter, not a filesystem implementation.
+
+`fileNewFolderName(items)` and `fileNewFolderError(name, items, excludeId?)` from
+`@anyway-design/macos/file-new-folder` supply Tahoe's `untitled folder`,
+`untitled folder 2`, … naming, separator/control-character validation, and
+case-insensitive NFC-normalized collision checks against files and folders.
+The optional excluded ID supports inline renaming. Names are not trimmed or
+rewritten; valid dotfiles and dots inside folder names are preserved.
+
+`MacFileDialog` and `MacFileDialogPanel` accept:
+
+```tsx
+onCreateFolder={async (directoryId, name) => {
+  const folder = await storage.createFolder(directoryId, name);
+  // Update the controlled directories: add the parent's folder item and
+  // a new directory record with matching IDs before resolving.
+  updateDirectories(folder);
+  return folder.id;
+}}
+```
+
+The callback enables New Folder in expanded Open/Save and Command/Control-
+Shift-N (which also expands compact Save). It can be synchronous or async and
+must return a new unique directory ID. The dialog waits for that directory to
+appear in supplied data before navigating into it. Save's name, tags, file type,
+and view survive creation; browsing selection and the local query reset for
+the new folder. Cancelling the naming sheet changes nothing and restores focus
+to New Folder. The outer Open/Save stays open. A pending request disables repeat
+submission and dismissal; a rejected callback keeps the input and displays its
+error, refocusing the field for retry. Adapters must recheck names and write
+permissions at persistence time. Without the callback, creation UI is omitted.
+
+`MacNewFolderDialog` and embedded `MacNewFolderPanel` from
+`@anyway-design/macos/new-folder` are also reusable independently. Supply
+`items`, `parentName`, and `onCreate(name)`. The dialog uses `open` and
+`onOpenChange`; the embedded panel uses `onCancel`. `initialName` seeds each
+mount, and `active={false}` reproduces inactive input selection in a reference.
+The modal traps focus and supports `returnFocus`. These components do not
+read or write the host filesystem.

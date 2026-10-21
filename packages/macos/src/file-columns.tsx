@@ -21,6 +21,7 @@ import {
 import { MacFileColumnPreview } from "./file-column-preview";
 import { FileColumnResize } from "./file-column-resize";
 import { MacFileList, type MacFileSort } from "./file-list";
+import { requestNewFolder } from "./file-new-folder";
 import type { MacFileRenameProps } from "./file-rename";
 
 export type { MacFileColumnItem } from "./file-column-model";
@@ -37,6 +38,7 @@ export interface MacFileColumnsProps extends MacFileRenameProps {
 	label?: string;
 	multiple?: boolean;
 	onColumnWidthsChange?: (widths: number[]) => void;
+	onNewFolder?: (parentId: string | undefined) => void;
 	onOpen?: (id: string) => void;
 	onQuickLook?: (id: string) => void;
 	onValueChange: (id: string | undefined, selectedIds: string[]) => void;
@@ -146,6 +148,7 @@ export function MacFileColumns({
 	showExtensions = true,
 	sort = DEFAULT_SORT,
 	onOpen,
+	onNewFolder,
 	onQuickLook,
 	onRename,
 	onRenamingChange,
@@ -161,6 +164,11 @@ export function MacFileColumns({
 		[items, path, sort, many]
 	);
 	const selected = path.at(-1);
+	const createFolder = useCallback(() => {
+		onNewFolder?.(
+			!many && selected?.kind === "folder" ? selected.id : path.at(-2)?.id
+		);
+	}, [selected, path, onNewFolder, many]);
 	const preview =
 		showPreview && !many && selected && selected.kind !== "folder"
 			? selected
@@ -235,6 +243,15 @@ export function MacFileColumns({
 	const key = useCallback(
 		(event: KeyboardEvent<HTMLElement>) => {
 			if (
+				!(
+					event.target instanceof Element &&
+					event.target.closest(".mac-file-rename")
+				) &&
+				requestNewFolder(event, onNewFolder ? createFolder : undefined)
+			) {
+				return;
+			}
+			if (
 				event.defaultPrevented ||
 				event.nativeEvent.isComposing ||
 				event.altKey ||
@@ -264,7 +281,7 @@ export function MacFileColumns({
 				onValueChange(next, [next]);
 			}
 		},
-		[columns, sort, onValueChange]
+		[columns, sort, onValueChange, onNewFolder, createFolder]
 	);
 	return (
 		<section

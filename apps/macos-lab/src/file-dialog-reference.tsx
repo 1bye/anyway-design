@@ -17,6 +17,7 @@ import {
 	useRef,
 	useState,
 } from "react";
+import { createPanelFolder } from "./create-panel-folder";
 import { PANEL_DIRECTORIES, PANEL_TYPES } from "./file-dialog-reference-data";
 import "./dock-reference.css";
 import "./window-reference.css";
@@ -129,6 +130,15 @@ export function FileDialogReferenceComparison() {
 	const [modalOpen, setModalOpen] = useState(false);
 	const [session, setSession] = useState(0);
 	const [result, setResult] = useState<MacFileDialogResult>();
+	const [directories, setDirectories] = useState(PANEL_DIRECTORIES);
+	const createFolder = useCallback(
+		(parentId: string, name: string) => {
+			const id = crypto.randomUUID();
+			setDirectories(createPanelFolder(directories, parentId, name, id));
+			return id;
+		},
+		[directories]
+	);
 	const live: RefObject<HTMLElement | null> = useRef(null);
 	const native: RefObject<HTMLElement | null> = useRef(null);
 	const reference = PRESETS[preset];
@@ -260,6 +270,7 @@ export function FileDialogReferenceComparison() {
 			</div>
 			<div className="window-study-controls">
 				<a href="/?view=file-columns-reference">Compare column view ↗</a>
+				<a href="/?view=new-folder-reference">Compare New Folder ↗</a>
 				<label>
 					Detail{" "}
 					<select
@@ -434,7 +445,7 @@ export function FileDialogReferenceComparison() {
 					<MacFileDialog
 						defaultExpanded={preset !== "compact"}
 						defaultView={reference.view}
-						directories={PANEL_DIRECTORIES}
+						directories={directories}
 						fileTypes={PANEL_TYPES}
 						initialDirectoryId="root"
 						initialName="Untitled.txt"
@@ -442,6 +453,7 @@ export function FileDialogReferenceComparison() {
 						mode={modal}
 						multiple={multiple}
 						onConfirm={confirm}
+						onCreateFolder={createFolder}
 						onOpenChange={setModalOpen}
 						open={modalOpen}
 						sidebarGroups={sidebar ? SIDEBAR : undefined}

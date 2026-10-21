@@ -43,6 +43,7 @@ export function FileRenameField({
 					0,
 					fileRenameSelection(file.name, file.kind === "folder")
 				);
+				element.scrollIntoView({ block: "nearest", inline: "nearest" });
 			}
 		},
 		[file.name, file.kind]
@@ -146,7 +147,11 @@ export function FileRenameField({
 		value: draft,
 	};
 	return (
-		<div className="mac-file-rename" data-multiline={multiline}>
+		<div
+			className="mac-file-rename"
+			data-folder={file.kind === "folder" || undefined}
+			data-multiline={multiline}
+		>
 			{multiline ? (
 				<textarea {...props} rows={1} wrap="soft" />
 			) : (

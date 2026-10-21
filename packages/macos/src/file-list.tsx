@@ -32,6 +32,7 @@ import {
 	visibleFileListAncestor,
 	visibleFileListRows,
 } from "./file-list-tree";
+import { requestNewFolder } from "./file-new-folder";
 import type { MacFileRenameProps } from "./file-rename";
 import { FileRenameField } from "./file-rename-field";
 import { selectFileIds } from "./file-selection";
@@ -68,6 +69,7 @@ export interface MacFileListProps extends MacFileRenameProps {
 	multiple?: boolean;
 	onColumnWidthsChange?: (widths: ColumnWidths) => void;
 	onExpandedChange?: (ids: string[]) => void;
+	onNewFolder?: () => void;
 	onOpen?: (id: string) => void;
 	onQuickLook?: (id: string) => void;
 	onSelectionChange: (ids: string[]) => void;
@@ -109,6 +111,14 @@ function listRow(target: EventTarget) {
 	return target instanceof Element
 		? target.closest<HTMLTableRowElement>("tr[data-file-id]")
 		: null;
+}
+
+function ignoresFileListKey(event: KeyboardEvent<HTMLTableElement>): boolean {
+	return (
+		event.nativeEvent.isComposing ||
+		(event.target instanceof Element &&
+			Boolean(event.target.closest("[data-file-toggle]")))
+	);
 }
 
 function enabledListRow(target: EventTarget) {
@@ -326,6 +336,7 @@ export function MacFileList({
 	items,
 	selectedIds,
 	onSelectionChange,
+	onNewFolder,
 	onOpen,
 	onQuickLook,
 	onRename,
@@ -592,10 +603,9 @@ export function MacFileList({
 		(event: KeyboardEvent<HTMLTableElement>) => {
 			const id = enabledListRow(event.target)?.dataset.fileId;
 			if (
+				requestNewFolder(event, onNewFolder) ||
 				!id ||
-				event.nativeEvent.isComposing ||
-				(event.target instanceof Element &&
-					event.target.closest("[data-file-toggle]"))
+				ignoresFileListKey(event)
 			) {
 				return;
 			}
@@ -643,6 +653,7 @@ export function MacFileList({
 			sorted,
 			ids,
 			onOpen,
+			onNewFolder,
 			onQuickLook,
 			onSelectionChange,
 			select,
@@ -679,6 +690,7 @@ export function MacFileList({
 				// biome-ignore lint/a11y/noNoninteractiveElementToInteractiveRole: Native table/header semantics are retained in this keyboard-selectable data grid.
 				role="treegrid"
 				style={{ width: totalWidth }}
+				tabIndex={ids.length ? undefined : 0}
 			>
 				<colgroup>
 					{columns.map((column) => (

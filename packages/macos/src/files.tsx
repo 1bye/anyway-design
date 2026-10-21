@@ -17,6 +17,7 @@ import {
 	requestFilePreview,
 } from "./file-interactions";
 import { FileLabel } from "./file-label";
+import { requestNewFolder } from "./file-new-folder";
 import type { MacFileRenameProps } from "./file-rename";
 import { FileRenameField } from "./file-rename-field";
 import { fileGridNeighbor, selectFileIds } from "./file-selection";
@@ -109,6 +110,7 @@ export interface MacFileGridProps extends MacFileRenameProps {
 	className?: string;
 	items: readonly MacFile[];
 	label?: string;
+	onNewFolder?: () => void;
 	onOpen?: (id: string) => void;
 	onQuickLook?: (id: string) => void;
 	onSelectionChange: (ids: string[]) => void;
@@ -190,6 +192,7 @@ export function MacFileGrid({
 	items,
 	selectedIds,
 	onSelectionChange,
+	onNewFolder,
 	onOpen,
 	onQuickLook,
 	onRename,
@@ -262,6 +265,9 @@ export function MacFileGrid({
 	);
 	const keyDown = useCallback(
 		(event: KeyboardEvent<HTMLFieldSetElement>) => {
+			if (requestNewFolder(event, onNewFolder)) {
+				return;
+			}
 			const id = fileButton(event.target)?.dataset.fileId;
 			if (!id || event.nativeEvent.isComposing) {
 				return;
@@ -306,6 +312,7 @@ export function MacFileGrid({
 			enabledIds,
 			items,
 			onOpen,
+			onNewFolder,
 			onQuickLook,
 			onSelectionChange,
 			select,
@@ -329,6 +336,7 @@ export function MacFileGrid({
 			onFocus={focus}
 			onKeyDown={keyDown}
 			style={style}
+			tabIndex={enabledIds.length ? undefined : 0}
 		>
 			{items.map((file) => (
 				<div className="mac-file-grid-item" key={file.id}>

@@ -25,7 +25,7 @@ import {
 	COLUMN_REFERENCE_ITEMS,
 	COLUMN_REFERENCE_STATES,
 } from "./file-columns-reference-data";
-import { renameFolderFile } from "./folder-list-reference-data";
+import { useFinderFolderCreation } from "./use-finder-folder-creation";
 import "./dock-reference.css";
 import "./window-reference.css";
 import "./file-columns-reference.css";
@@ -142,10 +142,18 @@ export function FileColumnsReferenceComparison() {
 		(id: string) => setNotice(`Open callback: ${id}`),
 		[]
 	);
-	const rename = useCallback((id: string, name: string) => {
-		setItems((current) => renameFolderFile(current, id, name));
-		setNotice(`Renamed to “${name}”.`);
-	}, []);
+	const selectCreated = useCallback(
+		(ids: string[]) => setValue(ids.at(-1)),
+		[]
+	);
+	const creation = useFinderFolderCreation(items, setItems, selectCreated);
+	const createAtSelection = useCallback(() => {
+		const row = flattenFileList(items, sort).find(
+			(entry) => entry.file.id === value
+		);
+		creation.create(row?.file.kind === "folder" ? row.file.id : row?.parentId);
+	}, [items, sort, value, creation.create]);
+
 	const showQuickLook = useCallback((id: string) => {
 		setValue(id);
 		setQuickLook(true);
@@ -225,6 +233,10 @@ export function FileColumnsReferenceComparison() {
 				</label>
 			</div>
 			<div className="window-study-controls">
+				<a href="/?view=new-folder-reference">Compare New Folder ↗</a>
+				<button onClick={createAtSelection} type="button">
+					New Folder
+				</button>
 				<label>
 					Detail{" "}
 					<select
@@ -336,12 +348,16 @@ export function FileColumnsReferenceComparison() {
 									items={files}
 									label="Demo files"
 									onColumnWidthsChange={setWidths}
+									onNewFolder={creation.create}
 									onOpen={open}
 									onQuickLook={showQuickLook}
-									onRename={rename}
+									onRename={creation.rename}
+									onRenamingChange={creation.setRenamingId}
 									onValueChange={setValue}
+									renamingId={creation.renamingId}
 									showPreview={preview}
 									sort={sort}
+									validateRename={creation.validate}
 									value={value}
 								/>
 							</MacOSEnvironment>

@@ -10,6 +10,7 @@ import {
 	useRef,
 	useState,
 } from "react";
+import { useFinderFolderCreation } from "./use-finder-folder-creation";
 import { WINDOW_REFERENCE_IMAGE } from "./window-reference-assets";
 
 // Artwork only: labels, tags, selection, grid placement, and interactions are live.
@@ -58,14 +59,21 @@ export function WindowReferenceFiles({
 	onOpen: (id: string) => void;
 }) {
 	const [selected, setSelected] = useState([REFERENCE_FILES[0]?.id ?? ""]);
+	const [items, setItems] = useState(REFERENCE_FILES);
+	const creation = useFinderFolderCreation(items, setItems, setSelected);
 	return (
 		<MacFileGrid
 			className="window-study-files"
-			items={REFERENCE_FILES}
+			items={items}
 			label="Documents files"
+			onNewFolder={creation.create}
 			onOpen={onOpen}
+			onRename={creation.rename}
+			onRenamingChange={creation.setRenamingId}
 			onSelectionChange={setSelected}
+			renamingId={creation.renamingId}
 			selectedIds={selected}
+			validateRename={creation.validate}
 		/>
 	);
 }
@@ -102,6 +110,8 @@ const WORKBENCH_FILES: MacFile[] = [
 
 export function FileIconWorkbench() {
 	const [selected, setSelected] = useState(["projects"]);
+	const [items, setItems] = useState(WORKBENCH_FILES);
+	const creation = useFinderFolderCreation(items, setItems, setSelected);
 	const [active, setActive] = useState(true);
 	const [dark, setDark] = useState(false);
 	const [extensions, setExtensions] = useState(true);
@@ -111,9 +121,9 @@ export function FileIconWorkbench() {
 	const open = useCallback(
 		(id: string) =>
 			setNotice(
-				`Open callback: ${WORKBENCH_FILES.find((file) => file.id === id)?.name ?? id}`
+				`Open callback: ${items.find((file) => file.id === id)?.name ?? id}`
 			),
-		[]
+		[items]
 	);
 	return (
 		<section
@@ -129,6 +139,9 @@ export function FileIconWorkbench() {
 				open.
 			</p>
 			<div className="window-study-controls">
+				<button onClick={() => creation.create()} type="button">
+					New Folder
+				</button>
 				<label>
 					<input
 						checked={active}
@@ -182,10 +195,14 @@ export function FileIconWorkbench() {
 				<MacOSEnvironment appearance={dark ? "dark" : "light"} preset="tahoe">
 					<MacFileGrid
 						active={active}
-						items={WORKBENCH_FILES}
+						items={items}
 						label="Native file examples"
+						onNewFolder={creation.create}
 						onOpen={open}
+						onRename={creation.rename}
+						onRenamingChange={creation.setRenamingId}
 						onSelectionChange={setSelected}
+						renamingId={creation.renamingId}
 						selectedIds={selected}
 						showExtensions={extensions}
 						style={
@@ -194,6 +211,7 @@ export function FileIconWorkbench() {
 								"--mac-file-row-height": `${size + 48}px`,
 							} as CSSProperties
 						}
+						validateRename={creation.validate}
 					/>
 				</MacOSEnvironment>
 			</div>

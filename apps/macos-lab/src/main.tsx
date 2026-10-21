@@ -9,6 +9,7 @@ import { FileDialogReferenceComparison } from "./file-dialog-reference";
 import { FileListReferenceComparison } from "./file-list-reference";
 import { FileRenameReferenceComparison } from "./file-rename-reference";
 import { MenuReferenceComparison } from "./menu-reference";
+import { NewFolderReferenceComparison } from "./new-folder-reference";
 import { QuickLookReferenceComparison } from "./quick-look-reference";
 import { WindowReferenceComparison } from "./window-reference";
 import "@anyway-design/macos/styles.css";
@@ -42,5 +43,7 @@ if (view === "dock-reference") {
 	page = <FileDialogReferenceComparison />;
 } else if (view === "file-columns-reference") {
 	page = <FileColumnsReferenceComparison />;
+} else if (view === "new-folder-reference") {
+	page = <NewFolderReferenceComparison />;
 }
 createRoot(root).render(<StrictMode>{page}</StrictMode>);

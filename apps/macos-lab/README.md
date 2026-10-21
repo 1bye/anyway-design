@@ -335,8 +335,10 @@ The callback output is demo state; it performs no filesystem operation.
 Captures and provenance are in `public/assets/native-file-dialog/`. Save's
 separate system title bar is omitted in the paired viewport; Original shows the
 full capture for whole-panel presets. The baseline is dark/inactive. Column
-originals are browser-only crops. Icon view, folder creation, native storage
-access, and native tag-token editing are not implemented.
+originals are browser-only crops. Icon view, native storage access, and native
+tag-token editing are not implemented. The workbench enables New Folder with
+a data callback; the original whole-panel baselines keep creation disabled
+to match their captures.
 
 ### Finder column study
 
@@ -360,3 +362,27 @@ appearance, sorting, and extra files affect the React side. Native Quick Actions
 Show More, and tag editing are outside this preview comparison. The reusable
 column component defaults to single selection and also supports controlled
 multiple sibling selections. Open/Save reuse it alongside List view.
+
+### New Folder study
+
+Open `/?view=new-folder-reference` for genuine native Tahoe Finder List and
+Columns naming crops, the New Folder sheets from NSOpenPanel/NSSavePanel,
+and the live duplicate-name state. Fit / 1× / 1.5× / 2× zoom is shared. Reset
+native match restores the captured names and selected editor text. The left
+side uses the same package components as the workbenches; native images are
+reference-only. Provenance and crop coordinates are in
+`public/assets/native-new-folder/SOURCES.md`.
+
+Try Finder's New Folder button, right-click menu, and Command/Control-Shift-N
+in Icon, List, and Columns views. Return commits the inline name; Escape keeps
+the generated folder. Columns create inside the current folder. Names are
+validated against siblings, including existing files. The existing folder/list,
+column, and window icon workbenches also support creation.
+
+The Open/Save workbench supports List/Columns, light/dark, a narrow dialog, and
+Fail next creation. A failure is reported inline without dropping the draft;
+retry then succeeds. Create enters the new directory, while Save As and Tags
+stay intact. New Folder is available again from the empty browser. Escape
+cancels the naming sheet first. Data changes stay in React state; callbacks do
+not open or save actual files. The temporary native fixture contains only
+generated folders and demo text.

@@ -19,8 +19,13 @@ final class PanelReference: NSObject, NSApplicationDelegate {
     }
     func configure(_ value: NSSavePanel) {
         panel = value
+        #if NEW_FOLDER_REFERENCE
+        value.directoryURL = URL(fileURLWithPath: "/private/tmp/Anyway-New-Folder-Reference")
+        value.canCreateDirectories = true
+        #else
         value.directoryURL = URL(fileURLWithPath: "/private/tmp/Anyway-Panel-Files")
         value.canCreateDirectories = false
+        #endif
         value.allowedContentTypes = [.plainText]
         value.allowsOtherFileTypes = false
         value.isExtensionHidden = false

@@ -38,6 +38,12 @@ import {
 	type MacFileSort,
 } from "./file-list";
 import { sortFileList } from "./file-list-sort";
+import { requestNewFolder } from "./file-new-folder";
+import { MacNewFolderDialog } from "./new-folder";
+import {
+	type MacCreateFolder,
+	useFileDialogNewFolder,
+} from "./use-file-dialog-new-folder";
 import { WindowSidebar, type WindowSidebarGroup } from "./window-sidebar";
 
 export type {
@@ -46,6 +52,7 @@ export type {
 	MacFileDialogType,
 	MacFileDialogView,
 } from "./file-dialog-model";
+export type { MacCreateFolder } from "./use-file-dialog-new-folder";
 
 export interface MacFileDialogPanelProps {
 	active?: boolean;
@@ -61,6 +68,7 @@ export interface MacFileDialogPanelProps {
 	multiple?: boolean;
 	onCancel: () => void;
 	onConfirm: (result: MacFileDialogResult) => void;
+	onCreateFolder?: MacCreateFolder;
 	showTags?: boolean;
 	sidebarGroups?: WindowSidebarGroup[];
 	style?: CSSProperties;
@@ -153,6 +161,7 @@ export function MacFileDialogPanel({
 	multiple = false,
 	onConfirm,
 	onCancel,
+	onCreateFolder,
 	defaultExpanded = true,
 	defaultView = "list",
 	sidebarGroups,
@@ -251,6 +260,17 @@ export function MacFileDialogPanel({
 		},
 		[directories, directory?.id, resetBrowser]
 	);
+	const newFolder = useFileDialogNewFolder({
+		directories,
+		directory,
+		onCreateFolder,
+		onNavigate: navigate,
+		panel,
+	});
+	const requestFolder = useCallback(() => {
+		setExpanded(true);
+		newFolder.request?.();
+	}, [newFolder.request]);
 	const back = useCallback(() => {
 		setHistory((current) => ({
 			...current,
@@ -405,7 +425,17 @@ export function MacFileDialogPanel({
 	);
 	const keyDown = useCallback(
 		(event: KeyboardEvent<HTMLFormElement>) => {
-			if (event.defaultPrevented || event.nativeEvent.isComposing) {
+			if (
+				event.defaultPrevented ||
+				event.nativeEvent.isComposing ||
+				newFolder.open ||
+				replacement
+			) {
+				return;
+			}
+			if (
+				requestNewFolder(event, newFolder.request ? requestFolder : undefined)
+			) {
 				return;
 			}
 			if (
@@ -418,14 +448,22 @@ export function MacFileDialogPanel({
 				navigate(directory.parentId);
 			}
 		},
-		[directory?.parentId, navigate]
+		[
+			directory?.parentId,
+			navigate,
+			newFolder.open,
+			newFolder.request,
+			requestFolder,
+			replacement,
+		]
 	);
 	const escapeKey = useCallback(
 		(event: KeyboardEvent<HTMLFormElement>) => {
 			if (
 				event.key !== "Escape" ||
 				event.nativeEvent.isComposing ||
-				replacement
+				replacement ||
+				newFolder.open
 			) {
 				return;
 			}
@@ -440,7 +478,7 @@ export function MacFileDialogPanel({
 			event.stopPropagation();
 			onCancel();
 		},
-		[onCancel, replacement]
+		[onCancel, replacement, newFolder.open]
 	);
 	const dismissReplacement = useCallback(() => setReplacement(undefined), []);
 	const replace = useCallback(() => {
@@ -589,6 +627,7 @@ export function MacFileDialogPanel({
 					errorId={errorId}
 					fileTypes={fileTypes}
 					onCancel={onCancel}
+					onNewFolder={showBrowser ? newFolder.request : undefined}
 					onTypeChange={changeType}
 					saveMode={saveMode}
 					typeId={typeId}
@@ -599,6 +638,7 @@ export function MacFileDialogPanel({
 				onCancel={dismissReplacement}
 				onReplace={replace}
 			/>
+			<MacNewFolderDialog {...newFolder.dialogProps} />
 		</form>
 	);
 }

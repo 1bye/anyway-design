@@ -31,8 +31,8 @@ import {
 import {
 	FOLDER_LIST_EXPANDED_IDS,
 	FOLDER_LIST_REFERENCE_ITEMS,
-	renameFolderFile,
 } from "./folder-list-reference-data";
+import { useFinderFolderCreation } from "./use-finder-folder-creation";
 import "./dock-reference.css";
 import "./window-reference.css";
 import "./file-list-reference.css";
@@ -49,7 +49,9 @@ export function FileListReferenceComparison({
 }: {
 	folders?: boolean;
 }) {
-	const [folderItems, setFolderItems] = useState(FOLDER_LIST_REFERENCE_ITEMS);
+	const [folderItems, setFolderItems] = useState(
+		folders ? FOLDER_LIST_REFERENCE_ITEMS : FILE_LIST_REFERENCE_ITEMS
+	);
 	const [expandedIds, setExpandedIds] = useState<string[]>(
 		folders ? FOLDER_LIST_EXPANDED_IDS : []
 	);
@@ -81,7 +83,7 @@ export function FileListReferenceComparison({
 	const sceneWidth = crop.width + 48;
 	const scale = zoom === "fit" ? fit : Number(zoom);
 	const items = useMemo<MacFileListItem[]>(() => {
-		const base = folders ? folderItems : FILE_LIST_REFERENCE_ITEMS;
+		const base = folderItems;
 		if (!extra) {
 			return base;
 		}
@@ -112,7 +114,7 @@ export function FileListReferenceComparison({
 				],
 			},
 		];
-	}, [extra, folders, folderItems]);
+	}, [extra, folderItems]);
 	const previewItems = useMemo<MacQuickLookItem[]>(
 		() =>
 			visibleFileListRows(flattenFileList(items, sort), expandedIds).map(
@@ -188,7 +190,9 @@ export function FileListReferenceComparison({
 		]);
 		setExpandedIds(folders ? FOLDER_LIST_EXPANDED_IDS : []);
 		setCapture("expanded");
-		setFolderItems(FOLDER_LIST_REFERENCE_ITEMS);
+		setFolderItems(
+			folders ? FOLDER_LIST_REFERENCE_ITEMS : FILE_LIST_REFERENCE_ITEMS
+		);
 		setExtra(false);
 		setDark(true);
 		setActive(true);
@@ -218,10 +222,12 @@ export function FileListReferenceComparison({
 		},
 		[scrollStart]
 	);
-	const rename = useCallback((id: string, name: string) => {
-		setFolderItems((current) => renameFolderFile(current, id, name));
-		setNotice(`Renamed to “${name}”.`);
-	}, []);
+	const creation = useFinderFolderCreation(
+		folderItems,
+		setFolderItems,
+		setSelected
+	);
+
 	const open = useCallback(
 		(id: string) => setNotice(`Open callback: ${id}`),
 		[]
@@ -288,6 +294,10 @@ export function FileListReferenceComparison({
 				</label>
 			</div>
 			<div className="window-study-controls">
+				<a href="/?view=new-folder-reference">Compare New Folder ↗</a>
+				<button onClick={() => creation.create()} type="button">
+					New Folder
+				</button>
 				<a href="/?view=file-columns-reference">Compare column view ↗</a>
 				<a href="/?view=file-dialog-reference">Compare Open / Save ↗</a>
 				<a href="/?view=quick-look-reference">Compare Quick Look ↗</a>
@@ -381,13 +391,17 @@ export function FileListReferenceComparison({
 									minRows={16}
 									onColumnWidthsChange={setWidths}
 									onExpandedChange={setExpandedIds}
+									onNewFolder={creation.create}
 									onOpen={open}
 									onQuickLook={preview}
-									onRename={folders ? rename : undefined}
+									onRename={creation.rename}
+									onRenamingChange={creation.setRenamingId}
 									onSelectionChange={setSelected}
 									onSortChange={setSort}
+									renamingId={creation.renamingId}
 									selectedIds={selected}
 									sort={sort}
+									validateRename={creation.validate}
 								/>
 							</MacOSEnvironment>
 						</div>
