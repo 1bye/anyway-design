@@ -41,6 +41,7 @@ and the portal container so menus retain their styles in embedded previews.
 | `stepper` | `MacStepper`: `label`, `value` / `defaultValue`, `onValueChange`, `onValueCommitted`, `min`, `max`, `step`, `disabled`, `readOnly`, `required` |
 | `pop-up-button` | `MacPopUpButton`: `label`, `items`, `value` / `defaultValue`, `onValueChange`, `placeholder`, `size`, `disabled`, `readOnly`, `open` / `defaultOpen`, `onOpenChange` |
 | `combo-box` | `MacComboBox`: `label`, `items`, `value` / `defaultValue`, `onValueChange`, `mode`, `size`, `placeholder`, `disabled`, `readOnly`, `open` / `defaultOpen`, `onOpenChange` |
+| `alert` | `MacAlert`, `MacAlertPanel`: `title`, `description`, `severity`, `actions`, `defaultAction`, `cancelAction`, `onAction`, `suppression`, `icon`, `presentation`; `MacAlert` adds `open`, `onOpenChange`, `returnFocus` |
 | `files` | `MacFileItem`, `MacFileGrid`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `active`, `showExtensions` |
 | `file-gallery` | `MacFileGallery`: `items`, `selectedIds`, `onSelectionChange`, `onOpen`, `onQuickLook`, `showInfo`, `actions`, `onAction`, `onEditTags` |
 | `file-list` | `MacFileList`: recursive `items`, `expandedIds`, `defaultExpandedIds`, `onExpandedChange`, `selectedIds`, `onSelectionChange`, `onOpen`, `sort`, `defaultSort`, `onSortChange`, `columns`, `columnWidths`, `onColumnWidthsChange`, `resizable`, `active`, `showExtensions`, `minRows` |
@@ -1100,3 +1101,62 @@ Native focus details, exact keyboard conventions, hover, and transition timing
 are not separately calibrated. The light/dark comparison and source provenance
 live in the lab at `/?view=selection-controls-reference`. Reference screenshots
 are never used as artwork by the reusable components.
+
+### Alerts and confirmations
+
+```tsx
+import { MacAlert } from "@anyway-design/macos/alert";
+
+<MacAlert
+  open={confirming}
+  onOpenChange={setConfirming}
+  title="Replace “Report.pdf”?"
+  description="A file with this name already exists."
+  severity="warning"
+  actions={[
+    { id: "cancel", label: "Cancel" },
+    { id: "replace", label: "Replace", destructive: true },
+  ]}
+  defaultAction="cancel"
+  cancelAction="cancel"
+  onAction={handleDecision}
+/>
+```
+
+Render inside `MacOSEnvironment`. Each action has a unique `id`, `label`,
+optional `disabled`, and optional `destructive`. Supply at least one enabled
+way to finish. `defaultAction` explicitly assigns Return; `cancelAction`
+assigns Escape. Missing or disabled shortcuts do nothing, with no fallback
+that could choose a destructive action. Return chooses the default even while
+Cancel has focus; Space activates the focused button. Cancel receives initial
+focus when enabled, otherwise the default or first enabled action does.
+Additional application shortcuts, such as Command-D, remain caller-owned.
+
+`MacAlert` uses the installed Base UI AlertDialog for modal semantics, focus
+trapping, scroll locking, and outside-click protection. Successful action
+callbacks request `onOpenChange(false)`; the caller owns the decision's actual
+work and any asynchronous progress/error UI. `returnFocus` can be an element
+ref or a function; otherwise focus returns to the previously focused element.
+Actions never perform operating-system operations themselves.
+
+`presentation="sheet"` omits the app icon and positions the panel near the
+parent's top. Use a sized, transformed environment (for example
+`style={{ height: 420, transform: "translateZ(0)" }}`) to contain a preview's
+fixed backdrop and popup. Both presentations use browser modal semantics;
+sheets do not implement separate ownership among multiple desktop windows.
+`MacAlertPanel` renders just the accessible panel for embedded compositions,
+without trapping focus, moving focus, or closing itself.
+
+`severity="informational" | "warning" | "critical"` selects native artwork.
+Informational and warning currently share the default app icon. `icon` replaces
+its full 64-point artwork, including the critical badge if needed. Optional
+`suppression={{ label, checked, defaultChecked, onCheckedChange, disabled }}`
+adds a `MacCheckbox`; callers persist the value and decide whether to show the
+alert again. Two actions are horizontal with Cancel on the left; three or more
+stack with the default first and Cancel last. `className` and `style` customize
+the panel. Environment reduced-motion settings disable transitions.
+
+The lab at `/?view=alert-reference` compares five examples in light/dark with
+ten native captures and a modal workbench. Its surfaces match the captured
+Tahoe material. Exact animation timing, arbitrary desktop-dependent native
+material, and Sequoia are not calibrated in this pass.

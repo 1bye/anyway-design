@@ -1,5 +1,6 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { AlertReferenceComparison } from "./alert-reference";
 import { App } from "./app";
 import { ControlsReferenceComparison } from "./controls-reference";
 import { DockGlassPlayground } from "./dock-glass-playground";
@@ -57,5 +58,7 @@ if (view === "dock-reference") {
 	page = <InputControlsReferenceComparison />;
 } else if (view === "selection-controls-reference") {
 	page = <SelectionControlsReferenceComparison />;
+} else if (view === "alert-reference") {
+	page = <AlertReferenceComparison />;
 }
 createRoot(root).render(<StrictMode>{page}</StrictMode>);

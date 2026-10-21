@@ -1,0 +1,106 @@
+.alert-study-viewport {
+	overflow: auto;
+	background: #edf0f2;
+}
+.alert-study-scene {
+	position: relative;
+	width: calc(308px * var(--alert-study-scale));
+	height: calc(var(--alert-study-height) * var(--alert-study-scale));
+	margin-inline: auto;
+}
+.macos.alert-study-live,
+.alert-study-native {
+	position: absolute;
+	top: calc(24px * var(--alert-study-scale));
+	left: calc(24px * var(--alert-study-scale));
+	width: 260px;
+	max-width: none;
+	transform: scale(var(--alert-study-scale));
+	transform-origin: top left;
+}
+.alert-study-native {
+	height: auto;
+	border-radius: 28px;
+}
+.alert-study-live .mac-alert-actions .mac-button[data-initial-focus="true"] {
+	outline: 3px solid var(--mac-alert-focus);
+	outline-offset: 0;
+}
+.alert-workbench {
+	display: grid;
+	grid-template-columns: minmax(220px, 0.7fr) minmax(0, 1.3fr);
+	gap: 32px;
+	margin-top: 36px;
+}
+.alert-workbench h2 {
+	margin: 10px 0;
+	font-size: 24px;
+}
+.alert-workbench p {
+	font-size: 13px;
+	line-height: 1.7;
+	color: #7e8792;
+}
+.alert-workbench label {
+	font-size: 13px;
+}
+.alert-workbench-result {
+	min-height: 24px;
+}
+.macos.alert-workbench-desktop {
+	min-height: 440px;
+	overflow: clip;
+	background: #eef0f2;
+	border: 1px solid #d5d9de;
+	border-radius: 14px;
+	isolation: isolate;
+	transform: translateZ(0);
+}
+.alert-workbench-document {
+	min-height: 440px;
+	background: var(--mac-surface);
+}
+.alert-workbench-titlebar {
+	display: flex;
+	gap: 8px;
+	align-items: center;
+	height: 32px;
+	padding: 0 14px;
+	background: var(--mac-chrome);
+	border-bottom: 1px solid var(--mac-line);
+}
+.alert-workbench-titlebar span {
+	width: 12px;
+	height: 12px;
+	background: #ff5f57;
+	border-radius: 50%;
+}
+.alert-workbench-titlebar span:nth-child(2) {
+	background: #febc2e;
+}
+.alert-workbench-titlebar span:nth-child(3) {
+	background: #28c840;
+}
+.alert-workbench-titlebar b {
+	flex: 1;
+	padding-right: 50px;
+	font-size: 13px;
+	font-weight: 500;
+	text-align: center;
+}
+.alert-workbench-document h3 {
+	margin: 40px 36px 20px;
+	font-size: 26px;
+}
+.alert-workbench-document p {
+	margin: 16px 36px;
+	color: var(--mac-secondary);
+}
+.alert-workbench-document > button {
+	margin: 90px 36px 24px;
+}
+@media (max-width: 760px) {
+	.alert-workbench {
+		grid-template-columns: 1fr;
+	}
+}

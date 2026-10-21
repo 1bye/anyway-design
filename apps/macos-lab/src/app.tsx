@@ -294,6 +294,9 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 				<a className="copy-button" href="/?view=selection-controls-reference">
 					<Columns2 size={14} /> Pop-up buttons & combo boxes
 				</a>
+				<a className="copy-button" href="/?view=alert-reference">
+					Alerts & confirmations ↗
+				</a>
 			</>
 		);
 	}

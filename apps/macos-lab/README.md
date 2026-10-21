@@ -490,3 +490,27 @@ its controls with `selection-controls-reference.swift --validate`.
 Native focus/hover details, transition timing, and exact keyboard conventions
 still need dedicated calibration. Mini controls, Sequoia, grouped/multiple
 selection, and virtualized lists are outside this pass. No dependency was added.
+
+### Tahoe alerts and confirmation dialogs
+
+Open `/?view=alert-reference` for `MacAlertPanel` beside ten original local
+Tahoe `NSAlert` captures: Information, Replace with suppression, Critical,
+Save/Don’t Save/Cancel, and an attached document sheet, each in light/dark.
+Shared Fit / 1× / 1.5× / 2× zoom preserves point geometry. The live comparison
+stays open after decisions; Reset restores its suppression checkbox. Native
+captures retain their initial keyboard focus ring.
+
+The document workbench uses the reusable modal `MacAlert`, including initial
+Cancel focus, Return default, Escape cancellation, Space activation, trapped
+Tab navigation, outside-click protection, and focus return to the trigger.
+The default action can be disabled to check that shortcuts never fall through
+to another action. The warning example exposes a suppression checkbox. All
+results stay in local React state; no documents are changed.
+
+`packages/macos/scripts/alert-reference.swift --validate` self-checks the native
+configurations and exports transparent native artwork. The source provenance,
+measured geometry, and ten unaltered captures are under
+`public/assets/native-alerts`. Actual sheet geometry comes from attached live
+captures. Pure action tests cover order and disabled/missing shortcuts.
+Exact transition timing, desktop-dependent material, independent multi-window
+sheet ownership, and Sequoia calibration remain outside this pass.

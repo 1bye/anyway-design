@@ -1,0 +1,656 @@
+{
+  "information-light": {
+    "buttons": [
+      {
+        "destructive": false,
+        "fontSize": 13,
+        "fontTraits": {
+          "NSCTFontProportionTrait": 0,
+          "NSCTFontSlantTrait": 0,
+          "NSCTFontSymbolicTrait": 16384,
+          "NSCTFontUIFontDesignTrait": "NSCTFontUIFontDesignDefault",
+          "NSCTFontWeightTrait": 0
+        },
+        "height": 28,
+        "title": "OK",
+        "width": 228,
+        "x": 16,
+        "y": 16
+      }
+    ],
+    "contentHeight": 218,
+    "contentWidth": 260,
+    "height": 218,
+    "images": [
+      {
+        "class": "_NSAlertImageView",
+        "height": 64,
+        "width": 64,
+        "x": 20,
+        "y": 134
+      }
+    ],
+    "system": "Version 26.6.2 (Build 25G83)",
+    "texts": [
+      {
+        "fontSize": 13,
+        "height": 16,
+        "text": "Export complete",
+        "width": 220,
+        "x": 20,
+        "y": 102
+      },
+      {
+        "fontSize": 13,
+        "height": 32,
+        "text": "Your files were exported successfully.",
+        "width": 220,
+        "x": 20,
+        "y": 60
+      }
+    ],
+    "width": 260
+  },
+  "information-dark": {
+    "buttons": [
+      {
+        "destructive": false,
+        "fontSize": 13,
+        "fontTraits": {
+          "NSCTFontProportionTrait": 0,
+          "NSCTFontSlantTrait": 0,
+          "NSCTFontSymbolicTrait": 16384,
+          "NSCTFontUIFontDesignTrait": "NSCTFontUIFontDesignDefault",
+          "NSCTFontWeightTrait": 0
+        },
+        "height": 28,
+        "title": "OK",
+        "width": 228,
+        "x": 16,
+        "y": 16
+      }
+    ],
+    "contentHeight": 218,
+    "contentWidth": 260,
+    "height": 218,
+    "images": [
+      {
+        "class": "_NSAlertImageView",
+        "height": 64,
+        "width": 64,
+        "x": 20,
+        "y": 134
+      }
+    ],
+    "system": "Version 26.6.2 (Build 25G83)",
+    "texts": [
+      {
+        "fontSize": 13,
+        "height": 16,
+        "text": "Export complete",
+        "width": 220,
+        "x": 20,
+        "y": 102
+      },
+      {
+        "fontSize": 13,
+        "height": 32,
+        "text": "Your files were exported successfully.",
+        "width": 220,
+        "x": 20,
+        "y": 60
+      }
+    ],
+    "width": 260
+  },
+  "warning-light": {
+    "buttons": [
+      {
+        "destructive": false,
+        "fontSize": 13,
+        "fontTraits": {
+          "NSCTFontProportionTrait": 0,
+          "NSCTFontSlantTrait": 0,
+          "NSCTFontSymbolicTrait": 16384,
+          "NSCTFontUIFontDesignTrait": "NSCTFontUIFontDesignDefault",
+          "NSCTFontWeightTrait": 0
+        },
+        "height": 28,
+        "title": "Cancel",
+        "width": 110,
+        "x": 16,
+        "y": 16
+      },
+      {
+        "destructive": true,
+        "fontSize": 13,
+        "fontTraits": {
+          "NSCTFontProportionTrait": 0,
+          "NSCTFontSlantTrait": 0,
+          "NSCTFontSymbolicTrait": 16384,
+          "NSCTFontUIFontDesignTrait": "NSCTFontUIFontDesignDefault",
+          "NSCTFontWeightTrait": 0
+        },
+        "height": 28,
+        "title": "Replace",
+        "width": 110,
+        "x": 134,
+        "y": 16
+      }
+    ],
+    "contentHeight": 266,
+    "contentWidth": 260,
+    "height": 266,
+    "images": [
+      {
+        "class": "_NSAlertImageView",
+        "height": 64,
+        "width": 64,
+        "x": 20,
+        "y": 182
+      }
+    ],
+    "system": "Version 26.6.2 (Build 25G83)",
+    "texts": [
+      {
+        "fontSize": 13,
+        "height": 16,
+        "text": "Replace \u201cReport.pdf\u201d?",
+        "width": 220,
+        "x": 20,
+        "y": 150
+      },
+      {
+        "fontSize": 13,
+        "height": 48,
+        "text": "A file with this name already exists. Replacing it will overwrite its contents.",
+        "width": 220,
+        "x": 20,
+        "y": 92
+      }
+    ],
+    "width": 260
+  },
+  "warning-dark": {
+    "buttons": [
+      {
+        "destructive": false,
+        "fontSize": 13,
+        "fontTraits": {
+          "NSCTFontProportionTrait": 0,
+          "NSCTFontSlantTrait": 0,
+          "NSCTFontSymbolicTrait": 16384,
+          "NSCTFontUIFontDesignTrait": "NSCTFontUIFontDesignDefault",
+          "NSCTFontWeightTrait": 0
+        },
+        "height": 28,
+        "title": "Cancel",
+        "width": 110,
+        "x": 16,
+        "y": 16
+      },
+      {
+        "destructive": true,
+        "fontSize": 13,
+        "fontTraits": {
+          "NSCTFontProportionTrait": 0,
+          "NSCTFontSlantTrait": 0,
+          "NSCTFontSymbolicTrait": 16384,
+          "NSCTFontUIFontDesignTrait": "NSCTFontUIFontDesignDefault",
+          "NSCTFontWeightTrait": 0
+        },
+        "height": 28,
+        "title": "Replace",
+        "width": 110,
+        "x": 134,
+        "y": 16
+      }
+    ],
+    "contentHeight": 266,
+    "contentWidth": 260,
+    "height": 266,
+    "images": [
+      {
+        "class": "_NSAlertImageView",
+        "height": 64,
+        "width": 64,
+        "x": 20,
+        "y": 182
+      }
+    ],
+    "system": "Version 26.6.2 (Build 25G83)",
+    "texts": [
+      {
+        "fontSize": 13,
+        "height": 16,
+        "text": "Replace \u201cReport.pdf\u201d?",
+        "width": 220,
+        "x": 20,
+        "y": 150
+      },
+      {
+        "fontSize": 13,
+        "height": 48,
+        "text": "A file with this name already exists. Replacing it will overwrite its contents.",
+        "width": 220,
+        "x": 20,
+        "y": 92
+      }
+    ],
+    "width": 260
+  },
+  "critical-light": {
+    "buttons": [
+      {
+        "destructive": false,
+        "fontSize": 13,
+        "fontTraits": {
+          "NSCTFontProportionTrait": 0,
+          "NSCTFontSlantTrait": 0,
+          "NSCTFontSymbolicTrait": 16384,
+          "NSCTFontUIFontDesignTrait": "NSCTFontUIFontDesignDefault",
+          "NSCTFontWeightTrait": 0
+        },
+        "height": 28,
+        "title": "Try Again",
+        "width": 110,
+        "x": 134,
+        "y": 16
+      },
+      {
+        "destructive": false,
+        "fontSize": 13,
+        "fontTraits": {
+          "NSCTFontProportionTrait": 0,
+          "NSCTFontSlantTrait": 0,
+          "NSCTFontSymbolicTrait": 16384,
+          "NSCTFontUIFontDesignTrait": "NSCTFontUIFontDesignDefault",
+          "NSCTFontWeightTrait": 0
+        },
+        "height": 28,
+        "title": "Cancel",
+        "width": 110,
+        "x": 16,
+        "y": 16
+      }
+    ],
+    "contentHeight": 218,
+    "contentWidth": 260,
+    "height": 218,
+    "images": [
+      {
+        "class": "_NSAlertImageView",
+        "height": 64,
+        "width": 64,
+        "x": 20,
+        "y": 134
+      }
+    ],
+    "system": "Version 26.6.2 (Build 25G83)",
+    "texts": [
+      {
+        "fontSize": 13,
+        "height": 16,
+        "text": "The document couldn\u2019t be saved.",
+        "width": 220,
+        "x": 20,
+        "y": 102
+      },
+      {
+        "fontSize": 13,
+        "height": 32,
+        "text": "The disk is full. Free up some space, then try again.",
+        "width": 220,
+        "x": 20,
+        "y": 60
+      }
+    ],
+    "width": 260
+  },
+  "critical-dark": {
+    "buttons": [
+      {
+        "destructive": false,
+        "fontSize": 13,
+        "fontTraits": {
+          "NSCTFontProportionTrait": 0,
+          "NSCTFontSlantTrait": 0,
+          "NSCTFontSymbolicTrait": 16384,
+          "NSCTFontUIFontDesignTrait": "NSCTFontUIFontDesignDefault",
+          "NSCTFontWeightTrait": 0
+        },
+        "height": 28,
+        "title": "Try Again",
+        "width": 110,
+        "x": 134,
+        "y": 16
+      },
+      {
+        "destructive": false,
+        "fontSize": 13,
+        "fontTraits": {
+          "NSCTFontProportionTrait": 0,
+          "NSCTFontSlantTrait": 0,
+          "NSCTFontSymbolicTrait": 16384,
+          "NSCTFontUIFontDesignTrait": "NSCTFontUIFontDesignDefault",
+          "NSCTFontWeightTrait": 0
+        },
+        "height": 28,
+        "title": "Cancel",
+        "width": 110,
+        "x": 16,
+        "y": 16
+      }
+    ],
+    "contentHeight": 218,
+    "contentWidth": 260,
+    "height": 218,
+    "images": [
+      {
+        "class": "_NSAlertImageView",
+        "height": 64,
+        "width": 64,
+        "x": 20,
+        "y": 134
+      }
+    ],
+    "system": "Version 26.6.2 (Build 25G83)",
+    "texts": [
+      {
+        "fontSize": 13,
+        "height": 16,
+        "text": "The document couldn\u2019t be saved.",
+        "width": 220,
+        "x": 20,
+        "y": 102
+      },
+      {
+        "fontSize": 13,
+        "height": 32,
+        "text": "The disk is full. Free up some space, then try again.",
+        "width": 220,
+        "x": 20,
+        "y": 60
+      }
+    ],
+    "width": 260
+  },
+  "save-light": {
+    "buttons": [
+      {
+        "destructive": false,
+        "fontSize": 13,
+        "fontTraits": {
+          "NSCTFontProportionTrait": 0,
+          "NSCTFontSlantTrait": 0,
+          "NSCTFontSymbolicTrait": 16384,
+          "NSCTFontUIFontDesignTrait": "NSCTFontUIFontDesignDefault",
+          "NSCTFontWeightTrait": 0
+        },
+        "height": 28,
+        "title": "Save",
+        "width": 228,
+        "x": 16,
+        "y": 84
+      },
+      {
+        "destructive": false,
+        "fontSize": 13,
+        "fontTraits": {
+          "NSCTFontProportionTrait": 0,
+          "NSCTFontSlantTrait": 0,
+          "NSCTFontSymbolicTrait": 16384,
+          "NSCTFontUIFontDesignTrait": "NSCTFontUIFontDesignDefault",
+          "NSCTFontWeightTrait": 0
+        },
+        "height": 28,
+        "title": "Cancel",
+        "width": 228,
+        "x": 16,
+        "y": 16
+      },
+      {
+        "destructive": true,
+        "fontSize": 13,
+        "fontTraits": {
+          "NSCTFontProportionTrait": 0,
+          "NSCTFontSlantTrait": 0,
+          "NSCTFontSymbolicTrait": 16384,
+          "NSCTFontUIFontDesignTrait": "NSCTFontUIFontDesignDefault",
+          "NSCTFontWeightTrait": 0
+        },
+        "height": 28,
+        "title": "Don\u2019t Save",
+        "width": 228,
+        "x": 16,
+        "y": 50
+      }
+    ],
+    "contentHeight": 302,
+    "contentWidth": 260,
+    "height": 302,
+    "images": [
+      {
+        "class": "_NSAlertImageView",
+        "height": 64,
+        "width": 64,
+        "x": 20,
+        "y": 218
+      }
+    ],
+    "system": "Version 26.6.2 (Build 25G83)",
+    "texts": [
+      {
+        "fontSize": 13,
+        "height": 32,
+        "text": "Do you want to save the changes made to \u201cReport.pdf\u201d?",
+        "width": 220,
+        "x": 20,
+        "y": 170
+      },
+      {
+        "fontSize": 13,
+        "height": 32,
+        "text": "Your changes will be lost if you don\u2019t save them.",
+        "width": 220,
+        "x": 20,
+        "y": 128
+      }
+    ],
+    "width": 260
+  },
+  "save-dark": {
+    "buttons": [
+      {
+        "destructive": false,
+        "fontSize": 13,
+        "fontTraits": {
+          "NSCTFontProportionTrait": 0,
+          "NSCTFontSlantTrait": 0,
+          "NSCTFontSymbolicTrait": 16384,
+          "NSCTFontUIFontDesignTrait": "NSCTFontUIFontDesignDefault",
+          "NSCTFontWeightTrait": 0
+        },
+        "height": 28,
+        "title": "Save",
+        "width": 228,
+        "x": 16,
+        "y": 84
+      },
+      {
+        "destructive": false,
+        "fontSize": 13,
+        "fontTraits": {
+          "NSCTFontProportionTrait": 0,
+          "NSCTFontSlantTrait": 0,
+          "NSCTFontSymbolicTrait": 16384,
+          "NSCTFontUIFontDesignTrait": "NSCTFontUIFontDesignDefault",
+          "NSCTFontWeightTrait": 0
+        },
+        "height": 28,
+        "title": "Cancel",
+        "width": 228,
+        "x": 16,
+        "y": 16
+      },
+      {
+        "destructive": true,
+        "fontSize": 13,
+        "fontTraits": {
+          "NSCTFontProportionTrait": 0,
+          "NSCTFontSlantTrait": 0,
+          "NSCTFontSymbolicTrait": 16384,
+          "NSCTFontUIFontDesignTrait": "NSCTFontUIFontDesignDefault",
+          "NSCTFontWeightTrait": 0
+        },
+        "height": 28,
+        "title": "Don\u2019t Save",
+        "width": 228,
+        "x": 16,
+        "y": 50
+      }
+    ],
+    "contentHeight": 302,
+    "contentWidth": 260,
+    "height": 302,
+    "images": [
+      {
+        "class": "_NSAlertImageView",
+        "height": 64,
+        "width": 64,
+        "x": 20,
+        "y": 218
+      }
+    ],
+    "system": "Version 26.6.2 (Build 25G83)",
+    "texts": [
+      {
+        "fontSize": 13,
+        "height": 32,
+        "text": "Do you want to save the changes made to \u201cReport.pdf\u201d?",
+        "width": 220,
+        "x": 20,
+        "y": 170
+      },
+      {
+        "fontSize": 13,
+        "height": 32,
+        "text": "Your changes will be lost if you don\u2019t save them.",
+        "width": 220,
+        "x": 20,
+        "y": 128
+      }
+    ],
+    "width": 260
+  },
+  "sheet-light": {
+    "buttons": [
+      {
+        "destructive": false,
+        "height": 28,
+        "title": "Save",
+        "width": 228,
+        "x": 16,
+        "y": 84
+      },
+      {
+        "destructive": false,
+        "height": 28,
+        "title": "Cancel",
+        "width": 228,
+        "x": 16,
+        "y": 16
+      },
+      {
+        "destructive": true,
+        "height": 28,
+        "title": "Don\u2019t Save",
+        "width": 228,
+        "x": 16,
+        "y": 50
+      }
+    ],
+    "contentHeight": 222,
+    "contentWidth": 260,
+    "height": 222,
+    "images": [
+      {
+        "class": "_NSAlertImageView",
+        "height": 32,
+        "width": 32,
+        "x": 20,
+        "y": 218
+      }
+    ],
+    "parentHeight": 420,
+    "parentWidth": 640,
+    "sheetTop": 83,
+    "sheetX": 190,
+    "system": "Version 26.6.2 (Build 25G83)",
+    "width": 260
+  },
+  "sheet-dark": {
+    "buttons": [
+      {
+        "destructive": false,
+        "height": 28,
+        "title": "Save",
+        "width": 228,
+        "x": 16,
+        "y": 84
+      },
+      {
+        "destructive": false,
+        "height": 28,
+        "title": "Cancel",
+        "width": 228,
+        "x": 16,
+        "y": 16
+      },
+      {
+        "destructive": true,
+        "height": 28,
+        "title": "Don\u2019t Save",
+        "width": 228,
+        "x": 16,
+        "y": 50
+      }
+    ],
+    "contentHeight": 222,
+    "contentWidth": 260,
+    "height": 222,
+    "images": [
+      {
+        "class": "_NSAlertImageView",
+        "height": 32,
+        "width": 32,
+        "x": 20,
+        "y": 218
+      }
+    ],
+    "parentHeight": 420,
+    "parentWidth": 640,
+    "sheetTop": 83,
+    "sheetX": 190,
+    "system": "Version 26.6.2 (Build 25G83)",
+    "texts": [
+      {
+        "fontSize": 13,
+        "height": 32,
+        "text": "Do you want to save the changes made to \u201cReport.pdf\u201d?",
+        "width": 220,
+        "x": 20,
+        "y": 170
+      },
+      {
+        "fontSize": 13,
+        "height": 32,
+        "text": "Your changes will be lost if you don\u2019t save them.",
+        "width": 220,
+        "x": 20,
+        "y": 128
+      }
+    ],
+    "width": 260
+  }
+}
