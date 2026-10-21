@@ -561,3 +561,28 @@ native content. Provenance, native geometry, and original JPEGs live under
 `public/assets/native-overlays`. Native material, keyboard focus-ring details,
 exact animation timing, and Sequoia need further calibration. Tooltips were
 explicitly deferred; no tooltip component or reference is included.
+
+
+### Tahoe text fields and search fields
+
+Open `/?view=text-fields-reference` for `MacTextField` and `MacSearchField`
+beside six local Tahoe AppKit captures. Normal, Text focus, and Search focus
+are available in light/dark. The 632 × 500-point fixture has regular/small
+columns and nine rows: empty, filled, password, read-only, disabled, empty
+search, filled search, disabled search, and read-only search. Original JPEGs
+retain their 32-point title bar; CSS clips it in the comparison. Shared zoom,
+text/search detail crops, synchronized scrolling, and reset are supported.
+Focus presets hold the captured focus ring without stealing browser focus.
+
+The workbench covers controlled and uncontrolled values, Return/icon search,
+Escape and Clear, next-control Tab navigation, input refs, required-field
+validation, read-only editing, disabled submission, and native form reset.
+Canceling React's delegated `onReset` now also cancels the shared control-state
+reset. Regression tests cover late cancellation and observer teardown; browser
+checks verify actual values and focus after actions. All values stay local.
+
+`packages/macos/scripts/text-fields-reference.swift --validate` self-checks
+18 public native controls. Original images, measured frames, and source
+provenance are in `public/assets/native-text-fields`. Native caret/selection,
+font rasterization, non-Mac font fallbacks, and Sequoia need separate
+calibration. No dependency was added.

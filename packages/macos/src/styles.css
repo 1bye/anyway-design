@@ -2229,7 +2229,7 @@
 	border-radius: 50%;
 }
 
-.mac-search-clear:hover:not(:disabled) {
+.mac-search-clear:is(button):hover:not(:disabled) {
 	color: var(--mac-text);
 }
 
@@ -2238,22 +2238,119 @@
 	opacity: 0.4;
 }
 
-[data-preset="tahoe"] .mac-text-field,
-[data-preset="tahoe"] .mac-search-field input {
-	min-height: 24px;
-	border-color: color-mix(in srgb, var(--mac-text) 12%, var(--mac-surface));
-	border-radius: 6px;
-	box-shadow: none;
-}
-
-[data-preset="tahoe"] .mac-search-field input {
-	border-radius: 999px;
-}
-
 .mac-text-field[data-size="small"],
 .mac-search-field[data-size="small"] input {
 	min-height: 20px;
 	font-size: 11px;
+}
+
+[data-preset="tahoe"] .mac-text-field,
+[data-preset="tahoe"] .mac-search-field input {
+	--mac-field-background: #fff;
+	--mac-field-border: rgb(0 0 0 / 4%);
+	--mac-field-text: #242424;
+	--mac-field-placeholder: #858585;
+	--mac-field-disabled: #bfbfbf;
+	--mac-field-focus: color-mix(in srgb, var(--mac-accent) 45%, transparent);
+	min-height: 24px;
+	padding: 4px 6px;
+	font-size: 13px;
+	-webkit-font-smoothing: auto;
+	line-height: 16px;
+	color: var(--mac-field-text);
+	background: var(--mac-field-background);
+	border: 0;
+	border-radius: 6px;
+	box-shadow: 0 0 0 1px var(--mac-field-border);
+}
+[data-preset="tahoe"][data-appearance="dark"] .mac-text-field,
+[data-preset="tahoe"][data-appearance="dark"] .mac-search-field input {
+	--mac-field-background: #252525;
+	--mac-field-border: rgb(255 255 255 / 4%);
+	--mac-field-text: #ddd;
+	--mac-field-placeholder: #999;
+	--mac-field-disabled: #626262;
+	--mac-field-focus: color-mix(
+		in srgb,
+		color-mix(in srgb, var(--mac-accent) 65%, white) 50%,
+		transparent
+	);
+}
+[data-preset="tahoe"] .mac-text-field::placeholder,
+[data-preset="tahoe"] .mac-search-field input::placeholder {
+	color: var(--mac-field-placeholder);
+}
+[data-preset="tahoe"] .mac-text-field:disabled,
+[data-preset="tahoe"] .mac-search-field input:disabled {
+	color: var(--mac-field-disabled);
+	-webkit-text-fill-color: var(--mac-field-disabled);
+}
+[data-preset="tahoe"] .mac-text-field:disabled::placeholder,
+[data-preset="tahoe"] .mac-search-field input:disabled::placeholder {
+	color: var(--mac-field-disabled);
+}
+
+[data-preset="tahoe"] .mac-search-field input {
+	padding-inline: 24px;
+	border-radius: 999px;
+}
+[data-preset="tahoe"] .mac-text-field[data-size="small"] {
+	min-height: 22px;
+	font-size: 11px;
+	line-height: 14px;
+	border-radius: 4px;
+}
+[data-preset="tahoe"] .mac-text-field[type="password"] {
+	height: 24px;
+	/* AppKit's secure mask is larger than the browser's system-font bullet. */
+	font-family: "Lucida Grande", sans-serif;
+	font-size: 15px;
+}
+[data-preset="tahoe"] .mac-text-field[type="password"][data-size="small"] {
+	height: 22px;
+	font-size: 13px;
+}
+[data-preset="tahoe"] .mac-text-field[type="password"]::placeholder {
+	font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+	font-size: 13px;
+}
+[data-preset="tahoe"]
+	.mac-text-field[type="password"][data-size="small"]::placeholder {
+	font-size: 11px;
+}
+[data-preset="tahoe"] .mac-search-field[data-size="small"] input {
+	min-height: 20px;
+	padding: 3px 18px;
+	font-size: 11px;
+	line-height: 14px;
+}
+.mac-search-field .mac-search-submit {
+	display: grid;
+	place-items: center;
+	padding: 0;
+	pointer-events: auto;
+	background: transparent;
+	border: 0;
+}
+[data-preset="tahoe"] .mac-search-icon {
+	left: 6px;
+}
+[data-preset="tahoe"] .mac-search-field {
+	--mac-search-disabled: #bfbfbf;
+}
+[data-preset="tahoe"][data-appearance="dark"] .mac-search-field {
+	--mac-search-disabled: #626262;
+}
+[data-preset="tahoe"] .mac-search-field[data-disabled] .mac-search-icon,
+[data-preset="tahoe"] .mac-search-field[data-disabled] .mac-search-clear {
+	color: var(--mac-search-disabled);
+	opacity: 1;
+}
+[data-preset="tahoe"] .mac-search-field[data-size="small"] .mac-search-icon {
+	left: 4px;
+}
+[data-preset="tahoe"] .mac-search-field[data-size="small"] .mac-search-clear {
+	right: 0;
 }
 
 .mac-text-field:focus-visible,
@@ -2261,6 +2358,11 @@
 	outline: 3px solid color-mix(in srgb, var(--mac-accent) 45%, transparent);
 	outline-offset: 1px;
 	border-color: var(--mac-accent);
+}
+[data-preset="tahoe"] .mac-text-field:focus-visible,
+[data-preset="tahoe"] .mac-search-field input:focus-visible {
+	outline-color: var(--mac-field-focus);
+	outline-offset: 0;
 }
 
 .mac-switch-label {

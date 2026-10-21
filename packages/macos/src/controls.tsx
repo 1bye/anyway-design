@@ -4,8 +4,8 @@ import {
 	type KeyboardEvent,
 	type MouseEvent,
 	useCallback,
-	useState,
 } from "react";
+import { useControlValue } from "./use-control-value";
 import { WindowSymbol } from "./window-symbol";
 export interface MacButtonProps extends ComponentPropsWithRef<"button"> {
 	size?: "small" | "regular";
@@ -59,6 +59,7 @@ export interface MacSearchFieldProps
 	defaultValue?: string;
 	onSearch?: (query: string) => void;
 	onValueChange?: (query: string) => void;
+	searchLabel?: string;
 	value?: string;
 }
 
@@ -67,6 +68,7 @@ export function MacSearchField({
 	size = "regular",
 	placeholder = "Search",
 	clearLabel = "Clear search",
+	searchLabel = "Search",
 	value,
 	defaultValue = "",
 	onValueChange,
@@ -75,18 +77,20 @@ export function MacSearchField({
 	disabled,
 	readOnly,
 	style,
+	ref,
 	...props
 }: MacSearchFieldProps) {
-	const [internalValue, setInternalValue] = useState(defaultValue);
-	const query = value ?? internalValue;
+	const control = useControlValue<string, { isCanceled: boolean }>({
+		defaultValue,
+		form: props.form,
+		inputRef: ref,
+		onChange: onValueChange,
+		value,
+	});
+	const query = control.value;
 	const update = useCallback(
-		(next: string) => {
-			if (value === undefined) {
-				setInternalValue(next);
-			}
-			onValueChange?.(next);
-		},
-		[onValueChange, value]
+		(next: string) => control.change(next, { isCanceled: false }),
+		[control.change]
 	);
 	const change = useCallback(
 		(event: ChangeEvent<HTMLInputElement>) => update(event.target.value),
@@ -94,11 +98,16 @@ export function MacSearchField({
 	);
 	const clear = useCallback(
 		(event: MouseEvent<HTMLButtonElement>) => {
-			event.currentTarget.parentElement?.querySelector("input")?.focus();
+			event.preventDefault();
+			control.input.current?.focus();
 			update("");
 		},
-		[update]
+		[control.input, update]
 	);
+	const search = useCallback(() => {
+		control.input.current?.focus();
+		onSearch?.(query);
+	}, [control.input, onSearch, query]);
 	const keyDown = useCallback(
 		(event: KeyboardEvent<HTMLInputElement>) => {
 			onKeyDown?.(event);
@@ -121,10 +130,28 @@ export function MacSearchField({
 		<span
 			className={`mac-search-field ${className}`}
 			data-disabled={disabled || undefined}
+			data-readonly={readOnly || undefined}
 			data-size={size}
 			style={style}
 		>
-			<WindowSymbol className="mac-search-icon" name="search" size={14} />
+			{onSearch ? (
+				<button
+					aria-label={searchLabel}
+					className="mac-search-icon mac-search-submit"
+					disabled={disabled}
+					onClick={search}
+					tabIndex={-1}
+					type="button"
+				>
+					<WindowSymbol name="search" size={size === "small" ? 12 : 14} />
+				</button>
+			) : (
+				<WindowSymbol
+					className="mac-search-icon"
+					name="search"
+					size={size === "small" ? 12 : 14}
+				/>
+			)}
 			<input
 				{...props}
 				disabled={disabled}
@@ -132,18 +159,25 @@ export function MacSearchField({
 				onKeyDown={keyDown}
 				placeholder={placeholder}
 				readOnly={readOnly}
+				ref={control.inputRef}
 				type="search"
 				value={query}
 			/>
+			{query && readOnly ? (
+				<span aria-hidden="true" className="mac-search-clear">
+					<WindowSymbol name="search-clear" size={size === "small" ? 12 : 15} />
+				</span>
+			) : null}
 			{query && !readOnly ? (
 				<button
 					aria-label={clearLabel}
 					className="mac-search-clear"
 					disabled={disabled}
 					onClick={clear}
+					tabIndex={-1}
 					type="button"
 				>
-					<WindowSymbol name="search-clear" size={14} />
+					<WindowSymbol name="search-clear" size={size === "small" ? 12 : 15} />
 				</button>
 			) : null}
 		</span>

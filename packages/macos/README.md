@@ -1252,3 +1252,54 @@ reduced motion removes entry/exit transitions. The lab's
 unaltered local `NSPopover` captures, with keyboard and edge-collision examples.
 Native focus-ring details, desktop-dependent material, exact transition timing,
 and Sequoia are not separately calibrated. Tooltips are outside this pass.
+
+
+### Text fields and search fields
+
+```tsx
+import { MacTextField, MacSearchField } from "@anyway-design/macos/controls";
+
+<MacTextField aria-label="Project name" name="project" defaultValue="Untitled" />
+<MacTextField aria-label="Password preview" type="password" autoComplete="off" />
+<MacSearchField aria-label="Search files" name="query" value={query}
+  onValueChange={setQuery} onSearch={runSearch} />
+```
+
+Both render native HTML inputs inside `MacOSEnvironment`; provide a visible
+associated label or `aria-label`. `size="regular" | "small"`, `className`, and
+`style` control appearance. Regular controls are 24px high. Small text fields
+are 22px, and small search fields are 20px. Width defaults to 220px and is
+configurable. The Tahoe light/dark surfaces, subtle outside bezel, padding,
+placeholder/disabled colors, focus rings, and native symbol positions follow
+the local AppKit fixture. Password fields retain real browser masking and use
+a local system font to approximate AppKit's larger secure dots.
+
+`MacTextField` forwards normal input props, including `type`, `value`,
+`defaultValue`, `onChange`, `disabled`, `readOnly`, `required`, `name`, `form`,
+and React 19 `ref`. Editing, selection, validation, and form reset remain
+browser behavior. Existing dialog and New Folder size overrides still apply.
+
+`MacSearchField` accepts string `value` / `defaultValue` and `onValueChange`.
+Typing, Clear, and Escape request value changes. Clear keeps focus in the
+input; read-only values cannot be cleared. Return and the magnifying-glass
+button call optional `onSearch(query)` without submitting the surrounding
+form. Without `onSearch`, Return retains normal form submission. The caller
+controls filtering, debouncing, results, and search history. `clearLabel` and
+`searchLabel` customize button names; both actions stay outside the normal Tab
+sequence, matching native field navigation. A read-only filled search retains
+a decorative cancel glyph without an actionable clear button.
+
+The search's `ref` targets its input, and its named value participates in
+FormData. Disabled fields do not submit; read-only fields do. Native form reset
+restores uncontrolled defaults, respecting `preventDefault()` in React's
+`onReset`. Controlled fields remain caller-owned; restore their state in the
+form's `onReset` handler. The shared reset observer waits until delegated React
+handlers can cancel, also preserving the other input controls' reset behavior.
+
+`/?view=text-fields-reference` compares regular/small fields, passwords,
+read-only/disabled states, and focused text/search against six unaltered local
+Tahoe captures. Its workbench covers keyboard actions, validation, refs, form
+submission, normal reset, and canceled reset. Native caret/selection rendering,
+font rasterization, non-Mac font fallbacks, and Sequoia are not calibrated.
+Recent-search menus, token fields, multiline editing, and validation-message
+styling are outside this pass.

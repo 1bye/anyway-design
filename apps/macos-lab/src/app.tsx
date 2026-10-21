@@ -303,6 +303,9 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 				<a className="copy-button" href="/?view=popover-reference">
 					Popovers ↗
 				</a>
+				<a className="copy-button" href="/?view=text-fields-reference">
+					Text & search fields ↗
+				</a>
 			</>
 		);
 	}

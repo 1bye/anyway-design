@@ -1,0 +1,43 @@
+.text-fields-study .input-study-live,
+.text-fields-study .input-study-native {
+	height: 500px;
+}
+.text-fields-canvas {
+	position: relative;
+	width: 632px;
+	height: 500px;
+	background: var(--mac-surface);
+}
+.text-fields-sample {
+	position: absolute;
+	width: 176px;
+}
+.text-fields-sample > :is(.mac-text-field, .mac-search-field) {
+	width: 100%;
+}
+.text-fields-native-footer {
+	top: 466px;
+}
+.text-fields-sample[data-reference-focus="true"] :is(.mac-text-field, input) {
+	outline: 3px solid var(--mac-field-focus);
+	outline-offset: 0;
+}
+.text-fields-workbench .mac-search-field,
+.text-fields-workbench .mac-text-field {
+	width: 100%;
+}
+.text-fields-hint {
+	margin: 0;
+	line-height: 1.6;
+	color: var(--mac-secondary);
+}
+.text-fields-actions {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	align-items: center;
+	margin-top: 12px;
+}
+.text-fields-uncontrolled {
+	margin-top: 20px;
+}

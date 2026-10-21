@@ -1,4 +1,5 @@
 import { type Ref, useCallback, useEffect, useRef, useState } from "react";
+import { observeFormReset } from "./form-reset";
 
 // Base UI's visual state must also reset when the browser resets its hidden inputs.
 export function useControlValue<
@@ -47,22 +48,12 @@ export function useControlValue<
 		if (!owner || (form !== undefined && owner.id !== form)) {
 			return;
 		}
-		let mounted = true;
-		const reset = (event: Event) => {
-			queueMicrotask(() => {
-				if (mounted && !event.defaultPrevented) {
-					if (uncontrolled) {
-						setInternal(defaultValue);
-					}
-					setResetKey((before) => before + 1);
-				}
-			});
-		};
-		owner.addEventListener("reset", reset);
-		return () => {
-			mounted = false;
-			owner.removeEventListener("reset", reset);
-		};
+		return observeFormReset(owner, () => {
+			if (uncontrolled) {
+				setInternal(defaultValue);
+			}
+			setResetKey((before) => before + 1);
+		});
 	}, [uncontrolled, defaultValue, form]);
 	const change = useCallback(
 		(next: Value, details: Details) => {
