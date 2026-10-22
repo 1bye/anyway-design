@@ -1,5 +1,6 @@
 @import "./styles-menu-bar-status.css";
 @import "./styles-desktop.css";
+@import "./styles-settings.css";
 @import "./styles-notification-center.css";
 
 .macos {

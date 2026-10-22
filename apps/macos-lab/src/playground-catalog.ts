@@ -125,6 +125,42 @@ export const PLAYGROUND_ENTRIES: readonly PlaygroundEntry[] = [
 		640
 	),
 	defineEntry(
+		"settings",
+		"Settings window",
+		"Window & navigation",
+		"settings",
+		"MacSettings",
+		"",
+		"A reusable settings window with configurable sections, grouped controls, search across settings, and preserved page state.",
+		[
+			active,
+			{
+				initial: "general",
+				key: "section",
+				label: "Initial section",
+				options: [
+					"general",
+					"appearance",
+					"notifications",
+					"privacy",
+					"advanced",
+				],
+			},
+			{ initial: true, key: "searchable", label: "Search settings" },
+			{
+				initial: 224,
+				key: "sidebarWidth",
+				label: "Sidebar width",
+				max: 280,
+				min: 150,
+			},
+			disabled,
+			readOnly,
+		],
+		804,
+		720
+	),
+	defineEntry(
 		"dock",
 		"Dock",
 		"Window & navigation",

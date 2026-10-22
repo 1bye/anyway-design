@@ -72,6 +72,8 @@ let symbols: [Symbol] = [
     .init(id: "search", name: "magnifyingglass"),
     .init(id: "search-clear", name: "xmark.circle.fill", extent: 14),
     .init(id: "settings", name: "slider.horizontal.3"),
+    .init(id: "gear", name: "gear", extent: 14),
+    .init(id: "person", name: "person.crop.circle.fill", extent: 16),
     .init(id: "share", name: "square.and.arrow.up", extent: 15),
     .init(id: "shared", name: "folder.badge.person.crop", extent: 16, weight: .medium),
     .init(id: "stepper-chevron-down", name: "chevron.down", extent: 11, weight: .bold),
@@ -138,7 +140,7 @@ func export(_ symbol: Symbol) throws -> [String: Any] {
         raw = NSImage(systemSymbolName: symbol.name, accessibilityDescription: nil)
     }
     let configuration = NSImage.SymbolConfiguration(pointSize: 16, weight: symbol.weight)
-        .applying(symbol.id == "search-clear" ? .preferringMonochrome() : .init(paletteColors: [.black]))
+        .applying(["search-clear", "person"].contains(symbol.id) ? .preferringMonochrome() : .init(paletteColors: [.black]))
     guard let image = symbol.resourceBundle == nil ? raw?.withSymbolConfiguration(configuration) : raw else {
         throw NSError(domain: "NativeSymbols", code: 1, userInfo: [
             NSLocalizedDescriptionKey: "Unavailable native asset: \(source)"

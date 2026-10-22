@@ -1,0 +1,409 @@
+.mac-settings {
+	width: 724px;
+	max-width: 100%;
+	height: 640px;
+	container-name: mac-settings;
+	container-type: inline-size;
+}
+.mac-settings > .mac-window {
+	width: 100%;
+	max-width: none;
+	height: 100%;
+}
+.mac-settings [hidden] {
+	display: none;
+}
+.mac-settings .mac-window-content {
+	overflow: hidden;
+	background: var(--mac-surface);
+}
+.mac-settings .mac-window-sidebar {
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+}
+.mac-settings-sidebar {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 12px;
+	min-height: 0;
+}
+.mac-settings-sidebar-header {
+	padding: 0 6px 4px;
+}
+.mac-settings-sidebar .mac-search-field {
+	flex-shrink: 0;
+	width: 100%;
+}
+.mac-settings-navigation {
+	flex: 1;
+	min-height: 0;
+	overflow: auto;
+	scrollbar-width: thin;
+}
+.mac-settings .mac-sidebar {
+	gap: 0;
+}
+.mac-settings .mac-sidebar-item {
+	gap: 6px;
+	min-height: 32px;
+	padding: 4px 6px;
+	border-radius: 8px;
+}
+.mac-settings .mac-sidebar-item > span:last-child {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.mac-settings .mac-sidebar-icon {
+	flex-basis: 20px;
+}
+.mac-settings .mac-sidebar-item[aria-current="page"] {
+	color: white;
+	background: var(--mac-accent);
+}
+.mac-settings-sidebar-footer {
+	padding: 6px 8px;
+	font-size: 11px;
+	line-height: 1.5;
+	color: var(--mac-secondary);
+}
+.mac-settings-pages {
+	height: 100%;
+}
+.mac-settings-page,
+.mac-settings-results {
+	height: 100%;
+	padding: 0 20px 28px;
+	overflow: auto;
+	scrollbar-width: thin;
+}
+.mac-settings-page-header {
+	display: flex;
+	flex-direction: column;
+	gap: 0;
+	align-items: center;
+	padding: 24px 24px 20px;
+	margin-bottom: 10px;
+	text-align: center;
+	background: color-mix(in srgb, var(--mac-surface) 97%, var(--mac-text));
+	border-radius: 12px;
+}
+.mac-settings-page-header h2,
+.mac-settings-results h2 {
+	margin: 12px 0 0;
+	font-size: 22px;
+	font-weight: 700;
+	line-height: 1.2;
+	letter-spacing: -0.6px;
+}
+.mac-settings-page-header p {
+	max-width: 420px;
+	margin: 2px 0 0;
+	font-size: 13px;
+	line-height: 17px;
+	color: var(--mac-secondary);
+}
+.mac-settings-page-icon {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 52px;
+	height: 52px;
+}
+.mac-settings-page-icon > * {
+	width: 52px;
+	height: 52px;
+}
+.mac-settings-page[data-header="toolbar"] .mac-settings-page-header {
+	align-items: flex-start;
+	padding: 0 10px;
+	margin: 0 0 20px;
+	text-align: left;
+	background: none;
+}
+.mac-settings-page[data-header="toolbar"] .mac-settings-page-icon,
+.mac-settings-page[data-header="toolbar"] .mac-settings-page-header h2 {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+}
+.mac-settings-page[data-header="toolbar"]
+	.mac-settings-page-header:not(:has(p)) {
+	margin: 0;
+}
+.mac-settings-group + .mac-settings-group {
+	margin-top: 24px;
+}
+.mac-settings-group > h3 {
+	margin: 0 10px 8px;
+	font-size: 13px;
+	font-weight: 600;
+}
+.mac-settings-card {
+	overflow: hidden;
+	background: color-mix(in srgb, var(--mac-surface) 97%, var(--mac-text));
+	border: 0;
+	border-radius: 12px;
+}
+.macos .mac-settings-row {
+	position: relative;
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	justify-content: space-between;
+	min-inline-size: 0;
+	width: 100%;
+	min-height: 42px;
+	padding: 10px;
+	margin: 0;
+	color: var(--mac-text);
+	text-align: left;
+	outline-offset: -3px;
+	background: none;
+	border: 0;
+}
+.mac-settings-row + .mac-settings-row::before {
+	position: absolute;
+	top: 0;
+	right: 10px;
+	left: 10px;
+	height: 0.5px;
+	content: "";
+	background: var(--mac-line);
+}
+.mac-settings-row[data-navigation] {
+	min-height: 43px;
+}
+.mac-settings-row[data-navigation] > .mac-window-symbol {
+	color: var(--mac-secondary);
+	opacity: 0.65;
+}
+.mac-settings-row[data-navigation]:hover {
+	background: var(--mac-selected);
+}
+.mac-settings-row-icon {
+	display: flex;
+	flex: 0 0 20px;
+	align-items: center;
+	justify-content: center;
+}
+.mac-settings-row-copy {
+	flex: 1;
+	min-width: 0;
+	font-size: 13px;
+	line-height: 1.4;
+}
+.mac-settings-row-copy p {
+	margin: 1px 0 0;
+	font-size: 12px;
+	line-height: 16px;
+	color: var(--mac-secondary);
+}
+.mac-settings-row-control {
+	display: flex;
+	flex: 0 1 auto;
+	gap: 8px;
+	align-items: center;
+	justify-content: flex-end;
+	min-width: 0;
+	max-width: 56%;
+}
+.mac-settings-row-control .mac-text-field {
+	width: 180px;
+	max-width: 100%;
+}
+.mac-settings-row-control .mac-slider {
+	width: 150px;
+	max-width: 100%;
+}
+.mac-settings-row-control .mac-popup-trigger {
+	max-width: 100%;
+}
+.mac-settings-group-note {
+	margin: 8px 12px 0;
+	font-size: 11px;
+	line-height: 1.5;
+	color: var(--mac-secondary);
+}
+.mac-settings-results-header {
+	padding-top: 12px;
+	margin-bottom: 22px;
+}
+.mac-settings-results-header p {
+	margin: 8px 0 0;
+	font-size: 12px;
+	color: var(--mac-secondary);
+}
+.macos .mac-settings-result {
+	display: flex;
+	gap: 16px;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	padding: 13px 14px;
+	text-align: left;
+	background: none;
+	border: 0;
+}
+.macos .mac-settings-result + .mac-settings-result {
+	border-top: 0.5px solid var(--mac-line);
+}
+.mac-settings-result > span {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	min-width: 0;
+}
+.mac-settings-result strong {
+	font-size: 13px;
+	font-weight: 500;
+}
+.mac-settings-result-path,
+.mac-settings-result-description {
+	font-size: 11px;
+	line-height: 1.4;
+	color: var(--mac-secondary);
+}
+.mac-settings-result:hover {
+	background: var(--mac-selected);
+}
+.mac-settings-result:focus-visible {
+	outline-offset: -3px;
+}
+.mac-settings-empty {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 250px;
+	padding: 28px;
+	color: var(--mac-secondary);
+	text-align: center;
+}
+.mac-settings-empty h2,
+.mac-settings-empty h3 {
+	margin: 14px 0 0;
+	font-size: 17px;
+	color: var(--mac-text);
+}
+.mac-settings-empty p {
+	max-width: 280px;
+	font-size: 12px;
+	line-height: 1.5;
+}
+.macos .mac-settings > .mac-window[data-sidebar] {
+	background: var(--mac-surface);
+}
+.macos .mac-settings .mac-window[data-sidebar] .mac-window-sidebar {
+	padding: 52px 10px 10px;
+	margin: 8px 0 8px 8px;
+	background: color-mix(in srgb, var(--mac-surface) 96%, var(--mac-text));
+	border-radius: 20px;
+	box-shadow:
+		inset 0 0 0 0.5px rgb(255 255 255 / 25%),
+		4px 0 20px rgb(0 0 0 / 3%);
+}
+.macos .mac-settings .mac-window-heading {
+	gap: 12px;
+	padding-left: 8px;
+}
+.macos .mac-settings .mac-window-titlebar h2 {
+	font-size: 16px;
+	font-weight: 600;
+	letter-spacing: -0.25px;
+}
+.mac-settings[data-header="summary"] .mac-window-titlebar h2 {
+	visibility: hidden;
+}
+.macos .mac-settings .mac-search-field {
+	--mac-field-height: 28px;
+	border-radius: 16px;
+}
+.macos .mac-settings .mac-search-field input {
+	min-height: 28px;
+	padding-block: 6px;
+	background: color-mix(in srgb, var(--mac-text) 7%, transparent);
+	border-radius: 16px;
+	box-shadow: none;
+}
+.mac-settings-history {
+	display: flex;
+	align-items: center;
+	min-width: 0;
+	padding: 0 3px;
+	margin: 0;
+	background: color-mix(in srgb, var(--mac-surface) 75%, transparent);
+	border: 0.5px solid rgb(255 255 255 / 55%);
+	border-radius: 22px;
+	box-shadow: 0 5px 20px rgb(0 0 0 / 4%);
+	backdrop-filter: blur(12px);
+}
+.macos .mac-settings-history button {
+	display: grid;
+	place-items: center;
+	width: 32px;
+	height: 34px;
+	padding: 0;
+	color: var(--mac-text);
+	background: none;
+	border: 0;
+	border-radius: 20px;
+}
+.macos .mac-settings-history button + button {
+	position: relative;
+}
+.mac-settings-history button + button::before {
+	position: absolute;
+	top: 7px;
+	bottom: 7px;
+	left: 0;
+	width: 0.5px;
+	content: "";
+	background: var(--mac-line);
+}
+.macos .mac-settings-history button:disabled {
+	opacity: 0.25;
+}
+@container mac-settings (max-width: 600px) {
+	.mac-settings-page,
+	.mac-settings-results {
+		padding: 0 12px 24px;
+	}
+	.mac-settings-page-header {
+		padding-inline: 14px;
+	}
+	.mac-settings-page-header h2,
+	.mac-settings-results h2 {
+		font-size: 20px;
+	}
+	.mac-settings-page-header p {
+		font-size: 12px;
+	}
+	.mac-settings-row {
+		flex-wrap: wrap;
+	}
+	.mac-settings-row-control {
+		max-width: 100%;
+	}
+	.mac-settings-row-copy {
+		flex-basis: 110px;
+	}
+	.mac-settings .mac-sidebar-item {
+		gap: 5px;
+		padding-inline: 4px;
+		font-size: 12px;
+	}
+}
+
+.mac-settings:has(> .mac-window[data-active="false"])
+	.mac-sidebar-item[aria-current="page"] {
+	color: var(--mac-text);
+	background: var(--mac-selected);
+}

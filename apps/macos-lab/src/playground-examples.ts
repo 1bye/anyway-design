@@ -198,6 +198,36 @@ const EXAMPLES: Record<string, Example> = {
 			? ['import { WindowSymbol } from "@anyway-design/macos/window-symbol";']
 			: [],
 	}),
+	settings: (v) => ({
+		body: `<MacSettings${attrs(v, ["active", "searchable", "sidebarWidth"])} defaultSection={${json(v.section)}} onSectionChange={(id) => console.info("Section", id)} onSearchQueryChange={(query) => console.info("Search", query)} sections={[
+  { id: "general", title: "General", description: "Manage your workspace’s overall setup and preferences.", icon: <WindowSymbol name="gear" size={44} />, groups: [{ id: "overview", items: [
+    { id: "appearance-link", label: "Appearance", icon: <WindowSymbol name="appearance" />, sectionId: "appearance" },
+    { id: "notifications-link", label: "Notifications", icon: <WindowSymbol name="speaker" />, sectionId: "notifications" },
+    { id: "privacy-link", label: "Privacy & Security", icon: <WindowSymbol name="lock" />, sectionId: "privacy" },
+  ] }, { id: "workspace", title: "Workspace", items: [
+    { id: "name", label: "Workspace name", keywords: ["profile", "rename"], control: <MacTextField aria-label="Workspace name" defaultValue="My workspace"${editable(v)} /> },
+    { id: "autosave", label: "Save automatically", keywords: ["autosave"], control: <MacSwitch aria-label="Save automatically" label="" defaultChecked${editable(v)} /> },
+  ] }] },
+  { id: "appearance", header: "toolbar", title: "Appearance", groups: [{ id: "style", title: "Style", items: [
+    { id: "theme", label: "Appearance", control: <MacSegmentedControl label="Appearance" defaultValue="system" items={[{ value: "system", label: "System" }, { value: "light", label: "Light" }, { value: "dark", label: "Dark" }]}${editable(v)} /> },
+  ] }] },
+  { id: "notifications", header: "toolbar", title: "Notifications", groups: [{ id: "alerts", title: "Alerts", items: [
+    { id: "badges", label: "Badge app icon", description: "Show an unread count in the Dock.", control: <MacSwitch aria-label="Badge app icon" label="" defaultChecked${editable(v)} /> },
+  ] }] },
+  { id: "privacy", header: "toolbar", title: "Privacy & Security", groups: [{ id: "privacy", items: [
+    { id: "analytics", label: "Share anonymous analytics", keywords: ["telemetry"], control: <MacSwitch aria-label="Share anonymous analytics" label=""${editable(v)} /> },
+  ] }] },
+  { id: "advanced", header: "toolbar", title: "Advanced", groups: [{ id: "performance", title: "Performance", items: [
+    { id: "transfers", label: "Concurrent transfers", control: <MacStepper label="Concurrent transfers" defaultValue={3} min={1} max={10} disabled={${Boolean(v.disabled)}} readOnly={${Boolean(v.readOnly)}} /> },
+  ] }] },
+]} />`,
+		imports: [
+			'import { WindowSymbol } from "@anyway-design/macos/window-symbol";',
+			'import { MacSwitch, MacTextField } from "@anyway-design/macos/controls";',
+			'import { MacSegmentedControl } from "@anyway-design/macos/segmented-control";',
+			'import { MacStepper } from "@anyway-design/macos/stepper";',
+		],
+	}),
 	slider: (v) => ({
 		body:
 			'<MacSlider label="Volume" name="volume" min={0} max={100} defaultValue={' +

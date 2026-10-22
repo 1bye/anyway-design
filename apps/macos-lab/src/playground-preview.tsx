@@ -29,6 +29,7 @@ import {
 	TrafficDemo,
 	WindowDemo,
 } from "./playground-window-demos";
+import { SettingsDemo } from "./settings-demo";
 
 const DEMOS: Record<string, ComponentType<PlaygroundDemoProps>> = {
 	...Object.fromEntries(FORM_DEMO_IDS.map((id) => [id, FormDemo])),
@@ -55,6 +56,7 @@ const DEMOS: Record<string, ComponentType<PlaygroundDemoProps>> = {
 	popover: PopoverDemo,
 	progress: ProgressDemo,
 	"quick-look": QuickLookDemo,
+	settings: SettingsDemo,
 	sidebar: SidebarDemo,
 	spinner: ProgressDemo,
 	symbols: SymbolsDemo,
@@ -66,6 +68,7 @@ const DEMOS: Record<string, ComponentType<PlaygroundDemoProps>> = {
 const WALLPAPER = new Set([
 	"dock",
 	"finder",
+	"settings",
 	"window",
 	"menu-bar",
 	"traffic-lights",

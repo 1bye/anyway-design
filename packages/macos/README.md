@@ -1875,3 +1875,91 @@ Presets compare active/inactive titles and controls, overlap, and positions.
 The React side also supports free dragging, resizing, and editing. Native crops omit WindowServer corners/shadows;
 the comparison composes them at matching frame coordinates. Continuous native motion timing,
 snapping, OS full screen, and native minimize animations are not calibrated here.
+
+## Settings window
+
+`MacSettings` combines the shared Tahoe window and sidebar with searchable,
+grouped settings. Import it from `@anyway-design/macos/settings` and load the
+package stylesheet inside `MacOSEnvironment`.
+
+```tsx
+import { MacSettings } from "@anyway-design/macos/settings";
+import { MacSwitch, MacTextField } from "@anyway-design/macos/controls";
+
+<MacSettings
+  title="My App Settings"
+  defaultSection="general"
+  onSectionChange={(id) => console.info("Section", id)}
+  sections={[
+    {
+      id: "general",
+      title: "General",
+      description: "Make yourself at home.",
+      groups: [{
+        id: "workspace",
+        title: "Workspace",
+        items: [
+          {
+            id: "name",
+            label: "Workspace name",
+            keywords: ["profile", "rename"],
+            control: <MacTextField aria-label="Workspace name" defaultValue="My workspace" />,
+          },
+          {
+            id: "autosave",
+            label: "Save automatically",
+            description: "Save documents as you work.",
+            keywords: ["autosave"],
+            control: <MacSwitch aria-label="Save automatically" label="" defaultChecked />,
+          },
+        ],
+      }],
+    },
+  ]}
+/>
+```
+
+Sections have stable IDs, a `title`, optional `icon`, `description`, and
+`keywords`, plus `groups`. `header="summary"` (the default) uses the centered
+System Settings summary card; `header="toolbar"` puts the title in the toolbar
+and leaves the description above the rows. Each group has an ID, optional title/description,
+and `items`; each item supplies an ID, label, optional description/keywords,
+and an arbitrary React `control`. A navigation item supplies `sectionId` instead
+of `control`; it renders a full-width row with a native chevron and opens that
+section. Missing destinations are disabled. Items can include an `icon`.
+Keep IDs stable within their parent.
+Controls supply their own accessible names using their usual `label` or
+`aria-label` props. Control values and persistence belong to the caller.
+
+All pages remain mounted while hidden, preserving uncontrolled controls and
+local component state across navigation and search. Changing a section's ID
+intentionally remounts that page. Search results contain navigation buttons,
+not duplicate controls. Search matches all query words across section/group
+context and item labels, descriptions, and explicit keywords, ignoring case
+and diacritics. It does not inspect the contents of React controls.
+
+Selecting a result opens its section, scrolls to the row, and focuses its first
+enabled control; Enter in search opens the first result. Escape clears search.
+Command/Control F focuses and selects the search field when focus is within
+the settings window. Sidebar Up/Down and Home/End navigate sections. The toolbar Back/Forward
+pill traverses visited sections, skipping sections removed by the caller.
+
+`selectedSection` / `onSectionChange` and `searchQuery` /
+`onSearchQueryChange` optionally control navigation and search; update controlled
+props in those callbacks. `defaultSection` and `defaultSearchQuery` initialize
+uncontrolled state. Unknown section IDs fall back to the first section.
+`searchable={false}` hides search, and `searchPlaceholder` and
+`emptySearchMessage` customize its labels. `sidebarHeader` / `sidebarFooter`
+accept app branding or other content; the header sits below search, in the
+native account-row position. `sidebarWidth` defaults to 224px and
+adapts to small containers. Default size is 724 × 640px; `style` can override it.
+`active`, `onClose`, `onMinimize`, and `onZoom` pass to the shared window.
+
+The playground exposes five working example pages and a copyable public API
+example at `?component=settings`; the Desktop's Preferences window uses the
+same component. Its window proportions, sidebar, summary header, toolbar history,
+and grouped rows were compared with this Mac’s native Tahoe System Settings.
+The Appearance demo uses the actual Light/Dark/Auto and Liquid Glass thumbnail
+artwork from Tahoe’s Appearance extension. Re-export it with
+`xcrun swift apps/macos-lab/scripts/export-settings-assets.swift` on Tahoe.
+Demo controls report in-memory changes; they do not change macOS preferences.

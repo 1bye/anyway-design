@@ -652,6 +652,28 @@
       "weight": 0
     },
     {
+      "extent": 14,
+      "id": "gear",
+      "nativeName": "gear",
+      "pixelHeight": 64,
+      "pixelWidth": 64,
+      "pointSize": 16,
+      "rendering": "monochrome",
+      "source": "NSImage(systemSymbolName: gear)",
+      "weight": 0
+    },
+    {
+      "extent": 16,
+      "id": "person",
+      "nativeName": "person.crop.circle.fill",
+      "pixelHeight": 64,
+      "pixelWidth": 64,
+      "pointSize": 16,
+      "rendering": "monochrome",
+      "source": "NSImage(systemSymbolName: person.crop.circle.fill)",
+      "weight": 0
+    },
+    {
       "extent": 15,
       "id": "share",
       "nativeName": "square.and.arrow.up",

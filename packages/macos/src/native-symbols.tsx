@@ -76,6 +76,7 @@ export const NATIVE_SYMBOLS = {
 	focus: new URL("./assets/native-symbols/focus.png", import.meta.url).href,
 	folder: new URL("./assets/native-symbols/folder.png", import.meta.url).href,
 	forward: new URL("./assets/native-symbols/forward.png", import.meta.url).href,
+	gear: new URL("./assets/native-symbols/gear.png", import.meta.url).href,
 	group: new URL("./assets/native-symbols/group.png", import.meta.url).href,
 	"icon-view": new URL("./assets/native-symbols/icon-view.png", import.meta.url)
 		.href,
@@ -93,6 +94,7 @@ export const NATIVE_SYMBOLS = {
 	).href,
 	open: new URL("./assets/native-symbols/open.png", import.meta.url).href,
 	pause: new URL("./assets/native-symbols/pause.png", import.meta.url).href,
+	person: new URL("./assets/native-symbols/person.png", import.meta.url).href,
 	photos: new URL("./assets/native-symbols/photos.png", import.meta.url).href,
 	play: new URL("./assets/native-symbols/play.png", import.meta.url).href,
 	plus: new URL("./assets/native-symbols/plus.png", import.meta.url).href,

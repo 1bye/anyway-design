@@ -33,6 +33,7 @@ const INITIAL_PROPS = new Set([
 	"modal",
 	"mode",
 	"view",
+	"section",
 	"expanded",
 	"defaultOpen",
 ]);
@@ -242,9 +243,11 @@ function PlaygroundSession({
 						<h1>{entry.title}</h1>
 						<p>{entry.description}</p>
 					</div>
-					<a className="pg-reference-link" href={`/?view=${entry.reference}`}>
-						Native comparison <ArrowUpRight size={15} />
-					</a>
+					{entry.reference ? (
+						<a className="pg-reference-link" href={`/?view=${entry.reference}`}>
+							Native comparison <ArrowUpRight size={15} />
+						</a>
+					) : null}
 				</header>
 				<section
 					aria-label={`${entry.title} example`}

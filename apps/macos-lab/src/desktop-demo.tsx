@@ -16,7 +16,8 @@ import { DesktopMenuStatus } from "./desktop-menu-status";
 import { DOCK_ITEMS } from "./dock-items";
 import type { PlaygroundDemoProps } from "./playground-catalog";
 import { type FinderHandle, PlaygroundFinder } from "./playground-finder";
-import { ControlsExample, DESKTOP_MENUS } from "./scene";
+import { DESKTOP_MENUS } from "./scene";
+import { SettingsExample } from "./settings-demo";
 import "./desktop-demo.css";
 
 export const DESKTOP_DOCUMENTS = [
@@ -197,21 +198,21 @@ export function DesktopDemo({
 	];
 
 	definitions.push({
-		defaultFrame: { height: 430, width: 500, x: 200, y: 95 },
+		defaultFrame: { height: 460, width: 660, x: 200, y: 80 },
 		draggable: values.draggable !== false,
 		id: "settings",
+		minSize: { height: 340, width: 500 },
 		render: ({ active }) => (
-			<MacWindow
+			<SettingsExample
 				active={active}
 				onClose={() => close("settings")}
+				onEvent={onEvent}
 				onMinimize={() => close("settings")}
 				onZoom={() =>
-					zoom("settings", { height: 430, width: 500, x: 200, y: 95 })
+					zoom("settings", { height: 460, width: 660, x: 200, y: 80 })
 				}
-				title="Preferences"
-			>
-				<ControlsExample />
-			</MacWindow>
+				style={{ height: "100%", width: "100%" }}
+			/>
 		),
 		resizable: values.resizable !== false,
 		title: "Preferences",
