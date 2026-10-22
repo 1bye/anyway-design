@@ -1,0 +1,47 @@
+.desktop-demo {
+	background: url("/assets/clouds.webp") center / cover;
+}
+.desktop-reference-live {
+	background: #29527a;
+}
+.macos .desktop-document-text {
+	display: block;
+	width: 100%;
+	height: 100%;
+	padding: 22px 29px;
+	margin: 0;
+	font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+	font-size: 14px;
+	line-height: 17px;
+	color: var(--mac-text);
+	resize: none;
+	outline: none;
+	background: var(--mac-surface);
+	border: 0;
+}
+.desktop-reference-live .mac-window-titlebar {
+	gap: 16px;
+	padding-inline: 12px;
+}
+.desktop-reference-live .mac-window-titlebar h2 {
+	font-size: 14px;
+}
+.desktop-reference-live .mac-window {
+	border-color: transparent;
+}
+.desktop-reopen {
+	position: absolute;
+	right: 20px;
+	bottom: 94px;
+	z-index: 2;
+	display: flex;
+	gap: 8px;
+}
+.macos .desktop-reopen button {
+	padding: 7px 12px;
+	color: white;
+	background: rgb(0 0 0 / 25%);
+	border: 0.5px solid rgb(255 255 255 / 45%);
+	border-radius: 999px;
+	backdrop-filter: blur(12px);
+}

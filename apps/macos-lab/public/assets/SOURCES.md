@@ -133,3 +133,20 @@ calibrated against a local recording.
   These are local demo assets, not exports of the component package.
 - `notification-icons/safari-symbol.png`: native AppKit `safari` symbol in
   monochrome white, exported by the same script for the Reading List heading.
+
+
+## Native desktop windows (Tahoe)
+
+`native-desktop/*.png` were captured locally using the computer-use native
+window capture from **Anyway Native Desktop**, an AppKit fixture built from
+`packages/macos/scripts/desktop-reference.swift` on macOS Tahoe 26.6.2.
+Two independent NSWindows use system title bars, traffic lights, and editable
+NSTextView documents. Images are unmodified 2× window-content captures:
+Project notes is 420 × 310pt and active; Planning is 390 × 280pt and inactive.
+Native capture crops omit WindowServer corner masks and shadows;
+captures obscured by system screen-capture indicators were excluded.
+
+The reference page composes these captures at matching top-left
+frames on a 760 × 520pt blue workspace. It is not a screenshot of the whole
+desktop. The moved preset repositions the same native window capture. Free
+React gestures do not drive native windows. No recording-based motion calibration is claimed.

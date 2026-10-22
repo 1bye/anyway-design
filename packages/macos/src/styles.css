@@ -1,4 +1,5 @@
 @import "./styles-menu-bar-status.css";
+@import "./styles-desktop.css";
 @import "./styles-notification-center.css";
 
 .macos {
@@ -1766,6 +1767,12 @@
 		0 0 0 0.5px rgb(0 0 0 / 25%),
 		0 24px 60px -10px rgb(0 0 0 / 34%),
 		0 6px 18px rgb(0 0 0 / 14%);
+}
+
+[data-preset="tahoe"] .mac-window[data-active="false"] {
+	box-shadow:
+		0 0 0 0.5px rgb(0 0 0 / 20%),
+		0 8px 24px rgb(0 0 0 / 16%);
 }
 
 [data-preset="tahoe"][data-appearance="dark"]

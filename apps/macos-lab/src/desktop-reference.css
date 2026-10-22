@@ -1,0 +1,64 @@
+.desktop-study-controls {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+}
+.desktop-study-viewport {
+	height: calc(520px * var(--desktop-study-scale));
+	overflow: auto;
+	scrollbar-width: thin;
+	background: #20364d;
+}
+.desktop-study-sizer {
+	position: relative;
+	width: calc(760px * var(--desktop-study-scale));
+	height: calc(520px * var(--desktop-study-scale));
+	margin: auto;
+}
+.desktop-study-scene {
+	position: relative;
+	width: 760px;
+	height: 520px;
+	transform: scale(var(--desktop-study-scale));
+	transform-origin: top left;
+}
+.desktop-study-native {
+	overflow: hidden;
+	background: #29527a;
+}
+.desktop-study-native img {
+	position: absolute;
+	max-width: none;
+}
+.macos .desktop-reference-live .mac-window-titlebar {
+	color: #555;
+}
+.macos
+	.desktop-reference-live
+	.mac-window[data-active="false"]
+	.mac-window-heading {
+	color: #aaa;
+}
+.macos .desktop-reference-live .mac-traffic-lights {
+	gap: 9px;
+}
+.macos .desktop-reference-live .mac-traffic-lights button {
+	width: 14px;
+	height: 14px;
+}
+.macos
+	.desktop-reference-live
+	.mac-window[data-active="false"]
+	.mac-traffic-lights
+	button {
+	background: #dcdcdc;
+}
+.macos .desktop-reference-live .mac-window-titlebar {
+	gap: 16px;
+	padding-left: 8px;
+	background: #fff;
+	border-bottom: 0.5px solid #d5d5d5;
+}
+.macos .desktop-reference-live .desktop-document-text {
+	color: black;
+}

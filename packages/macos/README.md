@@ -1808,3 +1808,70 @@ the available viewport and supports appearance, reduced transparency, and
 reduced motion from `MacOSEnvironment`. Use `MacNotificationCenterPanel` for an
 embedded panel and `MacNotificationCard` for individual banners. A standalone
 card can receive `defaultActionsOpen` to show its Options menu initially.
+
+
+## Managed desktop windows
+
+`MacDesktop` lays out independent windows inside a sized container. Each window
+has a stable `id`, `title`, `defaultFrame: { x, y, width, height }`, and a
+`render({ active, frame })` function. Pass `active` to `MacWindow` or `MacFinder`
+so their existing traffic lights, title, and shadows follow focus.
+
+```tsx
+import { MacDesktop } from "@anyway-design/macos/desktop";
+import { MacWindow } from "@anyway-design/macos/window";
+
+<MacDesktop
+  style={{ height: 600 }}
+  defaultActiveWindowId="notes"
+  insets={{ top: 40, bottom: 88, left: 12, right: 12 }}
+  onActiveWindowChange={(id) => console.info("Focus", id)}
+  onFrameChange={(id, frame, reason) => console.info(id, frame, reason)}
+  windows={[
+    {
+      id: "notes",
+      title: "Project notes",
+      defaultFrame: { x: 50, y: 60, width: 440, height: 320 },
+      minSize: { width: 260, height: 160 },
+      render: ({ active }) => (
+        <MacWindow title="Project notes" active={active}>
+          <textarea aria-label="Notes" defaultValue="A place for the next idea." />
+        </MacWindow>
+      ),
+    },
+  ]}
+/>
+```
+
+Clicking or focusing a window brings it forward without reordering its DOM or
+remounting content. Clicking the desktop background deactivates all windows.
+Removing the active window exposes the next window; newly added windows open
+in front in uncontrolled mode. Remove a window from `windows` in your close or
+minimize callback; the desktop does not impose a window lifecycle or Dock policy.
+The `children` slot hosts a menu bar, Dock, and other desktop surfaces above the
+window layer.
+
+`activeWindowId` controls focus appearance and stacking; `null` deactivates all
+windows. `frames` optionally supplies controlled geometry by ID. Update supplied
+frames in `onFrameChange`; missing IDs retain internal geometry. Frame callbacks
+run on pointer release, or each keyboard move/resize, with reason `move` or
+`resize`. Pointer motion uses requestAnimationFrame and direct geometry updates,
+so window content does not rerender for every pointer event. The render function's
+`frame` reflects committed geometry, not every transient pointer position.
+
+The existing `MacWindow` title bar is a drag region. Custom chrome can use
+`data-mac-drag-region`; interactive controls and `data-mac-no-drag` descendants
+remain usable. All eight edges/corners resize. Per-window `draggable` and
+`resizable` default to true; `minSize` defaults to 260 × 160 and `maxSize` is
+optional. Frames fit the measured container minus `insets`, including when the
+container shrinks below a window's minimum. Pointer offsets account for scaled
+playground containers. Focus a window frame and use arrow keys to move by 10px,
+or Shift+arrow to resize; controls retain normal arrow-key behavior. Escape,
+pointer cancellation, and browser blur cancel a pointer gesture.
+
+The lab's `?view=desktop-reference` compares matching document windows against
+AppKit captures made with `scripts/desktop-reference.swift` on Tahoe 26.6.2.
+Presets compare active/inactive titles and controls, overlap, and positions.
+The React side also supports free dragging, resizing, and editing. Native crops omit WindowServer corners/shadows;
+the comparison composes them at matching frame coordinates. Continuous native motion timing,
+snapping, OS full screen, and native minimize animations are not calibrated here.

@@ -43,7 +43,7 @@ export interface SceneSettings {
 	reduceTransparency: boolean;
 	wallpaper: Wallpaper;
 }
-const MENUS: MacMenu[] = [
+export const DESKTOP_MENUS: MacMenu[] = [
 	{
 		accessibleLabel: "Apple",
 		id: "apple",
@@ -130,7 +130,7 @@ const MENUS: MacMenu[] = [
 		label: "Window",
 	},
 ];
-function ControlsExample() {
+export function ControlsExample() {
 	const displayNameId = useId();
 	const [notifications, setNotifications] = useState(true);
 	const [sounds, setSounds] = useState(false);
@@ -303,7 +303,7 @@ export function DesktopScene({
 					}
 				>
 					<MenuBar
-						menus={MENUS}
+						menus={DESKTOP_MENUS}
 						onAction={action}
 						status={
 							<DesktopMenuStatus

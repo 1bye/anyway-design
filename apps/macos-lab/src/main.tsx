@@ -5,6 +5,7 @@ import { App } from "./app";
 import { ComponentPlayground } from "./component-playground";
 import { ControlsReferenceComparison } from "./controls-reference";
 import { DatePickerReferenceComparison } from "./date-picker-reference";
+import { DesktopReferenceComparison } from "./desktop-reference";
 import { DockGlassPlayground } from "./dock-glass-playground";
 import { DockReferenceComparison } from "./dock-reference";
 import { FileColumnsReferenceComparison } from "./file-columns-reference";
@@ -37,6 +38,8 @@ const view = new URLSearchParams(window.location.search).get("view");
 let page = <ComponentPlayground />;
 if (view === "desktop-lab") {
 	page = <App />;
+} else if (view === "desktop-reference") {
+	page = <DesktopReferenceComparison />;
 } else if (view === "dock-reference") {
 	page = <DockReferenceComparison />;
 } else if (view === "dock-glass") {

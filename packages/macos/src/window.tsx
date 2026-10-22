@@ -92,7 +92,7 @@ export function MacWindow({
 				} as CSSProperties
 			}
 		>
-			<header className="mac-window-titlebar">
+			<header className="mac-window-titlebar" data-mac-drag-region>
 				<div className="mac-window-controls">
 					<TrafficLights active={active} {...actions} />
 				</div>

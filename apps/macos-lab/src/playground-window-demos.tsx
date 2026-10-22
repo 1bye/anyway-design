@@ -15,26 +15,7 @@ import { DOCK_ITEMS } from "./dock-items";
 import type { PlaygroundDemoProps } from "./playground-catalog";
 import { PLAYGROUND_MENU } from "./playground-data";
 import { PlaygroundFinder } from "./playground-finder";
-import { DesktopScene } from "./scene";
 
-export function DesktopDemo({ environment }: PlaygroundDemoProps) {
-	return (
-		<div className="pg-desktop-example">
-			<DesktopScene
-				component="desktop"
-				settings={{
-					...environment,
-					active: true,
-					dockAutoHide: false,
-					dockPosition: "bottom",
-					dockSize: 52,
-					magnification: 1.65,
-					wallpaper: "clouds",
-				}}
-			/>
-		</div>
-	);
-}
 export function DockDemo({ values, onEvent }: PlaygroundDemoProps) {
 	const items = Array.from({ length: Number(values.count) }, (_, index) => ({
 		...DOCK_ITEMS[index % DOCK_ITEMS.length],

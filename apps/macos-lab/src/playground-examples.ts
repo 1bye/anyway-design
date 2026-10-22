@@ -79,6 +79,13 @@ const EXAMPLES: Record<string, Example> = {
 			) +
 			"} />",
 	}),
+	desktop: (v) => ({
+		body: `<MacDesktop style={{ width: "100%", height: 640, background: "#29527a" }} onActiveWindowChange={(id) => console.info("Active", id)} onFrameChange={(id, frame, reason) => console.info(id, frame, reason)} windows={[
+  { id: "notes", title: "Project notes", defaultFrame: { x: 40, y: 50, width: 440, height: 320 }, draggable: ${v.draggable !== false}, resizable: ${v.resizable !== false}, render: ({ active }) => <MacWindow active={active} title="Project notes"><textarea aria-label="Notes" defaultValue="My next idea" style={{ width: "100%", height: "100%", padding: 20 }} /></MacWindow> },
+  { id: "planning", title: "Planning", defaultFrame: { x: 240, y: 180, width: 360, height: 280 }, draggable: ${v.draggable !== false}, resizable: ${v.resizable !== false}, render: ({ active }) => <MacWindow active={active} title="Planning"><p style={{ padding: 20 }}>Design review · 10 AM</p></MacWindow> }
+]} />`,
+		imports: ['import { MacWindow } from "@anyway-design/macos/window";'],
+	}),
 	"file-icons": (v) => ({
 		body: `<div style={{ display: "flex", gap: 24 }}>
   <MacFileIcon name="pdf" style={{ width: ${v.iconSize}, height: ${v.iconSize} }} />
@@ -257,18 +264,12 @@ const EXAMPLES: Record<string, Example> = {
 	}),
 };
 
-function finderExample(
-	entry: PlaygroundEntry,
-	values: PlaygroundValues
-): ExampleFragment {
+function finderExample(values: PlaygroundValues): ExampleFragment {
 	const readOnly = Boolean(values.readOnly);
 	const views =
 		values.views === "icons-and-list" ? ["icons", "list"] : ["gallery"];
-	const style =
-		entry.id === "desktop"
-			? '{ position: "absolute", left: 100, top: 76, width: 800, height: 470 }'
-			: '{ width: 740, maxWidth: "100%", height: 450 }';
-	let body = `<MacFinder
+	const style = '{ width: 740, maxWidth: "100%", height: 450 }';
+	const body = `<MacFinder
   files={files}
   rootId="workspace"
   defaultLocation="documents"
@@ -296,14 +297,7 @@ function finderExample(
 		'import { MacFinder } from "@anyway-design/macos/finder";',
 		'import type { MacFinderFile } from "@anyway-design/macos/finder";',
 	];
-	if (entry.id === "desktop") {
-		body = `<div style={{ position: "absolute", inset: 0, background: "url('/assets/clouds.webp') center / cover" }} />\n<MenuBar menus={[{ id: "file", label: "File", items: ${menu} }]} status={<MacMenuBarStatus />} />\n${body}\n<Dock items={${json(DOCK_ITEMS)}} />`;
-		imports.push(
-			'import { MacMenuBarStatus } from "@anyway-design/macos/menu-bar-status";',
-			'import { MenuBar } from "@anyway-design/macos/menu-bar";',
-			'import { Dock } from "@anyway-design/macos/dock";'
-		);
-	}
+
 	return {
 		body,
 		imports,
@@ -532,10 +526,8 @@ export function playgroundExample(
 				" onActivate={(id) => console.info(id)} />",
 		};
 	}
-	if (
-		["desktop", "window", "toolbar", "sidebar", "finder"].includes(entry.id)
-	) {
-		fragment = finderExample(entry, values);
+	if (["window", "toolbar", "sidebar", "finder"].includes(entry.id)) {
+		fragment = finderExample(values);
 	}
 	if (!fragment) {
 		throw new Error(`Missing playground example: ${entry.id}`);
@@ -543,7 +535,7 @@ export function playgroundExample(
 	const imports = new Set([
 		'import { MacOSEnvironment } from "@anyway-design/macos/environment";',
 		...(entry.module === "environment" ||
-		["desktop", "window", "toolbar", "sidebar", "finder"].includes(entry.id)
+		["window", "toolbar", "sidebar", "finder"].includes(entry.id)
 			? []
 			: [
 					"import { " +

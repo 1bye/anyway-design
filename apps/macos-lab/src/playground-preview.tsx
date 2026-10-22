@@ -1,5 +1,6 @@
 import { MacOSEnvironment } from "@anyway-design/macos/environment";
 import { type ComponentType, useLayoutEffect, useRef, useState } from "react";
+import { DesktopDemo } from "./desktop-demo";
 import { NotificationCenterDemo } from "./notification-demo";
 import type { PlaygroundDemoProps } from "./playground-catalog";
 import {
@@ -18,7 +19,6 @@ import {
 	QuickLookDemo,
 } from "./playground-panel-demos";
 import {
-	DesktopDemo,
 	DockDemo,
 	MenuBarDemo,
 	MenuDemo,
