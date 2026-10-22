@@ -41,6 +41,8 @@ interface MenuContentProps {
 }
 
 export interface MacMenuPopupProps extends MenuContentProps {
+	className?: string;
+	finalFocus?: Menu.Popup.Props["finalFocus"];
 	positionerProps?: Pick<
 		Menu.Positioner.Props,
 		"align" | "side" | "sideOffset" | "collisionAvoidance" | "collisionBoundary"
@@ -152,6 +154,8 @@ function MenuEntry({
 }
 
 export function MacMenuPopup({
+	className,
+	finalFocus,
 	items,
 	onAction,
 	positionerProps,
@@ -175,7 +179,13 @@ export function MacMenuPopup({
 				sideOffset={6}
 				{...positionerProps}
 			>
-				<Menu.Popup className="mac-menu-popup" data-variant={variant}>
+				<Menu.Popup
+					className={
+						className ? `mac-menu-popup ${className}` : "mac-menu-popup"
+					}
+					data-variant={variant}
+					finalFocus={finalFocus}
+				>
 					{items.map((item) => (
 						<Fragment key={item.id}>
 							{item.separatorBefore ? (

@@ -1,0 +1,70 @@
+.nc-study-controls {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	align-items: center;
+}
+.nc-study-viewport {
+	height: calc(var(--nc-study-height) * var(--nc-study-scale));
+	overflow: auto;
+	scrollbar-width: thin;
+	background: #263d59;
+}
+.nc-study-sizer {
+	position: relative;
+	width: calc(397px * var(--nc-study-scale));
+	height: calc(var(--nc-study-height) * var(--nc-study-scale));
+	margin: auto;
+}
+.nc-study-canvas {
+	position: absolute;
+	width: 397px;
+	height: var(--nc-study-height);
+	overflow: hidden;
+	transform: scale(var(--nc-study-scale));
+	transform-origin: top left;
+}
+.nc-study-live {
+	background: url("/assets/tahoe-light.jpg") 75% 10% / 1000px 1000px;
+}
+.nc-study-clock {
+	position: absolute;
+	top: 8px;
+	right: 14px;
+	font-size: 13px;
+	font-weight: 600;
+	color: white;
+	text-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+}
+.nc-study-content {
+	position: absolute;
+	top: 48px;
+	right: 14px;
+	left: 45px;
+	max-height: calc(100% - 48px);
+	padding-bottom: 24px;
+	overflow: auto;
+	scrollbar-width: none;
+}
+.nc-study-live:has(.mac-menu-popup) .nc-study-content {
+	overflow: visible;
+}
+.nc-study-native img {
+	position: absolute;
+	top: -73px;
+	left: 0;
+	width: 558px;
+	max-width: none;
+	height: 524px;
+}
+.nc-study-native[data-detail="reminder"] img {
+	top: -27px;
+	width: 426px;
+	height: 367px;
+}
+.nc-study-live .mac-notification-widget {
+	height: 162px;
+}
+.macos.nc-study-live .mac-notification-dismiss {
+	opacity: 1;
+}

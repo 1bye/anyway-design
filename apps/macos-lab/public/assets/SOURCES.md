@@ -109,3 +109,27 @@ Mac, displaying generated demo files only. See
   NSPopUpButton and NSComboBox in light/dark appearances, closed and open.
   Includes regular/small and disabled controls. See the directory's
   `SOURCES.md` for native fixture geometry and reproduction.
+
+## Tahoe Notification Center study
+
+- `tahoe-notification-center-reference.png`: unmodified 1116 × 1048 PNG from
+  [Apple’s macOS Tahoe 26 Notification Center guide](https://support.apple.com/en-ie/guide/mac-help/mchl2fb1258f/26/mac/26).
+  [Original image](https://help.apple.com/assets/69DD569682238CF8EC0621E2/69DD569982238CF8EC0621E9/en_US/c205466e29e900bca4f4d21cb1c49040.png).
+- `tahoe-notification-banner-reference.png`: unmodified 852 × 734 PNG from
+  [Apple’s macOS Tahoe 26 notifications guide](https://support.apple.com/en-ie/guide/mac-help/view-app-notifications-mh40609/26/mac/26).
+  [Original image](https://help.apple.com/assets/69DD569682238CF8EC0621E2/69DD569982238CF8EC0621E9/en_US/dde97adb7f94b12c6996052a9ae96538.png).
+
+Both images are displayed at half their pixel size before applying shared zoom.
+The widget desktop crop starts at (0, 146), 794 × 902 source pixels; the reminder
+crop starts at (0, 54), 794 × 550 pixels. Apple’s annotations remain in the originals.
+The live panel uses React shells, text, and controls, with the clean Tahoe wallpaper
+and a different Reading List photo (`clouds.webp`). Wallpaper alignment and clock
+typography are approximate. Expanded notification groups and motion have not been
+calibrated against a local recording.
+
+- `notification-icons/reminders.png` and `messages.png`: exported at 128px from
+  the installed apps’ `Contents/Resources/AppIcon.icns` on macOS Tahoe 26.6.2
+  (25G83), using `scripts/export-notification-icons.swift` and ImageIO.
+  These are local demo assets, not exports of the component package.
+- `notification-icons/safari-symbol.png`: native AppKit `safari` symbol in
+  monochrome white, exported by the same script for the Reading List heading.

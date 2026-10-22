@@ -1,5 +1,6 @@
 import { MacOSEnvironment } from "@anyway-design/macos/environment";
 import { type ComponentType, useLayoutEffect, useRef, useState } from "react";
+import { NotificationCenterDemo } from "./notification-demo";
 import type { PlaygroundDemoProps } from "./playground-catalog";
 import {
 	FileIconsDemo,
@@ -50,6 +51,7 @@ const DEMOS: Record<string, ComponentType<PlaygroundDemoProps>> = {
 	menu: MenuDemo,
 	"menu-bar": MenuBarDemo,
 	"new-folder": NewFolderDemo,
+	"notification-center": NotificationCenterDemo,
 	popover: PopoverDemo,
 	progress: ProgressDemo,
 	"quick-look": QuickLookDemo,
@@ -68,6 +70,7 @@ const WALLPAPER = new Set([
 	"menu-bar",
 	"traffic-lights",
 	"toolbar",
+	"notification-center",
 ]);
 
 interface PreviewProps extends PlaygroundDemoProps {

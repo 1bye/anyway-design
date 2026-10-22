@@ -11,6 +11,10 @@ import {
 	normalizeSystemStatus,
 	statusPercent,
 } from "./menu-bar-status-model";
+import {
+	MacNotificationCenter,
+	type MacNotificationCenterProps,
+} from "./notification-center";
 import { MacSpotlight } from "./spotlight";
 import { WindowSymbol, type WindowSymbolName } from "./window-symbol";
 
@@ -24,6 +28,7 @@ export interface MacMenuBarStatusProps {
 	defaultValue?: Partial<MacSystemStatus>;
 	mediaTitle?: string;
 	networks?: readonly MacWiFiNetwork[];
+	notificationCenter?: Omit<MacNotificationCenterProps, "trigger">;
 	onAction?: (id: string) => void;
 	onSearchSelect?: (item: MacSpotlightItem) => void;
 	onValueChange?: (value: MacSystemStatus) => void;
@@ -289,6 +294,7 @@ export function MacMenuBarStatus({
 	showBatteryPercentage = false,
 	clock = "Tue Apr 1  9:41 AM",
 	mediaTitle,
+	notificationCenter,
 }: MacMenuBarStatusProps) {
 	const [internal, setInternal] = useState(() =>
 		normalizeSystemStatus({ ...DEFAULT_SYSTEM_STATUS, ...defaultValue })
@@ -309,6 +315,16 @@ export function MacMenuBarStatus({
 		onAction?.(id);
 	};
 	const network = networks.find((item) => item.id === state.networkId);
+	const clockButton = (
+		<button
+			aria-label="Date and time"
+			className="mac-menu-status-button"
+			onClick={() => action("notification-center")}
+			type="button"
+		>
+			<span className="mac-menu-clock">{clock}</span>
+		</button>
+	);
 	return (
 		<>
 			{/* biome-ignore lint/a11y/noNoninteractiveElementInteractions: Toolbar keyboard events move focus among its native buttons. */}
@@ -561,14 +577,14 @@ export function MacMenuBarStatus({
 						Edit Controls
 					</button>
 				</StatusPopover>
-				<button
-					aria-label="Date and time"
-					className="mac-menu-status-button"
-					onClick={() => action("notification-center")}
-					type="button"
-				>
-					<span className="mac-menu-clock">{clock}</span>
-				</button>
+				{notificationCenter ? (
+					<MacNotificationCenter
+						{...notificationCenter}
+						trigger={clockButton}
+					/>
+				) : (
+					clockButton
+				)}
 			</div>
 			<MacSpotlight
 				items={searchItems}

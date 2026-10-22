@@ -213,6 +213,8 @@ export function DesktopScene({
 	}, [notice]);
 	function action(id: string) {
 		switch (id) {
+			case "notification-center":
+				break;
 			case "appearance":
 				setAppearanceOverride((current) =>
 					(current ?? settings.appearance) === "light" ? "dark" : "light"
@@ -306,6 +308,7 @@ export function DesktopScene({
 						status={
 							<DesktopMenuStatus
 								onAction={action}
+								onEvent={setNotice}
 								onStatusChange={(value) =>
 									setDisplayBrightness(value.brightness)
 								}

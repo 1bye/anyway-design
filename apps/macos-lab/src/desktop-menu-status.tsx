@@ -6,6 +6,7 @@ import {
 } from "@anyway-design/macos/menu-bar-status";
 import { DEFAULT_SYSTEM_STATUS } from "@anyway-design/macos/menu-bar-status-model";
 import { useState } from "react";
+import { useNotificationDemo } from "./notification-demo";
 
 const NETWORKS = [
 	{ id: "studio", name: "Studio", secured: true },
@@ -57,14 +58,17 @@ export function DesktopMenuStatus({
 	charging,
 	showPercentage = false,
 	onAction,
+	onEvent,
 	onStatusChange,
 }: {
 	batteryLevel?: number;
 	charging?: boolean;
 	onAction: (id: string) => void;
+	onEvent?: (message: string) => void;
 	onStatusChange?: (value: MacSystemStatus) => void;
 	showPercentage?: boolean;
 }) {
+	const { panel } = useNotificationDemo(onEvent ?? onAction);
 	const [state, setState] = useState<MacSystemStatus>({
 		...DEFAULT_SYSTEM_STATUS,
 		batteryLevel: 85,
@@ -72,8 +76,9 @@ export function DesktopMenuStatus({
 	});
 	return (
 		<MacMenuBarStatus
-			clock="Wed Oct 21  9:41 AM"
+			clock="Thu Oct 22  9:41 AM"
 			networks={NETWORKS}
+			notificationCenter={panel}
 			onAction={onAction}
 			onSearchSelect={(item) =>
 				onAction(

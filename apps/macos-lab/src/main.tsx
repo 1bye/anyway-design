@@ -18,6 +18,7 @@ import { FinderDragReferenceComparison } from "./finder-drag-reference";
 import { InputControlsReferenceComparison } from "./input-controls-reference";
 import { MenuReferenceComparison } from "./menu-reference";
 import { NewFolderReferenceComparison } from "./new-folder-reference";
+import { NotificationCenterReferenceComparison } from "./notification-center-reference";
 import { PopoverReferenceComparison } from "./popover-reference";
 import { ProgressReferenceComparison } from "./progress-reference";
 import { QuickLookReferenceComparison } from "./quick-look-reference";
@@ -84,5 +85,7 @@ if (view === "desktop-lab") {
 	page = <ToggleControlsReferenceComparison />;
 } else if (view === "date-picker-reference") {
 	page = <DatePickerReferenceComparison />;
+} else if (view === "notification-center-reference") {
+	page = <NotificationCenterReferenceComparison />;
 }
 createRoot(root).render(<StrictMode>{page}</StrictMode>);

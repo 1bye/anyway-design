@@ -1,0 +1,155 @@
+.macos .nc-demo-trigger {
+	position: absolute;
+	top: 8px;
+	right: 8px;
+	padding: 4px 10px;
+	font-size: 13px;
+	font-weight: 600;
+	color: white;
+	background: rgb(255 255 255 / 12%);
+	border: 0;
+	border-radius: 999px;
+}
+.macos :is(.nc-demo-agenda, .nc-demo-clock, .nc-demo-reading) {
+	display: flex;
+	width: 100%;
+	height: 100%;
+	padding: 16px;
+	color: #171717;
+	text-align: left;
+	background: none;
+	border: 0;
+	border-radius: inherit;
+}
+.nc-demo-agenda {
+	gap: 16px;
+	font-size: 10px;
+}
+.nc-demo-agenda-column {
+	display: flex;
+	flex: 1;
+	flex-direction: column;
+	gap: 5px;
+	min-width: 0;
+}
+.nc-demo-date {
+	display: flex;
+	flex-direction: column;
+	gap: 1px;
+	height: 57px;
+}
+.nc-demo-date strong {
+	font-size: 10px;
+	font-weight: 500;
+	color: #d7271b;
+	text-transform: uppercase;
+}
+.nc-demo-date > span {
+	font-size: 34px;
+	font-weight: 300;
+	line-height: 1;
+}
+.nc-demo-event {
+	display: flex;
+	flex-direction: column;
+	gap: 2px;
+	min-width: 0;
+	min-height: 27px;
+	padding-left: 5px;
+	line-height: 1.2;
+	background: color-mix(in srgb, var(--event-color) 9%, transparent);
+	border-left: 3px solid var(--event-color);
+	border-radius: 2px;
+}
+.nc-demo-event strong {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	font-weight: 500;
+	white-space: nowrap;
+}
+.nc-demo-event > span {
+	color: #666;
+}
+.macos .nc-demo-clock {
+	position: relative;
+	align-items: center;
+	justify-content: center;
+	padding: 8px;
+	background: #fafafa;
+}
+.nc-demo-clock::before {
+	position: absolute;
+	inset: 8px;
+	padding: 5px;
+	content: "";
+	background: repeating-conic-gradient(
+		#a7a7a7 0deg 0.8deg,
+		transparent 0.8deg 6deg
+	);
+	border-radius: 23px;
+	mask:
+		linear-gradient(#000 0 0) content-box,
+		linear-gradient(#000 0 0);
+	mask-composite: exclude;
+}
+.nc-demo-clock > span {
+	font-family: Impact, "Helvetica Neue", sans-serif;
+	font-size: 75px;
+	font-weight: 700;
+	letter-spacing: -3px;
+}
+.macos .nc-demo-reading {
+	flex-direction: column;
+	justify-content: flex-end;
+	padding: 13px;
+	font-size: 10px;
+	color: white;
+	text-shadow: 0 1px 3px rgb(0 0 0 / 35%);
+	background:
+		linear-gradient(transparent 10%, rgb(0 0 0 / 70%)),
+		url("/assets/clouds.webp") center / cover;
+}
+.nc-demo-reading > span {
+	display: flex;
+	gap: 4px;
+	align-items: center;
+	margin-bottom: auto;
+	font-size: 11px;
+	font-weight: 600;
+}
+.nc-demo-reading strong {
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	-webkit-line-clamp: 3;
+	font-size: 11px;
+	line-height: 1.2;
+}
+.nc-demo-reading small {
+	margin-top: 4px;
+	font-size: 9px;
+	opacity: 0.8;
+}
+.nc-demo-editor {
+	position: relative;
+	display: grid;
+	gap: 6px;
+	padding: 12px 16px;
+	font-size: 12px;
+}
+.macos .nc-demo-editor > button {
+	position: absolute;
+	top: 12px;
+	right: 12px;
+	padding: 3px 10px;
+	color: var(--mac-accent);
+	background: var(--mac-selected);
+	border: 0;
+	border-radius: 999px;
+}
+[data-appearance="dark"] .nc-demo-agenda {
+	color: var(--mac-text);
+}
+[data-appearance="dark"] .nc-demo-event > span {
+	color: var(--mac-secondary);
+}

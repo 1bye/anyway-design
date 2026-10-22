@@ -29,6 +29,7 @@ and the portal container so menus retain their styles in embedded previews.
 | `dock` | `Dock`: `items`, `size`, `magnification`, `position`, `adaptive`, `autoHide`, `revealDelay`, `hideDelay`, `onActivate`, `glass`, `glassBackdrop` |
 | `menu-bar` | `MenuBar`: `menus`, `status`, `onAction`; `AppleMark` |
 | `menu-bar-status` | `MacMenuBarStatus`: Battery, Wi-Fi, Control Center, Spotlight, clock; `MacBatteryIcon` |
+| `notification-center` | `MacNotificationCenter`, `MacNotificationCenterPanel`, `MacNotificationCard`: grouped notifications, Options actions, dismissal, configurable widget slots |
 | `spotlight` | `MacSpotlight`: caller-supplied searchable items, categories, selection callbacks |
 | `menu` | `MacMenuButton`, `MacContextMenu`: `trigger`, `items`, `onAction`, `positionerProps`; `MacMenuButton` also accepts `open`, `defaultOpen`, `onOpenChange` |
 | `window` | `MacWindow`: `title`, `variant`, `sidebar`, `sidebarWidth`, `toolbarLeading`, `toolbar`, `footer`, `active`, window action callbacks; `TrafficLights` |
@@ -1763,3 +1764,47 @@ and [Spotlight](https://support.apple.com/guide/mac-help/search-with-spotlight-m
 The transparent bar, silhouettes and separate pill tiles follow those published
 references. Panel tint and animation timing are browser approximations, not a
 pixel-calibrated capture of this Mac’s private status-menu surfaces.
+
+### Notification Center
+
+`MacNotificationCenter` opens from a caller-supplied `trigger` with controlled
+`open` / `onOpenChange` or `defaultOpen`. It returns focus to the trigger on
+Escape/outside dismissal. Pass the same panel props through
+`MacMenuBarStatus.notificationCenter` to connect the menu bar clock.
+
+```tsx
+import { MacNotificationCenter, type MacNotification } from "@anyway-design/macos/notification-center";
+
+const [notifications, setNotifications] = useState<MacNotification[]>([
+  { id: "review", appId: "messages", appName: "Messages",
+    title: "Design team", body: "Ready to review?", time: "now",
+    actions: [{ id: "reply", label: "Reply" }] },
+]);
+
+<MacNotificationCenter
+  trigger={<button type="button">Thu Oct 22 9:41 AM</button>}
+  notifications={notifications}
+  onDismiss={(ids) => setNotifications(current => current.filter(item => !ids.includes(item.id)))}
+  onOpenNotification={openNotification}
+  onAction={(actionId, item) => runNotificationAction(actionId, item.id)}
+  widgets={[{ id: "calendar", size: "medium", content: <MyCalendar /> }]}
+  onEditWidgets={openWidgetPicker}
+/>
+```
+
+Supply unique notification `id`s and stable `appId`s, newest first. Items with
+the same app ID form an expandable stack; `defaultExpandedGroups` seeds its
+initial expansion. `onDismiss` receives the single, group, or all IDs to remove.
+`onAction` reports the action ID and original item; the caller decides whether
+to remove it. `icon` accepts caller artwork, `time` is caller-formatted, and
+`timeSensitive` changes the heading. Disabled actions remain in the Options
+menu. Notifications are caller-owned data; the component does not access the
+operating system’s notifications or request browser permission.
+
+Widget slots accept any React content in `small`, `medium`, or `large` cards.
+The lab’s Calendar, Reading List, Clock, and widget chooser are examples;
+`onEditWidgets` lets the host provide its own gallery. The panel scrolls within
+the available viewport and supports appearance, reduced transparency, and
+reduced motion from `MacOSEnvironment`. Use `MacNotificationCenterPanel` for an
+embedded panel and `MacNotificationCard` for individual banners. A standalone
+card can receive `defaultActionsOpen` to show its Options menu initially.

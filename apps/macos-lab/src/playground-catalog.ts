@@ -297,6 +297,22 @@ export const PLAYGROUND_ENTRIES: readonly PlaygroundEntry[] = [
 		580
 	),
 	defineEntry(
+		"notification-center",
+		"Notification Center",
+		"Menus & overlays",
+		"notification-center",
+		"MacNotificationCenter",
+		"notification-center-reference",
+		"Grouped notifications, Options menus, dismissal, and configurable widget slots. Click the clock to open or close.",
+		[
+			{ initial: true, key: "defaultOpen", label: "Initially open" },
+			{ initial: true, key: "notifications", label: "Show notifications" },
+			{ initial: true, key: "widgets", label: "Show widgets" },
+		],
+		720,
+		680
+	),
+	defineEntry(
 		"menu",
 		"Pop-up menu",
 		"Menus & overlays",

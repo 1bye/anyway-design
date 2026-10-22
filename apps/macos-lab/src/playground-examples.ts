@@ -118,6 +118,13 @@ const EXAMPLES: Record<string, Example> = {
 			'import { MacMenuBarStatus } from "@anyway-design/macos/menu-bar-status";',
 		],
 	}),
+	"notification-center": (v) => ({
+		body: `<MacNotificationCenter defaultOpen={${Boolean(v.defaultOpen)}} notifications={notifications} onDismiss={(ids) => setNotifications(current => current.filter(item => !ids.includes(item.id)))} onAction={(id, item) => console.info(id, item.id)} onOpenNotification={(item) => console.info("Open", item.id)}${v.widgets ? ' widgets={[{ id: "agenda", size: "medium", content: <button type="button" onClick={() => console.info("Open Calendar")} style={{ width: "100%", height: "100%", padding: 16, border: 0, background: "transparent", color: "inherit", textAlign: "left" }}>Thursday, October 22<br />Design review · 10 AM</button> }]}' : ""} trigger={<button type="button" style={{ position: "absolute", top: 8, right: 8 }}>Thu Oct 22 9:41 AM</button>} />`,
+		imports: [
+			'import type { MacNotification } from "@anyway-design/macos/notification-center";',
+		],
+		state: `const [notifications, setNotifications] = useState<MacNotification[]>(${v.notifications ? '[{ id: "review", appId: "messages", appName: "Messages", title: "Design team", body: "The new icons are ready to review.", time: "now", actions: [{ id: "reply", label: "Reply" }] }, { id: "meeting", appId: "messages", appName: "Messages", title: "Morgan", body: "Let’s meet at 10." }]' : "[]"});`,
+	}),
 	"pop-up-button": (v) => ({
 		body:
 			'<MacPopUpButton label="Report frequency" name="frequency"' +
