@@ -45,7 +45,8 @@ export function MenuBar({ menus, status, onAction }: MenuBarProps) {
 						<MacMenuPopup
 							items={menu.items}
 							onAction={onAction}
-							positionerProps={{ align: "start", sideOffset: 3 }}
+							positionerProps={{ align: "start", sideOffset: 5 }}
+							variant="menubar"
 						/>
 					</Menu.Root>
 				))}

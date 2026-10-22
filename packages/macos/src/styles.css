@@ -889,6 +889,8 @@
 }
 
 [data-preset="tahoe"] .mac-menubar {
+	height: 34px;
+	padding-left: 16px;
 	background: transparent;
 	backdrop-filter: none;
 }
@@ -928,6 +930,17 @@
 	background: rgb(255 255 255 / 25%);
 }
 
+[data-preset="tahoe"] .mac-menu-trigger {
+	height: 25px;
+	padding-right: 12px;
+	padding-left: 12px;
+	border-radius: 999px;
+}
+
+[data-preset="tahoe"] .mac-menu-trigger[data-apple="true"] {
+	padding: 0 4px;
+}
+
 .mac-menu-status {
 	gap: 17px;
 	font-size: 12px;
@@ -941,6 +954,84 @@
 
 .mac-menu-positioner {
 	z-index: 100;
+}
+
+/* Blur the real content around the panel without clipping its scrollable list. */
+[data-preset="tahoe"] :is(.mac-menu-positioner, .mac-system-positioner)::before,
+[data-preset="tahoe"] :is(.mac-menu-positioner, .mac-system-positioner)::after {
+	position: absolute;
+	inset: -18px;
+	z-index: -1;
+	pointer-events: none;
+	content: "";
+	backdrop-filter: blur(2px);
+	mask-image:
+		linear-gradient(
+			to right,
+			transparent,
+			black 18px,
+			black calc(100% - 18px),
+			transparent
+		),
+		linear-gradient(
+			to bottom,
+			transparent,
+			black 18px,
+			black calc(100% - 18px),
+			transparent
+		);
+	mask-composite: intersect;
+	transition: opacity 100ms;
+}
+
+[data-preset="tahoe"] :is(.mac-menu-positioner, .mac-system-positioner)::after {
+	inset: -10px;
+	backdrop-filter: blur(6px);
+	mask-image:
+		linear-gradient(
+			to right,
+			transparent,
+			black 10px,
+			black calc(100% - 10px),
+			transparent
+		),
+		linear-gradient(
+			to bottom,
+			transparent,
+			black 10px,
+			black calc(100% - 10px),
+			transparent
+		);
+}
+
+[data-preset="tahoe"]
+	:is(.mac-menu-positioner, .mac-system-positioner):has(
+		> :is(.mac-menu-popup, .mac-system-panel):is(
+				[data-starting-style],
+				[data-ending-style]
+			)
+	)::before,
+[data-preset="tahoe"]
+	:is(.mac-menu-positioner, .mac-system-positioner):has(
+		> :is(.mac-menu-popup, .mac-system-panel):is(
+				[data-starting-style],
+				[data-ending-style]
+			)
+	)::after {
+	opacity: 0;
+}
+
+[data-reduce-transparency][data-preset="tahoe"]
+	:is(.mac-menu-positioner, .mac-system-positioner)::before,
+[data-reduce-transparency][data-preset="tahoe"]
+	:is(.mac-menu-positioner, .mac-system-positioner)::after {
+	content: none;
+}
+
+/* Control Center already owns its larger progressive backdrop. */
+[data-preset="tahoe"] .mac-system-positioner:has(> .mac-control-center)::before,
+[data-preset="tahoe"] .mac-system-positioner:has(> .mac-control-center)::after {
+	content: none;
 }
 
 .mac-menu-popup {
@@ -1096,6 +1187,81 @@
 	width: 10px;
 	height: 10px;
 	color: white;
+}
+
+[data-preset="tahoe"] .mac-menu-popup[data-variant="menubar"] {
+	width: var(--mac-menu-width, max-content);
+	min-width: min(220px, var(--available-width));
+	background: var(--mac-menubar-menu-material, rgb(248 250 255 / 86%));
+	border: 0.5px solid rgb(255 255 255 / 78%);
+	border-radius: 13px;
+	box-shadow:
+		0 0 0 0.5px rgb(0 0 0 / 18%),
+		0 12px 28px rgb(0 0 0 / 24%);
+	backdrop-filter: blur(32px) saturate(1.45);
+}
+
+[data-preset="tahoe"][data-appearance="dark"]
+	.mac-menu-popup[data-variant="menubar"] {
+	--mac-menubar-menu-material: rgb(35 37 42 / 80%);
+	border-color: rgb(255 255 255 / 22%);
+}
+
+[data-preset="tahoe"] .mac-menu-popup[data-variant="menubar"] .mac-menu-item {
+	grid-template-columns: var(--mac-menu-icon-size, 16px) minmax(0, 1fr) auto;
+	gap: var(--mac-menu-icon-gap, 6px);
+	min-height: var(--mac-menu-row-height, 24px);
+	padding-right: 10px;
+	padding-left: 10px;
+}
+
+[data-preset="tahoe"] .mac-menu-popup[data-variant="menubar"] .mac-menu-icon {
+	width: var(--mac-menu-icon-size, 16px);
+	height: var(--mac-menu-icon-size, 16px);
+}
+
+[data-preset="tahoe"]
+	.mac-menu-popup[data-variant="menubar"]
+	.mac-menu-separator {
+	margin-right: 10px;
+	margin-left: 10px;
+}
+
+[data-preset="tahoe"]
+	.mac-menu-popup[data-variant="menubar"]:not(
+		:has(.mac-menu-icon:not(:empty), [role="menuitemcheckbox"])
+	)
+	.mac-menu-item {
+	grid-template-columns: minmax(0, 1fr) auto;
+}
+
+[data-preset="tahoe"]
+	.mac-menu-popup[data-variant="menubar"]:not(
+		:has(.mac-menu-icon:not(:empty), [role="menuitemcheckbox"])
+	)
+	.mac-menu-icon {
+	display: none;
+}
+
+[data-preset="tahoe"]
+	.mac-menu-popup[data-variant="menubar"]
+	.mac-menu-shortcut {
+	font-size: 1em;
+	opacity: 0.32;
+}
+
+[data-preset="tahoe"]
+	.mac-menu-popup[data-variant="menubar"]
+	.mac-menu-item[data-disabled]
+	.mac-menu-shortcut {
+	opacity: 1;
+}
+
+[data-preset="tahoe"]
+	.mac-menu-popup[data-variant="menubar"]
+	.mac-menu-item[data-highlighted]
+	.mac-menu-shortcut {
+	opacity: 0.8;
 }
 
 .mac-dock-area {
@@ -2622,6 +2788,8 @@
 
 [data-reduce-transparency] .mac-dock-surface,
 [data-reduce-transparency] .mac-menu-popup,
+[data-reduce-transparency][data-preset="tahoe"]
+	.mac-menu-popup[data-variant="menubar"],
 [data-reduce-transparency] .mac-window,
 [data-reduce-transparency] .mac-window-titlebar,
 [data-reduce-transparency] .mac-dock-tooltip {
@@ -2647,14 +2815,16 @@
 }
 
 [data-reduce-motion] *,
-[data-reduce-motion] *::before {
+[data-reduce-motion] *::before,
+[data-reduce-motion] *::after {
 	transition: none !important;
 	animation: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
 	.macos *,
-	.macos *::before {
+	.macos *::before,
+	.macos *::after {
 		transition: none !important;
 		animation: none !important;
 	}

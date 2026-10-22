@@ -111,6 +111,16 @@ Size overrides include `--mac-menu-width`, `--mac-menu-font-size`,
 The comparison uses a 192px width and 21px rows to match Apple's published image;
 the shared default is 230px wide with 25px Tahoe rows.
 
+`MenuBar` selects the `menubar` popup variant, including nested menus. On Tahoe,
+this uses a translucent material, content-sized width (minimum 220px), 24px rows,
+and a rounded active menu title. Menus without icons or checkable items omit the icon gutter.
+Standalone toolbar and context menus retain their calibrated geometry.
+All Tahoe dropdown menus, including submenus, pop-up buttons, combo boxes,
+and the Wi-Fi and battery status panels,
+have a small progressive blur halo outside the panel. It samples the content
+behind the menu, fades out at the edges, and does not intercept pointer input.
+Reduced transparency removes the halo.
+
 Tahoe windows use an inset sidebar that extends behind the traffic lights,
 with navigation before the title and action groups after it. Sequoia keeps
 the full-width title bar and divided sidebar. The same slots work in both:

@@ -45,6 +45,7 @@ export interface MacMenuPopupProps extends MenuContentProps {
 		Menu.Positioner.Props,
 		"align" | "side" | "sideOffset" | "collisionAvoidance" | "collisionBoundary"
 	>;
+	variant?: "default" | "menubar";
 }
 
 function MenuItemLabel({ item }: { item: MacMenuItem }) {
@@ -69,10 +70,12 @@ function MenuEntry({
 	item,
 	onAction,
 	handleAction,
+	variant,
 }: {
 	handleAction: (event: ReactMouseEvent<HTMLElement>) => void;
 	item: MacMenuEntry;
 	onAction?: (id: string) => void;
+	variant: MacMenuPopupProps["variant"];
 }) {
 	if (item.type === "palette") {
 		return (
@@ -114,6 +117,7 @@ function MenuEntry({
 					items={item.items}
 					onAction={onAction}
 					positionerProps={{ align: "start", side: "right", sideOffset: 3 }}
+					variant={variant}
 				/>
 			</Menu.SubmenuRoot>
 		);
@@ -151,6 +155,7 @@ export function MacMenuPopup({
 	items,
 	onAction,
 	positionerProps,
+	variant = "default",
 }: MacMenuPopupProps) {
 	const container = useMacOSPortal();
 	const handleAction = useCallback(
@@ -170,7 +175,7 @@ export function MacMenuPopup({
 				sideOffset={6}
 				{...positionerProps}
 			>
-				<Menu.Popup className="mac-menu-popup">
+				<Menu.Popup className="mac-menu-popup" data-variant={variant}>
 					{items.map((item) => (
 						<Fragment key={item.id}>
 							{item.separatorBefore ? (
@@ -180,6 +185,7 @@ export function MacMenuPopup({
 								handleAction={handleAction}
 								item={item}
 								onAction={onAction}
+								variant={variant}
 							/>
 						</Fragment>
 					))}
