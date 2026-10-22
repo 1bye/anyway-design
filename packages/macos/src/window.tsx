@@ -52,6 +52,8 @@ export function TrafficLights({
 export interface MacWindowProps extends TrafficLightsProps {
 	children: ReactNode;
 	footer?: ReactNode;
+	/** Keep mounted and toggle open for an immediate open and short close fade. */
+	open?: boolean;
 	sidebar?: ReactNode;
 	sidebarWidth?: number;
 	style?: CSSProperties;
@@ -71,6 +73,7 @@ export function MacWindow({
 	toolbarLeading,
 	footer,
 	active = true,
+	open = true,
 	variant = "standard",
 	zoomed = false,
 	style,
@@ -79,12 +82,15 @@ export function MacWindow({
 	const titleId = useId();
 	return (
 		<section
+			aria-hidden={open ? undefined : true}
 			aria-labelledby={titleId}
 			className="mac-window"
 			data-active={active}
 			data-sidebar={Boolean(sidebar)}
 			data-variant={variant}
 			data-zoomed={zoomed}
+			hidden={!open}
+			inert={!open}
 			style={
 				{
 					"--mac-window-sidebar-width": `${sidebarWidth}px`,

@@ -309,8 +309,9 @@ function finderExample(values: PlaygroundValues): ExampleFragment {
   showSidebar={${json(values.sidebar ?? true)}}
   showToolbar={${json(values.toolbar ?? true)}}
   showTabs={${json(values.tabs ?? true)}}
+  showStatusBar={${json(values.statusBar ?? false)}}
   toolbarDisabled={${Boolean(values.disabled)}}
-  sidebarWidth={${json(values.sidebarWidth ?? 165)}}
+  sidebarWidth={${json(values.sidebarWidth ?? 220)}}
   sidebarGroups={[{ id: "favorites", label: "Favorites", items: [{ id: "workspace", label: "Workspace" }, { id: "documents", label: "Documents" }] }]}
   onOpen={(id) => console.info("Open", id)}
   ${

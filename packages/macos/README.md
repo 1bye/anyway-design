@@ -121,6 +121,9 @@ and the Wi-Fi and battery status panels,
 have a small progressive blur halo outside the panel. It samples the content
 behind the menu, fades out at the edges, and does not intercept pointer input.
 Reduced transparency removes the halo.
+Dropdown menus, selection lists, and status panels open immediately at full
+size and opacity. Closing fades the panel and its blur backdrop together over
+100ms, with no scaling. Reduced Motion removes the close fade too.
 
 Tahoe windows use an inset sidebar that extends behind the traffic lights,
 with navigation before the title and action groups after it. Sequoia keeps
@@ -294,8 +297,14 @@ contents, or native filesystem access are embedded in this component.
   Each tab retains its own history, search, selection, view, grouping, and sort.
   `views` restricts the view menu and keyboard shortcuts; an empty array enables
   all four views. If the current view is removed, the first allowed view wins.
-- `showSidebar`, `showToolbar`, `showTabs`, `showExtensions`, `sidebarWidth`,
+- `showSidebar`, `showToolbar`, `showTabs`, `showExtensions`, `showStatusBar`, `sidebarWidth`,
   window `style`, active state, and traffic-light callbacks configure presentation.
+  Finder's sidebar defaults to 220px; the optional status row defaults to hidden,
+  with item counts still announced to assistive technology. The path bar stays visible.
+  Tahoe's toolbar, tab strip, and icon grid were checked against a native 920 × 690pt
+  Finder window on macOS 26.6.2. Icon view uses a fixed 112pt pitch and 64pt icon
+  canvas, including inside the reusable Finder browser wrapper. Native icon sizes
+  and grid spacing are user preferences; this matches the captured configuration.
 - `onOpen(id)` handles leaf files; folders navigate internally.
   `onRename(id, name)` requests a rename after sibling-name validation.
   `validateRename` can add app-specific validation.
@@ -1809,6 +1818,35 @@ reduced motion from `MacOSEnvironment`. Use `MacNotificationCenterPanel` for an
 embedded panel and `MacNotificationCard` for individual banners. A standalone
 card can receive `defaultActionsOpen` to show its Options menu initially.
 
+
+## Window visibility and Tahoe motion
+
+Keep `MacWindow`, `MacFinder`, or `MacSettings` mounted and control its `open`
+prop (default `true`). Opening is immediate. Closing fades the complete surface,
+including its shadow, for 160ms before it stops painting. It becomes inert and
+leaves the accessibility tree immediately, so hidden controls cannot take focus.
+No scale or slide animation is applied. Reduced motion disables the fade.
+
+```tsx
+const [open, setOpen] = useState(true);
+
+<MacWindow open={open} onClose={() => setOpen(false)} title="Document">
+  <textarea aria-label="Document" defaultValue="My notes" />
+</MacWindow>
+<MacButton onClick={() => setOpen(true)}>Reopen</MacButton>
+```
+
+`MacDesktopWindow.open` provides the same behavior for managed windows. Keep
+window definitions in the array and toggle `open` rather than filtering them
+out. Closed windows leave the active stack, retain their frame and component
+state, and restore immediately when opened. Removing a definition unmounts it
+immediately. Use one visibility owner: let the desktop manage its frame, or
+control `MacWindow.open` for a standalone window.
+
+The fade uses CSS discrete display transitions; older browsers without support
+fall back to an immediate close. The 160ms duration is a first pass rather than
+frame-by-frame native timing calibration. The playground's Window and Desktop
+examples both use this lifecycle.
 
 ## Managed desktop windows
 

@@ -217,7 +217,10 @@ export function DesktopDemo({
 		resizable: values.resizable !== false,
 		title: "Preferences",
 	});
-	const windows = definitions.filter((window) => !closed.includes(window.id));
+	const windows = definitions.map((window) => ({
+		...window,
+		open: !closed.includes(window.id),
+	}));
 	const action = (id: string) => {
 		if (definitions.some((window) => window.id === id)) {
 			activate(id);

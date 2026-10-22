@@ -617,7 +617,7 @@ main.pg-main {
 	mask-image: linear-gradient(to right, #000 72%, transparent);
 }
 .pg-finder-sidebar-crop .mac-window {
-	left: calc(50% - 82.5px);
+	left: calc(50% - 110px);
 }
 .pg-desktop-example .scene-window {
 	top: 76px;
@@ -955,4 +955,18 @@ main.pg-main {
 	.pg-module-line > span {
 		margin-left: 0;
 	}
+}
+
+.pg-window-lifecycle {
+	display: grid;
+	place-items: center;
+	width: 100%;
+	height: 100%;
+}
+.pg-window-lifecycle .mac-window,
+.pg-window-reopen {
+	grid-area: 1 / 1;
+}
+.pg-window-lifecycle .mac-window {
+	z-index: 1;
 }

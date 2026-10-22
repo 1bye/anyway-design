@@ -37,6 +37,7 @@ export interface MacSettingsProps extends TrafficLightsProps {
 	emptySearchMessage?: ReactNode;
 	onSearchQueryChange?: (query: string) => void;
 	onSectionChange?: (id: string) => void;
+	open?: boolean;
 	searchable?: boolean;
 	searchPlaceholder?: string;
 	searchQuery?: string;
@@ -386,11 +387,13 @@ export function MacSettings({
 		? Math.max(150, Math.min(300, sidebarWidth))
 		: 224;
 	return (
-		// biome-ignore lint/a11y/noNoninteractiveElementInteractions: The settings region provides scoped search and sidebar keyboard shortcuts.
 		<section
+			aria-hidden={windowActions.open === false ? true : undefined}
 			aria-label={title}
 			className={`mac-settings ${className}`}
 			data-header={searching ? "toolbar" : (current?.header ?? "summary")}
+			data-open={windowActions.open !== false}
+			inert={windowActions.open === false}
 			onKeyDown={keyDown}
 			style={style}
 		>

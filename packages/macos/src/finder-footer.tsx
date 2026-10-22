@@ -11,6 +11,7 @@ export function FinderFooter({
 	count,
 	query,
 	selectedCount,
+	showStatusBar,
 }: {
 	path: MacFinderFile[];
 	location: string;
@@ -19,6 +20,7 @@ export function FinderFooter({
 	count: number;
 	query: string;
 	selectedCount: number;
+	showStatusBar: boolean;
 }) {
 	return (
 		<div className="mac-finder-footer">
@@ -53,7 +55,11 @@ export function FinderFooter({
 					<span>{label(location)}</span>
 				)}
 			</nav>
-			<span aria-live="polite">
+			<span
+				aria-live="polite"
+				className="mac-finder-status-bar"
+				data-visible={showStatusBar || undefined}
+			>
 				{count} {count === 1 ? "item" : "items"}
 				{query.trim() ? ` matching “${query.trim()}”` : ""}
 				{selectedCount ? ` · ${selectedCount} selected` : ""}

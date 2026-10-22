@@ -55,3 +55,18 @@ test("a restricted Gallery-only Finder preserves supplied preview content and ca
 	expect(html).not.toContain("Finder tabs");
 	expect(html).not.toContain("sample document");
 });
+
+test("Finder keeps item counts accessible while its optional status row is hidden", () => {
+	const hidden = renderToStaticMarkup(
+		<MacFinder files={files} rootId="root-42" />
+	);
+	const visible = renderToStaticMarkup(
+		<MacFinder files={files} rootId="root-42" showStatusBar />
+	);
+	expect(hidden).toContain('aria-live="polite" class="mac-finder-status-bar"');
+	expect(hidden).not.toContain('class="mac-finder-status-bar" data-visible');
+	expect(hidden).toContain("1 item");
+	expect(visible).toContain(
+		'class="mac-finder-status-bar" data-visible="true"'
+	);
+});

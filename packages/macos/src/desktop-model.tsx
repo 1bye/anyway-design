@@ -29,6 +29,8 @@ export interface MacDesktopWindow {
 	id: string;
 	maxSize?: MacDesktopSize;
 	minSize?: MacDesktopSize;
+	/** Keep the definition mounted and set false to close with a short fade. */
+	open?: boolean;
 	render: (state: { active: boolean; frame: MacDesktopFrame }) => ReactNode;
 	resizable?: boolean;
 	title: string;

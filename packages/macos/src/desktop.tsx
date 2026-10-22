@@ -1,4 +1,5 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Window events bind stable caller-owned IDs. Pointer frames bypass React. */
+/** biome-ignore-all lint/suspicious/noUnnecessaryConditions: React assigns DOM refs between render and layout effects. */
 import {
 	type CSSProperties,
 	type FocusEvent,
@@ -69,6 +70,17 @@ function resizeEdge(target: Element): MacDesktopResizeEdge | undefined {
 	return EDGES.find((value) => value === edge);
 }
 
+function pruneWindowCache<T>(
+	cache: Map<string, T>,
+	available: ReadonlySet<string>
+) {
+	for (const id of cache.keys()) {
+		if (!available.has(id)) {
+			cache.delete(id);
+		}
+	}
+}
+
 export function MacDesktop({
 	windows,
 	activeWindowId,
@@ -93,11 +105,13 @@ export function MacDesktop({
 	const [stack, setStack] = useState(() => ({
 		activeId:
 			defaultActiveWindowId === undefined
-				? (windows.at(-1)?.id ?? null)
+				? (windows.filter((window) => window.open !== false).at(-1)?.id ?? null)
 				: defaultActiveWindowId,
 		order: windows.map((window) => window.id),
 	}));
-	const ids = windows.map((window) => window.id);
+	const openWindows = windows.filter((window) => window.open !== false);
+	const ids = openWindows.map((window) => window.id);
+	const lastZIndex = useRef(new Map<string, number>());
 	const reconciled = desktopWindowOrder(ids, stack.order);
 	const added = reconciled.filter((id) => !stack.order.includes(id));
 	const requestedActive =
@@ -113,7 +127,6 @@ export function MacDesktop({
 	const bounds = desktopBounds(size, insets);
 	useLayoutEffect(() => {
 		const element = root.current;
-		// biome-ignore lint/suspicious/noUnnecessaryConditions: Refs are nullable during mount and teardown.
 		if (!element) {
 			return;
 		}
@@ -134,14 +147,19 @@ export function MacDesktop({
 	activeRef.current = activeId;
 	useLayoutEffect(() => {
 		const available = new Set(windows.map((window) => window.id));
-		for (const id of lastFocus.current.keys()) {
-			if (!available.has(id)) {
-				lastFocus.current.delete(id);
-			}
+		pruneWindowCache(lastZIndex.current, available);
+		pruneWindowCache(lastFocus.current, available);
+		for (const [index, id] of order.entries()) {
+			lastZIndex.current.set(id, index + 1);
 		}
+		const visible = new Set(
+			windows
+				.filter((window) => window.open !== false)
+				.map((window) => window.id)
+		);
 		const changed = previousActive.current !== activeId;
 		const removed =
-			previousActive.current && !elements.current.has(previousActive.current);
+			previousActive.current && !visible.has(previousActive.current);
 		previousActive.current = activeId;
 		const frame = activeId ? elements.current.get(activeId) : null;
 		if (changed && frame && !frame.contains(document.activeElement)) {
@@ -183,7 +201,7 @@ export function MacDesktop({
 		bounds,
 		onCommit: commit,
 		root,
-		windows,
+		windows: openWindows,
 	});
 	const pointerDown = (
 		event: PointerEvent<HTMLElement>,
@@ -225,7 +243,7 @@ export function MacDesktop({
 			event.target instanceof HTMLElement &&
 			event.currentTarget.contains(event.target) &&
 			event.target !== event.currentTarget &&
-			!event.target.closest("[data-resize-edge]")
+			!event.target.closest("[data-resize-edge], .mac-traffic-lights")
 		) {
 			lastFocus.current.set(id, event.target);
 		}
@@ -305,16 +323,22 @@ export function MacDesktop({
 						bounds,
 						window
 					);
-					const active = activeId === window.id;
+					const open = window.open !== false;
+					const active = open && activeId === window.id;
+					const zIndex = open
+						? order.indexOf(window.id) + 1
+						: (lastZIndex.current.get(window.id) ?? 0);
 					return (
-						// biome-ignore lint/a11y/noNoninteractiveElementInteractions: Nonmodal window frames support focus, pointer operations, and keyboard movement.
 						<div
 							aria-describedby={instructions}
+							aria-hidden={open ? undefined : true}
 							aria-label={`${window.title} window`}
 							aria-modal={false}
 							className="mac-desktop-window"
 							data-active={active}
 							data-window-id={window.id}
+							hidden={!open}
+							inert={!open}
 							key={window.id}
 							onBlurCapture={(event) => {
 								if (!event.currentTarget.contains(event.relatedTarget)) {
@@ -342,7 +366,7 @@ export function MacDesktop({
 								height: frame.height,
 								transform: `translate(${frame.x}px, ${frame.y}px)`,
 								width: frame.width,
-								zIndex: order.indexOf(window.id) + 1,
+								zIndex,
 							}}
 							// biome-ignore lint/a11y/noNoninteractiveTabindex: The window frame is the keyboard target for moving and resizing.
 							tabIndex={0}

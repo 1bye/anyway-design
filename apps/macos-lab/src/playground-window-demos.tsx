@@ -9,7 +9,7 @@ import { MacPopover, MacPopoverClose } from "@anyway-design/macos/popover";
 import { MacTabs } from "@anyway-design/macos/tabs";
 import { TrafficLights } from "@anyway-design/macos/window";
 import { WindowSymbol } from "@anyway-design/macos/window-symbol";
-import { useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { DesktopMenuStatus } from "./desktop-menu-status";
 import { DOCK_ITEMS } from "./dock-items";
 import type { PlaygroundDemoProps } from "./playground-catalog";
@@ -58,7 +58,7 @@ export function ToolbarDemo({ values, onEvent }: PlaygroundDemoProps) {
 			<PlaygroundFinder
 				focus="toolbar"
 				onEvent={onEvent}
-				sidebarWidth={165}
+				sidebarWidth={220}
 				style={{ height: 430, width: 760 }}
 				title="Documents"
 				toolbarDisabled={Boolean(values.disabled)}
@@ -69,46 +69,74 @@ export function ToolbarDemo({ values, onEvent }: PlaygroundDemoProps) {
 export function WindowDemo(props: PlaygroundDemoProps) {
 	const [visible, setVisible] = useState(true);
 	const [zoomed, setZoomed] = useState(false);
+	const reopen = useRef<HTMLButtonElement>(null);
+	const root = useRef<HTMLDivElement>(null);
+	const previousVisible = useRef(visible);
+	useLayoutEffect(() => {
+		if (!visible) {
+			reopen.current?.focus({ preventScroll: true });
+		} else if (!previousVisible.current) {
+			const browsers =
+				root.current?.querySelectorAll<HTMLElement>(".mac-finder-browser") ??
+				[];
+			const browser = Array.from(browsers).find(
+				(element) => element.getClientRects().length > 0
+			);
+			const target =
+				browser?.querySelector<HTMLElement>('[data-file-id][tabindex="0"]') ??
+				browser;
+			target?.focus({ preventScroll: true });
+		}
+		previousVisible.current = visible;
+	}, [visible]);
 	const action = (name: string) => {
 		props.onEvent(name);
 		setVisible(false);
 	};
-	if (!visible) {
-		return (
-			<MacButton onClick={() => setVisible(true)}>Reopen window</MacButton>
-		);
-	}
 	return (
-		<PlaygroundFinder
-			active={Boolean(props.values.active)}
-			customActions={Boolean(props.values.customActions)}
-			defaultView={(props.values.view ?? "icons") as MacFinderView}
-			key={String(props.values.view ?? "icons")}
-			onClose={() => action("onClose → window closed")}
-			onEvent={props.onEvent}
-			onMinimize={() => action("onMinimize → window minimized")}
-			onZoom={() => {
-				setZoomed(!zoomed);
-				props.onEvent(`onZoom → ${!zoomed}`);
-			}}
-			readOnly={Boolean(props.values.readOnly)}
-			showSidebar={Boolean(props.values.sidebar)}
-			showTabs={props.values.tabs !== false}
-			showToolbar={Boolean(props.values.toolbar)}
-			sidebarWidth={Number(props.values.sidebarWidth ?? 165)}
-			style={{
-				height: zoomed ? 480 : 450,
-				maxWidth: "calc(100% - 40px)",
-				width: zoomed ? 760 : 740,
-			}}
-			title={String(props.values.title)}
-			views={
-				{ "gallery-only": ["gallery"], "icons-and-list": ["icons", "list"] }[
-					String(props.values.views)
-				] as MacFinderView[] | undefined
-			}
-			zoomed={zoomed}
-		/>
+		<div className="pg-window-lifecycle" ref={root}>
+			{visible ? null : (
+				<MacButton
+					className="pg-window-reopen"
+					onClick={() => setVisible(true)}
+					ref={reopen}
+				>
+					Reopen window
+				</MacButton>
+			)}
+			<PlaygroundFinder
+				active={Boolean(props.values.active)}
+				customActions={Boolean(props.values.customActions)}
+				defaultView={(props.values.view ?? "icons") as MacFinderView}
+				key={String(props.values.view ?? "icons")}
+				onClose={() => action("onClose → window closed")}
+				onEvent={props.onEvent}
+				onMinimize={() => action("onMinimize → window minimized")}
+				onZoom={() => {
+					setZoomed(!zoomed);
+					props.onEvent(`onZoom → ${!zoomed}`);
+				}}
+				open={visible}
+				readOnly={Boolean(props.values.readOnly)}
+				showSidebar={Boolean(props.values.sidebar)}
+				showStatusBar={Boolean(props.values.statusBar)}
+				showTabs={props.values.tabs !== false}
+				showToolbar={Boolean(props.values.toolbar)}
+				sidebarWidth={Number(props.values.sidebarWidth ?? 220)}
+				style={{
+					height: zoomed ? 480 : 450,
+					maxWidth: "calc(100% - 40px)",
+					width: zoomed ? 760 : 740,
+				}}
+				title={String(props.values.title)}
+				views={
+					{ "gallery-only": ["gallery"], "icons-and-list": ["icons", "list"] }[
+						String(props.values.views)
+					] as MacFinderView[] | undefined
+				}
+				zoomed={zoomed}
+			/>
+		</div>
 	);
 }
 export function TrafficDemo({ values, onEvent }: PlaygroundDemoProps) {
@@ -132,7 +160,7 @@ export function SidebarDemo({ onEvent }: PlaygroundDemoProps) {
 			<PlaygroundFinder
 				focus="sidebar"
 				onEvent={onEvent}
-				sidebarWidth={165}
+				sidebarWidth={220}
 				style={{ height: 440, width: 760 }}
 				title="Documents"
 			/>

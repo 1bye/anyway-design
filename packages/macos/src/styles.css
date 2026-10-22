@@ -984,7 +984,7 @@
 			transparent
 		);
 	mask-composite: intersect;
-	transition: opacity 100ms;
+	transition: none;
 }
 
 [data-preset="tahoe"] :is(.mac-menu-positioner, .mac-system-positioner)::after {
@@ -1009,19 +1009,14 @@
 
 [data-preset="tahoe"]
 	:is(.mac-menu-positioner, .mac-system-positioner):has(
-		> :is(.mac-menu-popup, .mac-system-panel):is(
-				[data-starting-style],
-				[data-ending-style]
-			)
+		> :is(.mac-menu-popup, .mac-system-panel)[data-ending-style]
 	)::before,
 [data-preset="tahoe"]
 	:is(.mac-menu-positioner, .mac-system-positioner):has(
-		> :is(.mac-menu-popup, .mac-system-panel):is(
-				[data-starting-style],
-				[data-ending-style]
-			)
+		> :is(.mac-menu-popup, .mac-system-panel)[data-ending-style]
 	)::after {
 	opacity: 0;
+	transition: opacity 100ms ease-out;
 }
 
 [data-reduce-transparency][data-preset="tahoe"]
@@ -1053,9 +1048,7 @@
 		0 12px 32px rgb(0 0 0 / 25%);
 	backdrop-filter: blur(30px) saturate(1.6);
 	transform-origin: var(--transform-origin);
-	transition:
-		opacity 100ms,
-		transform 100ms;
+	transition: none;
 }
 
 [data-preset="tahoe"] .mac-menu-popup {
@@ -1078,10 +1071,10 @@
 		0 8px 24px rgb(0 0 0 / 32%);
 }
 
-.mac-menu-popup[data-starting-style],
 .mac-menu-popup[data-ending-style] {
+	pointer-events: none;
 	opacity: 0;
-	transform: scale(0.98);
+	transition: opacity 100ms ease-out;
 }
 
 .mac-menu-item {
@@ -1756,14 +1749,23 @@
 }
 
 [data-preset="tahoe"] .mac-window[data-variant="finder"] {
-	--mac-toolbar-button-size: 34px;
-	--mac-toolbar-icon-size: 19px;
+	--mac-traffic-size: 14px;
+	--mac-traffic-gap: 9px;
+	--mac-sidebar-font-size: 14px;
+	--mac-window-sidebar-material: rgb(244 244 244 / 70%);
+	--mac-toolbar-button-size: 36px;
+	--mac-toolbar-icon-size: 20px;
 	--mac-toolbar-button-padding: 8px;
-	--mac-toolbar-composite-padding: 5px;
+	--mac-toolbar-composite-padding: 6px;
 	--mac-toolbar-indicator-width: 11px;
 	--mac-toolbar-indicator-size: 13px;
 	--mac-toolbar-chevron-size: 16px;
-	background: linear-gradient(100deg, #f1f1f1, #fcfcfc 42%, #f6f6f6);
+	--mac-finder-content-material: color-mix(
+		in srgb,
+		var(--mac-surface) 98%,
+		transparent
+	);
+	background: var(--mac-finder-content-material);
 	box-shadow:
 		0 0 0 0.5px rgb(0 0 0 / 25%),
 		0 24px 60px -10px rgb(0 0 0 / 34%),
@@ -1774,11 +1776,6 @@
 	box-shadow:
 		0 0 0 0.5px rgb(0 0 0 / 20%),
 		0 8px 24px rgb(0 0 0 / 16%);
-}
-
-[data-preset="tahoe"][data-appearance="dark"]
-	.mac-window[data-variant="finder"] {
-	background: linear-gradient(100deg, #2b2b2b, #303030 42%, #292929);
 }
 
 [data-preset="tahoe"] .mac-window-titlebar {
@@ -1806,6 +1803,21 @@
 	padding-right: 7px;
 }
 
+[data-preset="tahoe"] .mac-window[data-variant="finder"] .mac-window-heading {
+	padding-inline: 8px;
+}
+
+[data-preset="tahoe"]
+	.mac-window[data-variant="finder"]
+	.mac-window-titlebar
+	h2 {
+	font-size: 15px;
+}
+
+[data-preset="tahoe"] .mac-window[data-variant="finder"] .mac-window-controls {
+	padding-left: 19px;
+}
+
 [data-preset="tahoe"] [data-sidebar="true"] > .mac-window-body {
 	display: contents;
 }
@@ -1825,13 +1837,14 @@
 [data-preset="tahoe"]
 :where(
 	.mac-window[data-variant="finder"] .mac-window-content > .mac-file-grid,
-	.mac-window[data-variant="finder"] .mac-tab-panel > .mac-file-grid
+	.mac-window[data-variant="finder"] .mac-tab-panel > .mac-file-grid,
+	.mac-window[data-variant="finder"] .mac-finder-browser > .mac-file-grid
 ) {
-	--mac-file-column-width: 116px;
-	--mac-file-row-height: 116px;
+	--mac-file-column-width: 112px;
+	--mac-file-row-height: 112px;
 	--mac-file-row-gap: 0px;
 	--mac-file-column-gap: 0px;
-	--mac-file-grid-padding: 16px 2px 12px;
+	--mac-file-grid-padding: 12px 10px;
 	--mac-file-label-gap: 7px;
 	--mac-file-line-height: 17px;
 	grid-template-columns: repeat(
@@ -1856,7 +1869,7 @@
 			var(--mac-window-titlebar-height) -
 			var(--mac-window-sidebar-inset)
 		)
-		7px 7px;
+		12px 7px;
 	margin: var(--mac-window-sidebar-inset) 6px var(--mac-window-sidebar-inset)
 		var(--mac-window-sidebar-inset);
 	overflow: auto;
@@ -1881,6 +1894,28 @@
 		inset 0 0 0 0.5px rgb(255 255 255 / 4%),
 		3px 0 8px rgb(0 0 0 / 12%),
 		10px 0 28px rgb(0 0 0 / 20%);
+}
+
+[data-preset="tahoe"] .mac-window[data-variant="finder"] .mac-window-sidebar {
+	border-color: rgb(255 255 255 / 65%);
+	box-shadow:
+		inset 0 0 0 0.5px rgb(255 255 255 / 20%),
+		4px 0 16px rgb(0 0 0 / 4%);
+}
+
+[data-preset="tahoe"][data-appearance="dark"]
+	.mac-window[data-variant="finder"]
+	.mac-window-sidebar {
+	border-color: rgb(255 255 255 / 10%);
+	box-shadow:
+		inset 0 0 0 0.5px rgb(255 255 255 / 4%),
+		4px 0 16px rgb(0 0 0 / 12%);
+}
+
+.mac-sidebar-item > span:last-child {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 [data-preset="tahoe"] .mac-window[data-active="false"] {
@@ -1981,6 +2016,7 @@
 	display: flex;
 	flex-direction: column;
 	gap: var(--mac-sidebar-group-gap);
+	font-size: var(--mac-sidebar-font-size, inherit);
 }
 
 .mac-sidebar-group h3 {
@@ -2048,15 +2084,15 @@
 .mac-traffic-lights {
 	display: flex;
 	flex-shrink: 0;
-	gap: 8px;
+	gap: var(--mac-traffic-gap, 8px);
 }
 
 .mac-traffic-lights button {
 	position: relative;
 	display: grid;
 	place-items: center;
-	width: 12px;
-	height: 12px;
+	width: var(--mac-traffic-size, 12px);
+	height: var(--mac-traffic-size, 12px);
 	padding: 0;
 	border: 0.5px solid rgb(0 0 0 / 12%);
 	border-radius: 50%;
@@ -2303,6 +2339,23 @@
 	margin: 0 5px;
 	background: var(--mac-control);
 	border-radius: 999px;
+}
+
+/* Finder's 28pt tab row sits above an 8pt continuation of the content surface. */
+[data-preset="tahoe"]
+	.mac-window[data-variant="finder"]
+	.mac-tabs[data-variant="document"] {
+	--mac-tab-height: 28px;
+}
+
+[data-preset="tahoe"] .mac-window[data-variant="finder"] .mac-tab-strip {
+	gap: 4px;
+	padding: 0 8px 8px;
+}
+
+[data-preset="tahoe"] .mac-window[data-variant="finder"] .mac-tab-action {
+	flex-basis: 28px;
+	margin: 0;
 }
 
 .mac-tab-close:hover,
@@ -5689,6 +5742,30 @@
 	gap: 5px;
 	min-width: 0;
 }
+
+[data-preset="tahoe"] .mac-window[data-variant="finder"] .mac-window-footer {
+	padding: 0;
+	background: transparent;
+	border-top-width: 0.5px;
+}
+
+[data-preset="tahoe"] .mac-finder-footer {
+	gap: 0;
+}
+
+.mac-finder-status-bar[data-visible] {
+	padding: 4px 8px;
+}
+
+.mac-finder-status-bar:not([data-visible]) {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	clip-path: inset(50%);
+}
 .mac-finder-path-bar {
 	display: flex;
 	align-items: center;
@@ -5880,4 +5957,61 @@
 	td {
 	color: white;
 	background: var(--mac-accent);
+}
+
+[data-preset="tahoe"] .mac-sidebar {
+	--mac-sidebar-row-height: 32px;
+}
+[data-preset="tahoe"] .mac-sidebar-icon {
+	flex-basis: 20px;
+}
+[data-preset="tahoe"] .mac-sidebar-icon .mac-window-symbol {
+	width: 20px;
+	height: 20px;
+}
+[data-preset="tahoe"] .mac-window[data-active="false"] .mac-sidebar-item {
+	color: var(--mac-secondary);
+}
+[data-preset="tahoe"] .mac-window[data-active="false"] .mac-window-heading {
+	opacity: 0.55;
+}
+/* Keep the exiting surface and its shadows together; reopening has no transition. */
+.macos[data-preset] :is(.mac-window, .mac-desktop-window) {
+	opacity: 1;
+}
+.macos[data-preset] :is(.mac-window, .mac-desktop-window)[hidden] {
+	display: none;
+	opacity: 0;
+	pointer-events: none;
+	transition:
+		opacity 160ms ease-out,
+		display 160ms;
+	transition-behavior: allow-discrete;
+}
+.mac-finder-window[data-open="false"],
+.mac-settings[data-open="false"] {
+	pointer-events: none;
+}
+.macos[data-reduce-motion] :is(.mac-window, .mac-desktop-window)[hidden] {
+	transition: none;
+}
+@media (prefers-reduced-motion: reduce) {
+	.macos[data-preset] :is(.mac-window, .mac-desktop-window)[hidden] {
+		transition: none;
+	}
+}
+
+[data-preset="tahoe"][data-reduce-transparency]
+	.mac-window[data-variant="finder"] {
+	--mac-finder-content-material: var(--mac-surface);
+}
+
+[data-preset="tahoe"] .mac-finder-path-bar {
+	min-height: 27px;
+	padding: 0 8px;
+	font-size: 12px;
+}
+
+[data-preset="tahoe"] .mac-finder-path-part > button {
+	font-size: 12px;
 }

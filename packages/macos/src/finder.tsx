@@ -95,6 +95,8 @@ export interface MacFinderProps
 	rootId: string;
 	showExtensions?: boolean;
 	showSidebar?: boolean;
+	/** Show the optional item-count row below the path bar. Defaults to false. */
+	showStatusBar?: boolean;
 	showTabs?: boolean;
 	showToolbar?: boolean;
 	sidebarGroups?: WindowSidebarGroup[];
@@ -145,7 +147,10 @@ export function MacFinder(props: MacFinderProps) {
 	const content = <FinderContent browser={browser} />;
 	return (
 		<div
+			aria-hidden={props.open === false ? true : undefined}
 			className="mac-finder-window"
+			data-open={props.open !== false}
+			inert={props.open === false}
 			onCopyCapture={browser.fileActions.copy}
 			onKeyDownCapture={key}
 			onPasteCapture={browser.fileActions.paste}
@@ -163,6 +168,7 @@ export function MacFinder(props: MacFinderProps) {
 						path={path}
 						query={tab.query}
 						selectedCount={tab.selected.length}
+						showStatusBar={browser.showStatusBar}
 					/>
 				}
 				sidebar={
@@ -175,6 +181,7 @@ export function MacFinder(props: MacFinderProps) {
 						/>
 					) : undefined
 				}
+				sidebarWidth={props.sidebarWidth ?? 220}
 				title={label(location)}
 				toolbar={
 					showToolbar ? (
@@ -274,9 +281,9 @@ export function MacFinder(props: MacFinderProps) {
 					)}
 				</div>
 			</MacWindow>
-			<FinderOverlays browser={browser} />
+			{props.open === false ? null : <FinderOverlays browser={browser} />}
 			<FinderDragPreview
-				image={browser.drag.image}
+				image={props.open === false ? null : browser.drag.image}
 				position={browser.drag.position}
 			/>
 			<span aria-live="polite" className="mac-finder-drag-status" role="status">
