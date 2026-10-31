@@ -192,6 +192,88 @@ body,
 	display: none;
 }
 
+.docs-playground {
+	container-type: inline-size;
+}
+
+.docs-playground-workspace {
+	display: grid;
+}
+
+.docs-playground-controls {
+	min-width: 0;
+	padding: 1rem;
+}
+
+.docs-playground-controls > div:last-child {
+	grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+}
+
+.docs-playground-control {
+	display: flex;
+	gap: 0.5rem;
+	align-items: center;
+	justify-content: space-between;
+	min-width: 0;
+	padding: 0.25rem 0.5rem;
+	font-size: 0.75rem;
+	line-height: 1rem;
+	color: var(--color-fd-muted-foreground);
+	background: color-mix(in oklab, var(--color-fd-foreground) 4%, transparent);
+	border-radius: 0.5rem;
+}
+
+.docs-playground-segments {
+	display: flex;
+	flex-shrink: 0;
+	gap: 0.125rem;
+}
+
+.docs-playground-segments label {
+	cursor: pointer;
+}
+
+.docs-playground-segments span {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-width: 3rem;
+	min-height: 2.25rem;
+	padding-inline: 0.5rem;
+	border-radius: 0.375rem;
+}
+
+.docs-playground-segments label:hover span {
+	color: var(--color-fd-foreground);
+	background: var(--color-fd-accent);
+}
+
+.docs-playground-segments input:checked + span {
+	color: var(--color-fd-foreground);
+	background: var(--color-fd-background);
+}
+
+.docs-playground-segments input:focus-visible + span {
+	outline: 2px solid var(--color-fd-ring);
+	outline-offset: 2px;
+}
+
+@container (min-width: 44rem) {
+	.docs-playground-workspace {
+		grid-template-columns: minmax(0, 1fr) 15rem;
+	}
+
+	.docs-playground-controls > div:last-child {
+		grid-template-columns: 1fr;
+	}
+}
+
+@media (pointer: coarse) {
+	.docs-playground-segments span {
+		min-height: 2.75rem;
+	}
+}
+
 .anyway-docs-shell [data-card] > .not-prose {
 	border-color: transparent;
 	border-radius: 999px;

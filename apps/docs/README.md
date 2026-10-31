@@ -25,6 +25,9 @@ Open [localhost:3007](http://localhost:3007).
 The switch preview imports `MacSwitch` from `@anyway-design/macos`; size,
 appearance, disabled state, and current value are reflected in its copyable
 example. Reset restores the initial preview. Interactions stay in memory.
+The responsive controls inspector uses `PlaygroundChoice` radio segments for
+size, appearance, checked, and disabled state. It sits beside wide previews and
+below narrow ones, with native arrow-key navigation and visible focus states.
 
 ## Authoring
 
@@ -36,8 +39,8 @@ Page icons are inline SVGs in `src/components/page-icons.tsx`. Set `icon` to
 that name for the shared sidebar.
 
 `src/components/docs-shell.tsx` uses the standard Fumadocs `DocsLayout` below a
-Holocron-inspired masthead: the Anyway wordmark, centered search, and repository
-link. Section navigation sits at the top of the sidebar. The welcome banner
+Holocron-inspired masthead: the Anyway wordmark, centered search, repository
+link, and compact theme switch. Section navigation sits at the top of the sidebar. The welcome banner
 appears across Documentation and Components. `src/components/docs-header.tsx` owns the header,
 section navigation, and banner. The sticky header uses
 Fumadocs' banner offset so the sidebar and anchor links stay clear of it.

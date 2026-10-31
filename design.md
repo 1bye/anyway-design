@@ -88,6 +88,7 @@ On fine mouse pointers without reduced motion, the welcome banner paints its hea
 | Buttons, selects, navigation pills, search | `999px` radius |
 | Keyboard shortcut keycaps | `5px` radius, `22px` minimum width, `20px` height, `4px` horizontal padding and gap |
 | Command palette / palette result rows | `16px` / `8px` radius; keycaps retain `5px` corners |
+| Playground control rows / segments | `8px` / `6px` radius; compact inspector-style choices |
 | Cards, callouts, code blocks, playground frame | `24px` radius |
 | Larger grouped surfaces using `rounded-2xl` | `28px` radius |
 | Page and sidebar canvas | Continuous background, no right sidebar border |
@@ -110,7 +111,7 @@ Use the Fumadocs `DocsLayout` grid. The current shell inherits its `97rem` maxim
 Use a `4px` spacing base, with `4`, `8`, `12`, `16`, `20`, `24`, `32`, `48`, `64`, and `80px` as the main working values. Small `2px` adjustments are reserved for compact navigation and icon alignment.
 
 - Page gutters: `16px` on mobile; the shared header uses `32px` from `768px` upward. Article padding follows Fumadocs: `16px`, then `24px` at `768px`, then `32px` at `1280px`.
-- Shared header: one `64px` row with the logo on the left, search centered, and the GitHub mark and label on the right without an external-link arrow. Use equal-width outer columns so search stays at the header's actual center regardless of the logo and GitHub widths. Keep this reservation synchronized with `--fd-banner-height`.
+- Shared header: one `64px` row with the logo on the left, search centered, and the GitHub mark, label, and compact theme switch on the right without an external-link arrow. Use equal-width outer columns so search stays at the header's actual center regardless of the logo and GitHub widths. Keep this reservation synchronized with `--fd-banner-height`.
 - Desktop search is up to `320px` wide, increasing to `384px` from `1280px`. Below `768px`, use a centered `44px` search icon button that opens the same search dialog. Keep the full field and shortcut hint on desktop.
 - Section navigation lives at the top of the sidebar, using stacked pills with `8px 12px` padding and a `4px` gap.
 - Welcome banner: `24px` side padding, `64px` vertical padding, increasing to `80px` from `768px`. Keep the two-line display headline and actions as the main content, with `32px` between them and `16px` between actions. Omit handwritten annotations, underlines, an eyebrow, and a supporting paragraph.
@@ -131,7 +132,7 @@ The sidebar should read as part of the document, with compact labels and a visib
 6. Mark the active section with foreground text and a slim segment on the guide. Expose `aria-current="location"`; use Fumadocs' heading tracking rather than a second scroll observer.
 7. Keep the desktop sidebar collapse icon hidden. Use the standard sidebar drawer on mobile; selecting a page or heading closes it.
 
-Header search has a quiet transparent surface, a pill outline, and a minimum visual height of `34px`. Preserve the working Command/Control-K shortcut and Fumadocs search behavior. Compose the command palette with its shared dialog, input, results, and close primitives. Use the shared `Kbd` component inside the Escape close button, with the same keycap styling as the header shortcut. Scope the palette radius tokens on its portalled dialog: `sm = 5px`, `md = lg = 8px`, `xl = 16px`. Keep `6px` result-list padding and `2px` row gaps; selected and hovered rows remain rounded rectangles. Keep the theme switch available in the sidebar. Use the sidebar outline instead of a second right-side table of contents or a duplicate desktop outline toolbar.
+Header search has a quiet transparent surface, a pill outline, and a minimum visual height of `34px`. Preserve the working Command/Control-K shortcut and Fumadocs search behavior. Compose the command palette with its shared dialog, input, results, and close primitives. Use the shared `Kbd` component inside the Escape close button, with the same keycap styling as the header shortcut. Scope the palette radius tokens on its portalled dialog: `sm = 5px`, `md = lg = 8px`, `xl = 16px`. Keep `6px` result-list padding and `2px` row gaps; selected and hovered rows remain rounded rectangles. Keep the theme switch beside GitHub in the shared header on desktop and mobile; omit it from the sidebar and navigation drawer. Use the sidebar outline instead of a second right-side table of contents or a duplicate desktop outline toolbar.
 
 ### Controls and interaction
 
@@ -152,6 +153,8 @@ Guide pages start with one document title, a short introduction, and logically o
 Component pages include a short description, a working preview, usage guidance, a copyable setup example, relevant props, and accessibility notes. Playground chrome follows this documentation system. The component inside the preview uses its real workspace implementation, appearance, semantics, and product tokens. For example, the macOS switch remains a macOS control; it does not inherit pill-button rules intended for docs chrome.
 
 Copyable examples must reflect the current preview controls and include the setup needed to run them. Show useful feedback for copy, reset, disabled, and error states. Wide code blocks and tables may scroll inside their own containers; the whole page must not overflow horizontally.
+
+Use compact labeled rows for playground controls, inspired by Component Lab. For short option sets and booleans, show all choices as native radio segments instead of hiding them in dropdowns. Keep selected values visible, with `12px` labels, `6px` row gaps, `36px` segment hit areas (`44px` on coarse pointers), and a keyboard focus outline. Put the inspector beside the preview when the playground is at least `704px` wide; stack it below at smaller widths. Checked state, disabled state, preview interaction, reset, and generated code share the same values. Use `PlaygroundChoice` for these rows and keep product styling inside the preview.
 
 ### Accessibility and consistency checks
 

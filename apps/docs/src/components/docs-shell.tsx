@@ -34,6 +34,7 @@ export function DocsShell({
 							Separator: DocsSidebarSeparator,
 						},
 					}}
+					themeSwitch={{ enabled: false }}
 					tree={tree}
 				>
 					{children}
