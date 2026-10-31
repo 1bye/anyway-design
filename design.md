@@ -165,7 +165,15 @@ Use compact labeled rows for playground controls, inspired by Component Lab. For
 - Check a guide and a live component page at desktop and narrow widths after shared design changes.
 - Give loading, empty, error, and not-found views the same type scale, palette, shape, and tone as the documentation.
 
-This contract describes the shared baseline and the standard for new work. The current guide/component styles implement that baseline. Standalone system views, including the existing not-found route, still need an alignment pass; mobile hit areas and contrast need an explicit audit before treating the system as fully verified.
+This contract describes the shared baseline and the standard for new work. Guide, component, and standalone system views implement that baseline. System recovery actions have verified `44px` hit areas; the wider mobile control and contrast audit remains open.
+
+### System states
+
+Use the shared `DocsState` composition for 404, pending, and route errors: the normal `DocsHeader`, continuous paper background, a neutral icon, `12px` status label, `16px / 22.4px` heading at `560`, and `14px` muted body copy. Center the compact content in the remaining viewport with `24px` side gutters. Recovery actions use borderless pills with `44px` minimum height and wrap on small screens.
+
+The 404 offers Back to the guide and Search docs, preserving HTTP 404 for missing documentation and unmatched routes. Errors use calm generic copy, Reload page, and a guide link. Reload the whole document to recover loader, render, and stale module failures; keep raw exceptions out of the view. Loading uses a static three-line skeleton, an `aria-busy` main region, and a live status announcement outside the busy region. Router loading appears after `400ms` with a `250ms` minimum display time; MDX Suspense uses the same view.
+
+Keep the HTML document and Fumadocs theme/search providers in TanStack's root `shellComponent`, surrounding route boundaries. System views use the shared header independently of page data, so recovery remains available when the page loader fails.
 
 ### Implementation and maintenance
 

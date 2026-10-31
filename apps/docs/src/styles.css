@@ -30,6 +30,14 @@
 	line-height: 1.25rem;
 }
 
+.docs-state-actions :where(a, button) {
+	gap: 0.5rem;
+	min-height: 2.75rem;
+	padding: 0.625rem 1.25rem;
+	font-size: 0.875rem;
+	line-height: 1.25rem;
+}
+
 .docs-banner-ink {
 	--ink-rgb: 28, 30, 33;
 	position: absolute;

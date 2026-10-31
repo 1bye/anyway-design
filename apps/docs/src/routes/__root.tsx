@@ -1,18 +1,19 @@
 import {
 	createRootRoute,
 	HeadContent,
-	Link,
 	Outlet,
 	Scripts,
 } from "@tanstack/react-router";
 import { RootProvider } from "fumadocs-ui/provider/tanstack";
-import { lazy } from "react";
+import { lazy, type ReactNode } from "react";
+import { DocsNotFound } from "../components/docs-state";
 import appCss from "../styles.css?url";
 
 const DocsSearchDialog = lazy(() => import("../components/docs-search-dialog"));
 
 export const Route = createRootRoute({
-	component: RootDocument,
+	component: Outlet,
+	shellComponent: RootDocument,
 	head: () => ({
 		links: [{ href: appCss, rel: "stylesheet" }],
 		meta: [
@@ -25,27 +26,10 @@ export const Route = createRootRoute({
 			{ title: "Anyway — Documentation" },
 		],
 	}),
-	notFoundComponent: NotFound,
+	notFoundComponent: DocsNotFound,
 });
 
-function NotFound() {
-	return (
-		<main className="mx-auto max-w-xl px-6 py-24">
-			<p className="text-fd-muted-foreground text-sm">A small detour</p>
-			<h1 className="my-4 font-semibold text-3xl">This page isn’t here.</h1>
-			<p>Let’s get you back to familiar ground.</p>
-			<Link
-				className="mt-6 inline-block underline"
-				params={{ _splat: "getting-started" }}
-				to="/docs/$"
-			>
-				Back to the guide →
-			</Link>
-		</main>
-	);
-}
-
-function RootDocument() {
+function RootDocument({ children }: { children: ReactNode }) {
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head>
@@ -53,7 +37,7 @@ function RootDocument() {
 			</head>
 			<body className="flex min-h-screen flex-col font-sans">
 				<RootProvider search={{ SearchDialog: DocsSearchDialog }}>
-					<Outlet />
+					{children}
 				</RootProvider>
 				<Scripts />
 			</body>

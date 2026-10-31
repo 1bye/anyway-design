@@ -10,6 +10,7 @@ import {
 import { type ComponentProps, Suspense } from "react";
 import collections from "../../../.source/browser";
 import { DocsShell } from "../../components/docs-shell";
+import { DocsLoading } from "../../components/docs-state";
 import { mdxComponents } from "../../components/mdx";
 import { source } from "../../lib/source";
 
@@ -67,11 +68,7 @@ export const Route = createFileRoute("/docs/$")({
 function DocRoute() {
 	const { path, pageTree } = useFumadocsLoader(Route.useLoaderData());
 	return (
-		<Suspense
-			fallback={
-				<p className="p-6 text-fd-muted-foreground">Getting things ready…</p>
-			}
-		>
+		<Suspense fallback={<DocsLoading />}>
 			{clientLoader.useContent(path, { tree: pageTree })}
 		</Suspense>
 	);
