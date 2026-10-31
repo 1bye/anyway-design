@@ -38,6 +38,9 @@ link. Section navigation sits at the top of the sidebar. The getting-started
 page also has a welcome banner. `src/components/docs-header.tsx` owns the header,
 section navigation, and banner. The sticky header uses
 Fumadocs' banner offset so the sidebar and anchor links stay clear of it.
+`src/components/banner-ink.tsx` adds mouse-responsive ink droplets behind the
+welcome headline. Nearby drops collect into pools, then bleed and fade when idle and is disabled for reduced motion and
+touch input.
 `src/styles.css` imports the neutral theme and product component styles, and
 defines the documentation text scale, surfaces, radii, and sidebar treatment.
 `src/components/docs-sidebar.tsx` nests the current page's headings under its

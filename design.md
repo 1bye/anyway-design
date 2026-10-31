@@ -79,6 +79,8 @@ Attach the paper texture to the document with `scroll`, so the grain moves with 
 
 Preserve the Instrument Serif welcome headline and existing pill actions. Keep the hero free of handwritten notes, arrows, and decorative underlines. Content cards, code blocks, dialogs, and component previews retain their own quiet surfaces for readability.
 
+The welcome banner includes a decorative ink wash behind its live content. Mouse movement deposits distinct charcoal droplets. Nearby droplets merge into larger, darker pools, with a maximum volume of `16` drops per pool. Fresh ink holds for `1.8s`, then bleeds outward and fades completely after `5.2s` without new deposits; dark mode uses pale ink. Allow a new deposit at most every `50ms`. Keep it confined to the banner, ignore touch input, and disable it for reduced motion or coarse pointers. Cap the active blooms at `48`, limit canvas pixel density to `1.5`, and stop the animation loop when the ink has faded or the tab is hidden. The canvas must not intercept clicks or appear in the accessibility tree.
+
 ### Surfaces, borders, and shape
 
 | Element | Shape and treatment |

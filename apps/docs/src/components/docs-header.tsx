@@ -11,6 +11,7 @@ import {
 	Component,
 	GitFork,
 } from "lucide-react";
+import { BannerInk } from "./banner-ink";
 
 export function DocsHeader() {
 	return (
@@ -94,9 +95,10 @@ export function DocsWelcomeBanner() {
 	return (
 		<section
 			aria-label="Welcome to Anyway"
-			className="border-b px-6 py-16 text-center md:py-20"
+			className="docs-welcome-banner relative isolate overflow-hidden border-b px-6 py-16 text-center md:py-20"
 		>
-			<div className="mx-auto max-w-5xl">
+			<BannerInk />
+			<div className="relative z-10 mx-auto max-w-5xl">
 				<p className="font-display font-normal text-[40px] italic leading-none sm:text-[56px] md:text-[68px]">
 					Build it the
 					<br />
