@@ -107,7 +107,7 @@ export function PlaygroundPreview({
 	const scale =
 		zoom === "actual"
 			? 1
-			: Math.min(1, Math.max(0.1, (available - 48) / canvasWidth));
+			: Math.min(1, Math.max(0.1, (available - 24) / canvasWidth));
 	const Demo = DEMOS[props.entry.id];
 	const automatic = WALLPAPER.has(props.entry.id) ? "wallpaper" : "neutral";
 	const surface = background === "auto" ? automatic : background;

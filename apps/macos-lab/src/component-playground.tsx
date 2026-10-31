@@ -7,12 +7,13 @@ import {
 	Code2,
 	Copy,
 	Monitor,
+	PanelLeftClose,
+	PanelLeftOpen,
 	RotateCcw,
 	Search,
-	Settings2,
 	X,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
 	PLAYGROUND_ENTRIES,
 	PLAYGROUND_ENVIRONMENT,
@@ -26,6 +27,7 @@ import {
 import { playgroundExample } from "./playground-examples";
 import { PlaygroundPreview } from "./playground-preview";
 import "./playground.css";
+import "./playground-shell.css";
 
 const INITIAL_PROPS = new Set([
 	"value",
@@ -177,10 +179,6 @@ function EnvironmentFields({ value, onChange }: EnvironmentProps) {
 					type="checkbox"
 				/>
 			</label>
-			<p className="pg-field-note">
-				Native comparisons are calibrated against Tahoe. Preset support varies
-				by component.
-			</p>
 		</fieldset>
 	);
 }
@@ -200,9 +198,7 @@ function PlaygroundSession({
 	const [background, setBackground] = useState("auto");
 	const [width, setWidth] = useState(entry.width);
 	const [zoom, setZoom] = useState<"fit" | "actual">("fit");
-	const [event, setEvent] = useState(
-		"Interact with the preview to see its events."
-	);
+	const [event, setEvent] = useState("");
 	const [copied, setCopied] = useState(false);
 	const [copyError, setCopyError] = useState(false);
 	const change = (key: string, value: string | number | boolean) => {
@@ -235,14 +231,8 @@ function PlaygroundSession({
 	return (
 		<div className="pg-workspace">
 			<main className="pg-main" id="playground-content" tabIndex={-1}>
-				<div className="pg-breadcrumb">
-					Components <ChevronRight size={13} /> {entry.group}
-				</div>
 				<header className="pg-entry-header">
-					<div>
-						<h1>{entry.title}</h1>
-						<p>{entry.description}</p>
-					</div>
+					<h1>{entry.title}</h1>
 					{entry.reference ? (
 						<a className="pg-reference-link" href={`/?view=${entry.reference}`}>
 							Native comparison <ArrowUpRight size={15} />
@@ -317,9 +307,7 @@ function PlaygroundSession({
 						/>
 					</div>
 					<div className="pg-code-view" hidden={tab !== "code"}>
-						<p>
-							Usage example · replace sample data and image paths with your own.
-						</p>
+						<p>@anyway-design/macos/{entry.module}</p>
 						{copyError ? (
 							<p role="status">
 								Clipboard unavailable. Select and copy the code below.
@@ -329,26 +317,14 @@ function PlaygroundSession({
 							<code>{source}</code>
 						</pre>
 					</div>
-					<div className="pg-event-strip">
-						<span className="pg-event-dot" />
-						<output aria-label="Latest preview event" aria-live="polite">
-							{event}
-						</output>
-					</div>
+					<output
+						aria-label="Latest preview event"
+						aria-live="polite"
+						className="pg-sr-only"
+					>
+						{event}
+					</output>
 				</section>
-				<div className="pg-module-line">
-					<Code2 size={14} />
-					<code>@anyway-design/macos/{entry.module}</code>
-					<span>{entry.imports}</span>
-				</div>
-				<div className="pg-example-note">
-					<Settings2 size={16} />
-					<p>
-						Adjust props in the inspector. Initial-value changes restart the
-						example; Reset restores its defaults. File actions use sample data
-						in memory.
-					</p>
-				</div>
 			</main>
 			<aside aria-label="Component inspector" className="pg-inspector">
 				<div className="pg-inspector-heading">
@@ -357,24 +333,19 @@ function PlaygroundSession({
 						Reset
 					</button>
 				</div>
-				<fieldset className="pg-fieldset">
-					<legend>Component props</legend>
-					{properties.length ? (
-						properties.map((property) => (
+				{properties.length ? (
+					<fieldset className="pg-fieldset">
+						<legend>Component props</legend>
+						{properties.map((property) => (
 							<PropertyField
 								key={property.key}
 								onChange={change}
 								property={property}
 								value={values[property.key] ?? property.initial}
 							/>
-						))
-					) : (
-						<p className="pg-field-note">
-							This example is interactive. Use its controls directly in the
-							preview.
-						</p>
-					)}
-				</fieldset>
+						))}
+					</fieldset>
+				) : null}
 				<EnvironmentFields
 					onChange={(next) => {
 						onEnvironmentChange(next);
@@ -419,11 +390,27 @@ function PlaygroundSession({
 export function ComponentPlayground() {
 	const [entry, setEntry] = useState(selectedEntry);
 	const [search, setSearch] = useState("");
+	const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+	const searchInput = useRef<HTMLInputElement>(null);
 	const [environment, setEnvironment] = useState(PLAYGROUND_ENVIRONMENT);
 	useEffect(() => {
 		const pop = () => setEntry(selectedEntry());
 		window.addEventListener("popstate", pop);
 		return () => window.removeEventListener("popstate", pop);
+	}, []);
+	useEffect(() => {
+		const searchShortcut = (event: KeyboardEvent) => {
+			if (event.target instanceof Element && event.target.closest(".macos")) {
+				return;
+			}
+			if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+				event.preventDefault();
+				setSidebarCollapsed(false);
+				requestAnimationFrame(() => searchInput.current?.focus());
+			}
+		};
+		window.addEventListener("keydown", searchShortcut);
+		return () => window.removeEventListener("keydown", searchShortcut);
 	}, []);
 	const matches = PLAYGROUND_ENTRIES.filter((item) =>
 		playgroundMatches(item, search)
@@ -437,17 +424,33 @@ export function ComponentPlayground() {
 		setEntry(item);
 	};
 	return (
-		<div className="pg-app">
+		<div className="pg-app" data-sidebar-collapsed={sidebarCollapsed}>
 			<a className="pg-skip" href="#playground-content">
 				Skip to component
 			</a>
 			<aside aria-label="Component library" className="pg-library">
 				<a className="pg-brand" href="/">
-					<span className="pg-brand-mark">a</span>
-					<span>
-						anyway<span className="pg-brand-sub">macOS component library</span>
-					</span>
+					<img
+						alt="Anyway"
+						height={52}
+						src="/brand/anyway-wordmark.png"
+						width={104}
+					/>
+					<span className="pg-brand-sub">Platform library</span>
 				</a>
+				<button
+					aria-expanded={!sidebarCollapsed}
+					aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+					className="pg-collapse"
+					onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+					type="button"
+				>
+					{sidebarCollapsed ? (
+						<PanelLeftOpen size={16} />
+					) : (
+						<PanelLeftClose size={16} />
+					)}
+				</button>
 				<div className="pg-library-heading">
 					<h2>Playground</h2>
 					<span>{PLAYGROUND_ENTRIES.length}</span>
@@ -458,6 +461,7 @@ export function ComponentPlayground() {
 						aria-label="Search components"
 						onChange={(e) => setSearch(e.target.value)}
 						placeholder="Find a component…"
+						ref={searchInput}
 						type="search"
 						value={search}
 					/>
@@ -469,7 +473,9 @@ export function ComponentPlayground() {
 						>
 							<X size={13} />
 						</button>
-					) : null}
+					) : (
+						<kbd>⌘ K</kbd>
+					)}
 				</div>
 				<nav aria-label="Components" className="pg-component-nav">
 					{groups.map((group) => (
