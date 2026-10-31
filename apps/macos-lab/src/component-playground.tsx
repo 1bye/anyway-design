@@ -1,19 +1,16 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Playground inspector and navigation handlers. */
+import { Select } from "@base-ui/react/select";
 import {
-	ArrowLeft,
 	ArrowUpRight,
 	Check,
-	ChevronRight,
-	Code2,
+	ChevronDown,
 	Copy,
-	Monitor,
+	Layers,
 	PanelLeftClose,
 	PanelLeftOpen,
 	RotateCcw,
-	Search,
-	X,
 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	PLAYGROUND_ENTRIES,
 	PLAYGROUND_ENVIRONMENT,
@@ -22,7 +19,6 @@ import {
 	type PlaygroundProperty,
 	playgroundDefaults,
 	playgroundEntry,
-	playgroundMatches,
 } from "./playground-catalog";
 import { playgroundExample } from "./playground-examples";
 import { PlaygroundPreview } from "./playground-preview";
@@ -39,6 +35,7 @@ const INITIAL_PROPS = new Set([
 	"expanded",
 	"defaultOpen",
 ]);
+const MOBILE_SIDEBAR_QUERY = "(max-width: 700px)";
 
 function selectedEntry(): PlaygroundEntry {
 	return playgroundEntry(
@@ -51,6 +48,61 @@ interface PropertyProps {
 	property: PlaygroundProperty;
 	value: string | number | boolean;
 }
+
+function InspectorSelect({
+	label,
+	onChange,
+	options,
+	value,
+}: {
+	label: string;
+	onChange: (value: string) => void;
+	options: { label: string; value: string }[];
+	value: string;
+}) {
+	return (
+		<Select.Root
+			items={options}
+			onValueChange={(next) => {
+				if (next !== null) {
+					onChange(next);
+				}
+			}}
+			value={value}
+		>
+			<Select.Trigger aria-label={label} className="pg-select-trigger">
+				<Select.Value />
+				<ChevronDown size={14} />
+			</Select.Trigger>
+			<Select.Portal>
+				<Select.Positioner
+					align="end"
+					alignItemWithTrigger={false}
+					className="pg-select-positioner"
+					sideOffset={4}
+				>
+					<Select.Popup className="pg-select-popup">
+						<Select.List>
+							{options.map((option) => (
+								<Select.Item
+									className="pg-select-item"
+									key={option.value}
+									value={option.value}
+								>
+									<Select.ItemText>{option.label}</Select.ItemText>
+									<Select.ItemIndicator>
+										<Check size={14} />
+									</Select.ItemIndicator>
+								</Select.Item>
+							))}
+						</Select.List>
+					</Select.Popup>
+				</Select.Positioner>
+			</Select.Portal>
+		</Select.Root>
+	);
+}
+
 function PropertyField({ property, value, onChange }: PropertyProps) {
 	const { key, label, options, initial, min, max, step } = property;
 	const id = `pg-property-${key}`;
@@ -59,31 +111,29 @@ function PropertyField({ property, value, onChange }: PropertyProps) {
 			<label className="pg-check-row" htmlFor={id}>
 				<span>{label}</span>
 				<input
+					aria-checked={Boolean(value)}
 					checked={Boolean(value)}
 					id={id}
 					onChange={(event) => onChange(key, event.target.checked)}
+					role="switch"
 					type="checkbox"
 				/>
 			</label>
 		);
 	}
 	return (
-		<label className="pg-field" htmlFor={id}>
+		<div className="pg-field">
 			<span>{label}</span>
 			{options ? (
-				<select
-					id={id}
-					onChange={(event) => onChange(key, event.target.value)}
+				<InspectorSelect
+					label={label}
+					onChange={(next) => onChange(key, next)}
+					options={options.map((option) => ({ label: option, value: option }))}
 					value={String(value)}
-				>
-					{options.map((option) => (
-						<option key={option} value={option}>
-							{option}
-						</option>
-					))}
-				</select>
+				/>
 			) : (
 				<input
+					aria-label={label}
 					id={id}
 					max={max}
 					min={min}
@@ -106,7 +156,7 @@ function PropertyField({ property, value, onChange }: PropertyProps) {
 					value={String(value)}
 				/>
 			)}
-		</label>
+		</div>
 	);
 }
 
@@ -117,37 +167,41 @@ interface EnvironmentProps {
 function EnvironmentFields({ value, onChange }: EnvironmentProps) {
 	return (
 		<fieldset className="pg-fieldset">
-			<legend>Environment</legend>
-			<label className="pg-field">
+			<legend className="pg-sr-only">Environment</legend>
+			<div className="pg-field">
 				<span>Preset</span>
-				<select
-					onChange={(event) =>
+				<InspectorSelect
+					label="Preset"
+					onChange={(next) =>
 						onChange({
 							...value,
-							preset: event.target.value === "sequoia" ? "sequoia" : "tahoe",
+							preset: next === "sequoia" ? "sequoia" : "tahoe",
 						})
 					}
+					options={[
+						{ label: "macOS Tahoe", value: "tahoe" },
+						{ label: "macOS Sequoia", value: "sequoia" },
+					]}
 					value={value.preset}
-				>
-					<option value="tahoe">macOS Tahoe</option>
-					<option value="sequoia">macOS Sequoia</option>
-				</select>
-			</label>
-			<label className="pg-field">
+				/>
+			</div>
+			<div className="pg-field">
 				<span>Appearance</span>
-				<select
-					onChange={(event) =>
+				<InspectorSelect
+					label="Appearance"
+					onChange={(next) =>
 						onChange({
 							...value,
-							appearance: event.target.value === "dark" ? "dark" : "light",
+							appearance: next === "dark" ? "dark" : "light",
 						})
 					}
+					options={[
+						{ label: "Light", value: "light" },
+						{ label: "Dark", value: "dark" },
+					]}
 					value={value.appearance}
-				>
-					<option value="light">Light</option>
-					<option value="dark">Dark</option>
-				</select>
-			</label>
+				/>
+			</div>
 			<label className="pg-field pg-color-field">
 				<span>Accent color</span>
 				<input
@@ -162,20 +216,24 @@ function EnvironmentFields({ value, onChange }: EnvironmentProps) {
 			<label className="pg-check-row">
 				<span>Reduce motion</span>
 				<input
+					aria-checked={value.reduceMotion}
 					checked={value.reduceMotion}
 					onChange={(event) =>
 						onChange({ ...value, reduceMotion: event.target.checked })
 					}
+					role="switch"
 					type="checkbox"
 				/>
 			</label>
 			<label className="pg-check-row">
 				<span>Reduce transparency</span>
 				<input
+					aria-checked={value.reduceTransparency}
 					checked={value.reduceTransparency}
 					onChange={(event) =>
 						onChange({ ...value, reduceTransparency: event.target.checked })
 					}
+					role="switch"
 					type="checkbox"
 				/>
 			</label>
@@ -233,11 +291,7 @@ function PlaygroundSession({
 			<main className="pg-main" id="playground-content" tabIndex={-1}>
 				<header className="pg-entry-header">
 					<h1>{entry.title}</h1>
-					{entry.reference ? (
-						<a className="pg-reference-link" href={`/?view=${entry.reference}`}>
-							Native comparison <ArrowUpRight size={15} />
-						</a>
-					) : null}
+					<span aria-hidden="true" className="pg-title-rule" />
 				</header>
 				<section
 					aria-label={`${entry.title} example`}
@@ -250,7 +304,6 @@ function PlaygroundSession({
 								onClick={() => setTab("preview")}
 								type="button"
 							>
-								<Monitor size={14} />
 								Preview
 							</button>
 							<button
@@ -258,24 +311,24 @@ function PlaygroundSession({
 								onClick={() => setTab("code")}
 								type="button"
 							>
-								<Code2 size={14} />
 								Code
 							</button>
 						</fieldset>
 						<div className="pg-example-tools">
 							{tab === "preview" ? (
-								<label className="pg-zoom">
-									<span className="pg-sr-only">Preview zoom</span>
-									<select
-										onChange={(e) =>
-											setZoom(e.target.value === "actual" ? "actual" : "fit")
+								<div className="pg-zoom">
+									<InspectorSelect
+										label="Preview zoom"
+										onChange={(next) =>
+											setZoom(next === "actual" ? "actual" : "fit")
 										}
+										options={[
+											{ label: "Fit to canvas", value: "fit" },
+											{ label: "Actual size", value: "actual" },
+										]}
 										value={zoom}
-									>
-										<option value="fit">Fit to canvas</option>
-										<option value="actual">Actual size</option>
-									</select>
-								</label>
+									/>
+								</div>
 							) : (
 								<button className="pg-text-button" onClick={copy} type="button">
 									{copied ? <Check size={14} /> : <Copy size={14} />}
@@ -328,24 +381,11 @@ function PlaygroundSession({
 			</main>
 			<aside aria-label="Component inspector" className="pg-inspector">
 				<div className="pg-inspector-heading">
-					<h2>Inspector</h2>
+					<h2>Preview settings</h2>
 					<button className="pg-text-button" onClick={reset} type="button">
 						Reset
 					</button>
 				</div>
-				{properties.length ? (
-					<fieldset className="pg-fieldset">
-						<legend>Component props</legend>
-						{properties.map((property) => (
-							<PropertyField
-								key={property.key}
-								onChange={change}
-								property={property}
-								value={values[property.key] ?? property.initial}
-							/>
-						))}
-					</fieldset>
-				) : null}
 				<EnvironmentFields
 					onChange={(next) => {
 						onEnvironmentChange(next);
@@ -369,19 +409,39 @@ function PlaygroundSession({
 							value={width}
 						/>
 					</label>
-					<label className="pg-field">
+					<div className="pg-field">
 						<span>Background</span>
-						<select
-							onChange={(e) => setBackground(e.target.value)}
+						<InspectorSelect
+							label="Background"
+							onChange={setBackground}
+							options={[
+								{ label: "Automatic", value: "auto" },
+								{ label: "Neutral", value: "neutral" },
+								{ label: "Wallpaper", value: "wallpaper" },
+								{ label: "Checkerboard", value: "checker" },
+							]}
 							value={background}
-						>
-							<option value="auto">Automatic</option>
-							<option value="neutral">Neutral</option>
-							<option value="wallpaper">Wallpaper</option>
-							<option value="checker">Checkerboard</option>
-						</select>
-					</label>
+						/>
+					</div>
 				</fieldset>
+				{properties.length ? (
+					<div className="pg-component-properties">
+						<div className="pg-inspector-heading">
+							<h2>Component</h2>
+						</div>
+						<fieldset className="pg-fieldset">
+							<legend>{entry.title}</legend>
+							{properties.map((property) => (
+								<PropertyField
+									key={property.key}
+									onChange={change}
+									property={property}
+									value={values[property.key] ?? property.initial}
+								/>
+							))}
+						</fieldset>
+					</div>
+				) : null}
 			</aside>
 		</div>
 	);
@@ -389,46 +449,37 @@ function PlaygroundSession({
 
 export function ComponentPlayground() {
 	const [entry, setEntry] = useState(selectedEntry);
-	const [search, setSearch] = useState("");
-	const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-	const searchInput = useRef<HTMLInputElement>(null);
+	const [sidebarCollapsed, setSidebarCollapsed] = useState(
+		() => window.matchMedia(MOBILE_SIDEBAR_QUERY).matches
+	);
 	const [environment, setEnvironment] = useState(PLAYGROUND_ENVIRONMENT);
 	useEffect(() => {
 		const pop = () => setEntry(selectedEntry());
 		window.addEventListener("popstate", pop);
 		return () => window.removeEventListener("popstate", pop);
 	}, []);
-	useEffect(() => {
-		const searchShortcut = (event: KeyboardEvent) => {
-			if (event.target instanceof Element && event.target.closest(".macos")) {
-				return;
-			}
-			if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
-				event.preventDefault();
-				setSidebarCollapsed(false);
-				requestAnimationFrame(() => searchInput.current?.focus());
-			}
-		};
-		window.addEventListener("keydown", searchShortcut);
-		return () => window.removeEventListener("keydown", searchShortcut);
-	}, []);
-	const matches = PLAYGROUND_ENTRIES.filter((item) =>
-		playgroundMatches(item, search)
-	);
-	const groups = [...new Set(matches.map((item) => item.group))];
+	const groups = [...new Set(PLAYGROUND_ENTRIES.map((item) => item.group))];
 	const navigate = (item: PlaygroundEntry) => {
 		const url = new URL(window.location.href);
 		url.searchParams.delete("view");
 		url.searchParams.set("component", item.id);
 		window.history.pushState(null, "", url);
 		setEntry(item);
+		if (window.matchMedia(MOBILE_SIDEBAR_QUERY).matches) {
+			setSidebarCollapsed(true);
+			requestAnimationFrame(() =>
+				document
+					.getElementById("playground-content")
+					?.focus({ preventScroll: true })
+			);
+		}
 	};
 	return (
 		<div className="pg-app" data-sidebar-collapsed={sidebarCollapsed}>
 			<a className="pg-skip" href="#playground-content">
 				Skip to component
 			</a>
-			<aside aria-label="Component library" className="pg-library">
+			<header className="pg-site-header">
 				<a className="pg-brand" href="/">
 					<img
 						alt="Anyway"
@@ -436,9 +487,21 @@ export function ComponentPlayground() {
 						src="/brand/anyway-wordmark.png"
 						width={104}
 					/>
-					<span className="pg-brand-sub">Platform library</span>
 				</a>
+				<div className="pg-header-links">
+					<span className="pg-platform">macOS</span>
+					<a
+						href="https://github.com/1bye/anyway-design"
+						rel="noopener noreferrer"
+						target="_blank"
+					>
+						GitHub <ArrowUpRight size={13} />
+					</a>
+				</div>
+			</header>
+			<nav aria-label="Playground navigation" className="pg-top-nav">
 				<button
+					aria-controls="pg-component-nav"
 					aria-expanded={!sidebarCollapsed}
 					aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
 					className="pg-collapse"
@@ -451,39 +514,36 @@ export function ComponentPlayground() {
 						<PanelLeftClose size={16} />
 					)}
 				</button>
-				<div className="pg-library-heading">
-					<h2>Playground</h2>
-					<span>{PLAYGROUND_ENTRIES.length}</span>
-				</div>
-				<div className="pg-library-search">
-					<Search size={15} />
-					<input
-						aria-label="Search components"
-						onChange={(e) => setSearch(e.target.value)}
-						placeholder="Find a component…"
-						ref={searchInput}
-						type="search"
-						value={search}
-					/>
-					{search ? (
-						<button
-							aria-label="Clear search"
-							onClick={() => setSearch("")}
-							type="button"
-						>
-							<X size={13} />
-						</button>
-					) : (
-						<kbd>⌘ K</kbd>
-					)}
-				</div>
-				<nav aria-label="Components" className="pg-component-nav">
+				<a
+					aria-current="page"
+					className="pg-top-link"
+					href={`/?component=${entry.id}`}
+				>
+					<Layers size={14} />
+					Components
+				</a>
+				{entry.reference ? (
+					<a
+						aria-label="Native comparison"
+						className="pg-top-link pg-comparison-link"
+						href={`/?view=${entry.reference}`}
+						title="Native comparison"
+					>
+						<span>Native comparison</span> <ArrowUpRight size={14} />
+					</a>
+				) : null}
+			</nav>
+			<aside aria-label="Component library" className="pg-library">
+				<nav
+					aria-label="Components"
+					className="pg-component-nav"
+					id="pg-component-nav"
+				>
 					{groups.map((group) => (
 						<div className="pg-nav-group" key={group}>
 							<h3>{group}</h3>
-							{matches
-								.filter((item) => item.group === group)
-								.map((item) => (
+							{PLAYGROUND_ENTRIES.filter((item) => item.group === group).map(
+								(item) => (
 									<a
 										aria-current={entry.id === item.id ? "page" : undefined}
 										href={`/?component=${item.id}`}
@@ -503,25 +563,12 @@ export function ComponentPlayground() {
 										}}
 									>
 										{item.title}
-										{entry.id === item.id ? <ChevronRight size={13} /> : null}
 									</a>
-								))}
+								)
+							)}
 						</div>
 					))}
-					{matches.length ? null : (
-						<p className="pg-no-results">
-							No components match “{search}”.
-							<button onClick={() => setSearch("")} type="button">
-								Clear search
-							</button>
-						</p>
-					)}
 				</nav>
-				<a className="pg-library-footer" href="/?view=desktop-lab">
-					<ArrowLeft size={14} />
-					Desktop lab
-					<ArrowUpRight size={13} />
-				</a>
 			</aside>
 			<PlaygroundSession
 				entry={entry}

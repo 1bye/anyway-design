@@ -6,7 +6,6 @@ import {
 	PLAYGROUND_ENVIRONMENT,
 	playgroundDefaults,
 	playgroundEntry,
-	playgroundMatches,
 } from "../src/playground-catalog";
 import { playgroundExample } from "../src/playground-examples";
 
@@ -29,8 +28,6 @@ assert.equal(
 );
 assert.equal(playgroundEntry("controls").id, "button");
 assert.equal(playgroundEntry("unknown"), PLAYGROUND_ENTRIES[0]);
-assert.ok(playgroundMatches(playgroundEntry("date-picker"), " DATE time "));
-assert.ok(!playgroundMatches(playgroundEntry("dock"), "calendar"));
 
 for (const entry of PLAYGROUND_ENTRIES) {
 	const defaults = playgroundDefaults(entry);

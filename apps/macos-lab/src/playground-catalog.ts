@@ -912,18 +912,3 @@ export function playgroundEntry(id: string | null): PlaygroundEntry {
 		PLAYGROUND_ENTRIES[0]
 	);
 }
-const SEARCH_WORDS = /\s+/;
-
-export function playgroundMatches(
-	entry: PlaygroundEntry,
-	search: string
-): boolean {
-	const text = [entry.title, entry.group, entry.description, entry.imports]
-		.join(" ")
-		.toLowerCase();
-	return search
-		.toLowerCase()
-		.trim()
-		.split(SEARCH_WORDS)
-		.every((word) => text.includes(word));
-}

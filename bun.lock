@@ -23,6 +23,7 @@
       "name": "macos-lab",
       "dependencies": {
         "@anyway-design/macos": "workspace:*",
+        "@base-ui/react": "^1.6.0",
         "lucide-react": "catalog:",
         "react": "catalog:",
         "react-dom": "catalog:",

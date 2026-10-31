@@ -89,10 +89,10 @@ export function PlaygroundPreview({
 	zoom,
 	...props
 }: PreviewProps) {
-	const host = useRef<HTMLDivElement>(null);
+	const viewport = useRef<HTMLDivElement>(null);
 	const [available, setAvailable] = useState(800);
 	useLayoutEffect(() => {
-		const node = host.current;
+		const node = viewport.current;
 		// biome-ignore lint/suspicious/noUnnecessaryConditions: Refs are nullable during mount and teardown.
 		if (!node) {
 			return;
@@ -105,15 +105,13 @@ export function PlaygroundPreview({
 		return () => observer.disconnect();
 	}, []);
 	const scale =
-		zoom === "actual"
-			? 1
-			: Math.min(1, Math.max(0.1, (available - 24) / canvasWidth));
+		zoom === "actual" ? 1 : Math.min(1, Math.max(0.1, available / canvasWidth));
 	const Demo = DEMOS[props.entry.id];
 	const automatic = WALLPAPER.has(props.entry.id) ? "wallpaper" : "neutral";
 	const surface = background === "auto" ? automatic : background;
 	return (
-		<div className="pg-preview-host" ref={host}>
-			<div className="pg-preview-scroll">
+		<div className="pg-preview-host">
+			<div className="pg-preview-scroll" ref={viewport}>
 				<div
 					className="pg-preview-sizer"
 					style={{
