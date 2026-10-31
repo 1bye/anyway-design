@@ -7,3 +7,23 @@
 @theme {
 	--font-sans: "Instrument Sans Variable", Arial, sans-serif;
 }
+
+.anyway-docs-shell {
+	--fd-banner-height: 110px;
+}
+
+.anyway-docs-header {
+	position: sticky;
+	top: 0;
+	z-index: 35;
+	background: var(--color-fd-background);
+	border-bottom: 1px solid var(--color-fd-border);
+}
+
+.anyway-docs-body {
+	min-height: calc(100dvh - var(--fd-banner-height));
+}
+
+.anyway-docs-body :is(h2, h3, h4)[id] {
+	scroll-margin-top: calc(var(--fd-docs-row-3) + 1.5rem);
+}

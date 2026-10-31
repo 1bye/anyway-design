@@ -28,11 +28,14 @@ Add `.mdx` pages in `content/docs` and order them in `meta.json`. Fumadocs build
 the page tree, table of contents, highlighted code, and local search index.
 Register interactive React examples in `src/components/mdx.tsx`.
 
-`src/components/docs-shell.tsx` uses the standard Fumadocs `DocsLayout` with the
-Anyway wordmark in its navigation title, inverted in dark mode.
+`src/components/docs-shell.tsx` uses the standard Fumadocs `DocsLayout` below a
+Holocron-inspired masthead: the Anyway wordmark, repository and getting-started
+links, and section navigation. The getting-started page also has a welcome banner.
+`src/components/docs-header.tsx` owns those top sections. The sticky header uses
+Fumadocs' banner offset so the sidebar and anchor links stay clear of it.
 `src/styles.css` imports the default neutral theme and the product component
 styles, and sets the sans-serif font to Instrument Sans. Light/dark mode,
-navigation, spacing, and search use Fumadocs defaults. Shared
+content spacing, sidebar navigation, and search use Fumadocs defaults. Shared
 product components remain in their workspace packages.
 
 ## Verification
