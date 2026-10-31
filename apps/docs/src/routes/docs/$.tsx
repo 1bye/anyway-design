@@ -7,7 +7,7 @@ import {
 	DocsPage,
 	DocsTitle,
 } from "fumadocs-ui/layouts/docs/page";
-import { Suspense } from "react";
+import { type ComponentProps, Suspense } from "react";
 import collections from "../../../.source/browser";
 import { DocsShell } from "../../components/docs-shell";
 import { mdxComponents } from "../../components/mdx";
@@ -27,15 +27,26 @@ const serverLoader = createServerFn({ method: "GET" })
 		};
 	});
 
-const clientLoader = collections.docs.createClientLoader({
-	component: ({ default: MDX, toc, frontmatter: { title, description } }) => (
-		<DocsPage tabIndex={-1} toc={toc}>
-			<DocsTitle>{title}</DocsTitle>
-			<DocsDescription>{description}</DocsDescription>
-			<DocsBody>
-				<MDX components={mdxComponents} />
-			</DocsBody>
-		</DocsPage>
+const clientLoader = collections.docs.createClientLoader<{
+	tree: ComponentProps<typeof DocsShell>["tree"];
+}>({
+	component: (
+		{ default: MDX, toc, frontmatter: { title, description } },
+		{ tree }
+	) => (
+		<DocsShell toc={toc} tree={tree}>
+			<DocsPage
+				tabIndex={-1}
+				tableOfContent={{ enabled: false }}
+				tableOfContentPopover={{ enabled: false }}
+			>
+				<DocsTitle>{title}</DocsTitle>
+				<DocsDescription>{description}</DocsDescription>
+				<DocsBody>
+					<MDX components={mdxComponents} />
+				</DocsBody>
+			</DocsPage>
+		</DocsShell>
 	),
 });
 
@@ -56,14 +67,12 @@ export const Route = createFileRoute("/docs/$")({
 function DocRoute() {
 	const { path, pageTree } = useFumadocsLoader(Route.useLoaderData());
 	return (
-		<DocsShell tree={pageTree}>
-			<Suspense
-				fallback={
-					<p className="p-6 text-fd-muted-foreground">Getting things ready…</p>
-				}
-			>
-				{clientLoader.useContent(path)}
-			</Suspense>
-		</DocsShell>
+		<Suspense
+			fallback={
+				<p className="p-6 text-fd-muted-foreground">Getting things ready…</p>
+			}
+		>
+			{clientLoader.useContent(path, { tree: pageTree })}
+		</Suspense>
 	);
 }

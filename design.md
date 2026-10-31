@@ -1,10 +1,183 @@
-# Anyway.design — design direction
+# Anyway — design system
+
+Use the documentation system below for `apps/docs` and documentation for other Anyway projects. The website brief later in this file applies to `apps/web`.
+
+## Documentation
+
+Status: shared design contract, based on the current documentation prototype.
+
+The documentation should feel quiet, compact, and built into the page. Anyway supplies the identity and Instrument Sans typography. Fluid Functionalism informs the restraint; Holocron informs the compact text scale and sidebar rhythm. Fumadocs supplies the layout, content primitives, search, and navigation behavior.
+
+Apply this system to guides, component pages, navigation, search, and system states. Product demonstrations keep their own product styling inside the preview.
+
+### Design principles
+
+- Use one shared shell and text scale across documentation projects.
+- Organize with spacing, alignment, and changes in tone before adding borders.
+- Make controls pill-shaped and borderless. Keep large content surfaces softly rounded.
+- Let the sidebar share the page canvas; it should not look like a separate panel.
+- Keep the interface monochrome. Reserve semantic color for meaning and product color for demonstrations.
+- Reuse Fumadocs behavior and shared components rather than styling each page independently.
+
+### Typography
+
+Use the locally bundled `Instrument Sans Variable` font from `@fontsource-variable/instrument-sans`, with `Arial, sans-serif` as the fallback. Keep code in the existing monospace stack. The Anyway wordmark is an image asset, not typeset text.
+
+The welcome headline is the display exception: `Instrument Serif`, italic, weight `400`, matching the hero on [git.1bye.dev](https://git.1bye.dev/). Use the self-hosted `apps/docs/public/fonts/instrument-serif-italic.woff2` through `--font-display`, with `ui-serif, Georgia, serif` as fallbacks. Its SIL Open Font License is kept beside the font in `instrument-serif-OFL.txt`. Keep this face confined to the welcome headline; navigation, actions, and article headings remain Instrument Sans.
+
+Values below are CSS pixels at the default `16px` root size. Use rem units so text responds to browser preferences; do not shrink the root font size to achieve the compact scale.
+
+| Role | Size / line height | Weight | Treatment |
+| --- | --- | --- | --- |
+| Welcome display, below `640px` | `40 / 40` | `400` | Instrument Serif italic, centered, normal tracking |
+| Welcome display, `640–767px` | `56 / 56` | `400` | Same treatment |
+| Welcome display, `768px` and above | `68 / 68` | `400` | Same treatment |
+| Document title and section headings | `16 / 22.4` | `560` | Normal tracking |
+| Body and page introduction | `14 / 22.4` | `475` | Normal tracking |
+| Sidebar page and section links | `14 / 21` | `400` | Muted at rest, foreground when active |
+| Header navigation and actions | `14 / 20` | `400–500` | Sentence case |
+| Welcome banner actions | `14 / 20` | `500` | Pill actions |
+| Card titles | `14 / 20` | `500` | Compact emphasis |
+| Sidebar group labels | `12 / 16` | `400` | Uppercase, `0.04em` tracking |
+| Captions and utility labels | `12 / 16` | `400` | Muted; never use for primary prose |
+| Code, inline and block | `12 / 19.2` | `500` | Monospace |
+| Tables | `14 / 20` | `475` body, `600` header | Align text to the start |
+
+All document heading levels share the compact `16px` size. Preserve a semantic H1 → H2 → H3 hierarchy and use spacing and weight to express structure. Do not use heading tags merely to enlarge text. Card titles, interface labels, and product examples are separate roles.
+
+Keep the logo lockup as a brand exception: Anyway wordmark, a thin slanted divider, and lowercase `docs` at `20px` with a light weight. Reuse `DocsHeader` for the lockup instead of rebuilding it on individual pages.
+
+### Color and themes
+
+Use Fumadocs' neutral light/dark palette and semantic `fd-*` tokens. Support light, dark, and system appearance through the existing provider. Do not force every documentation project into dark mode or import the website's light-only palette.
+
+These are the current base token values from the neutral theme. They document the palette; application code should reference the tokens rather than duplicate the values.
+
+| Role / token | Light | Dark |
+| --- | --- | --- |
+| Canvas, `--color-fd-background` | `hsl(0 0% 96%)` | `hsl(0 0% 7.04%)` |
+| Text, `--color-fd-foreground` | `hsl(0 0% 3.9%)` | `hsl(0 0% 92%)` |
+| Muted surface, `--color-fd-muted` | `hsl(0 0% 96.1%)` | `hsl(0 0% 12.9%)` |
+| Secondary surface, `--color-fd-secondary` | `hsl(0 0% 93.1%)` | `hsl(0 0% 12.9%)` |
+| Secondary text, `--color-fd-muted-foreground` | `hsl(0 0% 45.1%)` | `hsl(0 0% 70% / 0.8)` |
+| Card, `--color-fd-card` | `hsl(0 0% 94.7%)` | `hsl(0 0% 9.8%)` |
+| Popover, `--color-fd-popover` | `hsl(0 0% 98%)` | `hsl(0 0% 11.6%)` |
+| Primary action, `--color-fd-primary` | `hsl(0 0% 9%)` | `hsl(0 0% 98%)` |
+| Primary action text, `--color-fd-primary-foreground` | `hsl(0 0% 98%)` | `hsl(0 0% 9%)` |
+| Hover / selected fill, `--color-fd-accent` | `hsl(0 0% 82% / 0.5)` | `hsl(0 0% 40.9% / 0.3)` |
+| Focus ring, `--color-fd-ring` | `hsl(0 0% 63.9%)` | `hsl(0 0% 54.9%)` |
+
+The neutral theme also adjusts the dark desktop sidebar's muted text to `hsl(0 0% 72%)`, muted surface to `hsl(0 0% 16%)`, and secondary surface to `hsl(0 0% 18%)`. Preserve these theme-local adjustments while keeping the sidebar canvas equal to the page canvas.
+
+Use matching foreground tokens on secondary, card, and popover surfaces. Use `fd-info`, `fd-warning`, `fd-error`, and `fd-success` for semantic feedback, with text or an icon identifying the meaning. Avoid decorative accent colors, gradients, and colored navigation states.
+
+### Surfaces, borders, and shape
+
+| Element | Shape and treatment |
+| --- | --- |
+| Buttons, selects, navigation pills, search | `999px` radius |
+| Cards, callouts, code blocks, playground frame | `24px` radius |
+| Larger grouped surfaces using `rounded-2xl` | `28px` radius |
+| Page and sidebar canvas | Continuous background, no right sidebar border |
+| Default content surface | `45% fd-muted` mixed with `fd-background` in OKLab |
+| General hairline, when needed | Foreground at `6%` opacity |
+| Sidebar section guide | `1px`, foreground at `14%` opacity |
+| Header search outline | `1px`, foreground at `18%` opacity |
+| Active section marker | `1px`, foreground color, on top of the guide |
+
+The current radius tokens are `sm = 999px`, `md = 999px`, `lg = 24px`, `xl = 24px`, and `2xl = 28px`. Choose a radius by the role above; the token names do not imply a numerical progression.
+
+Buttons have no visible border. Cards, callouts, code frames, and playground toolbars use tone and whitespace instead of visible outlines and internal dividers. The search outline and nested section guide are intentional exceptions. Keep table rules faint enough to support scanning without creating a heavy grid.
+
+Use no decorative shadow on static documentation surfaces. Retain Fumadocs' restrained overlay treatment for dialogs and menus. A demonstrated product may use its own borders and elevation.
+
+### Layout and spacing
+
+Use the Fumadocs `DocsLayout` grid. The current shell inherits its `97rem` maximum layout width, a `268px` desktop sidebar, and a `900px` maximum article width. Avoid page-specific column widths or competing layout wrappers.
+
+Use a `4px` spacing base, with `4`, `8`, `12`, `16`, `20`, `24`, `32`, `48`, `64`, and `80px` as the main working values. Small `2px` adjustments are reserved for compact navigation and icon alignment.
+
+- Page gutters: `16px` on mobile; the shared header uses `32px` from `768px` upward. Article padding follows Fumadocs: `16px`, then `24px` at `768px`, then `32px` at `1280px`.
+- Shared header: one `64px` row with the logo on the left, search centered, and GitHub on the right. Use equal-width outer columns so search stays at the header's actual center regardless of the logo and GitHub widths. Keep this reservation synchronized with `--fd-banner-height`.
+- Desktop search is up to `320px` wide, increasing to `384px` from `1280px`. Below `768px`, use a centered `44px` search icon button that opens the same search dialog. Keep the full field and shortcut hint on desktop.
+- Section navigation lives at the top of the sidebar, using stacked pills with `8px 12px` padding and a `4px` gap.
+- Welcome banner: `24px` side padding, `64px` vertical padding, increasing to `80px` from `768px`. Show only the two-line display headline and the actions, with `32px` between them and `16px` between actions. Omit the eyebrow and supporting paragraph.
+- Welcome actions: minimum `40px` height, `10px 20px` padding, `14px` labels, `16px` icons, and an `8px` label/icon gap. Keep both actions equally sized in height and allow them to wrap on narrow screens.
+- Show the welcome banner on the getting-started page. Interior guides and component pages begin directly with their document title and introduction.
+- Use the Fumadocs row variables for sticky elements and anchor offsets. Heading scroll margin is `var(--fd-docs-row-3) + 24px`, which also accounts for the mobile subnavigation.
+- Content scrolls normally. Keep the header and desktop sidebar sticky; keep search and navigation reachable on small screens.
+
+### Sidebar navigation
+
+The sidebar should read as part of the document, with compact labels and a visible page outline.
+
+1. Place the Documentation and Components section pills first, followed by content groups. Search and GitHub live in the top bar; do not duplicate them in the sidebar or mobile subnavigation.
+2. Use muted uppercase group labels with `24px` above and `8px` below.
+3. Show page links without a permanently filled active pill. The current page uses foreground text; hover uses the shared accent fill.
+4. Expand only the current page's headings beneath its page link. Generate them from the MDX table of contents, including real heading labels and anchor URLs.
+5. Indent the heading list `18px` and draw the thin guide. Section links use `2px 12px` padding, `14px` type, and pill-shaped hover feedback.
+6. Mark the active section with foreground text and a slim segment on the guide. Expose `aria-current="location"`; use Fumadocs' heading tracking rather than a second scroll observer.
+7. Keep the desktop sidebar collapse icon hidden. Use the standard sidebar drawer on mobile; selecting a page or heading closes it.
+
+Header search has a quiet transparent surface, a pill outline, and a minimum visual height of `34px`. Preserve the working Command/Control-K shortcut and the existing Fumadocs search dialog. Keep the theme switch available in the sidebar. Use the sidebar outline instead of a second right-side table of contents or a duplicate desktop outline toolbar.
+
+### Controls and interaction
+
+- Use Fumadocs `buttonVariants` for documentation actions. Primary actions use `fd-primary`; secondary actions use a neutral fill; tertiary actions are ghost buttons.
+- Use `14px` labels for primary navigation and page actions. Keep `12px` utility labels for compact playground controls and supporting metadata.
+- Define hover, keyboard focus, active/selected, and disabled states. Focus remains visible even when borders are removed: a `2px` `fd-ring` indicator with a `2px` offset is the sidebar baseline.
+- Keep links semantic anchors and actions semantic buttons. Icon-only controls need accessible labels; decorative icons are hidden from assistive technology.
+- Use the existing Lucide line icons, usually `14–16px`, with `12–14px` supporting arrows. Icons should explain a destination or action, not decorate every text label.
+- Reuse library motion and keep new color/surface transitions around `100–150ms`. Respect reduced motion and avoid entrance animations, scroll effects, or animated decoration on reading pages.
+- Preserve normal keyboard behavior and touch targets. Compact visual controls need sufficient surrounding hit area on mobile; target `44px` without forcing the visible pill to grow unnecessarily.
+
+### Content and component pages
+
+Write guides in MDX and register live React examples through the shared MDX component map. Use the same shell, typography, callouts, cards, code presentation, and navigation for every project.
+
+Guide pages start with one document title, a short introduction, and logically ordered sections. Keep wording concise, concrete, and useful. Cards and callouts should help the reader make a decision or understand a constraint; they should not become decorative containers around every paragraph.
+
+Component pages include a short description, a working preview, usage guidance, a copyable setup example, relevant props, and accessibility notes. Playground chrome follows this documentation system. The component inside the preview uses its real workspace implementation, appearance, semantics, and product tokens. For example, the macOS switch remains a macOS control; it does not inherit pill-button rules intended for docs chrome.
+
+Copyable examples must reflect the current preview controls and include the setup needed to run them. Show useful feedback for copy, reset, disabled, and error states. Wide code blocks and tables may scroll inside their own containers; the whole page must not overflow horizontally.
+
+### Accessibility and consistency checks
+
+- Preserve one document H1 and a logical heading hierarchy even though heading sizes are equal.
+- Check body, muted text, controls, and focus indicators in both light and dark themes. Meet WCAG AA contrast; token reuse alone does not establish contrast on a new surface.
+- Do not rely on color alone for state. Use accessible names, current/expanded/disabled state, and visible supporting feedback.
+- Verify keyboard navigation, search, section anchors, copy controls, and the mobile drawer. Anchors must land below the sticky header.
+- Check a guide and a live component page at desktop and narrow widths after shared design changes.
+- Give loading, empty, error, and not-found views the same type scale, palette, shape, and tone as the documentation.
+
+This contract describes the shared baseline and the standard for new work. The current guide/component styles implement that baseline. Standalone system views, including the existing not-found route, and portal-based search UI still need an alignment pass; mobile hit areas and contrast need an explicit audit before treating the system as fully verified.
+
+### Implementation and maintenance
+
+| Responsibility | Shared source |
+| --- | --- |
+| Typography, surface recipes, radii, borders, sidebar styling | [Docs CSS](apps/docs/src/styles.css) |
+| Page grid, providers, theme access, sidebar configuration | [Docs shell](apps/docs/src/components/docs-shell.tsx) |
+| Logo lockup, header navigation, welcome banner | [Docs header](apps/docs/src/components/docs-header.tsx) |
+| Page outline and active section behavior | [Docs sidebar](apps/docs/src/components/docs-sidebar.tsx) |
+| Document title, introduction, body composition | [Docs route](apps/docs/src/routes/docs/$.tsx) |
+| Shared MDX components | [MDX component map](apps/docs/src/components/mdx.tsx) |
+| Reference live example | [Switch playground](apps/docs/src/components/switch-playground.tsx) |
+| Guides and navigation ordering | `apps/docs/content/docs/*.mdx` and `meta.json` files |
+
+Change a shared role or token once, then verify it on both page types. Avoid local font sizes, hardcoded colors, or border overrides in individual MDX pages. Keep new rules scoped to documentation so product components and the separate website retain their own design contracts.
+
+For another Anyway project's documentation, reuse this shell and component map, then supply its content and project identity through shared configuration when that capability is introduced. Keep the documentation font, palette, control shapes, and navigation behavior consistent. A project may demonstrate its own design inside examples without introducing a new documentation theme. A reusable cross-project theme package is not implemented yet.
+
+Update this file alongside deliberate shared design changes. Resolve disagreements between this contract and the UI in the shared implementation rather than adding exceptions page by page. Run the documentation build, type checks, and Ultracite checks when changing code; prose-only edits need a link and diff review.
+
+## Website brief (`apps/web`)
 
 Status: implementation brief for the v1 homepage and shared shell
 
 Reference: [Curated Supply](https://www.curated.supply/), inspected August 30, 2026
 
-## 1. Intent
+### 1. Intent
 
 Anyway is an independent design-engineering lab for people who ship software. It publishes interactive UI experiments, practical notes, and production-ready patterns, beginning with the edge cases that usually get left until the end.
 
@@ -20,7 +193,7 @@ Supporting line:
 
 Voice: concise, observant, practical, and lightly playful. Do not sound like an agency, a content farm, or a design-inspiration database.
 
-### Public identity
+#### Public identity
 
 The domain previously belonged to an unrelated design studio and still has historical associations with Anyway.Design and Anyway.FM. Authorship must therefore be explicit rather than left only to the About page.
 
@@ -41,7 +214,7 @@ Required identity placements:
 
 Do not imply continuity with the former owner, and do not use `Anyway Studio` or `Anyway Agency` as the product descriptor.
 
-## 2. What to take from the reference
+### 2. What to take from the reference
 
 Use Curated Supply as a reference for its visual system and browsing rhythm, not as a template to clone.
 
@@ -70,9 +243,9 @@ Translate:
 
 Do not copy Curated Supply's logo, wording, product imagery, catalog data, footer taxonomy, or exact component animation. The result must remain recognizably Anyway through its wordmark, subject matter, previews, and writing.
 
-## 3. Homepage composition
+### 3. Homepage composition
 
-### Header
+#### Header
 
 - Height: `68px` on desktop and tablet.
 - Horizontal padding: `16px` desktop, `16px` mobile.
@@ -86,7 +259,7 @@ Do not copy Curated Supply's logo, wording, product imagery, catalog data, foote
 
 The wordmark is the latest custom monoline direction: a tall hand-drawn `A`, rounded terminals, compressed lowercase rhythm, and deliberate path tension. Redraw it as an SVG before production; do not ship the generated bitmap as the final logo.
 
-### Hero
+#### Hero
 
 Desktop hero region:
 
@@ -110,7 +283,7 @@ The form is a single white `40px`-high capsule, up to `428px` wide. The input is
 
 At `810–1199px`, reduce the headline to `36/39.6` while retaining the desktop composition. On mobile, use `56px 16px 40px` hero padding, a `358px` maximum content width at a `390px` viewport, and a natural-height hero. Keep the content centered. The headline wraps to roughly three lines; the form stays on one line.
 
-### Filter rail
+#### Filter rail
 
 - Page gutter: `16px`.
 - Height: `36px`.
@@ -124,7 +297,7 @@ At `810–1199px`, reduce the headline to `36/39.6` while retaining the desktop 
 
 Filters must be real buttons with an active state, not decorative pills.
 
-### Experiment grid
+#### Experiment grid
 
 - Outer gutter: `16px`.
 - Grid gap: `16px`.
@@ -141,7 +314,7 @@ Use 6–9 strong entries for launch. A short, authored selection is preferable t
 
 Keep the authored order consistent across breakpoints. Responsive layout may reflow the same entries, but must not silently replace or reorder the collection.
 
-### Experiment card
+#### Experiment card
 
 Card shell:
 
@@ -185,7 +358,7 @@ Example launch cards:
 
 After the initial set, use one centered `Show more` pill. Do not add infinite scroll in v1.
 
-### Footer
+#### Footer
 
 The footer uses the same `1400px` shell and `16px` gutters as the page, with `48px` between major groups. It has two parts:
 
@@ -200,7 +373,7 @@ Suggested links:
 
 Do not add empty product, store, legal, or archive sections merely to fill the footer.
 
-### V1 link and control contract
+#### V1 link and control contract
 
 Every visible control must have a real destination or state change:
 
@@ -218,9 +391,9 @@ Filtering and sorting run against one finite local data array; neither requires 
 
 If a future combination produces no entries, show a compact empty state: `Nothing here yet. Try another topic.` with a `Clear filters` button. If the collection has nine or fewer entries, omit `Show more`; otherwise each activation reveals the next six local entries and the button disappears when all are visible.
 
-## 4. Visual system
+### 4. Visual system
 
-### Color
+#### Color
 
 The v1 site is intentionally light-only.
 
@@ -238,7 +411,7 @@ The v1 site is intentionally light-only.
 
 Green is a signal, not a brand wash. Use it only for live, new, or available status. Avoid gradients and large saturated areas.
 
-### Typography
+#### Typography
 
 - UI, body, and display: self-hosted variable `Geist`, with a metric-compatible system sans-serif fallback.
 - Indices and technical metadata: self-hosted variable `Geist Mono`.
@@ -257,7 +430,7 @@ Commit the licensed WOFF2 files as `apps/web/public/fonts/geist-variable.woff2` 
 
 Avoid bold display type. Hierarchy should come from scale, spacing, and color.
 
-### Shape and spacing
+#### Shape and spacing
 
 | Element | Radius |
 | --- | --- |
@@ -268,11 +441,11 @@ Avoid bold display type. Hierarchy should come from scale, spacing, and color.
 
 Use a `4px` spacing base. The primary working values are `4`, `8`, `12`, `16`, `20`, `24`, `36`, `48`, `72`, and `80px`. Prefer whitespace over separators. Use no elevation by default; when a floating menu needs separation, use a subtle `0 8px 32px rgb(0 0 0 / 0.08)` shadow.
 
-### Icons
+#### Icons
 
 Use the existing Lucide dependency at `1.5px` stroke. Keep icons at `16px` in chips and `18px` in circular utilities. The logo is custom and must not use Lucide.
 
-## 5. Interaction and motion
+### 5. Interaction and motion
 
 - Text and navigation color transition: `400ms cubic-bezier(0.44, 0, 0.56, 1)`.
 - Form focus and surface transition: `300ms cubic-bezier(0.44, 0, 0.56, 1)`.
@@ -285,7 +458,7 @@ Use the existing Lucide dependency at `1.5px` stroke. Keep icons at `16px` in ch
 
 Do not add a custom cursor, scroll hijacking, parallax, or entrance animation to every card.
 
-## 6. Accessibility and content rules
+### 6. Accessibility and content rules
 
 - Use semantic `header`, `nav`, `main`, `section`, `article`, and `footer` landmarks.
 - Preserve one H1 and a logical heading order.
@@ -298,7 +471,7 @@ Do not add a custom cursor, scroll hijacking, parallax, or entrance animation to
 - Reserve media aspect ratio to prevent layout shift.
 - External links identify themselves to assistive technology and use `rel="noopener"` when opening a new tab.
 
-## 7. Repository mapping
+### 7. Repository mapping
 
 Implement this direction with the existing stack; add no UI or animation dependency.
 
@@ -311,7 +484,7 @@ Implement this direction with the existing stack; add no UI or animation depende
 
 Use CSS Grid, native horizontal overflow, and CSS transitions. Use native controls when they meet the interaction. Do not build search, a CMS, authentication, checkout, or custom newsletter infrastructure as part of the visual pass; connect an external provider or use the documented X-link fallback.
 
-## 8. Acceptance criteria
+### 8. Acceptance criteria
 
 - At `1280 × 720`, the header, complete hero, filter rail, and top of a three-card row are visible.
 - At `390 × 844`, the compact header, complete hero, horizontal filters, and most of the first card are visible.

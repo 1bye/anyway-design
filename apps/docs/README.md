@@ -1,9 +1,12 @@
 # Anyway documentation prototype
 
 A local documentation app built with Fumadocs, TanStack Start, Vite, and React.
-It uses Fumadocs' default neutral theme, documentation layout, and content
-components, with Anyway's wordmark and Instrument Sans typography from the main
-web app. It includes an interactive preview of Anyway's shared macOS switch.
+It uses Fumadocs' neutral theme, documentation layout, and content components,
+with Anyway's wordmark, Instrument Sans typography, an Instrument Serif italic
+welcome headline, pill controls, and an integrated sidebar. It includes an
+interactive preview of Anyway's shared macOS
+switch. The [documentation design system](../../design.md#documentation) defines
+the shared visual rules for every page and future Anyway documentation project.
 
 From the repository root:
 
@@ -29,14 +32,17 @@ the page tree, table of contents, highlighted code, and local search index.
 Register interactive React examples in `src/components/mdx.tsx`.
 
 `src/components/docs-shell.tsx` uses the standard Fumadocs `DocsLayout` below a
-Holocron-inspired masthead: the Anyway wordmark, repository and getting-started
-links, and section navigation. The getting-started page also has a welcome banner.
-`src/components/docs-header.tsx` owns those top sections. The sticky header uses
+Holocron-inspired masthead: the Anyway wordmark, centered search, and repository
+link. Section navigation sits at the top of the sidebar. The getting-started
+page also has a welcome banner. `src/components/docs-header.tsx` owns the header,
+section navigation, and banner. The sticky header uses
 Fumadocs' banner offset so the sidebar and anchor links stay clear of it.
-`src/styles.css` imports the default neutral theme and the product component
-styles, and sets the sans-serif font to Instrument Sans. Light/dark mode,
-content spacing, sidebar navigation, and search use Fumadocs defaults. Shared
-product components remain in their workspace packages.
+`src/styles.css` imports the neutral theme and product component styles, and
+defines the documentation text scale, surfaces, radii, and sidebar treatment.
+`src/components/docs-sidebar.tsx` nests the current page's headings under its
+navigation link, using Fumadocs' active-heading tracking. The standard sidebar
+drawer provides mobile navigation. Light/dark mode and search use Fumadocs'
+built-in behavior. Shared product components remain in their workspace packages.
 
 ## Verification
 
