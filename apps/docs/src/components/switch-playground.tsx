@@ -36,7 +36,7 @@ export function SwitchPlayground() {
 	return (
 		<section
 			aria-label="Interactive switch playground"
-			className="not-prose my-6 overflow-hidden rounded-xl border bg-fd-card text-fd-card-foreground"
+			className="docs-playground not-prose my-6 overflow-hidden rounded-xl border bg-fd-card text-fd-card-foreground"
 		>
 			<div className="flex items-center justify-between border-b px-4 py-2 text-sm">
 				<span>Live preview</span>

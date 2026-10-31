@@ -6,10 +6,20 @@
 
 @theme {
 	--font-sans: "Instrument Sans Variable", Arial, sans-serif;
+	--radius-sm: 999px;
+	--radius-md: 999px;
+	--radius-lg: 1.5rem;
+	--radius-xl: 1.5rem;
+	--radius-2xl: 1.75rem;
 }
 
 .anyway-docs-shell {
 	--fd-banner-height: 110px;
+	--color-fd-border: color-mix(
+		in oklab,
+		var(--color-fd-foreground) 6%,
+		transparent
+	);
 }
 
 .anyway-docs-header {
@@ -17,7 +27,7 @@
 	top: 0;
 	z-index: 35;
 	background: var(--color-fd-background);
-	border-bottom: 1px solid var(--color-fd-border);
+	border-bottom: 1px solid transparent;
 }
 
 .anyway-docs-body {
@@ -26,4 +36,47 @@
 
 .anyway-docs-body :is(h2, h3, h4)[id] {
 	scroll-margin-top: calc(var(--fd-docs-row-3) + 1.5rem);
+}
+
+/* Prefer pill controls and quiet surfaces; use spacing and tone before borders. */
+.anyway-docs-shell :where(button, select),
+.docs-playground > div,
+.anyway-docs-header a,
+.anyway-docs-header > div + div {
+	border-color: transparent;
+}
+
+.anyway-docs-header nav {
+	gap: 0.5rem;
+}
+
+.anyway-docs-header nav a {
+	align-self: center;
+	height: auto;
+	padding: 0.5rem 0.75rem;
+	border-width: 0;
+	border-radius: 999px;
+}
+
+.anyway-docs-header nav a[aria-current="page"] {
+	background: var(--color-fd-accent);
+}
+
+.anyway-docs-shell :is([data-card], .docs-callout, .shiki, .docs-playground) {
+	background: color-mix(
+		in oklab,
+		var(--color-fd-muted) 45%,
+		var(--color-fd-background)
+	);
+	border-color: transparent;
+}
+
+.anyway-docs-shell [data-card] > .not-prose {
+	border-color: transparent;
+	border-radius: 999px;
+	box-shadow: none;
+}
+
+.anyway-docs-shell .shiki > div {
+	border-color: transparent;
 }
