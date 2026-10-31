@@ -7,6 +7,7 @@ import {
 import { RootProvider } from "fumadocs-ui/provider/tanstack";
 import { lazy, type ReactNode } from "react";
 import { DocsNotFound } from "../components/docs-state";
+import { docsConfig } from "../docs.config";
 import appCss from "../styles.css?url";
 
 const DocsSearchDialog = lazy(() => import("../components/docs-search-dialog"));
@@ -21,9 +22,9 @@ export const Route = createRootRoute({
 			{ name: "viewport", content: "width=device-width, initial-scale=1" },
 			{
 				name: "description",
-				content: "Guides and considered components for building with Anyway.",
+				content: docsConfig.description,
 			},
-			{ title: "Anyway — Documentation" },
+			{ title: `${docsConfig.name} — Documentation` },
 		],
 	}),
 	notFoundComponent: DocsNotFound,

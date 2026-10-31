@@ -179,6 +179,14 @@ Keep the HTML document and Fumadocs theme/search providers in TanStack's root `s
 
 ### Implementation and maintenance
 
+Project identity lives in `apps/docs/src/docs.config.ts`: name, description,
+monochrome logo asset and baseline geometry, repository URL, default docs slug,
+section navigation, and welcome headline/actions. Header, metadata, redirects,
+error recovery, and the page-tree root read this config. Keep authored page
+copy, page ordering, and group headings in MDX and Fumadocs `meta.json` files.
+Changing project configuration preserves the shared typography, spacing,
+paper treatment, ink behavior, and state designs.
+
 | Responsibility | Shared source |
 | --- | --- |
 | Typography, surface recipes, radii, borders, sidebar styling | [Docs CSS](apps/docs/src/styles.css) |

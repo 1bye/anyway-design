@@ -31,8 +31,32 @@ below narrow ones, with native arrow-key navigation and visible focus states.
 
 ## Authoring
 
+### Project configuration
+
+Edit `src/docs.config.ts` to adapt the shared shell to another Anyway project:
+
+- `name` and `description` drive site metadata, accessible brand labels, and the
+  root search breadcrumb. Page titles append the project name automatically.
+- `logo` supplies a monochrome asset under `public/`, its viewBox width/height,
+  and the baseline height used to align it with the `docs` label. For a logo
+  without descenders, set `baseline` to `height`.
+- `repositoryUrl` sets the header’s GitHub destination.
+- `homePage` is the docs slug used by the root redirect and error recovery link.
+- `navigation` defines section labels, destination slugs, and Lucide icons.
+- `hero.lines` supplies the intentional headline lines. `hero.actions` supplies
+  labels, slugs, optional heading hashes (without `#`), and primary/ghost styles.
+
+The shared `pages` constants keep repeated destinations together. Slugs are
+relative to `/docs/`, such as `getting-started` or `components/switch`. Keep
+headline lines short enough for the display layout. Configured destinations and
+the logo asset are checked by the docs tests.
+
+### Pages and examples
+
 Add `.mdx` pages in `content/docs` and order them in `meta.json`. Fumadocs builds
 the page tree, table of contents, highlighted code, and local search index.
+Page ordering, group labels, and page-specific prose stay with these content
+files. The site config supplies the page-tree root name.
 Register interactive React examples in `src/components/mdx.tsx`.
 Page icons are inline SVGs in `src/components/page-icons.tsx`. Set `icon` to
 `GettingStarted` or `Switch` in MDX frontmatter; `src/lib/source.ts` resolves

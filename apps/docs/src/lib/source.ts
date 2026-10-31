@@ -2,6 +2,7 @@ import { loader } from "fumadocs-core/source";
 import { createElement } from "react";
 import { docs } from "../../.source/server";
 import { GettingStartedIcon, SwitchIcon } from "../components/page-icons";
+import { docsConfig } from "../docs.config";
 
 export const source = loader({
 	baseUrl: "/docs",
@@ -12,6 +13,9 @@ export const source = loader({
 		if (name === "Switch") {
 			return createElement(SwitchIcon);
 		}
+	},
+	pageTree: {
+		transformers: [{ root: (node) => ({ ...node, name: docsConfig.name }) }],
 	},
 	source: docs.toFumadocsSource(),
 });

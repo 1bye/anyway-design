@@ -5,7 +5,9 @@ import {
 	SearchTrigger,
 } from "fumadocs-ui/layouts/shared/slots/search-trigger";
 import { ThemeSwitch } from "fumadocs-ui/layouts/shared/slots/theme-switch";
-import { ArrowRight, ArrowUpRight, BookOpen, Component } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { Fragment } from "react";
+import { docsConfig } from "../docs.config";
 import { BannerInk } from "./banner-ink";
 
 export function DocsHeader() {
@@ -13,16 +15,25 @@ export function DocsHeader() {
 		<header className="anyway-docs-header">
 			<div className="mx-auto grid h-16 max-w-(--fd-layout-width) grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 px-4 md:grid-cols-[minmax(0,1fr)_minmax(0,20rem)_minmax(0,1fr)] md:px-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,24rem)_minmax(0,1fr)]">
 				<Link
-					aria-label="Anyway documentation home"
+					aria-label={`${docsConfig.name} documentation home`}
 					className="inline-flex items-baseline justify-self-start text-fd-muted-foreground hover:text-fd-foreground"
 					to="/"
 				>
 					{/* Align the letter baseline while letting the y descenders extend below it. */}
 					<span
 						aria-hidden="true"
-						className="relative block aspect-[934/138] w-18 shrink-0 max-[360px]:w-16 sm:w-22"
+						className="relative block w-18 shrink-0 max-[360px]:w-16 sm:w-22"
+						style={{
+							aspectRatio: `${docsConfig.logo.width} / ${docsConfig.logo.baseline}`,
+						}}
 					>
-						<span className="mask-[url('/brand/anyway-wordmark.svg')] mask-contain mask-center mask-no-repeat absolute top-0 left-0 block aspect-[934/202] w-full bg-current" />
+						<span
+							className="mask-contain mask-center mask-no-repeat absolute top-0 left-0 block w-full bg-current"
+							style={{
+								aspectRatio: `${docsConfig.logo.width} / ${docsConfig.logo.height}`,
+								maskImage: `url("${docsConfig.logo.src}")`,
+							}}
+						/>
 					</span>
 					<span
 						aria-hidden="true"
@@ -39,9 +50,9 @@ export function DocsHeader() {
 				/>
 				<div className="flex items-center gap-1 justify-self-end">
 					<a
-						aria-label="Anyway on GitHub"
+						aria-label={`${docsConfig.name} on GitHub`}
 						className="inline-flex items-center gap-2 rounded-md p-2 text-fd-muted-foreground text-sm hover:text-fd-foreground"
-						href="https://github.com/1bye/anyway-design"
+						href={docsConfig.repositoryUrl}
 						rel="noopener noreferrer"
 						target="_blank"
 					>
@@ -66,28 +77,20 @@ export function DocsHeader() {
 export function DocsSectionTabs() {
 	return (
 		<nav aria-label="Documentation sections" className="anyway-docs-sections">
-			<Link
-				activeOptions={{ exact: true }}
-				className={buttonVariants({
-					className: "justify-start gap-2 font-normal text-sm",
-					variant: "ghost",
-				})}
-				params={{ _splat: "getting-started" }}
-				to="/docs/$"
-			>
-				<BookOpen aria-hidden="true" size={15} /> Documentation
-			</Link>
-			<Link
-				activeOptions={{ exact: true }}
-				className={buttonVariants({
-					className: "justify-start gap-2 font-normal text-sm",
-					variant: "ghost",
-				})}
-				params={{ _splat: "components/switch" }}
-				to="/docs/$"
-			>
-				<Component aria-hidden="true" size={15} /> Components
-			</Link>
+			{docsConfig.navigation.map(({ label, slug, icon: Icon }) => (
+				<Link
+					activeOptions={{ exact: true }}
+					className={buttonVariants({
+						className: "justify-start gap-2 font-normal text-sm",
+						variant: "ghost",
+					})}
+					key={slug}
+					params={{ _splat: slug }}
+					to="/docs/$"
+				>
+					<Icon aria-hidden="true" size={15} /> {label}
+				</Link>
+			))}
 		</nav>
 	);
 }
@@ -95,36 +98,37 @@ export function DocsSectionTabs() {
 export function DocsWelcomeBanner() {
 	return (
 		<section
-			aria-label="Welcome to Anyway"
+			aria-label={`Welcome to ${docsConfig.name}`}
 			className="docs-welcome-banner relative isolate overflow-hidden border-b px-6 py-16 text-center md:py-20"
 		>
 			<BannerInk />
 			<div className="relative z-10 mx-auto max-w-5xl" data-canvas-content>
 				<p className="font-display font-normal text-[40px] italic leading-none sm:text-[56px] md:text-[68px]">
-					<span data-canvas-text>Build it the</span>
-					<br />
-					<span data-canvas-text>Anyway way.</span>
+					{docsConfig.hero.lines.map((line, index) => (
+						<Fragment key={line}>
+							{index > 0 ? <br /> : null}
+							<span data-canvas-text>{line}</span>
+						</Fragment>
+					))}
 				</p>
 				<div className="docs-hero-actions mt-8 flex flex-wrap items-center justify-center gap-4">
-					<Link
-						className={buttonVariants({ variant: "primary" })}
-						data-canvas-action="primary"
-						hash="find-your-starting-point"
-						params={{ _splat: "getting-started" }}
-						to="/docs/$"
-					>
-						<span data-canvas-text>Read the guide</span>{" "}
-						<ArrowRight aria-hidden="true" size={16} />
-					</Link>
-					<Link
-						className={buttonVariants({ variant: "ghost" })}
-						data-canvas-action="ghost"
-						params={{ _splat: "components/switch" }}
-						to="/docs/$"
-					>
-						<span data-canvas-text>Explore components</span>{" "}
-						<ArrowUpRight aria-hidden="true" size={16} />
-					</Link>
+					{docsConfig.hero.actions.map((action) => (
+						<Link
+							className={buttonVariants({ variant: action.variant })}
+							data-canvas-action={action.variant}
+							hash={action.hash}
+							key={`${action.slug}#${action.hash ?? ""}`}
+							params={{ _splat: action.slug }}
+							to="/docs/$"
+						>
+							<span data-canvas-text>{action.label}</span>{" "}
+							{action.variant === "primary" ? (
+								<ArrowRight aria-hidden="true" size={16} />
+							) : (
+								<ArrowUpRight aria-hidden="true" size={16} />
+							)}
+						</Link>
+					))}
 				</div>
 			</div>
 		</section>

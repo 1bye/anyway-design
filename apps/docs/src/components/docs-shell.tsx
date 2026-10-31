@@ -2,6 +2,7 @@ import type { TableOfContents } from "fumadocs-core/toc";
 import { TOCProvider } from "fumadocs-ui/components/toc";
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import type { ComponentProps, ReactNode } from "react";
+import { docsConfig } from "../docs.config";
 import { DocsHeader, DocsSectionTabs, DocsWelcomeBanner } from "./docs-header";
 import { DocsSidebarItem, DocsSidebarSeparator } from "./docs-sidebar";
 
@@ -23,7 +24,10 @@ export function DocsShell({
 				<DocsWelcomeBanner />
 				<DocsLayout
 					containerProps={{ className: "anyway-docs-body" }}
-					nav={{ title: "Documentation", url: "/" }}
+					nav={{
+						title: docsConfig.navigation[0]?.label ?? docsConfig.name,
+						url: "/",
+					}}
 					searchToggle={{ enabled: false }}
 					sidebar={{
 						banner: <DocsSectionTabs />,
