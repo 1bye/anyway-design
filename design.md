@@ -23,7 +23,7 @@ Apply this system to guides, component pages, navigation, search, and system sta
 
 Use the locally bundled `Instrument Sans Variable` font from `@fontsource-variable/instrument-sans`, with `Arial, sans-serif` as the fallback. Keep code in the existing monospace stack. The Anyway wordmark is an image asset, not typeset text.
 
-The welcome headline is the display exception: `Instrument Serif`, italic, weight `400`, matching the hero on [git.1bye.dev](https://git.1bye.dev/). Use the self-hosted `apps/docs/public/fonts/instrument-serif-italic.woff2` through `--font-display`, with `ui-serif, Georgia, serif` as fallbacks. Its SIL Open Font License is kept beside the font in `instrument-serif-OFL.txt`. Keep this face confined to the welcome headline; navigation, actions, and article headings remain Instrument Sans.
+The welcome headline and oversized 404 numeral are the display exceptions: `Instrument Serif`, italic, weight `400`, matching the hero on [git.1bye.dev](https://git.1bye.dev/). Use the self-hosted `apps/docs/public/fonts/instrument-serif-italic.woff2` through `--font-display`, with `ui-serif, Georgia, serif` as fallbacks. Its SIL Open Font License is kept beside the font in `instrument-serif-OFL.txt`. Navigation, actions, and article headings remain Instrument Sans.
 
 Values below are CSS pixels at the default `16px` root size. Use rem units so text responds to browser preferences; do not shrink the root font size to achieve the compact scale.
 
@@ -169,9 +169,11 @@ This contract describes the shared baseline and the standard for new work. Guide
 
 ### System states
 
-Use the shared `DocsState` composition for 404, pending, and route errors: the normal `DocsHeader`, continuous paper background, a neutral icon, `12px` status label, `16px / 22.4px` heading at `560`, and `14px` muted body copy. Center the compact content in the remaining viewport with `24px` side gutters. Recovery actions use borderless pills with `44px` minimum height and wrap on small screens.
+Pending and route errors use the compact `DocsState` composition: the normal `DocsHeader`, continuous paper background, a neutral icon, `12px` status label, `16px / 22.4px` heading at `560`, and `14px` muted body copy. Center the content in the remaining viewport with `24px` side gutters. Recovery actions use borderless pills with `44px` minimum height and wrap on small screens.
 
-The 404 offers Back to the guide and Search docs, preserving HTTP 404 for missing documentation and unmatched routes. Errors use calm generic copy, Reload page, and a guide link. Reload the whole document to recover loader, render, and stale module failures; keep raw exceptions out of the view. Loading uses a static three-line skeleton, an `aria-busy` main region, and a live status announcement outside the busy region. Router loading appears after `400ms` with a `250ms` minimum display time; MDX Suspense uses the same view.
+The 404 uses the same header and paper with a large Instrument Serif italic `404` as its focal point. Size it with `clamp(11rem, 34vw, 26rem)`, `0.85` line height, and `-0.06em` tracking. Keep the main area limited to the numeral, centered in the remaining viewport. Reuse `BannerInk` on the main surface so the numeral receives the same SDF drops and wet-ink smear. Mark the numeral as canvas content; navigation and search remain available through the shared header. Retain the HTML numeral until fonts/canvas are ready and for touch, reduced motion, or setup failure. The heading’s accessible name is “404 — Page not found”.
+
+The 404 preserves HTTP 404 for missing documentation and unmatched routes; use header navigation or search to recover. Errors use calm generic copy, Reload page, and a guide link. Reload the whole document to recover loader, render, and stale module failures; keep raw exceptions out of the view. Loading uses a static three-line skeleton, an `aria-busy` main region, and a live status announcement outside the busy region. Router loading appears after `400ms` with a `250ms` minimum display time; MDX Suspense uses the same view.
 
 Keep the HTML document and Fumadocs theme/search providers in TanStack's root `shellComponent`, surrounding route boundaries. System views use the shared header independently of page data, so recovery remains available when the page loader fails.
 

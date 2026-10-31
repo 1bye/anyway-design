@@ -70,7 +70,10 @@ in their workspace packages.
 
 `src/components/docs-state.tsx` shares the header, paper background, compact
 typography, and borderless pill actions across missing, loading, and failed pages.
-The 404 offers a guide link and search; errors offer a full-page reload and guide
+The 404 uses a large Instrument Serif numeral (`176–416px`) with the welcome
+banner’s SDF ink and pointer smear. The main area contains only the
+numeral; navigation and search remain in the shared header. Touch, reduced motion,
+and initialization failures retain the HTML numeral. Errors offer a full-page reload and guide
 link, without exposing exception details. Loading uses a static skeleton and an
 accessible status announcement. Router pending views wait 400ms before appearing
 and stay visible for at least 250ms; MDX Suspense uses the same loading component.
@@ -92,7 +95,7 @@ bun x ultracite check apps/docs
 For system states, check an unknown `/docs/…` URL and an unmatched root URL
 (both return HTTP 404), pause a page-loader request to inspect loading, and fail
 one to inspect error recovery. Restore the request and use Reload page to return
-to the document. Verify search from the 404 and narrow layouts in both themes.
+to the document. Verify header search from the 404 and narrow layouts in both themes.
 
 Vite generates `src/routeTree.gen.ts` and Fumadocs generates `.source/`; both are
 ignored. Start the dev server or run the build before a fresh type check.

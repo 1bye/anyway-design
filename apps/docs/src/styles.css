@@ -38,6 +38,12 @@
 	line-height: 1.25rem;
 }
 
+.docs-not-found-number {
+	font-size: clamp(11rem, 34vw, 26rem);
+	line-height: 0.85;
+	letter-spacing: -0.06em;
+}
+
 .docs-banner-ink {
 	--ink-rgb: 28, 30, 33;
 	position: absolute;
@@ -54,7 +60,8 @@
 @media (prefers-reduced-motion: no-preference) and (hover: hover) and (
 		pointer: fine
 	) {
-	.docs-welcome-banner[data-canvas-ready] [data-canvas-content] {
+	.docs-welcome-banner[data-canvas-ready] [data-canvas-content],
+	.docs-not-found[data-canvas-ready] [data-canvas-content] {
 		opacity: 0;
 	}
 }

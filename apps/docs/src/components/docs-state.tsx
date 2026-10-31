@@ -1,15 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { buttonVariants } from "fumadocs-ui/components/ui/button";
-import { useSearchContext } from "fumadocs-ui/contexts/search";
-import {
-	ArrowRight,
-	BookOpen,
-	CircleAlert,
-	FileQuestion,
-	RotateCcw,
-	Search,
-} from "lucide-react";
-import { type ReactNode, useCallback } from "react";
+import { ArrowRight, BookOpen, CircleAlert, RotateCcw } from "lucide-react";
+import type { ReactNode } from "react";
+import { BannerInk } from "./banner-ink";
 import { DocsHeader } from "./docs-header";
 
 function DocsState({
@@ -58,10 +51,10 @@ function DocsState({
 	);
 }
 
-function GuideLink({ variant = "ghost" }: { variant?: "primary" | "ghost" }) {
+function GuideLink() {
 	return (
 		<Link
-			className={buttonVariants({ variant })}
+			className={buttonVariants({ variant: "ghost" })}
 			params={{ _splat: "getting-started" }}
 			to="/docs/$"
 		>
@@ -71,26 +64,22 @@ function GuideLink({ variant = "ghost" }: { variant?: "primary" | "ghost" }) {
 }
 
 export function DocsNotFound() {
-	const { setOpenSearch } = useSearchContext();
-	const openSearch = useCallback(() => setOpenSearch(true), [setOpenSearch]);
 	return (
-		<DocsState
-			description="This link may have changed, or the page may have moved. Let’s find your way back."
-			icon={<FileQuestion size={22} />}
-			label="404 · Page not found"
-			title="This page isn’t here."
-		>
-			<div className="docs-state-actions mt-8 flex flex-wrap items-center justify-center gap-2">
-				<GuideLink variant="primary" />
-				<button
-					className={buttonVariants({ variant: "ghost" })}
-					onClick={openSearch}
-					type="button"
-				>
-					<Search aria-hidden="true" size={16} /> Search docs
-				</button>
-			</div>
-		</DocsState>
+		<div className="anyway-docs-shell docs-system-state">
+			<DocsHeader />
+			<main className="docs-not-found relative isolate flex min-h-[calc(100dvh-4rem)] items-center justify-center overflow-hidden px-6 py-10 text-center">
+				<BannerInk />
+				<div className="relative z-10 w-full max-w-4xl">
+					<h1
+						aria-label="404 — Page not found"
+						className="docs-not-found-number font-display font-normal italic"
+						data-canvas-content
+					>
+						<span data-canvas-text>404</span>
+					</h1>
+				</div>
+			</main>
+		</div>
 	);
 }
 
