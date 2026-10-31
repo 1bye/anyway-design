@@ -6,7 +6,10 @@ import {
 	Scripts,
 } from "@tanstack/react-router";
 import { RootProvider } from "fumadocs-ui/provider/tanstack";
+import { lazy } from "react";
 import appCss from "../styles.css?url";
+
+const DocsSearchDialog = lazy(() => import("../components/docs-search-dialog"));
 
 export const Route = createRootRoute({
 	component: RootDocument,
@@ -49,7 +52,7 @@ function RootDocument() {
 				<HeadContent />
 			</head>
 			<body className="flex min-h-screen flex-col font-sans">
-				<RootProvider>
+				<RootProvider search={{ SearchDialog: DocsSearchDialog }}>
 					<Outlet />
 				</RootProvider>
 				<Scripts />

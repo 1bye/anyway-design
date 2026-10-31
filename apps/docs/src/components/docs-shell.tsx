@@ -1,4 +1,3 @@
-import { useLocation } from "@tanstack/react-router";
 import type { TableOfContents } from "fumadocs-core/toc";
 import { TOCProvider } from "fumadocs-ui/components/toc";
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
@@ -17,15 +16,11 @@ export function DocsShell({
 	toc: TableOfContents;
 	children: ReactNode;
 }) {
-	const showWelcome = useLocation({
-		select: (location) => location.pathname === "/docs/getting-started",
-	});
-
 	return (
 		<TOCProvider single toc={toc}>
 			<div className="anyway-docs-shell">
 				<DocsHeader />
-				{showWelcome ? <DocsWelcomeBanner /> : null}
+				<DocsWelcomeBanner />
 				<DocsLayout
 					containerProps={{ className: "anyway-docs-body" }}
 					nav={{ title: "Documentation", url: "/" }}

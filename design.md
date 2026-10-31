@@ -86,6 +86,8 @@ On fine mouse pointers without reduced motion, the welcome banner paints its hea
 | Element | Shape and treatment |
 | --- | --- |
 | Buttons, selects, navigation pills, search | `999px` radius |
+| Keyboard shortcut keycaps | `5px` radius, `22px` minimum width, `20px` height, `4px` horizontal padding and gap |
+| Command palette / palette result rows | `16px` / `8px` radius; keycaps retain `5px` corners |
 | Cards, callouts, code blocks, playground frame | `24px` radius |
 | Larger grouped surfaces using `rounded-2xl` | `28px` radius |
 | Page and sidebar canvas | Continuous background, no right sidebar border |
@@ -97,7 +99,7 @@ On fine mouse pointers without reduced motion, the welcome banner paints its hea
 
 The current radius tokens are `sm = 999px`, `md = 999px`, `lg = 24px`, `xl = 24px`, and `2xl = 28px`. Choose a radius by the role above; the token names do not imply a numerical progression.
 
-Buttons have no visible border. Cards, callouts, code frames, and playground toolbars use tone and whitespace instead of visible outlines and internal dividers. The search outline and nested section guide are intentional exceptions. Keep table rules faint enough to support scanning without creating a heavy grid.
+Buttons have no visible border. Cards, callouts, code frames, and playground toolbars use tone and whitespace instead of visible outlines and internal dividers. Callouts omit the colored side rail; retain their semantic icon, title, and body, with `12px` start padding. The search outline and nested section guide are intentional exceptions. Keep table rules faint enough to support scanning without creating a heavy grid.
 
 Use no decorative shadow on static documentation surfaces. Retain Fumadocs' restrained overlay treatment for dialogs and menus. A demonstrated product may use its own borders and elevation.
 
@@ -108,12 +110,12 @@ Use the Fumadocs `DocsLayout` grid. The current shell inherits its `97rem` maxim
 Use a `4px` spacing base, with `4`, `8`, `12`, `16`, `20`, `24`, `32`, `48`, `64`, and `80px` as the main working values. Small `2px` adjustments are reserved for compact navigation and icon alignment.
 
 - Page gutters: `16px` on mobile; the shared header uses `32px` from `768px` upward. Article padding follows Fumadocs: `16px`, then `24px` at `768px`, then `32px` at `1280px`.
-- Shared header: one `64px` row with the logo on the left, search centered, and GitHub on the right. Use equal-width outer columns so search stays at the header's actual center regardless of the logo and GitHub widths. Keep this reservation synchronized with `--fd-banner-height`.
+- Shared header: one `64px` row with the logo on the left, search centered, and the GitHub mark and label on the right without an external-link arrow. Use equal-width outer columns so search stays at the header's actual center regardless of the logo and GitHub widths. Keep this reservation synchronized with `--fd-banner-height`.
 - Desktop search is up to `320px` wide, increasing to `384px` from `1280px`. Below `768px`, use a centered `44px` search icon button that opens the same search dialog. Keep the full field and shortcut hint on desktop.
 - Section navigation lives at the top of the sidebar, using stacked pills with `8px 12px` padding and a `4px` gap.
 - Welcome banner: `24px` side padding, `64px` vertical padding, increasing to `80px` from `768px`. Keep the two-line display headline and actions as the main content, with `32px` between them and `16px` between actions. Omit handwritten annotations, underlines, an eyebrow, and a supporting paragraph.
 - Welcome actions: minimum `40px` height, `10px 20px` padding, `14px` labels, `16px` icons, and an `8px` label/icon gap. Keep both actions equally sized in height and allow them to wrap on narrow screens.
-- Show the welcome banner on the getting-started page. Interior guides and component pages begin directly with their document title and introduction.
+- Keep the welcome banner in the shared shell across Documentation and Components. Switching section tabs preserves the banner above the document title and introduction.
 - Use the Fumadocs row variables for sticky elements and anchor offsets. Heading scroll margin is `var(--fd-docs-row-3) + 24px`, which also accounts for the mobile subnavigation.
 - Content scrolls normally. Keep the header and desktop sidebar sticky; keep search and navigation reachable on small screens.
 
@@ -123,13 +125,13 @@ The sidebar should read as part of the document, with compact labels and a visib
 
 1. Place the Documentation and Components section pills first, followed by content groups. Search and GitHub live in the top bar; do not duplicate them in the sidebar or mobile subnavigation.
 2. Use muted uppercase group labels with `24px` above and `8px` below.
-3. Show page links without a permanently filled active pill. The current page uses foreground text; hover uses the shared accent fill.
+3. Show page links without a permanently filled active pill. The current page uses foreground text; hover uses the shared accent fill. Page icons use the shared SVG set: open book for Getting started and toggle for Switch. Draw on a `20px` viewBox at `16px`, with `1.5px` rounded strokes and `currentColor`; keep them decorative and leave the visible label intact. Choose icons through the MDX `icon` field and the source loader mapping.
 4. Expand only the current page's headings beneath its page link. Generate them from the MDX table of contents, including real heading labels and anchor URLs.
 5. Indent the heading list `18px` and draw the thin guide. Section links use `2px 12px` padding, `14px` type, and pill-shaped hover feedback.
 6. Mark the active section with foreground text and a slim segment on the guide. Expose `aria-current="location"`; use Fumadocs' heading tracking rather than a second scroll observer.
 7. Keep the desktop sidebar collapse icon hidden. Use the standard sidebar drawer on mobile; selecting a page or heading closes it.
 
-Header search has a quiet transparent surface, a pill outline, and a minimum visual height of `34px`. Preserve the working Command/Control-K shortcut and the existing Fumadocs search dialog. Keep the theme switch available in the sidebar. Use the sidebar outline instead of a second right-side table of contents or a duplicate desktop outline toolbar.
+Header search has a quiet transparent surface, a pill outline, and a minimum visual height of `34px`. Preserve the working Command/Control-K shortcut and Fumadocs search behavior. Compose the command palette with its shared dialog, input, results, and close primitives. Use the shared `Kbd` component inside the Escape close button, with the same keycap styling as the header shortcut. Scope the palette radius tokens on its portalled dialog: `sm = 5px`, `md = lg = 8px`, `xl = 16px`. Keep `6px` result-list padding and `2px` row gaps; selected and hovered rows remain rounded rectangles. Keep the theme switch available in the sidebar. Use the sidebar outline instead of a second right-side table of contents or a duplicate desktop outline toolbar.
 
 ### Controls and interaction
 
@@ -160,7 +162,7 @@ Copyable examples must reflect the current preview controls and include the setu
 - Check a guide and a live component page at desktop and narrow widths after shared design changes.
 - Give loading, empty, error, and not-found views the same type scale, palette, shape, and tone as the documentation.
 
-This contract describes the shared baseline and the standard for new work. The current guide/component styles implement that baseline. Standalone system views, including the existing not-found route, and portal-based search UI still need an alignment pass; mobile hit areas and contrast need an explicit audit before treating the system as fully verified.
+This contract describes the shared baseline and the standard for new work. The current guide/component styles implement that baseline. Standalone system views, including the existing not-found route, still need an alignment pass; mobile hit areas and contrast need an explicit audit before treating the system as fully verified.
 
 ### Implementation and maintenance
 

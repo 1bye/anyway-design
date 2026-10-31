@@ -31,11 +31,14 @@ example. Reset restores the initial preview. Interactions stay in memory.
 Add `.mdx` pages in `content/docs` and order them in `meta.json`. Fumadocs builds
 the page tree, table of contents, highlighted code, and local search index.
 Register interactive React examples in `src/components/mdx.tsx`.
+Page icons are inline SVGs in `src/components/page-icons.tsx`. Set `icon` to
+`GettingStarted` or `Switch` in MDX frontmatter; `src/lib/source.ts` resolves
+that name for the shared sidebar.
 
 `src/components/docs-shell.tsx` uses the standard Fumadocs `DocsLayout` below a
 Holocron-inspired masthead: the Anyway wordmark, centered search, and repository
-link. Section navigation sits at the top of the sidebar. The getting-started
-page also has a welcome banner. `src/components/docs-header.tsx` owns the header,
+link. Section navigation sits at the top of the sidebar. The welcome banner
+appears across Documentation and Components. `src/components/docs-header.tsx` owns the header,
 section navigation, and banner. The sticky header uses
 Fumadocs' banner offset so the sidebar and anchor links stay clear of it.
 `src/components/banner-ink.tsx` paints the welcome headline and actions into the
@@ -51,7 +54,10 @@ defines the documentation text scale, surfaces, radii, and sidebar treatment.
 `src/components/docs-sidebar.tsx` nests the current page's headings under its
 navigation link, using Fumadocs' active-heading tracking. The standard sidebar
 drawer provides mobile navigation. Light/dark mode and search use Fumadocs'
-built-in behavior. Shared product components remain in their workspace packages.
+built-in behavior. `src/components/docs-search-dialog.tsx` composes the search
+palette from Fumadocs primitives, with rounded result rows and a shared `Kbd`
+Escape keycap. The root provider lazy-loads it. Shared product components remain
+in their workspace packages.
 
 ## Verification
 
