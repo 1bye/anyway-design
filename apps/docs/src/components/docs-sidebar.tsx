@@ -7,7 +7,48 @@ import {
 	useSidebar,
 } from "fumadocs-ui/components/sidebar/base";
 import { useTOCItems } from "fumadocs-ui/components/toc";
-import { useCallback } from "react";
+import {
+	Sidebar,
+	type SidebarProps,
+	SidebarProvider,
+	SidebarTrigger,
+} from "fumadocs-ui/layouts/docs/slots/sidebar";
+import { useCallback, useEffect, useRef } from "react";
+
+function DocsSidebar(props: SidebarProps) {
+	const { mode, open, setOpen } = useSidebar();
+	const dialog = useRef<HTMLDialogElement>(null);
+	useEffect(() => {
+		if (open && mode === "drawer") {
+			dialog.current?.showModal();
+		} else {
+			dialog.current?.close();
+		}
+	}, [mode, open]);
+	const close = useCallback(() => setOpen(false), [setOpen]);
+
+	if (mode !== "drawer") {
+		return <Sidebar {...props} />;
+	}
+	return (
+		<dialog
+			aria-label="Documentation navigation"
+			className="docs-sidebar-dialog"
+			onCancel={close}
+			onClose={close}
+			ref={dialog}
+		>
+			<Sidebar {...props} />
+		</dialog>
+	);
+}
+
+export const docsSidebarSlots = {
+	provider: SidebarProvider,
+	root: DocsSidebar,
+	trigger: SidebarTrigger,
+	useSidebar,
+};
 
 export function DocsSidebarItem({ item }: { item: Item }) {
 	const pathname = useLocation({ select: (location) => location.pathname });

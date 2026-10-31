@@ -59,13 +59,13 @@ These are the current token values from the neutral theme, with a shared paper c
 | Text, `--color-fd-foreground` | `hsl(0 0% 3.9%)` | `hsl(0 0% 92%)` |
 | Muted surface, `--color-fd-muted` | `hsl(0 0% 96.1%)` | `hsl(0 0% 12.9%)` |
 | Secondary surface, `--color-fd-secondary` | `hsl(0 0% 93.1%)` | `hsl(0 0% 12.9%)` |
-| Secondary text, `--color-fd-muted-foreground` | `hsl(0 0% 45.1%)` | `hsl(0 0% 70% / 0.8)` |
+| Secondary text, `--color-fd-muted-foreground` | `#5c5c5c` | `rgb(179 179 179 / 80%)` |
 | Card, `--color-fd-card` | `hsl(0 0% 94.7%)` | `hsl(0 0% 9.8%)` |
 | Popover, `--color-fd-popover` | `hsl(0 0% 98%)` | `hsl(0 0% 11.6%)` |
 | Primary action, `--color-fd-primary` | `hsl(0 0% 9%)` | `hsl(0 0% 98%)` |
 | Primary action text, `--color-fd-primary-foreground` | `hsl(0 0% 98%)` | `hsl(0 0% 9%)` |
 | Hover / selected fill, `--color-fd-accent` | `hsl(0 0% 82% / 0.5)` | `hsl(0 0% 40.9% / 0.3)` |
-| Focus ring, `--color-fd-ring` | `hsl(0 0% 63.9%)` | `hsl(0 0% 54.9%)` |
+| Focus ring, `--color-fd-ring` | `#737373` | `#8c8c8c` |
 
 The neutral theme also adjusts the dark desktop sidebar's muted text to `hsl(0 0% 72%)`, muted surface to `hsl(0 0% 16%)`, and secondary surface to `hsl(0 0% 18%)`. Preserve these theme-local adjustments while keeping the sidebar canvas equal to the page canvas.
 
@@ -75,7 +75,7 @@ Use matching foreground tokens on secondary, card, and popover surfaces. Use `fd
 
 Use the local `sketchbook-paper.png` as the continuous page background, including the header, sidebar, welcome banner, and reading area. It represents plain off-white sketchbook stock with fine fibers and gentle tonal variation, based on the supplied notebook photographs. Avoid printed ruling, colored margin lines, artificial dot grids, or aged parchment.
 
-Attach the paper texture to the document with `scroll`, so the grain moves with the content. Align it at the top center, size it to the page width with a `104.5rem` minimum (the asset's native width at the default root size), and repeat it down long pages rather than stretching it to the full document height. The tint layer fills each surface without repeating. Blend the texture with `luminosity` against the neutral canvas to remove its beige tint. Light mode adds a white overlay at `55%` opacity for bright white paper with subtle grain; dark mode adds a black overlay at `86%`. Sticky header surfaces keep their own paper background while the document scrolls beneath them; the desktop sidebar remains transparent. Text and controls retain their neutral theme colors. The asset's generation prompt and provenance live beside it in `sketchbook-paper.prompt.md`.
+Attach the paper texture to the document with `scroll`, so the grain moves with the content. Align it at the top center, size it to the page width with a `104.5rem` minimum (the asset's native width at the default root size), and repeat it down long pages rather than stretching it to the full document height. The tint layer fills each surface without repeating. Blend the texture with `luminosity` against the neutral canvas to remove its beige tint. Light mode adds a white overlay at `75%` opacity for bright white paper with subtle grain; dark mode adds a black overlay at `86%`. Sticky header surfaces keep their own paper background while the document scrolls beneath them; the desktop sidebar remains transparent. Text and controls retain their neutral theme colors. The asset's generation prompt and provenance live beside it in `sketchbook-paper.prompt.md`.
 
 Preserve the Instrument Serif welcome headline and existing pill actions. Keep the hero free of handwritten notes, arrows, and decorative underlines. Content cards, code blocks, dialogs, and component previews retain their own quiet surfaces for readability.
 
@@ -165,7 +165,9 @@ Use compact labeled rows for playground controls, inspired by Component Lab. For
 - Check a guide and a live component page at desktop and narrow widths after shared design changes.
 - Give loading, empty, error, and not-found views the same type scale, palette, shape, and tone as the documentation.
 
-This contract describes the shared baseline and the standard for new work. Guide, component, and standalone system views implement that baseline. System recovery actions have verified `44px` hit areas; the wider mobile control and contrast audit remains open.
+This contract describes the shared baseline and the standard for new work. Guide, component, and standalone system views implement that baseline. Coarse-pointer header, sidebar, hero, code tools, and playground chrome use at least `44px` hit areas. A focus-visible skip link opens the document below sticky chrome, including system-state pages. Keep heading copy buttons visible on touch and keyboard focus. The mobile sidebar uses a native modal dialog for background isolation, Escape dismissal, and focus restoration. Search restores its previous focus or the visible header trigger when dismissed. Code and table overflow regions must be keyboard-scrollable with a visible focus indicator. Reduced motion disables canvas, shell/search animations, and theme view transitions.
+
+The current paper asset and tint give conservative grayscale contrast bounds of `4.65:1` for light muted text, `5.4:1` for dark muted text, and `3.29:1` for light focus outlines on the paper itself. Recheck these values when changing the texture, tint, or tokens; product previews and syntax colors need their own checks. Browser emulation covers guide and Switch pages at `320`, `390`, `768`, and `1280px`; physical-device and screen-reader testing remain separate checks.
 
 ### System states
 

@@ -13,6 +13,9 @@ import { BannerInk } from "./banner-ink";
 export function DocsHeader() {
 	return (
 		<header className="anyway-docs-header">
+			<a className="docs-skip-link" href="#nd-page">
+				Skip to content
+			</a>
 			<div className="mx-auto grid h-16 max-w-(--fd-layout-width) grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4 px-4 md:grid-cols-[minmax(0,1fr)_minmax(0,20rem)_minmax(0,1fr)] md:px-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,24rem)_minmax(0,1fr)]">
 				<Link
 					aria-label={`${docsConfig.name} documentation home`}

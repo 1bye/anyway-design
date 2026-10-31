@@ -32,6 +32,8 @@ function DocsState({
 			<main
 				aria-busy={loading}
 				className="flex min-h-[calc(100dvh-4rem)] items-center justify-center px-6 py-16"
+				id="nd-page"
+				tabIndex={-1}
 			>
 				<div className="w-full max-w-md text-center">
 					<div
@@ -68,7 +70,11 @@ export function DocsNotFound() {
 	return (
 		<div className="anyway-docs-shell docs-system-state">
 			<DocsHeader />
-			<main className="docs-not-found relative isolate flex min-h-[calc(100dvh-4rem)] items-center justify-center overflow-hidden px-6 py-10 text-center">
+			<main
+				className="docs-not-found relative isolate flex min-h-[calc(100dvh-4rem)] items-center justify-center overflow-hidden px-6 py-10 text-center"
+				id="nd-page"
+				tabIndex={-1}
+			>
 				<BannerInk />
 				<div className="relative z-10 w-full max-w-4xl">
 					<h1

@@ -73,11 +73,15 @@
 
 :root {
 	--color-fd-background: #fafafa;
-	--paper-shade: rgb(255 255 255 / 55%);
+	--color-fd-muted-foreground: #5c5c5c;
+	--color-fd-ring: #737373;
+	--paper-shade: rgb(255 255 255 / 75%);
 }
 
 .dark {
 	--color-fd-background: #222;
+	--color-fd-muted-foreground: rgb(179 179 179 / 80%);
+	--color-fd-ring: #8c8c8c;
 	--paper-shade: rgb(0 0 0 / 86%);
 }
 
@@ -110,6 +114,59 @@ body,
 	position: sticky;
 	top: 0;
 	z-index: 35;
+}
+
+.docs-skip-link {
+	position: absolute;
+	top: 0.5rem;
+	left: 1rem;
+	z-index: 1;
+	padding: 0.75rem 1rem;
+	color: var(--color-fd-primary-foreground);
+	background: var(--color-fd-primary);
+	border-radius: 999px;
+	transform: translateY(-150%);
+}
+
+.docs-skip-link:focus {
+	transform: translateY(0);
+}
+
+#nd-page {
+	scroll-margin-top: calc(var(--fd-docs-row-3, 4rem) + 1.5rem);
+}
+
+.anyway-docs-header :is(a, button):focus-visible,
+#nd-page:focus-visible,
+.docs-playground :is(a, button):focus-visible,
+.docs-search-close:focus-visible,
+.anyway-docs-body .overflow-auto[tabindex]:focus-visible {
+	outline: 2px solid var(--color-fd-ring);
+	outline-offset: 2px;
+}
+
+.anyway-docs-body :is(h2, h3, h4) > button:focus-visible {
+	opacity: 1;
+}
+
+.docs-sidebar-dialog {
+	width: 100%;
+	max-width: none;
+	height: 100dvh;
+	max-height: none;
+	padding: 0;
+	margin: 0;
+	color: var(--color-fd-foreground);
+	background: transparent;
+	border: 0;
+}
+
+.docs-sidebar-dialog::backdrop {
+	background: transparent;
+}
+
+html:has(.docs-sidebar-dialog[open]) {
+	overflow: hidden;
 }
 
 .anyway-docs-body {
@@ -285,6 +342,65 @@ body,
 @media (pointer: coarse) {
 	.docs-playground-segments span {
 		min-height: 2.75rem;
+	}
+
+	.anyway-docs-header a:not(.docs-skip-link),
+	.anyway-docs-header button,
+	#nd-sidebar-mobile :is(a, button),
+	.anyway-docs-body #nd-subnav :is(a, button),
+	.anyway-docs-body :is(h2, h3, h4, .shiki) button,
+	.docs-playground button,
+	.docs-search-dialog .docs-search-close,
+	.docs-hero-actions a {
+		min-height: 2.75rem;
+	}
+
+	.anyway-docs-header a:not(.docs-skip-link),
+	.anyway-docs-body #nd-subnav button,
+	#nd-sidebar-mobile button,
+	.anyway-docs-body :is(h2, h3, h4, .shiki) button,
+	.docs-playground button,
+	.docs-search-dialog .docs-search-close {
+		min-width: 2.75rem;
+	}
+
+	.anyway-docs-body :is(h2, h3, h4) > button {
+		margin-block: -0.625rem;
+		opacity: 1;
+	}
+
+	#nd-sidebar-mobile .docs-sidebar-toc a {
+		display: flex;
+		align-items: center;
+	}
+
+	.anyway-docs-body .shiki > div:has(figcaption) {
+		min-height: 3rem;
+	}
+}
+
+@media (max-width: 400px) {
+	.anyway-docs-header > div {
+		column-gap: 0.5rem;
+	}
+
+	.anyway-docs-header [data-theme-toggle] {
+		padding-inline: 0;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.anyway-docs-shell *,
+	.docs-search-dialog,
+	.docs-search-dialog * {
+		animation-duration: 0s !important;
+		transition-duration: 0s !important;
+		scroll-behavior: auto !important;
+	}
+
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation: none;
 	}
 }
 

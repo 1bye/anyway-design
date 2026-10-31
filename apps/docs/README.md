@@ -85,7 +85,8 @@ scene from the actual layout and fonts.
 defines the documentation text scale, surfaces, radii, and sidebar treatment.
 `src/components/docs-sidebar.tsx` nests the current page's headings under its
 navigation link, using Fumadocs' active-heading tracking. The standard sidebar
-drawer provides mobile navigation. Light/dark mode and search use Fumadocs'
+drawer is hosted in a native modal dialog on mobile, with Escape dismissal,
+background isolation, scroll locking, and focus restoration. Light/dark mode and search use Fumadocs'
 built-in behavior. `src/components/docs-search-dialog.tsx` composes the search
 palette from Fumadocs primitives, with rounded result rows and a shared `Kbd`
 Escape keycap. The root provider lazy-loads it. Shared product components remain
@@ -144,6 +145,29 @@ For system states, check an unknown `/docs/…` URL and an unmatched root URL
 (both return HTTP 404), pause a page-loader request to inspect loading, and fail
 one to inspect error recovery. Restore the request and use Reload page to return
 to the document. Verify header search from the 404 and narrow layouts in both themes.
+
+### Mobile and keyboard checks
+
+Check Getting Started and Switch at 320px, 390px, 768px, and 1280px in both
+light and dark themes. Keep horizontal scrolling inside code/table regions.
+The desktop inspector sits beside the preview; narrow layouts stack it below.
+
+- Tab to Skip to content, then press Enter: focus moves below the sticky header.
+- Open the mobile sidebar: focus stays in the native modal, Escape closes it,
+  and focus returns to its trigger. A section link closes it and clears the header.
+- Open search with the keyboard, type a query, select with arrows and Enter,
+  and dismiss with Escape. Dismissal restores prior focus or the header trigger.
+- Use arrow keys on playground radio choices; Tab into overflowing code and
+  table regions and scroll with arrow keys. Check visible focus on copy tools.
+- Emulate a coarse pointer: chrome targets are at least 44px high; icon-only
+  controls are also at least 44px wide. Product previews retain their own sizing.
+- Emulate reduced motion: the banner and 404 retain readable HTML with canvas
+  disabled. Shell/search animations and theme view transitions are disabled.
+
+The shared light theme uses darker muted text and a 75% white paper tint to keep
+contrast across the texture. Dark mode retains its neutral muted text and 86%
+black tint. The design contract records the paper contrast bounds. These browser
+checks do not replace physical-device or screen-reader testing.
 
 Vite generates `src/routeTree.gen.ts` and Fumadocs generates `.source/`; both are
 ignored. Start the dev server or run the build before a fresh type check.

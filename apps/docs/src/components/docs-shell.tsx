@@ -4,7 +4,11 @@ import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import type { ComponentProps, ReactNode } from "react";
 import { docsConfig } from "../docs.config";
 import { DocsHeader, DocsSectionTabs, DocsWelcomeBanner } from "./docs-header";
-import { DocsSidebarItem, DocsSidebarSeparator } from "./docs-sidebar";
+import {
+	DocsSidebarItem,
+	DocsSidebarSeparator,
+	docsSidebarSlots,
+} from "./docs-sidebar";
 
 type DocsTree = ComponentProps<typeof DocsLayout>["tree"];
 
@@ -38,6 +42,7 @@ export function DocsShell({
 							Separator: DocsSidebarSeparator,
 						},
 					}}
+					slots={{ sidebar: docsSidebarSlots }}
 					themeSwitch={{ enabled: false }}
 					tree={tree}
 				>

@@ -144,9 +144,16 @@ export function SwitchPlayground() {
 					<span>your-component.tsx</span>
 					<CopyButton text={code} />
 				</div>
-				<pre className="overflow-auto p-4 text-xs leading-relaxed">
-					<code>{code}</code>
-				</pre>
+				<section
+					aria-label="Switch example code"
+					className="overflow-auto p-4 text-xs leading-relaxed"
+					// biome-ignore lint/a11y/noNoninteractiveTabindex: Keyboard users need to scroll overflowing code.
+					tabIndex={0}
+				>
+					<pre>
+						<code>{code}</code>
+					</pre>
+				</section>
 			</div>
 		</section>
 	);
