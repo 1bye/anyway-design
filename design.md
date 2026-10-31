@@ -116,7 +116,7 @@ Use a `4px` spacing base, with `4`, `8`, `12`, `16`, `20`, `24`, `32`, `48`, `64
 - Section navigation lives at the top of the sidebar, using stacked pills with `8px 12px` padding and a `4px` gap.
 - Welcome banner: `24px` side padding, `64px` vertical padding, increasing to `80px` from `768px`. Keep the two-line display headline and actions as the main content, with `32px` between them and `16px` between actions. Omit handwritten annotations, underlines, an eyebrow, and a supporting paragraph.
 - Welcome actions: minimum `40px` height, `10px 20px` padding, `14px` labels, `16px` icons, and an `8px` label/icon gap. Keep both actions equally sized in height and allow them to wrap on narrow screens.
-- Keep the welcome banner in the shared shell across Documentation and Components. Switching section tabs preserves the banner above the document title and introduction.
+- Keep the welcome banner in the shared shell across Documentation and Examples. Switching section tabs preserves the banner above the document title and introduction.
 - Use the Fumadocs row variables for sticky elements and anchor offsets. Heading scroll margin is `var(--fd-docs-row-3) + 24px`, which also accounts for the mobile subnavigation.
 - Content scrolls normally. Keep the header and desktop sidebar sticky; keep search and navigation reachable on small screens.
 
@@ -124,7 +124,7 @@ Use a `4px` spacing base, with `4`, `8`, `12`, `16`, `20`, `24`, `32`, `48`, `64
 
 The sidebar should read as part of the document, with compact labels and a visible page outline.
 
-1. Place the Documentation and Components section pills first, followed by content groups. Search and GitHub live in the top bar; do not duplicate them in the sidebar or mobile subnavigation.
+1. Place the Documentation and Examples section pills first, followed by content groups. Search and GitHub live in the top bar; do not duplicate them in the sidebar or mobile subnavigation.
 2. Use muted uppercase group labels with `24px` above and `8px` below.
 3. Show page links without a permanently filled active pill. The current page uses foreground text; hover uses the shared accent fill. Page icons use the shared SVG set: open book for Getting started and toggle for Switch. Draw on a `20px` viewBox at `16px`, with `1.5px` rounded strokes and `currentColor`; keep them decorative and leave the visible label intact. Choose icons through the MDX `icon` field and the source loader mapping.
 4. Expand only the current page's headings beneath its page link. Generate them from the MDX table of contents, including real heading labels and anchor URLs.
@@ -146,7 +146,7 @@ Header search has a quiet transparent surface, a pill outline, and a minimum vis
 
 ### Content and component pages
 
-Write guides in MDX and register live React examples through the shared MDX component map. Use the same shell, typography, callouts, cards, code presentation, and navigation for every project.
+Write guides in MDX. Import page-specific React examples directly into their pages; reserve the shared MDX component map for components used across the documentation. Use the same shell, typography, callouts, cards, code presentation, and navigation for every project.
 
 Guide pages start with one document title, a short introduction, and logically ordered sections. Keep wording concise, concrete, and useful. Cards and callouts should help the reader make a decision or understand a constraint; they should not become decorative containers around every paragraph.
 
@@ -195,12 +195,12 @@ paper treatment, ink behavior, and state designs.
 | Page outline and active section behavior | [Docs sidebar](apps/docs/src/components/docs-sidebar.tsx) |
 | Document title, introduction, body composition | [Docs route](apps/docs/src/routes/docs/$.tsx) |
 | Shared MDX components | [MDX component map](apps/docs/src/components/mdx.tsx) |
-| Reference live example | [Switch playground](apps/docs/src/components/switch-playground.tsx) |
+| Reference live example | [Optional Switch playground](apps/docs/src/examples/switch/switch-playground.tsx) |
 | Guides and navigation ordering | `apps/docs/content/docs/*.mdx` and `meta.json` files |
 
 Change a shared role or token once, then verify it on both page types. Avoid local font sizes, hardcoded colors, or border overrides in individual MDX pages. Keep new rules scoped to documentation so product components and the separate website retain their own design contracts.
 
-For another Anyway project's documentation, reuse this shell and component map, then supply its content and project identity through shared configuration when that capability is introduced. Keep the documentation font, palette, control shapes, and navigation behavior consistent. A project may demonstrate its own design inside examples without introducing a new documentation theme. A reusable cross-project theme package is not implemented yet.
+For another Anyway project's documentation, reuse this shell and component map, then supply its content and project identity through `src/docs.config.ts`. Keep the documentation font, palette, control shapes, and navigation behavior consistent. A project may demonstrate its own design inside examples without introducing a new documentation theme. Getting Started explains adopting the boilerplate, configuring a project, writing MDX, adding examples, and checking a build. The default Examples overview uses a plain React counter. The macOS Switch is a removable sample with page-local imports, styles, and tests under `src/examples/switch/`; product dependencies must stay out of the shared shell and MDX registry. Shared navigation must point to the overview so it survives individual demo removal. A reusable cross-project theme package is not implemented yet.
 
 Update this file alongside deliberate shared design changes. Resolve disagreements between this contract and the UI in the shared implementation rather than adding exceptions page by page. Run the documentation build, type checks, and Ultracite checks when changing code; prose-only edits need a link and diff review.
 

@@ -10,12 +10,16 @@ it("points configured navigation and hero actions at existing MDX pages", async 
 	]);
 	await Promise.all(
 		[...slugs].map(async (slug) => {
-			const page = file(
-				new URL(`../content/docs/${slug}.mdx`, import.meta.url)
+			const candidates = [`${slug}.mdx`, `${slug}/index.mdx`];
+			const exists = await Promise.all(
+				candidates.map((path) =>
+					file(new URL(`../content/docs/${path}`, import.meta.url)).exists()
+				)
 			);
-			expect(await page.exists(), `Missing configured docs page: ${slug}`).toBe(
-				true
-			);
+			expect(
+				exists.some(Boolean),
+				`Missing configured docs page: ${slug}`
+			).toBe(true);
 		})
 	);
 });

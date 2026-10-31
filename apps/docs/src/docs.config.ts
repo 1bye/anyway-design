@@ -18,19 +18,19 @@ interface DocsConfig {
 	repositoryUrl: string;
 }
 
-const pages = { components: "components/switch", guide: "getting-started" };
+const pages = { examples: "components", guide: "getting-started" };
 
 export const docsConfig: DocsConfig = {
-	description: "Guides and considered components for building with Anyway.",
+	description: "Guides and live examples for documenting Anyway projects.",
 	hero: {
 		actions: [
 			{
-				hash: "find-your-starting-point",
+				hash: "start-your-docs",
 				label: "Read the guide",
 				slug: pages.guide,
 				variant: "primary",
 			},
-			{ label: "Explore components", slug: pages.components, variant: "ghost" },
+			{ label: "Explore examples", slug: pages.examples, variant: "ghost" },
 		],
 		lines: ["Build it the", "Anyway way."],
 	},
@@ -44,7 +44,7 @@ export const docsConfig: DocsConfig = {
 	name: "Anyway",
 	navigation: [
 		{ icon: BookOpen, label: "Documentation", slug: pages.guide },
-		{ icon: Component, label: "Components", slug: pages.components },
+		{ icon: Component, label: "Examples", slug: pages.examples },
 	],
 	repositoryUrl: "https://github.com/1bye/anyway-design",
 };

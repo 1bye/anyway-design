@@ -1,0 +1,42 @@
+---
+title: Live examples
+icon: Examples
+description: Put your project’s React components beside the explanation, with styles and dependencies local to each example.
+---
+
+import { CounterExample } from "../../../src/examples/counter";
+
+## Try a small example
+
+This counter is a plain React component. It uses the documentation’s existing color and shape tokens, so it works without a product component package.
+
+<div className="not-prose my-6 flex min-h-40 items-center justify-center rounded-xl bg-fd-muted/40 p-6">
+  <CounterExample />
+</div>
+
+## Add your own
+
+Create a component under `src/examples/`, then import it directly into the MDX page that uses it:
+
+```mdx title="content/docs/your-page.mdx"
+---
+title: Your example
+description: Explain the behavior, then let the reader try it.
+---
+
+import { CounterExample } from "../../src/examples/counter";
+
+<CounterExample />
+```
+
+The import is relative to the MDX file. A page inside another folder, such as this one, uses `../../../src/examples/counter` instead.
+
+Keep each example’s state inside its component. Import any product styles from the example itself, and wrap its preview in the providers that product needs. Shared documentation styles and providers belong to the shell.
+
+For components used throughout the documentation, add them to `src/components/mdx.tsx` instead of repeating an import in every page.
+
+## Replace the sample content
+
+Keep the examples that help explain your project. Remove sample MDX pages and their matching source files when you no longer need them. The Examples navigation and hero action point to this overview, so they keep working as individual demos come and go.
+
+The optional macOS Switch demo is one example of a richer playground. Its removal steps are in [Getting started](/docs/getting-started#keep-or-remove-the-switch-demo).

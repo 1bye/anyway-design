@@ -1,6 +1,6 @@
 {
-  "title": "Components",
+  "title": "Examples",
   "collapsible": false,
   "defaultOpen": true,
-  "pages": ["switch"]
+  "pages": ["..."]
 }

@@ -2,7 +2,7 @@
   "pages": [
     "---The essentials---",
     "getting-started",
-    "---The components---",
-    "components/switch"
+    "---The examples---",
+    "...components"
   ]
 }

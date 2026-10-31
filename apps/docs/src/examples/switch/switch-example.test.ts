@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { getSwitchExample } from "../src/lib/switch-example";
+import { getSwitchExample } from "./switch-example";
 
 describe("copyable switch example", () => {
 	it("includes the setup required to use the component", () => {

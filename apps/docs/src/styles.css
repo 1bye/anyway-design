@@ -1,7 +1,6 @@
 @import "tailwindcss";
 @import "fumadocs-ui/css/neutral.css";
 @import "fumadocs-ui/css/preset.css";
-@import "@anyway-design/macos/styles.css";
 @import "@fontsource-variable/instrument-sans/wght.css";
 
 @font-face {
