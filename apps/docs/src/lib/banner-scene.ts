@@ -114,7 +114,7 @@ export function paintBannerScene(
 	}
 }
 
-export function drawTextSmear(
+export function drawInkSmear(
 	context: CanvasRenderingContext2D,
 	ink: HTMLCanvasElement,
 	smear: TextSmear,

@@ -1,8 +1,9 @@
 import {
-	drawTextSmear,
+	drawInkSmear,
 	paintBannerScene,
 	TEXT_SMEAR_RADIUS,
 } from "../lib/banner-scene";
+import { createInkField } from "../lib/ink-field";
 import {
 	addInkBloom,
 	getInkRadius,
@@ -89,10 +90,12 @@ function startInkWash(canvas: HTMLCanvasElement): () => void {
 	const sceneDrawing = scene.getContext("2d");
 	const ink = document.createElement("canvas");
 	const inkFrame = document.createElement("canvas");
+	const pigment = document.createElement("canvas");
 	const patch = document.createElement("canvas");
 	const mask = document.createElement("canvas");
 	const inkDrawing = ink.getContext("2d");
 	const frameDrawing = inkFrame.getContext("2d");
+	const pigmentDrawing = pigment.getContext("2d");
 	const patchDrawing = patch.getContext("2d");
 	const maskDrawing = mask.getContext("2d");
 	if (
@@ -102,6 +105,7 @@ function startInkWash(canvas: HTMLCanvasElement): () => void {
 			sceneDrawing &&
 			inkDrawing &&
 			frameDrawing &&
+			pigmentDrawing &&
 			patchDrawing &&
 			maskDrawing
 		)
@@ -113,9 +117,11 @@ function startInkWash(canvas: HTMLCanvasElement): () => void {
 	const sceneContext = sceneDrawing;
 	const inkContext = inkDrawing;
 	const frameContext = frameDrawing;
+	const pigmentContext = pigmentDrawing;
 	const patchContext = patchDrawing;
 	const maskContext = maskDrawing;
 	const surface = banner;
+	const inkField = createInkField();
 	const blooms: InkBloom[] = [];
 	const smears: TextSmear[] = [];
 	let pointer: { x: number; y: number; at: number } | null = null;
@@ -134,27 +140,38 @@ function startInkWash(canvas: HTMLCanvasElement): () => void {
 		}
 		context.clearRect(0, 0, width, height);
 		pruneTextSmears(smears, now);
+		const inkTarget = smears.length ? pigmentContext : context;
+		if (smears.length) {
+			pigmentContext.clearRect(0, 0, width, height);
+		}
 		if (fontsReady && scene.width && scene.height) {
 			context.drawImage(scene, 0, 0, width, height);
-			if (smears.length) {
-				frameContext.clearRect(0, 0, width, height);
-				frameContext.drawImage(ink, 0, 0, width, height);
-				for (const smear of smears) {
-					drawTextSmear(frameContext, ink, smear, {
-						mask,
-						now,
-						patch: patchContext,
-						scale,
-					});
-				}
-				context.drawImage(inkFrame, 0, 0, width, height);
-			} else {
-				context.drawImage(ink, 0, 0, width, height);
-			}
+			inkTarget.drawImage(ink, 0, 0, width, height);
 		}
 		pruneInkBlooms(blooms, now);
-		for (const bloom of blooms) {
-			drawBloom(context, bloom, now, inkColor);
+		if (
+			!inkField?.draw(inkTarget, blooms, now, {
+				color: inkColor,
+				height,
+				width,
+			})
+		) {
+			for (const bloom of blooms) {
+				drawBloom(inkTarget, bloom, now, inkColor);
+			}
+		}
+		if (smears.length) {
+			frameContext.clearRect(0, 0, width, height);
+			frameContext.drawImage(pigment, 0, 0, width, height);
+			for (const smear of smears) {
+				drawInkSmear(frameContext, pigment, smear, {
+					mask,
+					now,
+					patch: patchContext,
+					scale,
+				});
+			}
+			context.drawImage(inkFrame, 0, 0, width, height);
 		}
 	}
 
@@ -202,12 +219,13 @@ function startInkWash(canvas: HTMLCanvasElement): () => void {
 		scale = Math.min(window.devicePixelRatio || 1, 2);
 		canvas.width = Math.round(width * scale);
 		canvas.height = Math.round(height * scale);
-		for (const cached of [scene, ink, inkFrame]) {
+		for (const cached of [scene, ink, inkFrame, pigment]) {
 			cached.width = canvas.width;
 			cached.height = canvas.height;
 		}
 		context.setTransform(scale, 0, 0, scale, 0, 0);
 		frameContext.setTransform(scale, 0, 0, scale, 0, 0);
+		pigmentContext.setTransform(scale, 0, 0, scale, 0, 0);
 		const size = TEXT_SMEAR_RADIUS * 2;
 		for (const cached of [patch, mask]) {
 			cached.width = Math.round(size * scale);
@@ -306,6 +324,7 @@ function startInkWash(canvas: HTMLCanvasElement): () => void {
 		disposed = true;
 		delete surface.dataset.canvasReady;
 		clear();
+		inkField?.dispose();
 		observer.disconnect();
 		themeObserver.disconnect();
 		surface.removeEventListener("pointermove", onPointerMove);
