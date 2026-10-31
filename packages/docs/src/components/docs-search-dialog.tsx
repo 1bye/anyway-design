@@ -12,10 +12,14 @@ import {
 	type SharedProps,
 } from "fumadocs-ui/components/dialog/search";
 import { useCallback, useRef } from "react";
+import { useDocsConfig } from "../config";
 import { Kbd } from "./kbd";
 
 export default function DocsSearchDialog(props: SharedProps) {
-	const search = useDocsSearch({ client: fetchClient({ api: "/api/search" }) });
+	const config = useDocsConfig();
+	const search = useDocsSearch({
+		client: fetchClient({ api: config.searchApi ?? "/api/search" }),
+	});
 	const previousFocus = useRef<HTMLElement | null>(null);
 	const rememberFocus = useCallback(() => {
 		previousFocus.current =

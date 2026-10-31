@@ -1,10 +1,10 @@
 import { MacSwitch } from "@anyway-design/macos/controls";
 import { MacOSEnvironment } from "@anyway-design/macos/environment";
 import "@anyway-design/macos/styles.css";
+import { CopyButton } from "@anyway-design/docs/copy-button";
+import { PlaygroundChoice } from "@anyway-design/docs/playground-choice";
 import { Code2, RotateCcw, SlidersHorizontal } from "lucide-react";
 import { useCallback, useId, useState } from "react";
-import { CopyButton } from "../../components/copy-button";
-import { PlaygroundChoice } from "../../components/playground-choice";
 import { getSwitchExample } from "./switch-example";
 
 const sizeOptions = [

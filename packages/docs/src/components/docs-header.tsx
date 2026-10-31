@@ -1,4 +1,5 @@
-import { Link } from "@tanstack/react-router";
+import { usePathname } from "fumadocs-core/framework";
+import Link from "fumadocs-core/link";
 import { buttonVariants } from "fumadocs-ui/components/ui/button";
 import {
 	FullSearchTrigger,
@@ -7,10 +8,11 @@ import {
 import { ThemeSwitch } from "fumadocs-ui/layouts/shared/slots/theme-switch";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import { Fragment } from "react";
-import { docsConfig } from "../docs.config";
+import { getDocsHref, useDocsConfig } from "../config";
 import { BannerInk } from "./banner-ink";
 
 export function DocsHeader() {
+	const docsConfig = useDocsConfig();
 	return (
 		<header className="anyway-docs-header">
 			<a className="docs-skip-link" href="#nd-page">
@@ -20,12 +22,13 @@ export function DocsHeader() {
 				<Link
 					aria-label={`${docsConfig.name} documentation home`}
 					className="inline-flex items-baseline justify-self-start text-fd-muted-foreground hover:text-fd-foreground"
-					to="/"
+					data-header-label={docsConfig.headerLabel}
+					href={getDocsHref(docsConfig)}
 				>
 					{/* Align the letter baseline while letting the y descenders extend below it. */}
 					<span
 						aria-hidden="true"
-						className="relative block w-18 shrink-0 max-[360px]:w-16 sm:w-22"
+						className="docs-brand-wordmark relative block w-18 shrink-0 max-[360px]:w-16 sm:w-22"
 						style={{
 							aspectRatio: `${docsConfig.logo.width} / ${docsConfig.logo.baseline}`,
 						}}
@@ -40,10 +43,10 @@ export function DocsHeader() {
 					</span>
 					<span
 						aria-hidden="true"
-						className="mx-2 h-6 w-px -skew-x-24 self-center bg-fd-muted-foreground/60"
+						className="docs-brand-divider mx-2 h-6 w-px -skew-x-24 self-center bg-fd-muted-foreground/60"
 					/>
-					<span className="-skew-x-10 font-light text-xl tracking-[-0.065em]">
-						docs
+					<span className="docs-brand-label -skew-x-10 font-light text-xl tracking-[-0.065em]">
+						{docsConfig.headerLabel ?? "docs"}
 					</span>
 				</Link>
 				<SearchTrigger className="docs-header-search h-11 w-11 justify-self-center md:hidden" />
@@ -78,18 +81,21 @@ export function DocsHeader() {
 }
 
 export function DocsSectionTabs() {
+	const docsConfig = useDocsConfig();
+	const pathname = usePathname();
 	return (
 		<nav aria-label="Documentation sections" className="anyway-docs-sections">
 			{docsConfig.navigation.map(({ label, slug, icon: Icon }) => (
 				<Link
-					activeOptions={{ exact: true }}
+					aria-current={
+						pathname === getDocsHref(docsConfig, slug) ? "page" : undefined
+					}
 					className={buttonVariants({
 						className: "justify-start gap-2 font-normal text-sm",
 						variant: "ghost",
 					})}
+					href={getDocsHref(docsConfig, slug)}
 					key={slug}
-					params={{ _splat: slug }}
-					to="/docs/$"
 				>
 					<Icon aria-hidden="true" size={15} /> {label}
 				</Link>
@@ -99,6 +105,7 @@ export function DocsSectionTabs() {
 }
 
 export function DocsWelcomeBanner() {
+	const docsConfig = useDocsConfig();
 	return (
 		<section
 			aria-label={`Welcome to ${docsConfig.name}`}
@@ -119,10 +126,8 @@ export function DocsWelcomeBanner() {
 						<Link
 							className={buttonVariants({ variant: action.variant })}
 							data-canvas-action={action.variant}
-							hash={action.hash}
+							href={`${getDocsHref(docsConfig, action.slug)}${action.hash ? `#${action.hash}` : ""}`}
 							key={`${action.slug}#${action.hash ?? ""}`}
-							params={{ _splat: action.slug }}
-							to="/docs/$"
 						>
 							<span data-canvas-text>{action.label}</span>{" "}
 							{action.variant === "primary" ? (

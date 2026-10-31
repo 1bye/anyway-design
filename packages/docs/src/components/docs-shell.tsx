@@ -2,7 +2,7 @@ import type { TableOfContents } from "fumadocs-core/toc";
 import { TOCProvider } from "fumadocs-ui/components/toc";
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import type { ComponentProps, ReactNode } from "react";
-import { docsConfig } from "../docs.config";
+import { getDocsHref, useDocsConfig } from "../config";
 import { DocsHeader, DocsSectionTabs, DocsWelcomeBanner } from "./docs-header";
 import {
 	DocsSidebarItem,
@@ -21,6 +21,7 @@ export function DocsShell({
 	toc: TableOfContents;
 	children: ReactNode;
 }) {
+	const docsConfig = useDocsConfig();
 	return (
 		<TOCProvider single toc={toc}>
 			<div className="anyway-docs-shell">
@@ -30,7 +31,7 @@ export function DocsShell({
 					containerProps={{ className: "anyway-docs-body" }}
 					nav={{
 						title: docsConfig.navigation[0]?.label ?? docsConfig.name,
-						url: "/",
+						url: getDocsHref(docsConfig),
 					}}
 					searchToggle={{ enabled: false }}
 					sidebar={{

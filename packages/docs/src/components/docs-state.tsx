@@ -1,8 +1,8 @@
-import { Link } from "@tanstack/react-router";
+import Link from "fumadocs-core/link";
 import { buttonVariants } from "fumadocs-ui/components/ui/button";
 import { ArrowRight, BookOpen, CircleAlert, RotateCcw } from "lucide-react";
 import type { ReactNode } from "react";
-import { docsConfig } from "../docs.config";
+import { getDocsHref, useDocsConfig } from "../config";
 import { BannerInk } from "./banner-ink";
 import { DocsHeader } from "./docs-header";
 
@@ -55,11 +55,11 @@ function DocsState({
 }
 
 function GuideLink() {
+	const docsConfig = useDocsConfig();
 	return (
 		<Link
 			className={buttonVariants({ variant: "ghost" })}
-			params={{ _splat: docsConfig.homePage }}
-			to="/docs/$"
+			href={getDocsHref(docsConfig)}
 		>
 			Back to the guide <ArrowRight aria-hidden="true" size={16} />
 		</Link>

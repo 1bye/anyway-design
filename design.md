@@ -23,7 +23,7 @@ Apply this system to guides, component pages, navigation, search, and system sta
 
 Use the locally bundled `Instrument Sans Variable` font from `@fontsource-variable/instrument-sans`, with `Arial, sans-serif` as the fallback. Keep code in the existing monospace stack. The Anyway wordmark is an image asset, not typeset text.
 
-The welcome headline and oversized 404 numeral are the display exceptions: `Instrument Serif`, italic, weight `400`, matching the hero on [git.1bye.dev](https://git.1bye.dev/). Use the self-hosted `apps/docs/public/fonts/instrument-serif-italic.woff2` through `--font-display`, with `ui-serif, Georgia, serif` as fallbacks. Its SIL Open Font License is kept beside the font in `instrument-serif-OFL.txt`. Navigation, actions, and article headings remain Instrument Sans.
+The welcome headline and oversized 404 numeral are the display exceptions: `Instrument Serif`, italic, weight `400`, matching the hero on [git.1bye.dev](https://git.1bye.dev/). Use the self-hosted `packages/docs/assets/fonts/instrument-serif-italic.woff2` through `--font-display`, with `ui-serif, Georgia, serif` as fallbacks. Its SIL Open Font License is kept beside the font in `instrument-serif-OFL.txt`. Navigation, actions, and article headings remain Instrument Sans.
 
 Values below are CSS pixels at the default `16px` root size. Use rem units so text responds to browser preferences; do not shrink the root font size to achieve the compact scale.
 
@@ -45,7 +45,7 @@ Values below are CSS pixels at the default `16px` root size. Use rem units so te
 
 All document heading levels share the compact `16px` size. Preserve a semantic H1 → H2 → H3 hierarchy and use spacing and weight to express structure. Do not use heading tags merely to enlarge text. Card titles, interface labels, and product examples are separate roles.
 
-Keep the logo lockup as a brand exception: Anyway wordmark, a thin slanted divider, and lowercase `docs` at `20px` with a light weight. Reuse `DocsHeader` for the lockup instead of rebuilding it on individual pages.
+Keep the logo lockup as a brand exception: Anyway wordmark, a thin slanted divider, and lowercase `docs` at `20px` with a light weight. Reuse `DocsHeader` for the lockup instead of rebuilding it on individual pages. Keep the Anyway wordmark for project docs; set `headerLabel` to the lowercase project label, such as `platform`, to show `Anyway / platform`. The default remains `Anyway / docs`. At `400px` and below, configured project lockups use a `48px` wordmark and `16px` label to leave room for centered search and header controls.
 
 ### Color and themes
 
@@ -191,10 +191,10 @@ paper treatment, ink behavior, and state designs.
 
 | Responsibility | Shared source |
 | --- | --- |
-| Typography, surface recipes, radii, borders, sidebar styling | [Docs CSS](apps/docs/src/styles.css) |
-| Page grid, providers, theme access, sidebar configuration | [Docs shell](apps/docs/src/components/docs-shell.tsx) |
-| Logo lockup, header navigation, welcome banner | [Docs header](apps/docs/src/components/docs-header.tsx) |
-| Page outline and active section behavior | [Docs sidebar](apps/docs/src/components/docs-sidebar.tsx) |
+| Typography, surface recipes, radii, borders, sidebar styling | [Docs CSS](packages/docs/src/styles.css) |
+| Page grid, providers, theme access, sidebar configuration | [Docs shell](packages/docs/src/components/docs-shell.tsx) |
+| Logo lockup, header navigation, welcome banner | [Docs header](packages/docs/src/components/docs-header.tsx) |
+| Page outline and active section behavior | [Docs sidebar](packages/docs/src/components/docs-sidebar.tsx) |
 | Document title, introduction, body composition | [Docs route](apps/docs/src/routes/docs/$.tsx) |
 | Shared MDX components | [MDX component map](apps/docs/src/components/mdx.tsx) |
 | Reference live example | [Optional Switch playground](apps/docs/src/examples/switch/switch-playground.tsx) |
@@ -202,7 +202,7 @@ paper treatment, ink behavior, and state designs.
 
 Change a shared role or token once, then verify it on both page types. Avoid local font sizes, hardcoded colors, or border overrides in individual MDX pages. Keep new rules scoped to documentation so product components and the separate website retain their own design contracts.
 
-For another Anyway project's documentation, reuse this shell and component map, then supply its content and project identity through `src/docs.config.ts`. Keep the documentation font, palette, control shapes, and navigation behavior consistent. A project may demonstrate its own design inside examples without introducing a new documentation theme. Getting Started explains adopting the boilerplate, configuring a project, writing MDX, adding examples, and checking a build. The default Examples overview uses a plain React counter. The macOS Switch is a removable sample with page-local imports, styles, and tests under `src/examples/switch/`; product dependencies must stay out of the shared shell and MDX registry. Shared navigation must point to the overview so it survives individual demo removal. A reusable cross-project theme package is not implemented yet.
+For another Anyway project's documentation, reuse this shell and component map, then supply its content and project identity through `src/docs.config.ts`. Keep the documentation font, palette, control shapes, and navigation behavior consistent. A project may demonstrate its own design inside examples without introducing a new documentation theme. Getting Started explains adopting the boilerplate, configuring a project, writing MDX, adding examples, and checking a build. The default Examples overview uses a plain React counter. The macOS Switch is a removable sample with page-local imports, styles, and tests under `src/examples/switch/`; product dependencies must stay out of the shared shell and MDX registry. Shared navigation must point to the overview so it survives individual demo removal. The reusable `@anyway-design/docs` package lives in `packages/docs`. It owns shared design, chrome, controls, canvas behavior, recovery states, and bundled font/paper assets. Consumers supply their own configuration through `DocsProvider`, plus local content, routing, search indexing, and examples. The package uses Fumadocs framework links; its source distribution is verified with TanStack Start and Vite SSR transformation. Release and integration instructions live in `packages/docs/README.md`.
 
 Update this file alongside deliberate shared design changes. Resolve disagreements between this contract and the UI in the shared implementation rather than adding exceptions page by page. Run the documentation build, type checks, and Ultracite checks when changing code; prose-only edits need a link and diff review.
 

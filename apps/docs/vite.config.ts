@@ -11,4 +11,5 @@ export default defineConfig({
 		tsconfigPaths: true,
 	},
 	server: { port: 3007, strictPort: true },
+	ssr: { noExternal: ["@anyway-design/docs"] },
 });

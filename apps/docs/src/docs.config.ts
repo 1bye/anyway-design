@@ -1,22 +1,5 @@
-import { BookOpen, Component, type LucideIcon } from "lucide-react";
-
-interface DocsConfig {
-	description: string;
-	hero: {
-		lines: readonly string[];
-		actions: readonly {
-			label: string;
-			slug: string;
-			hash?: string;
-			variant: "primary" | "ghost";
-		}[];
-	};
-	homePage: string;
-	logo: { src: string; width: number; height: number; baseline: number };
-	name: string;
-	navigation: readonly { label: string; slug: string; icon: LucideIcon }[];
-	repositoryUrl: string;
-}
+import type { DocsConfig } from "@anyway-design/docs/config";
+import { BookOpen, Component } from "lucide-react";
 
 const pages = { examples: "components", guide: "getting-started" };
 

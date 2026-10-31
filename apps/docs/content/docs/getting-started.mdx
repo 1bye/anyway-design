@@ -6,7 +6,7 @@ description: Start a documentation project, make it yours, and publish guides wi
 
 ## Start your docs
 
-This is a documentation boilerplate built with Fumadocs, TanStack Start, and Vite. It provides the shared Anyway design, MDX pages, search, navigation, and interactive examples. Replace the sample content with documentation for your project.
+This is a documentation boilerplate built with Fumadocs, TanStack Start, and Vite. Its design and behavior come from the shared `@anyway-design/docs` package. It provides the shared Anyway design, MDX pages, search, navigation, and interactive examples. Replace the sample content with documentation for your project.
 
 From the repository root:
 
@@ -34,7 +34,7 @@ bun run --cwd apps/my-project-docs dev --port 3008
 Use a different port when running both documentation apps at once.
 
 <Callout className="docs-callout" title="Workspace starter">
-The package uses this repository’s Bun dependency catalog. For a different repository, copy the matching catalog entries from the root `package.json` or replace `catalog:` references with concrete versions. The optional Switch example also uses a local workspace package; [remove it](#keep-or-remove-the-switch-demo) if your project does not include that package.
+The app uses this repository’s Bun dependency catalog and a workspace link to `@anyway-design/docs`. For a different repository, copy the matching catalog entries from the root `package.json` or replace `catalog:` references with concrete versions. Install a packed or published version of `@anyway-design/docs` in the target repository; its shared styles, fonts, and paper assets travel with it. The optional Switch example also uses a local workspace package; [remove it](#keep-or-remove-the-switch-demo) if your project does not include that package.
 </Callout>
 
 ## Configure your project
@@ -45,6 +45,7 @@ Edit `src/docs.config.ts` to supply your project’s identity and destinations:
 | --- | --- |
 | `name` and `description` | Site metadata, brand labels, and the search breadcrumb |
 | `logo` | A monochrome asset in `public/`, its dimensions, and its visual baseline |
+| `headerLabel` | The label after the wordmark: `docs` by default, or `platform` for `Anyway / platform` |
 | `repositoryUrl` | The header’s GitHub link |
 | `homePage` | The default docs slug and error recovery destination |
 | `navigation` | Section labels, icons, and destination slugs |
@@ -73,10 +74,11 @@ This page appears at `/docs/your-page`. Add `your-page` to the nearest `meta.jso
 | --- | --- |
 | `content/docs/` | MDX pages and `meta.json` navigation files |
 | `src/docs.config.ts` | Project branding and shared destinations |
-| `src/components/` | Documentation shell and shared MDX components |
+| `src/components/` | Your MDX component registry |
+| `@anyway-design/docs` | Shared shell, design, controls, search UI, and system states |
 | `src/examples/` | Page-specific React previews |
-| `src/styles.css` | Shared documentation design tokens and styles |
-| `public/` | Fonts, branding, and other static assets |
+| `src/styles.css` | Imports for Tailwind and the shared documentation stylesheet |
+| `public/` | Your project’s branding and static assets |
 
 ## Add a live example
 
@@ -96,6 +98,12 @@ To remove it from your copy:
 4. Run `bun install` from the workspace root to update the lockfile, then run the checks below.
 
 No shared layout or style edits are needed. Navigation discovers the remaining example pages automatically, and the Examples tab and banner action continue to open the general examples guide.
+
+## Update the shared design
+
+Change shared design and behavior in `packages/docs`, then release a new version of `@anyway-design/docs`. In a separate project, install that version and rebuild; your content, configuration, logo, and examples stay local.
+
+For an unpublished local release, run `bun pm pack --destination /tmp` from `packages/docs`, then install the generated tarball in your target docs app. The package README contains the provider setup, peer dependencies, and Vite SSR configuration. This starter already includes that integration.
 
 ## Build and publish
 

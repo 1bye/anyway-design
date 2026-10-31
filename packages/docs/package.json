@@ -1,0 +1,46 @@
+{
+  "name": "@anyway-design/docs",
+  "version": "0.1.0",
+  "description": "Shared Anyway documentation design for Fumadocs and React.",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "type": "module",
+  "exports": {
+    "./config": "./src/config.tsx",
+    "./shell": "./src/components/docs-shell.tsx",
+    "./header": "./src/components/docs-header.tsx",
+    "./states": "./src/components/docs-state.tsx",
+    "./search": "./src/components/docs-search-dialog.tsx",
+    "./copy-button": "./src/components/copy-button.tsx",
+    "./playground-choice": "./src/components/playground-choice.tsx",
+    "./kbd": "./src/components/kbd.tsx",
+    "./page-icons": "./src/components/page-icons.tsx",
+    "./styles.css": "./src/styles.css"
+  },
+  "files": [
+    "src",
+    "assets",
+    "README.md"
+  ],
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "test": "bun test tests"
+  },
+  "dependencies": {
+    "@fontsource-variable/instrument-sans": "5.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^6.0.3"
+  },
+  "peerDependencies": {
+    "fumadocs-core": "16.17.9",
+    "fumadocs-ui": "16.17.9",
+    "lucide-react": "^1.61.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwindcss": "^4.3.3"
+  }
+}

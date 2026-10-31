@@ -40,6 +40,8 @@ Edit `src/docs.config.ts` to adapt the shared shell to another Anyway project:
 - `logo` supplies a monochrome asset under `public/`, its viewBox width/height,
   and the baseline height used to align it with the `docs` label. For a logo
   without descenders, set `baseline` to `height`.
+- `headerLabel` sets the word after the slash; it defaults to `docs`. Keep the
+  Anyway wordmark and use `platform` for the Platform project.
 - `repositoryUrl` sets the header’s GitHub destination.
 - `homePage` is the docs slug used by the root redirect and error recovery link.
 - `navigation` defines section labels, destination slugs, and Lucide icons.
@@ -59,38 +61,22 @@ Page ordering, group labels, and page-specific prose stay with these content
 files. The site config supplies the page-tree root name.
 Import page-specific React examples directly into MDX from `src/examples/`.
 Reserve `src/components/mdx.tsx` for components used throughout the docs.
-Page icons are inline SVGs in `src/components/page-icons.tsx`. Set `icon` to
+Page icons are inline SVGs from `@anyway-design/docs/page-icons`. Set `icon` to
 `GettingStarted`, `Examples`, or `Switch` in MDX frontmatter; `src/lib/source.ts` resolves
 that name for the shared sidebar.
 
-`src/components/docs-shell.tsx` uses the standard Fumadocs `DocsLayout` below a
-Holocron-inspired masthead: the Anyway wordmark, centered search, repository
-link, and compact theme switch. Section navigation sits at the top of the sidebar. The welcome banner
-appears across Documentation and Examples. `src/components/docs-header.tsx` owns the header,
-section navigation, and banner. The sticky header uses
-Fumadocs' banner offset so the sidebar and anchor links stay clear of it.
-`src/components/banner-ink.tsx` paints the welcome headline and actions into the
-same canvas as the mouse-responsive ink droplets. Nearby drops collect into
-pools at fixed centers, then fade when idle. A separate pointer-driven ink layer
-smears lettering, arrows, and drop pigment locally, leaving button surfaces
-intact and stored drop centers fixed. Nearby drops fuse through a WebGL2 SDF smooth union in `src/lib/ink-field.ts`,
-sharing one contour and the same smear. The original Canvas drops remain the
-fallback when WebGL is unavailable. The bounded trail clears within 900ms, restoring the clean print. The
-HTML remains the accessible layout and interaction source, with its entire
-visual layer hidden while canvas is active. Canvas also draws keyboard focus
-rings. Touch and reduced
-motion use the HTML appearance. `src/lib/banner-scene.ts` caches the printed
-scene from the actual layout and fonts.
-`src/styles.css` imports the neutral theme and
-defines the documentation text scale, surfaces, radii, and sidebar treatment.
-`src/components/docs-sidebar.tsx` nests the current page's headings under its
-navigation link, using Fumadocs' active-heading tracking. The standard sidebar
-drawer is hosted in a native modal dialog on mobile, with Escape dismissal,
-background isolation, scroll locking, and focus restoration. Light/dark mode and search use Fumadocs'
-built-in behavior. `src/components/docs-search-dialog.tsx` composes the search
-palette from Fumadocs primitives, with rounded result rows and a shared `Kbd`
-Escape keycap. The root provider lazy-loads it. Shared product components remain
-in their workspace packages.
+The shared shell, sidebar, header, canvas, state views, search UI, controls,
+styles, fonts, and texture now live in `packages/docs`, exposed through
+`@anyway-design/docs` subpath imports. This app keeps only its project config,
+MDX registry, routes, source loader/search index, content, logo, and examples.
+It is the reference consumer for shared changes. See the
+[package integration and release guide](../../packages/docs/README.md) for
+adopting the package in Platform and updating a separate repository.
+
+The root document wraps the Fumadocs TanStack provider with `DocsProvider`.
+`src/styles.css` imports Tailwind and the package stylesheet. Vite transforms
+the source package during SSR; the package CSS registers its own Tailwind sources
+and bundles its font/paper assets without public file copying.
 
 ## Optional Switch demo
 
@@ -113,11 +99,12 @@ package, so remove it before installing in a repository without `packages/macos`
 The `...components` entry in the root content metadata flattens the Examples
 folder, and its `...` entry discovers remaining pages; no navigation edits are
 needed when removing Switch. `bun test` discovers shared tests and any tests
-colocated with optional examples.
+colocated with optional examples. Shared ink and configuration tests run in
+`packages/docs`.
 
 ## System states
 
-`src/components/docs-state.tsx` shares the header, paper background, compact
+`@anyway-design/docs/states` shares the header, paper background, compact
 typography, and borderless pill actions across missing, loading, and failed pages.
 The 404 uses a large Instrument Serif numeral (`176–416px`) with the welcome
 banner’s SDF ink and pointer smear. The main area contains only the
@@ -138,7 +125,9 @@ without requiring the page loader or sidebar tree to succeed.
 bun run build:docs
 bun run --cwd apps/docs check-types
 bun run --cwd apps/docs test
-bun x ultracite check apps/docs
+bun run --cwd packages/docs test
+bun run --cwd packages/docs check-types
+bun x ultracite check apps/docs packages/docs
 ```
 
 For system states, check an unknown `/docs/…` URL and an unmatched root URL
@@ -172,7 +161,8 @@ checks do not replace physical-device or screen-reader testing.
 Vite generates `src/routeTree.gen.ts` and Fumadocs generates `.source/`; both are
 ignored. Start the dev server or run the build before a fresh type check.
 
-Deployment and a reusable theme package are not configured. The Getting Started
+Deployment is not configured. The shared package is extracted and packable,
+but has not been published to a registry. The Getting Started
 guide covers copying this app inside a compatible Bun workspace, branding, MDX
 authoring, and build checks. For another repository, supply the root Bun catalog
 or replace `catalog:` dependency references with concrete versions. The production build currently emits upstream CSS

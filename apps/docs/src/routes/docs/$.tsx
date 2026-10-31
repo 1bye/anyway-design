@@ -1,3 +1,5 @@
+import { DocsShell } from "@anyway-design/docs/shell";
+import { DocsLoading } from "@anyway-design/docs/states";
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
 import { useFumadocsLoader } from "fumadocs-core/source/client";
@@ -9,8 +11,6 @@ import {
 } from "fumadocs-ui/layouts/docs/page";
 import { type ComponentProps, Suspense } from "react";
 import collections from "../../../.source/browser";
-import { DocsShell } from "../../components/docs-shell";
-import { DocsLoading } from "../../components/docs-state";
 import { mdxComponents } from "../../components/mdx";
 import { docsConfig } from "../../docs.config";
 import { source } from "../../lib/source";

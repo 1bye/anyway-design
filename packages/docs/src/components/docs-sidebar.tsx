@@ -1,4 +1,4 @@
-import { useLocation } from "@tanstack/react-router";
+import { usePathname } from "fumadocs-core/framework";
 import type { Item, Separator } from "fumadocs-core/page-tree";
 import { TOCItem, useActiveAnchor } from "fumadocs-core/toc";
 import {
@@ -51,7 +51,7 @@ export const docsSidebarSlots = {
 };
 
 export function DocsSidebarItem({ item }: { item: Item }) {
-	const pathname = useLocation({ select: (location) => location.pathname });
+	const pathname = usePathname();
 	const toc = useTOCItems();
 	const activeAnchor = useActiveAnchor();
 	const { setOpen } = useSidebar();

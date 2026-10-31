@@ -1,3 +1,5 @@
+import { DocsProvider } from "@anyway-design/docs/config";
+import { DocsNotFound } from "@anyway-design/docs/states";
 import {
 	createRootRoute,
 	HeadContent,
@@ -6,11 +8,10 @@ import {
 } from "@tanstack/react-router";
 import { RootProvider } from "fumadocs-ui/provider/tanstack";
 import { lazy, type ReactNode } from "react";
-import { DocsNotFound } from "../components/docs-state";
 import { docsConfig } from "../docs.config";
 import appCss from "../styles.css?url";
 
-const DocsSearchDialog = lazy(() => import("../components/docs-search-dialog"));
+const DocsSearchDialog = lazy(() => import("@anyway-design/docs/search"));
 
 export const Route = createRootRoute({
 	component: Outlet,
@@ -37,9 +38,11 @@ function RootDocument({ children }: { children: ReactNode }) {
 				<HeadContent />
 			</head>
 			<body className="flex min-h-screen flex-col font-sans">
-				<RootProvider search={{ SearchDialog: DocsSearchDialog }}>
-					{children}
-				</RootProvider>
+				<DocsProvider config={docsConfig}>
+					<RootProvider search={{ SearchDialog: DocsSearchDialog }}>
+						{children}
+					</RootProvider>
+				</DocsProvider>
 				<Scripts />
 			</body>
 		</html>
