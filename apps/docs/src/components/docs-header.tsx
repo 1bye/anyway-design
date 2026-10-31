@@ -12,14 +12,25 @@ export function DocsHeader() {
 	return (
 		<header className="anyway-docs-header">
 			<div className="mx-auto flex h-16 max-w-(--fd-layout-width) items-center justify-between px-4 md:px-8">
-				<Link aria-label="Anyway documentation home" to="/">
+				<Link
+					aria-label="Anyway documentation home"
+					className="inline-flex items-center"
+					to="/"
+				>
 					<img
 						alt="Anyway"
-						className="h-12 w-24 object-contain dark:invert"
+						className="h-10 w-20 object-contain sm:h-12 sm:w-24 dark:invert"
 						height={887}
 						src="/brand/anyway-wordmark.png"
 						width={1774}
 					/>
+					<span
+						aria-hidden="true"
+						className="mx-2 h-6 w-px -skew-x-24 bg-fd-muted-foreground/60"
+					/>
+					<span className="-skew-x-10 font-light text-xl tracking-[-0.065em]">
+						docs
+					</span>
 				</Link>
 				<div className="flex items-center gap-3">
 					<a
@@ -39,7 +50,7 @@ export function DocsHeader() {
 					</a>
 					<Link
 						className={buttonVariants({
-							className: "rounded-full",
+							className: "shrink-0 whitespace-nowrap rounded-full",
 							size: "sm",
 							variant: "secondary",
 						})}
