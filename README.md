@@ -4,6 +4,8 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 
 ## Features
 
+The documentation prototype lives in [`apps/docs`](apps/docs/README.md). Run `bun run dev:docs` to open the MDX guide and live component page at `http://127.0.0.1:3007`.
+
 The macOS React component playground lives in [`apps/macos-lab`](apps/macos-lab/README.md), backed by [`packages/macos`](packages/macos/README.md). Run `bun run dev:macos` to preview the Sequoia and Tahoe presets at `http://127.0.0.1:3006`.
 
 The agent setup builder lives in [`apps/md`](apps/md/README.md). Run `bun run --cwd apps/md db:local`, then `bun run dev:md` to open it at `http://127.0.0.1:3002`.
@@ -87,6 +89,7 @@ cd packages/infra && bun run deploy --stage production
 anyway-design/
 ├── apps/
 │   ├── web/         # Frontend application (React + TanStack Start)
+│   ├── docs/        # Anyway documentation (Fumadocs + MDX)
 │   ├── md/          # Skills and AGENTS.md builder, anonymous D1 saves
 │   ├── plan/        # Premade blocks, connections, and optional WebMCP tools
 ├── packages/
@@ -99,5 +102,7 @@ anyway-design/
 - `bun run dev`: Start all applications in development mode
 - `bun run build`: Build all applications
 - `bun run dev:web`: Start only the web application
+- `bun run dev:docs`: Start the documentation prototype
+- `bun run build:docs`: Build the documentation prototype
 - `bun run check-types`: Check TypeScript types across all apps
 - `bun run check`: Run Biome formatting and linting

@@ -1,0 +1,9 @@
+{
+  "title": "Anyway",
+  "pages": [
+    "---The essentials---",
+    "getting-started",
+    "---The components---",
+    "components/switch"
+  ]
+}

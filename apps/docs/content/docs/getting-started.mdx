@@ -1,0 +1,64 @@
+---
+title: Getting started
+description: A small, considered starting point for building with Anyway. Shared components, thoughtful defaults, and room to make it your own.
+---
+
+<Callout title="A place to start">
+Good interfaces leave room for the thing you came to do. That’s where we like to start.
+</Callout>
+
+## A few things we believe
+
+Anyway is a growing collection of interfaces and the decisions behind them. We care about the quiet details: how a control responds, where a label sits, and how easily you can find your way back.
+
+<GuideCards />
+
+## Find your starting point
+
+This documentation lives alongside the projects it describes. The examples use the same components as the apps, so the thing you try here is the thing you build with.
+
+1. **Explore a component.** Try its states and see how it behaves.
+2. **Read the intent.** Understand when to use it and what to keep in mind.
+3. **Make it your own.** Take the example into your project and build from there.
+
+<ComponentLink />
+
+## Work in the workspace
+
+From the repository root, install the workspace dependencies and start the documentation:
+
+```bash title="Terminal"
+bun install
+bun run dev:docs
+```
+
+Open [localhost:3007](http://localhost:3007). Changes to a guide or component preview appear as you work.
+
+### Where things live
+
+| Location | What you’ll find |
+| --- | --- |
+| `apps/docs/content/docs` | Guides and component pages, written in MDX |
+| `apps/docs/src/components` | The documentation shell and interactive examples |
+| `packages/macos` | The shared macOS components used in the live preview |
+
+## Write a page
+
+Create an `.mdx` file in the content directory. Give it a title and a description, then write in Markdown. Headings become links in the table of contents, and your page is included in search.
+
+```mdx title="your-page.mdx"
+---
+title: Your next idea
+description: A good place to begin.
+---
+
+## Start with the useful part
+
+A little explanation goes a long way.
+```
+
+Register a React example in `src/components/mdx.tsx` to use it inside your page. Keep the explanation in MDX and the interaction in the component.
+
+<Callout>
+A little room to grow. We’ll keep the useful parts and refine the details as we build.
+</Callout>

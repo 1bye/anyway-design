@@ -9,6 +9,8 @@ build
 *.tsbuildinfo
 
 # Generated files
+apps/docs/src/routeTree.gen.ts
+apps/docs/.source
 apps/web/src/routeTree.gen.ts
 apps/md/src/routeTree.gen.ts
 apps/plan/src/routeTree.gen.ts

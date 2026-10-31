@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+@import "@anyway-design/macos/styles.css";
+@import "@fontsource-variable/instrument-sans/wght.css";
+
+@theme {
+	--font-sans: "Instrument Sans Variable", Arial, sans-serif;
+}

@@ -1,0 +1,51 @@
+---
+title: Switch
+description: A small control for a clear decision. Turn a setting on or off, and let the change speak for itself.
+---
+
+<SwitchPlayground />
+
+## When to use it
+
+Use a switch for a setting with two opposing states. The change should take effect immediately, so the person using it can see what happened without looking for a save button.
+
+- **Keep the label steady.** “Notifications” works in both states.
+- **Make the outcome clear.** Add a short description when a setting needs context.
+- **Keep it independent.** Use a checkbox when someone is selecting items for a later action.
+
+## Bring it into your project
+
+The preview uses `MacSwitch` from the shared workspace package. Wrap it in `MacOSEnvironment` to supply the appearance and load the component styles once.
+
+```tsx title="notification-setting.tsx"
+import { MacSwitch } from "@anyway-design/macos/controls";
+import { MacOSEnvironment } from "@anyway-design/macos/environment";
+import "@anyway-design/macos/styles.css";
+
+export function NotificationSetting() {
+  return (
+    <MacOSEnvironment>
+      <MacSwitch label="Notifications" defaultChecked />
+    </MacOSEnvironment>
+  );
+}
+```
+
+Use `checked` and `onCheckedChange` when the setting belongs to your application’s state. Saving the preference belongs to the app.
+
+## The useful props
+
+| Prop | Type | Default | Purpose |
+| --- | --- | --- | --- |
+| `label` | `string` | Required | A steady, descriptive label |
+| `checked` | `boolean` | — | The current value for a controlled switch |
+| `defaultChecked` | `boolean` | `false` | The initial value for an uncontrolled switch |
+| `onCheckedChange` | `(checked: boolean) => void` | — | Respond to a change |
+| `size` | `"regular" \| "small"` | `"regular"` | Fit the surrounding interface |
+| `disabled` | `boolean` | `false` | Prevent interaction when unavailable |
+
+## A note on accessibility
+
+The component uses a native checkbox input with a switch role. It supports Tab to focus and Space to toggle, and exposes its checked and disabled states to assistive technology.
+
+When the visible label sits outside the component, provide `aria-label` or `aria-labelledby` on the switch. Keep a useful focus indicator and respect the person’s reduced motion preference.
