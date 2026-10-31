@@ -98,27 +98,31 @@ export function DocsWelcomeBanner() {
 			className="docs-welcome-banner relative isolate overflow-hidden border-b px-6 py-16 text-center md:py-20"
 		>
 			<BannerInk />
-			<div className="relative z-10 mx-auto max-w-5xl">
+			<div className="relative z-10 mx-auto max-w-5xl" data-canvas-content>
 				<p className="font-display font-normal text-[40px] italic leading-none sm:text-[56px] md:text-[68px]">
-					Build it the
+					<span data-canvas-text>Build it the</span>
 					<br />
-					Anyway way.
+					<span data-canvas-text>Anyway way.</span>
 				</p>
 				<div className="docs-hero-actions mt-8 flex flex-wrap items-center justify-center gap-4">
 					<Link
 						className={buttonVariants({ variant: "primary" })}
+						data-canvas-action="primary"
 						hash="find-your-starting-point"
 						params={{ _splat: "getting-started" }}
 						to="/docs/$"
 					>
-						Read the guide <ArrowRight aria-hidden="true" size={16} />
+						<span data-canvas-text>Read the guide</span>{" "}
+						<ArrowRight aria-hidden="true" size={16} />
 					</Link>
 					<Link
 						className={buttonVariants({ variant: "ghost" })}
+						data-canvas-action="ghost"
 						params={{ _splat: "components/switch" }}
 						to="/docs/$"
 					>
-						Explore components <ArrowUpRight aria-hidden="true" size={16} />
+						<span data-canvas-text>Explore components</span>{" "}
+						<ArrowUpRight aria-hidden="true" size={16} />
 					</Link>
 				</div>
 			</div>

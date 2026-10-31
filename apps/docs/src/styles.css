@@ -31,17 +31,24 @@
 }
 
 .docs-banner-ink {
+	--ink-rgb: 28, 30, 33;
 	position: absolute;
 	inset: 0;
 	width: 100%;
 	height: 100%;
 	pointer-events: none;
-	mix-blend-mode: multiply;
 }
 
 .dark .docs-banner-ink {
-	mix-blend-mode: screen;
-	filter: invert(1);
+	--ink-rgb: 220, 218, 212;
+}
+
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (
+		pointer: fine
+	) {
+	.docs-welcome-banner[data-canvas-ready] [data-canvas-content] {
+		opacity: 0;
+	}
 }
 
 @media (prefers-reduced-motion: reduce), (hover: none), (pointer: coarse) {

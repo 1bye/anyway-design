@@ -1,3 +1,4 @@
+import { drawInkSmudge, paintBannerScene } from "../lib/banner-scene";
 import {
 	addInkBloom,
 	getInkRadius,
@@ -10,7 +11,8 @@ import {
 function drawBloom(
 	context: CanvasRenderingContext2D,
 	bloom: InkBloom,
-	now: number
+	now: number,
+	inkColor: string
 ): void {
 	const age = now - bloom.born;
 	const progress = Math.min(age / INK_LIFETIME_MS, 1);
@@ -26,8 +28,8 @@ function drawBloom(
 		bloom.y,
 		haloRadius
 	);
-	halo.addColorStop(0, `rgba(38, 40, 43, ${0.1 * fade})`);
-	halo.addColorStop(1, "rgba(38, 40, 43, 0)");
+	halo.addColorStop(0, `rgba(${inkColor}, ${0.1 * fade})`);
+	halo.addColorStop(1, `rgba(${inkColor}, 0)`);
 	context.fillStyle = halo;
 	context.fillRect(
 		bloom.x - haloRadius,
@@ -61,12 +63,12 @@ function drawBloom(
 		bloom.y,
 		radius
 	);
-	ink.addColorStop(0, `rgba(28, 30, 33, ${opacity})`);
-	ink.addColorStop(0.8, `rgba(28, 30, 33, ${opacity * 0.85})`);
-	ink.addColorStop(1, `rgba(28, 30, 33, ${opacity * 0.55})`);
+	ink.addColorStop(0, `rgba(${inkColor}, ${opacity})`);
+	ink.addColorStop(0.8, `rgba(${inkColor}, ${opacity * 0.85})`);
+	ink.addColorStop(1, `rgba(${inkColor}, ${opacity * 0.55})`);
 	context.fillStyle = ink;
 	context.fill();
-	context.strokeStyle = `rgba(28, 30, 33, ${opacity * 0.25})`;
+	context.strokeStyle = `rgba(${inkColor}, ${opacity * 0.25})`;
 	context.lineWidth = 0.75;
 	context.stroke();
 }
@@ -74,40 +76,88 @@ function drawBloom(
 function startInkWash(canvas: HTMLCanvasElement): () => void {
 	const drawing = canvas.getContext("2d");
 	const banner = canvas.parentElement;
-	if (!(drawing && banner)) {
+	const scene = document.createElement("canvas");
+	const sceneDrawing = scene.getContext("2d");
+	if (!(drawing && banner && sceneDrawing)) {
 		return () => undefined;
 	}
 
 	const context = drawing;
+	const sceneContext = sceneDrawing;
+	const surface = banner;
 	const blooms: InkBloom[] = [];
 	let frame = 0;
 	let width = 0;
 	let height = 0;
+	let scale = 1;
 	let lastInput = 0;
+	let fontsReady = false;
+	let disposed = false;
+	let inkColor = "28, 30, 33";
+
+	function paint(now: number) {
+		if (!(width && height)) {
+			return;
+		}
+		context.clearRect(0, 0, width, height);
+		if (fontsReady && scene.width && scene.height) {
+			context.drawImage(scene, 0, 0, width, height);
+		}
+		pruneInkBlooms(blooms, now);
+		for (const bloom of blooms) {
+			drawInkSmudge(context, scene, {
+				opacity: 0.5 * (1 - (now - bloom.born) / INK_LIFETIME_MS),
+				radius: getInkRadius(bloom) + 16,
+				scale,
+				seed: bloom.seed,
+				x: bloom.x,
+				y: bloom.y,
+			});
+			drawBloom(context, bloom, now, inkColor);
+		}
+	}
 
 	function clear() {
 		cancelAnimationFrame(frame);
 		frame = 0;
 		blooms.length = 0;
-		context.clearRect(0, 0, width, height);
-	}
-
-	function resize() {
-		clear();
-		({ width, height } = canvas.getBoundingClientRect());
-		const scale = Math.min(window.devicePixelRatio || 1, 1.5);
-		canvas.width = Math.round(width * scale);
-		canvas.height = Math.round(height * scale);
-		context.setTransform(scale, 0, 0, scale, 0, 0);
+		paint(performance.now());
 	}
 
 	function draw(now: number) {
-		context.clearRect(0, 0, width, height);
-		pruneInkBlooms(blooms, now);
-		for (const bloom of blooms) {
-			drawBloom(context, bloom, now);
-		}
+		paint(now);
 		frame = blooms.length ? requestAnimationFrame(draw) : 0;
+	}
+
+	function refreshScene() {
+		if (!(fontsReady && width && height) || disposed) {
+			return;
+		}
+		paintBannerScene(sceneContext, surface, { height, scale, width });
+		inkColor = getComputedStyle(canvas).getPropertyValue("--ink-rgb").trim();
+		surface.dataset.canvasReady = "true";
+		if (!frame) {
+			frame = requestAnimationFrame(draw);
+		}
+	}
+
+	function resize() {
+		if (disposed) {
+			return;
+		}
+		clear();
+		({ width, height } = canvas.getBoundingClientRect());
+		if (!(width && height)) {
+			delete surface.dataset.canvasReady;
+			return;
+		}
+		scale = Math.min(window.devicePixelRatio || 1, 2);
+		canvas.width = Math.round(width * scale);
+		canvas.height = Math.round(height * scale);
+		scene.width = canvas.width;
+		scene.height = canvas.height;
+		context.setTransform(scale, 0, 0, scale, 0, 0);
+		refreshScene();
 	}
 
 	function onPointerMove(event: PointerEvent) {
@@ -141,17 +191,46 @@ function startInkWash(canvas: HTMLCanvasElement): () => void {
 		}
 	}
 
+	async function loadFonts() {
+		await document.fonts.ready;
+		if (!disposed) {
+			fontsReady = true;
+			refreshScene();
+		}
+	}
+
 	const observer = new ResizeObserver(resize);
+	const themeObserver = new MutationObserver(refreshScene);
 	observer.observe(canvas);
-	banner.addEventListener("pointermove", onPointerMove, { passive: true });
+	themeObserver.observe(document.documentElement, {
+		attributeFilter: ["class"],
+		attributes: true,
+	});
+	surface.addEventListener("pointermove", onPointerMove, { passive: true });
+	for (const event of ["pointerover", "pointerout", "focusin", "focusout"]) {
+		surface.addEventListener(event, refreshScene);
+	}
 	document.addEventListener("visibilitychange", onVisibilityChange);
+	document.fonts.addEventListener("loadingdone", refreshScene);
 	resize();
+	loadFonts().catch(() => {
+		fontsReady = false;
+		clear();
+		delete surface.dataset.canvasReady;
+	});
 
 	return () => {
+		disposed = true;
+		delete surface.dataset.canvasReady;
 		clear();
 		observer.disconnect();
-		banner.removeEventListener("pointermove", onPointerMove);
+		themeObserver.disconnect();
+		surface.removeEventListener("pointermove", onPointerMove);
+		for (const event of ["pointerover", "pointerout", "focusin", "focusout"]) {
+			surface.removeEventListener(event, refreshScene);
+		}
 		document.removeEventListener("visibilitychange", onVisibilityChange);
+		document.fonts.removeEventListener("loadingdone", refreshScene);
 	};
 }
 
