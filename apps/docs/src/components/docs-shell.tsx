@@ -32,7 +32,7 @@ export function DocsShell({
 					searchToggle={{ enabled: false }}
 					sidebar={{
 						banner: <DocsSectionTabs />,
-						className: "border-e-0 bg-fd-background",
+						className: "border-e-0 bg-transparent",
 						collapsible: false,
 						components: {
 							Item: DocsSidebarItem,

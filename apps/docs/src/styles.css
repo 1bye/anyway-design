@@ -30,6 +30,32 @@
 	line-height: 1.25rem;
 }
 
+:root {
+	--color-fd-background: #fafafa;
+	--paper-shade: rgb(255 255 255 / 55%);
+}
+
+.dark {
+	--color-fd-background: #222;
+	--paper-shade: rgb(0 0 0 / 86%);
+}
+
+body,
+.anyway-docs-header,
+.anyway-docs-body #nd-subnav {
+	background-color: var(--color-fd-background);
+	background-image:
+		linear-gradient(var(--paper-shade), var(--paper-shade)),
+		url("/textures/sketchbook-paper.png");
+	background-repeat: no-repeat, repeat;
+	background-attachment: scroll;
+	background-position: center top;
+	background-size:
+		auto,
+		max(100%, 104.5rem) auto;
+	background-blend-mode: normal, luminosity;
+}
+
 .anyway-docs-shell {
 	--fd-banner-height: 64px;
 	--color-fd-border: color-mix(
@@ -43,7 +69,6 @@
 	position: sticky;
 	top: 0;
 	z-index: 35;
-	background: var(--color-fd-background);
 }
 
 .anyway-docs-body {
@@ -140,6 +165,10 @@
 
 .anyway-docs-shell .shiki > div {
 	border-color: transparent;
+}
+
+.anyway-docs-body :is(h1, h2, h3, h4, h5, h6) > a[data-card] {
+	background: transparent;
 }
 
 .docs-sidebar-page {

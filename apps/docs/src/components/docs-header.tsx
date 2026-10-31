@@ -96,27 +96,29 @@ export function DocsWelcomeBanner() {
 			aria-label="Welcome to Anyway"
 			className="border-b px-6 py-16 text-center md:py-20"
 		>
-			<p className="font-display font-normal text-[40px] italic leading-none sm:text-[56px] md:text-[68px]">
-				Build it the
-				<br />
-				Anyway way.
-			</p>
-			<div className="docs-hero-actions mt-8 flex flex-wrap items-center justify-center gap-4">
-				<Link
-					className={buttonVariants({ variant: "primary" })}
-					hash="find-your-starting-point"
-					params={{ _splat: "getting-started" }}
-					to="/docs/$"
-				>
-					Read the guide <ArrowRight aria-hidden="true" size={16} />
-				</Link>
-				<Link
-					className={buttonVariants({ variant: "ghost" })}
-					params={{ _splat: "components/switch" }}
-					to="/docs/$"
-				>
-					Explore components <ArrowUpRight aria-hidden="true" size={16} />
-				</Link>
+			<div className="mx-auto max-w-5xl">
+				<p className="font-display font-normal text-[40px] italic leading-none sm:text-[56px] md:text-[68px]">
+					Build it the
+					<br />
+					Anyway way.
+				</p>
+				<div className="docs-hero-actions mt-8 flex flex-wrap items-center justify-center gap-4">
+					<Link
+						className={buttonVariants({ variant: "primary" })}
+						hash="find-your-starting-point"
+						params={{ _splat: "getting-started" }}
+						to="/docs/$"
+					>
+						Read the guide <ArrowRight aria-hidden="true" size={16} />
+					</Link>
+					<Link
+						className={buttonVariants({ variant: "ghost" })}
+						params={{ _splat: "components/switch" }}
+						to="/docs/$"
+					>
+						Explore components <ArrowUpRight aria-hidden="true" size={16} />
+					</Link>
+				</div>
 			</div>
 		</section>
 	);

@@ -3,7 +3,8 @@
 A local documentation app built with Fumadocs, TanStack Start, Vite, and React.
 It uses Fumadocs' neutral theme, documentation layout, and content components,
 with Anyway's wordmark, Instrument Sans typography, an Instrument Serif italic
-welcome headline, pill controls, and an integrated sidebar. It includes an
+welcome headline, a continuous sketchbook paper texture across the page,
+pill controls, and an integrated sidebar. It includes an
 interactive preview of Anyway's shared macOS
 switch. The [documentation design system](../../design.md#documentation) defines
 the shared visual rules for every page and future Anyway documentation project.

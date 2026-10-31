@@ -51,11 +51,11 @@ Keep the logo lockup as a brand exception: Anyway wordmark, a thin slanted divid
 
 Use Fumadocs' neutral light/dark palette and semantic `fd-*` tokens. Support light, dark, and system appearance through the existing provider. Do not force every documentation project into dark mode or import the website's light-only palette.
 
-These are the current base token values from the neutral theme. They document the palette; application code should reference the tokens rather than duplicate the values.
+These are the current token values from the neutral theme, with a shared paper canvas override. They document the palette; application code should reference the tokens rather than duplicate the values.
 
 | Role / token | Light | Dark |
 | --- | --- | --- |
-| Canvas, `--color-fd-background` | `hsl(0 0% 96%)` | `hsl(0 0% 7.04%)` |
+| Paper canvas, `--color-fd-background` | `#fafafa` | `#222222` |
 | Text, `--color-fd-foreground` | `hsl(0 0% 3.9%)` | `hsl(0 0% 92%)` |
 | Muted surface, `--color-fd-muted` | `hsl(0 0% 96.1%)` | `hsl(0 0% 12.9%)` |
 | Secondary surface, `--color-fd-secondary` | `hsl(0 0% 93.1%)` | `hsl(0 0% 12.9%)` |
@@ -69,7 +69,15 @@ These are the current base token values from the neutral theme. They document th
 
 The neutral theme also adjusts the dark desktop sidebar's muted text to `hsl(0 0% 72%)`, muted surface to `hsl(0 0% 16%)`, and secondary surface to `hsl(0 0% 18%)`. Preserve these theme-local adjustments while keeping the sidebar canvas equal to the page canvas.
 
-Use matching foreground tokens on secondary, card, and popover surfaces. Use `fd-info`, `fd-warning`, `fd-error`, and `fd-success` for semantic feedback, with text or an icon identifying the meaning. Avoid decorative accent colors, gradients, and colored navigation states.
+Use matching foreground tokens on secondary, card, and popover surfaces. Use `fd-info`, `fd-warning`, `fd-error`, and `fd-success` for semantic feedback, with text or an icon identifying the meaning. Keep documentation chrome neutral. The white paper canvas is shared across the page; content, navigation, and controls keep the neutral foreground and interaction tokens.
+
+### Paper canvas and welcome banner
+
+Use the local `sketchbook-paper.png` as the continuous page background, including the header, sidebar, welcome banner, and reading area. It represents plain off-white sketchbook stock with fine fibers and gentle tonal variation, based on the supplied notebook photographs. Avoid printed ruling, colored margin lines, artificial dot grids, or aged parchment.
+
+Attach the paper texture to the document with `scroll`, so the grain moves with the content. Align it at the top center, size it to the page width with a `104.5rem` minimum (the asset's native width at the default root size), and repeat it down long pages rather than stretching it to the full document height. The tint layer fills each surface without repeating. Blend the texture with `luminosity` against the neutral canvas to remove its beige tint. Light mode adds a white overlay at `55%` opacity for bright white paper with subtle grain; dark mode adds a black overlay at `86%`. Sticky header surfaces keep their own paper background while the document scrolls beneath them; the desktop sidebar remains transparent. Text and controls retain their neutral theme colors. The asset's generation prompt and provenance live beside it in `sketchbook-paper.prompt.md`.
+
+Preserve the Instrument Serif welcome headline and existing pill actions. Keep the hero free of handwritten notes, arrows, and decorative underlines. Content cards, code blocks, dialogs, and component previews retain their own quiet surfaces for readability.
 
 ### Surfaces, borders, and shape
 
@@ -101,7 +109,7 @@ Use a `4px` spacing base, with `4`, `8`, `12`, `16`, `20`, `24`, `32`, `48`, `64
 - Shared header: one `64px` row with the logo on the left, search centered, and GitHub on the right. Use equal-width outer columns so search stays at the header's actual center regardless of the logo and GitHub widths. Keep this reservation synchronized with `--fd-banner-height`.
 - Desktop search is up to `320px` wide, increasing to `384px` from `1280px`. Below `768px`, use a centered `44px` search icon button that opens the same search dialog. Keep the full field and shortcut hint on desktop.
 - Section navigation lives at the top of the sidebar, using stacked pills with `8px 12px` padding and a `4px` gap.
-- Welcome banner: `24px` side padding, `64px` vertical padding, increasing to `80px` from `768px`. Show only the two-line display headline and the actions, with `32px` between them and `16px` between actions. Omit the eyebrow and supporting paragraph.
+- Welcome banner: `24px` side padding, `64px` vertical padding, increasing to `80px` from `768px`. Keep the two-line display headline and actions as the main content, with `32px` between them and `16px` between actions. Omit handwritten annotations, underlines, an eyebrow, and a supporting paragraph.
 - Welcome actions: minimum `40px` height, `10px 20px` padding, `14px` labels, `16px` icons, and an `8px` label/icon gap. Keep both actions equally sized in height and allow them to wrap on narrow screens.
 - Show the welcome banner on the getting-started page. Interior guides and component pages begin directly with their document title and introduction.
 - Use the Fumadocs row variables for sticky elements and anchor offsets. Heading scroll margin is `var(--fd-docs-row-3) + 24px`, which also accounts for the mobile subnavigation.
