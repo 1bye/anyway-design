@@ -13,7 +13,8 @@ it("collects nearby drops into a pool without depositing on every event", () => 
 	expect(addInkBloom(blooms, 24, 20, 100)).toBe(true);
 	expect(blooms).toHaveLength(1);
 	expect(blooms[0].volume).toBe(2);
-	expect(blooms[0].x).toBe(22);
+	expect(blooms[0].x).toBe(20);
+	expect(blooms[0].y).toBe(20);
 	expect(blooms[0].born).toBe(100);
 });
 

@@ -17,8 +17,7 @@ export function getInkRadius(bloom: InkBloom): number {
 
 function mergeInk(target: InkBloom, source: InkBloom, now: number): void {
 	const volume = target.volume + source.volume;
-	target.x = (target.x * target.volume + source.x * source.volume) / volume;
-	target.y = (target.y * target.volume + source.y * source.volume) / volume;
+	// Accumulating pigment must not pull the stain across the paper.
 	target.volume = Math.min(volume, MAX_VOLUME);
 	target.born = now;
 }
@@ -46,11 +45,16 @@ export function addInkBloom(
 		mergeInk(pool, drop, now);
 		for (let index = blooms.length - 1; index >= 0; index -= 1) {
 			const neighbor = blooms[index];
-			if (
-				neighbor !== pool &&
+			if (neighbor === pool) {
+				continue;
+			}
+			const touchingPool =
 				Math.hypot(pool.x - neighbor.x, pool.y - neighbor.y) <
-					getInkRadius(pool) + getInkRadius(neighbor)
-			) {
+				getInkRadius(pool) + getInkRadius(neighbor);
+			const touchingDrop =
+				Math.hypot(x - neighbor.x, y - neighbor.y) <
+				getInkRadius(drop) + getInkRadius(neighbor);
+			if (touchingPool || touchingDrop) {
 				mergeInk(pool, neighbor, now);
 				blooms.splice(index, 1);
 			}

@@ -46,7 +46,9 @@ section navigation, and banner. The sticky header uses
 Fumadocs' banner offset so the sidebar and anchor links stay clear of it.
 `src/components/banner-ink.tsx` paints the welcome headline and actions into the
 same canvas as the mouse-responsive ink droplets. Nearby drops collect into
-pools and smudge the printed text and button edges, then fade when idle. The
+pools at fixed centers, then fade when idle. A separate pointer-driven ink layer
+smears lettering and arrows locally, leaving button surfaces and drop shapes
+intact. The bounded trail clears within 900ms, restoring the clean print. The
 HTML remains the accessible layout and interaction source, with its entire
 visual layer hidden while canvas is active. Canvas also draws keyboard focus
 rings. Touch and reduced

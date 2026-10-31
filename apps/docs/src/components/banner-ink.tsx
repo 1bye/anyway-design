@@ -1,4 +1,8 @@
-import { drawInkSmudge, paintBannerScene } from "../lib/banner-scene";
+import {
+	drawTextSmear,
+	paintBannerScene,
+	TEXT_SMEAR_RADIUS,
+} from "../lib/banner-scene";
 import {
 	addInkBloom,
 	getInkRadius,
@@ -7,6 +11,11 @@ import {
 	type InkBloom,
 	pruneInkBlooms,
 } from "../lib/ink-wash";
+import {
+	addTextSmear,
+	pruneTextSmears,
+	type TextSmear,
+} from "../lib/text-smear";
 
 function drawBloom(
 	context: CanvasRenderingContext2D,
@@ -78,14 +87,38 @@ function startInkWash(canvas: HTMLCanvasElement): () => void {
 	const banner = canvas.parentElement;
 	const scene = document.createElement("canvas");
 	const sceneDrawing = scene.getContext("2d");
-	if (!(drawing && banner && sceneDrawing)) {
+	const ink = document.createElement("canvas");
+	const inkFrame = document.createElement("canvas");
+	const patch = document.createElement("canvas");
+	const mask = document.createElement("canvas");
+	const inkDrawing = ink.getContext("2d");
+	const frameDrawing = inkFrame.getContext("2d");
+	const patchDrawing = patch.getContext("2d");
+	const maskDrawing = mask.getContext("2d");
+	if (
+		!(
+			drawing &&
+			banner &&
+			sceneDrawing &&
+			inkDrawing &&
+			frameDrawing &&
+			patchDrawing &&
+			maskDrawing
+		)
+	) {
 		return () => undefined;
 	}
 
 	const context = drawing;
 	const sceneContext = sceneDrawing;
+	const inkContext = inkDrawing;
+	const frameContext = frameDrawing;
+	const patchContext = patchDrawing;
+	const maskContext = maskDrawing;
 	const surface = banner;
 	const blooms: InkBloom[] = [];
+	const smears: TextSmear[] = [];
+	let pointer: { x: number; y: number; at: number } | null = null;
 	let frame = 0;
 	let width = 0;
 	let height = 0;
@@ -100,19 +133,27 @@ function startInkWash(canvas: HTMLCanvasElement): () => void {
 			return;
 		}
 		context.clearRect(0, 0, width, height);
+		pruneTextSmears(smears, now);
 		if (fontsReady && scene.width && scene.height) {
 			context.drawImage(scene, 0, 0, width, height);
+			if (smears.length) {
+				frameContext.clearRect(0, 0, width, height);
+				frameContext.drawImage(ink, 0, 0, width, height);
+				for (const smear of smears) {
+					drawTextSmear(frameContext, ink, smear, {
+						mask,
+						now,
+						patch: patchContext,
+						scale,
+					});
+				}
+				context.drawImage(inkFrame, 0, 0, width, height);
+			} else {
+				context.drawImage(ink, 0, 0, width, height);
+			}
 		}
 		pruneInkBlooms(blooms, now);
 		for (const bloom of blooms) {
-			drawInkSmudge(context, scene, {
-				opacity: 0.5 * (1 - (now - bloom.born) / INK_LIFETIME_MS),
-				radius: getInkRadius(bloom) + 16,
-				scale,
-				seed: bloom.seed,
-				x: bloom.x,
-				y: bloom.y,
-			});
 			drawBloom(context, bloom, now, inkColor);
 		}
 	}
@@ -121,19 +162,26 @@ function startInkWash(canvas: HTMLCanvasElement): () => void {
 		cancelAnimationFrame(frame);
 		frame = 0;
 		blooms.length = 0;
+		smears.length = 0;
+		pointer = null;
 		paint(performance.now());
 	}
 
 	function draw(now: number) {
 		paint(now);
-		frame = blooms.length ? requestAnimationFrame(draw) : 0;
+		frame = blooms.length || smears.length ? requestAnimationFrame(draw) : 0;
 	}
 
 	function refreshScene() {
 		if (!(fontsReady && width && height) || disposed) {
 			return;
 		}
-		paintBannerScene(sceneContext, surface, { height, scale, width });
+		paintBannerScene(
+			sceneContext,
+			surface,
+			{ height, scale, width },
+			inkContext
+		);
 		inkColor = getComputedStyle(canvas).getPropertyValue("--ink-rgb").trim();
 		surface.dataset.canvasReady = "true";
 		if (!frame) {
@@ -154,9 +202,32 @@ function startInkWash(canvas: HTMLCanvasElement): () => void {
 		scale = Math.min(window.devicePixelRatio || 1, 2);
 		canvas.width = Math.round(width * scale);
 		canvas.height = Math.round(height * scale);
-		scene.width = canvas.width;
-		scene.height = canvas.height;
+		for (const cached of [scene, ink, inkFrame]) {
+			cached.width = canvas.width;
+			cached.height = canvas.height;
+		}
 		context.setTransform(scale, 0, 0, scale, 0, 0);
+		frameContext.setTransform(scale, 0, 0, scale, 0, 0);
+		const size = TEXT_SMEAR_RADIUS * 2;
+		for (const cached of [patch, mask]) {
+			cached.width = Math.round(size * scale);
+			cached.height = Math.round(size * scale);
+		}
+		patchContext.setTransform(scale, 0, 0, scale, 0, 0);
+		maskContext.setTransform(scale, 0, 0, scale, 0, 0);
+		const feather = maskContext.createRadialGradient(
+			TEXT_SMEAR_RADIUS,
+			TEXT_SMEAR_RADIUS,
+			8,
+			TEXT_SMEAR_RADIUS,
+			TEXT_SMEAR_RADIUS,
+			TEXT_SMEAR_RADIUS
+		);
+		feather.addColorStop(0, "white");
+		feather.addColorStop(0.4, "rgb(255 255 255 / 85%)");
+		feather.addColorStop(1, "rgb(255 255 255 / 0%)");
+		maskContext.fillStyle = feather;
+		maskContext.fillRect(0, 0, size, size);
 		refreshScene();
 	}
 
@@ -165,24 +236,35 @@ function startInkWash(canvas: HTMLCanvasElement): () => void {
 			return;
 		}
 		const now = performance.now();
-		if (now - lastInput < INK_DEPOSIT_INTERVAL_MS) {
-			return;
-		}
 		const bounds = canvas.getBoundingClientRect();
+		const x = event.clientX - bounds.left;
+		const y = event.clientY - bounds.top;
+		if (pointer && now - pointer.at < 120) {
+			const elapsed = Math.max(8, now - pointer.at);
+			addTextSmear(
+				smears,
+				x,
+				y,
+				((x - pointer.x) * 18) / elapsed,
+				((y - pointer.y) * 18) / elapsed,
+				now
+			);
+		}
+		pointer = { at: now, x, y };
 		pruneInkBlooms(blooms, now);
 		if (
-			addInkBloom(
-				blooms,
-				event.clientX - bounds.left,
-				event.clientY - bounds.top,
-				now
-			)
+			now - lastInput >= INK_DEPOSIT_INTERVAL_MS &&
+			addInkBloom(blooms, x, y, now)
 		) {
 			lastInput = now;
-			if (!frame) {
-				frame = requestAnimationFrame(draw);
-			}
 		}
+		if (!frame && (blooms.length || smears.length)) {
+			frame = requestAnimationFrame(draw);
+		}
+	}
+
+	function onPointerLeave() {
+		pointer = null;
 	}
 
 	function onVisibilityChange() {
@@ -207,6 +289,7 @@ function startInkWash(canvas: HTMLCanvasElement): () => void {
 		attributes: true,
 	});
 	surface.addEventListener("pointermove", onPointerMove, { passive: true });
+	surface.addEventListener("pointerleave", onPointerLeave);
 	for (const event of ["pointerover", "pointerout", "focusin", "focusout"]) {
 		surface.addEventListener(event, refreshScene);
 	}
@@ -226,6 +309,7 @@ function startInkWash(canvas: HTMLCanvasElement): () => void {
 		observer.disconnect();
 		themeObserver.disconnect();
 		surface.removeEventListener("pointermove", onPointerMove);
+		surface.removeEventListener("pointerleave", onPointerLeave);
 		for (const event of ["pointerover", "pointerout", "focusin", "focusout"]) {
 			surface.removeEventListener(event, refreshScene);
 		}
