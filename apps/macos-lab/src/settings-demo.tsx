@@ -24,8 +24,22 @@ import {
 import "./settings-demo.css";
 
 function SettingsIcon({ name }: { name: string }) {
+	if (name !== "passwords" && name !== "advanced") {
+		return (
+			<span
+				aria-hidden
+				className="settings-demo-icon settings-demo-native-icon"
+				style={
+					{
+						"--settings-icon": `url("/assets/tahoe-settings/icons/${name}.png")`,
+						"--settings-icon-large": `url("/assets/tahoe-settings/icons/${name}-large.png")`,
+					} as CSSProperties
+				}
+			/>
+		);
+	}
 	return (
-		<span className="settings-demo-icon">
+		<span aria-hidden className="settings-demo-icon settings-demo-symbol">
 			<span
 				className="settings-demo-glyph"
 				style={{
@@ -63,7 +77,7 @@ const SYSTEM_SIDEBAR = [
 const GENERAL_CARDS = [
 	[
 		["about", "About", "about"],
-		["software-update", "Software Update", "gear"],
+		["software-update", "Software Update", "software-update"],
 		["storage", "Storage", "storage"],
 	],
 	[["care", "AppleCare & Warranty", "care"]],

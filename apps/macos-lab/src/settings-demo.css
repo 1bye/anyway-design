@@ -5,6 +5,14 @@
 	justify-content: center;
 	width: 20px;
 	height: 20px;
+}
+.settings-demo-native-icon {
+	width: 24px;
+	height: 24px;
+	margin: -2px;
+	background: var(--settings-icon) center / contain no-repeat;
+}
+.settings-demo-symbol {
 	color: white;
 	background-color: #8e8e8f;
 	background-image: linear-gradient(rgb(255 255 255 / 14%), transparent);
@@ -47,8 +55,14 @@
 	color: var(--mac-secondary);
 }
 
-.mac-settings-page-icon .settings-demo-icon {
+.mac-settings-page-icon .settings-demo-symbol {
 	border-radius: 14px;
+}
+.mac-settings-page-icon .settings-demo-native-icon {
+	width: 64px;
+	height: 64px;
+	margin: -6px;
+	background-image: var(--settings-icon-large);
 }
 .mac-settings-page-icon .settings-demo-icon .mac-window-symbol {
 	width: 40px;
