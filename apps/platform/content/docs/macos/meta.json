@@ -1,0 +1,6 @@
+{
+  "title": "macOS",
+  "collapsible": false,
+  "defaultOpen": true,
+  "pages": ["index", "playground"]
+}

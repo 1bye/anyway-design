@@ -52,7 +52,7 @@ export function NotificationCenterReferenceComparison() {
 			}
 		>
 			<header className="dock-study-header">
-				<a href="/?component=notification-center">
+				<a href="?component=notification-center">
 					<ArrowLeft size={14} /> Platform lab
 				</a>
 				<span>TAHOE / NOTIFICATION CENTER</span>

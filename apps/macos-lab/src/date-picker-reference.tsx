@@ -85,7 +85,7 @@ export function DatePickerReferenceComparison() {
 			}
 		>
 			<header className="dock-study-header">
-				<a href="/?component=controls">
+				<a href="?component=controls">
 					<ArrowLeft size={14} /> Platform lab
 				</a>
 				<span>TAHOE / DATE & TIME</span>

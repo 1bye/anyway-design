@@ -40,7 +40,10 @@
     "dev:web": "turbo run dev -F web --",
     "fix": "ultracite fix",
     "test:md": "bun run --cwd apps/md test",
-    "test:plan": "bun run --cwd apps/plan test"
+    "test:plan": "bun run --cwd apps/plan test",
+    "dev:platform": "bun run --cwd apps/platform dev",
+    "build:platform": "turbo run build --filter=platform",
+    "test:platform": "bun run --cwd apps/platform test"
   },
   "dependencies": {
     "@anyway-design/env": "workspace:*",

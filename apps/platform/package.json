@@ -1,0 +1,36 @@
+{
+  "name": "platform",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build && bun scripts/include-macos-lab.ts",
+    "check-types": "tsc --noEmit",
+    "dev": "vite dev --host 127.0.0.1",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@anyway-design/docs": "workspace:*",
+    "@anyway-design/macos": "workspace:*",
+    "@tanstack/react-router": "^1.170.18",
+    "@tanstack/react-start": "^1.168.32",
+    "fumadocs-core": "16.17.9",
+    "fumadocs-mdx": "15.4.10",
+    "fumadocs-ui": "16.17.9",
+    "lucide-react": "^1.61.0",
+    "macos-lab": "workspace:*",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/mdx": "^2.0.13",
+    "@types/node": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "@vitejs/plugin-react": "^6.0.4",
+    "tailwindcss": "catalog:",
+    "typescript": "catalog:",
+    "vite": "^8.1.5"
+  }
+}

@@ -229,10 +229,10 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 	if (component === "dock") {
 		return (
 			<>
-				<a className="copy-button" href="/?view=dock-reference">
+				<a className="copy-button" href="?view=dock-reference">
 					<Columns2 size={14} /> Compare with Apple
 				</a>
-				<a className="copy-button" href="/?view=dock-glass">
+				<a className="copy-button" href="?view=dock-glass">
 					Try live glass
 				</a>
 			</>
@@ -241,28 +241,28 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 	if (component === "window") {
 		return (
 			<>
-				<a className="copy-button" href="/?view=window-reference">
+				<a className="copy-button" href="?view=window-reference">
 					<Columns2 size={14} /> Compare with Apple
 				</a>
-				<a className="copy-button" href="/?view=menu-reference">
+				<a className="copy-button" href="?view=menu-reference">
 					Compare menus
 				</a>
-				<a className="copy-button" href="/?view=file-list-reference">
+				<a className="copy-button" href="?view=file-list-reference">
 					Compare file lists
 				</a>
-				<a className="copy-button" href="/?view=folder-list-reference">
+				<a className="copy-button" href="?view=folder-list-reference">
 					Compare folder hierarchy
 				</a>
-				<a className="copy-button" href="/?view=quick-look-reference">
+				<a className="copy-button" href="?view=quick-look-reference">
 					Compare Quick Look
 				</a>
-				<a className="copy-button" href="/?view=file-rename-reference">
+				<a className="copy-button" href="?view=file-rename-reference">
 					Compare inline rename
 				</a>
-				<a className="copy-button" href="/?view=file-dialog-reference">
+				<a className="copy-button" href="?view=file-dialog-reference">
 					Compare Open / Save dialogs
 				</a>
-				<a className="copy-button" href="/?view=file-columns-reference">
+				<a className="copy-button" href="?view=file-columns-reference">
 					Compare column view
 				</a>
 			</>
@@ -270,14 +270,14 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 	}
 	if (component === "menu-bar") {
 		return (
-			<a className="copy-button" href="/?view=menu-reference">
+			<a className="copy-button" href="?view=menu-reference">
 				Compare menus with Apple
 			</a>
 		);
 	}
 	if (component === "tabs") {
 		return (
-			<a className="copy-button" href="/?view=window-reference">
+			<a className="copy-button" href="?view=window-reference">
 				<Columns2 size={14} /> Compare document tabs with Apple
 			</a>
 		);
@@ -285,31 +285,31 @@ function ReferenceLinks({ component }: { component: ComponentName }) {
 	if (component === "controls") {
 		return (
 			<>
-				<a className="copy-button" href="/?view=controls-reference">
+				<a className="copy-button" href="?view=controls-reference">
 					<Columns2 size={14} /> Buttons & fields
 				</a>
-				<a className="copy-button" href="/?view=input-controls-reference">
+				<a className="copy-button" href="?view=input-controls-reference">
 					<Columns2 size={14} /> Checkboxes, radios, sliders & steppers
 				</a>
-				<a className="copy-button" href="/?view=selection-controls-reference">
+				<a className="copy-button" href="?view=selection-controls-reference">
 					<Columns2 size={14} /> Pop-up buttons & combo boxes
 				</a>
-				<a className="copy-button" href="/?view=alert-reference">
+				<a className="copy-button" href="?view=alert-reference">
 					Alerts & confirmations ↗
 				</a>
-				<a className="copy-button" href="/?view=progress-reference">
+				<a className="copy-button" href="?view=progress-reference">
 					Progress bars & spinners ↗
 				</a>
-				<a className="copy-button" href="/?view=popover-reference">
+				<a className="copy-button" href="?view=popover-reference">
 					Popovers ↗
 				</a>
-				<a className="copy-button" href="/?view=text-fields-reference">
+				<a className="copy-button" href="?view=text-fields-reference">
 					Text & search fields ↗
 				</a>
-				<a className="copy-button" href="/?view=toggle-controls-reference">
+				<a className="copy-button" href="?view=toggle-controls-reference">
 					Switches & segmented controls ↗
 				</a>
-				<a className="copy-button" href="/?view=date-picker-reference">
+				<a className="copy-button" href="?view=date-picker-reference">
 					Date & time pickers ↗
 				</a>
 			</>
@@ -367,7 +367,7 @@ export function App() {
 	return (
 		<div className="lab">
 			<header className="lab-header">
-				<a className="lab-brand" href="/">
+				<a className="lab-brand" href="?">
 					<span className="brand-mark">
 						<Command size={19} />
 					</span>

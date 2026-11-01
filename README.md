@@ -6,6 +6,8 @@ This project was created with [Better-T-Stack](https://github.com/AmanVarshney01
 
 The documentation prototype lives in [`apps/docs`](apps/docs/README.md). Run `bun run dev:docs` to open the MDX guide and live component page at `http://127.0.0.1:3007`.
 
+The product documentation and integrated macOS workbench live in [`apps/platform`](apps/platform/README.md). Run `bun run dev:platform` to open **Anyway / platform** at `http://127.0.0.1:3008`; `bun run build:platform` builds the app and its macOS Lab dependency.
+
 The macOS React component playground lives in [`apps/macos-lab`](apps/macos-lab/README.md), backed by [`packages/macos`](packages/macos/README.md). Run `bun run dev:macos` to preview the Sequoia and Tahoe presets at `http://127.0.0.1:3006`.
 
 The agent setup builder lives in [`apps/md`](apps/md/README.md). Run `bun run --cwd apps/md db:local`, then `bun run dev:md` to open it at `http://127.0.0.1:3002`.

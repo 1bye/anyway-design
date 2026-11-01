@@ -388,7 +388,7 @@ export function NewFolderReferenceComparison() {
 			}
 		>
 			<header className="dock-study-header">
-				<a href="/?view=file-dialog-reference">← Back to Open / Save</a>
+				<a href="?view=file-dialog-reference">← Back to Open / Save</a>
 				<span>ANYWAY / PLATFORM LAB</span>
 			</header>
 			<div className="dock-study-heading">

@@ -190,7 +190,7 @@ export function FileColumnsReferenceComparison() {
 			}
 		>
 			<header className="dock-study-header">
-				<a href="/?view=file-dialog-reference">
+				<a href="?view=file-dialog-reference">
 					<ArrowLeft size={15} /> Back to Open / Save
 				</a>
 				<span>ANYWAY / PLATFORM LAB</span>
@@ -233,8 +233,8 @@ export function FileColumnsReferenceComparison() {
 				</label>
 			</div>
 			<div className="window-study-controls">
-				<a href="/?view=file-gallery-reference">Compare Gallery ↗</a>
-				<a href="/?view=new-folder-reference">Compare New Folder ↗</a>
+				<a href="?view=file-gallery-reference">Compare Gallery ↗</a>
+				<a href="?view=new-folder-reference">Compare New Folder ↗</a>
 				<button onClick={createAtSelection} type="button">
 					New Folder
 				</button>

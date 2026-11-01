@@ -1,0 +1,50 @@
+---
+title: Getting started
+icon: GettingStarted
+description: Build familiar interfaces with Anyway’s macOS components, then explore their behavior in the lab.
+---
+
+## Welcome to Platform
+
+Platform brings Anyway’s component libraries, usage guidance, and live examples together. The first library is macOS: windows, navigation, controls, feedback, and Finder workflows with Sequoia and Tahoe appearances.
+
+[Explore the macOS components](/docs/macos), or [open the live lab](/docs/macos/playground). The lab includes the existing macOS Lab’s component previews, editable props, copyable examples, and native comparisons.
+
+## Use a component
+
+Inside this workspace, add `@anyway-design/macos` as a `workspace:*` dependency of your app. Load its stylesheet once and wrap your interface in `MacOSEnvironment`:
+
+```tsx title="notification-setting.tsx"
+import { MacSwitch } from "@anyway-design/macos/controls";
+import { MacOSEnvironment } from "@anyway-design/macos/environment";
+import "@anyway-design/macos/styles.css";
+
+export function NotificationSetting() {
+  return (
+    <MacOSEnvironment preset="tahoe" appearance="light">
+      <MacSwitch label="Notifications" defaultChecked />
+    </MacOSEnvironment>
+  );
+}
+```
+
+`@anyway-design/macos` is currently a private workspace package. It is not an npm install instruction for an external project.
+
+## Supply the environment
+
+Choose `preset="tahoe"` or `preset="sequoia"`, and `appearance="light"` or `appearance="dark"`. The environment supplies native component tokens and a portal container, keeping menus and overlays inside the preview’s appearance.
+
+Use `accentColor`, `reduceMotion`, and `reduceTransparency` when your app needs explicit preferences. Desktop compositions also need a sized, positioned parent.
+
+## Explore in the lab
+
+1. Pick a component from the [macOS catalog](/docs/macos).
+2. Change its props, preset, appearance, or preview width.
+3. Try the interaction, then copy its generated setup example.
+4. Open its native comparison when one is available.
+
+Examples use local sample data. File operations edit in-memory fixtures; explicitly selected or dropped images are previewed locally. Native screenshots are visual references, with source notes available in the lab assets.
+
+## What is calibrated
+
+Tahoe is the primary reference. Sequoia and some native material, timing, and gesture details still need calibration. Each native comparison records its own limitations. Platform documents browser components; it does not control the operating system.

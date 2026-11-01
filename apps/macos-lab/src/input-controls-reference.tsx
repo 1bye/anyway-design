@@ -85,7 +85,7 @@ export function InputControlsReferenceComparison() {
 			}
 		>
 			<header className="dock-study-header">
-				<a href="/?component=controls">
+				<a href="?component=controls">
 					<ArrowLeft size={14} /> Platform lab
 				</a>
 				<span>TAHOE / INPUT CONTROLS</span>
@@ -228,10 +228,10 @@ export function InputControlsReferenceComparison() {
 					workbench accents affect only our components.
 				</p>
 				<p>
-					<a href="/?view=controls-reference">
+					<a href="?view=controls-reference">
 						Compare buttons and text fields ↗
 					</a>
-					<a href="/?view=selection-controls-reference">
+					<a href="?view=selection-controls-reference">
 						Compare pop-up buttons and combo boxes ↗
 					</a>
 				</p>

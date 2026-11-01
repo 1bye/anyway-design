@@ -244,7 +244,7 @@ export function FileListReferenceComparison({
 			}
 		>
 			<header className="dock-study-header">
-				<a href="/?view=window-reference">
+				<a href="?view=window-reference">
 					<ArrowLeft size={15} /> Back to the window study
 				</a>
 				<span>ANYWAY / PLATFORM LAB</span>
@@ -294,14 +294,14 @@ export function FileListReferenceComparison({
 				</label>
 			</div>
 			<div className="window-study-controls">
-				<a href="/?view=new-folder-reference">Compare New Folder ↗</a>
+				<a href="?view=new-folder-reference">Compare New Folder ↗</a>
 				<button onClick={() => creation.create()} type="button">
 					New Folder
 				</button>
-				<a href="/?view=file-columns-reference">Compare column view ↗</a>
-				<a href="/?view=file-dialog-reference">Compare Open / Save ↗</a>
-				<a href="/?view=quick-look-reference">Compare Quick Look ↗</a>
-				<a href="/?view=file-rename-reference">Compare inline rename ↗</a>
+				<a href="?view=file-columns-reference">Compare column view ↗</a>
+				<a href="?view=file-dialog-reference">Compare Open / Save ↗</a>
+				<a href="?view=quick-look-reference">Compare Quick Look ↗</a>
+				<a href="?view=file-rename-reference">Compare inline rename ↗</a>
 				<a
 					href={
 						folders

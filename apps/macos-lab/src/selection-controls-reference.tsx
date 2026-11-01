@@ -86,7 +86,7 @@ export function SelectionControlsReferenceComparison() {
 			}
 		>
 			<header className="dock-study-header">
-				<a href="/?component=controls">
+				<a href="?component=controls">
 					<ArrowLeft size={14} /> Platform lab
 				</a>
 				<span>TAHOE / SELECTION CONTROLS</span>
@@ -241,7 +241,7 @@ export function SelectionControlsReferenceComparison() {
 					fixed choices; combo boxes also accept custom text. Focus, hover, and
 					transition timing still need separate native calibration.
 				</p>
-				<a href="/?view=input-controls-reference">
+				<a href="?view=input-controls-reference">
 					Compare checkboxes, radios, sliders & steppers ↗
 				</a>
 			</div>

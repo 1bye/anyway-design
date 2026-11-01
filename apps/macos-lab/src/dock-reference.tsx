@@ -71,7 +71,7 @@ export function DockReferenceComparison() {
 			}
 		>
 			<header className="dock-study-header">
-				<a href="/?component=dock">
+				<a href="?component=dock">
 					<ArrowLeft size={15} /> Back to the lab
 				</a>
 				<span>ANYWAY / PLATFORM LAB</span>
@@ -199,7 +199,7 @@ export function DockReferenceComparison() {
 			</div>
 			<div className="dock-study-notes">
 				<p>
-					<a href="/?view=dock-glass">
+					<a href="?view=dock-glass">
 						Try moving windows and changing wallpapers →
 					</a>
 				</p>

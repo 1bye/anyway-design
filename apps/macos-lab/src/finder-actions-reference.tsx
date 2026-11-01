@@ -249,7 +249,7 @@ export function FinderActionsReferenceComparison() {
 			style={{ "--actions-study-zoom": Number(zoom) } as CSSProperties}
 		>
 			<header className="dock-study-header">
-				<a href="/?component=finder">
+				<a href="?component=finder">
 					<ArrowLeft size={14} /> Finder playground
 				</a>
 				<span>TAHOE / FILE ACTIONS</span>

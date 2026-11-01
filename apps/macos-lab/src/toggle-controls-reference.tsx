@@ -88,7 +88,7 @@ export function ToggleControlsReferenceComparison() {
 			}
 		>
 			<header className="dock-study-header">
-				<a href="/?component=controls">
+				<a href="?component=controls">
 					<ArrowLeft size={14} /> Platform lab
 				</a>
 				<span>TAHOE / SWITCHES & SEGMENTS</span>

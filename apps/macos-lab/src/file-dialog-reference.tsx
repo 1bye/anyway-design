@@ -223,7 +223,7 @@ export function FileDialogReferenceComparison() {
 			}
 		>
 			<header className="dock-study-header">
-				<a href="/?view=folder-list-reference">
+				<a href="?view=folder-list-reference">
 					<ArrowLeft size={15} /> Back to the folder study
 				</a>
 				<span>ANYWAY / PLATFORM LAB</span>
@@ -269,8 +269,8 @@ export function FileDialogReferenceComparison() {
 				</label>
 			</div>
 			<div className="window-study-controls">
-				<a href="/?view=file-columns-reference">Compare column view ↗</a>
-				<a href="/?view=new-folder-reference">Compare New Folder ↗</a>
+				<a href="?view=file-columns-reference">Compare column view ↗</a>
+				<a href="?view=new-folder-reference">Compare New Folder ↗</a>
 				<label>
 					Detail{" "}
 					<select

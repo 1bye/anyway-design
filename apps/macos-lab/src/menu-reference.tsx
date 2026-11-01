@@ -82,7 +82,7 @@ export function MenuReferenceComparison() {
 			}
 		>
 			<header className="dock-study-header">
-				<a href="/?view=window-reference">
+				<a href="?view=window-reference">
 					<ArrowLeft size={15} /> Back to the window
 				</a>
 				<span>ANYWAY / PLATFORM LAB</span>

@@ -109,7 +109,7 @@ export function FileInfoReferenceComparison() {
 			}
 		>
 			<header className="dock-study-header">
-				<a href="/">
+				<a href="?">
 					<ArrowLeft size={14} /> Platform lab
 				</a>
 				<span>TAHOE / FINDER GET INFO</span>
@@ -250,8 +250,8 @@ export function FileInfoReferenceComparison() {
 					callbacks. No files on your Mac are changed.
 				</p>
 				<p>
-					<a href="/?view=file-gallery-reference">Compare Gallery ↗</a> ·{" "}
-					<a href="/?view=file-columns-reference">Compare Columns ↗</a>
+					<a href="?view=file-gallery-reference">Compare Gallery ↗</a> ·{" "}
+					<a href="?view=file-columns-reference">Compare Columns ↗</a>
 				</p>
 			</div>
 			<FileInfoWorkbench />

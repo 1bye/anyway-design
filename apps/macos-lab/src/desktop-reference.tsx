@@ -60,7 +60,7 @@ export function DesktopReferenceComparison() {
 			style={{ "--desktop-study-scale": scale } as CSSProperties}
 		>
 			<header className="dock-study-header">
-				<a href="/?component=desktop">
+				<a href="?component=desktop">
 					<ArrowLeft size={14} /> Platform lab
 				</a>
 				<span>TAHOE / WINDOW MANAGEMENT</span>

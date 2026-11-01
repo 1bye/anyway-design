@@ -3,11 +3,16 @@
 Run `bun run dev:macos` from the repository root, then open
 [localhost:3006](http://127.0.0.1:3006).
 
+The full lab is also included in [Anyway / platform](../platform/README.md) at
+port 3008. Component/reference links preserve the current document path so both
+standalone and nested hosting work. The `macos-lab/catalog` workspace export
+shares the component list with Platform.
+
 The lab consumes `@anyway-design/macos`, a standalone React workspace package.
 It includes separate Sequoia and Tahoe presets for the desktop composition,
 menu bar, Dock, window chrome, tabs, buttons, and switches.
 
-The default page is the **component playground**, with 41 searchable entries
+The default page is the **component playground**, with 43 searchable entries
 covering windows and navigation, menus and overlays, form controls, feedback,
 Finder workflows, and native artwork. Each entry has a working preview,
 editable props, a copyable React usage example, and a native-comparison link.

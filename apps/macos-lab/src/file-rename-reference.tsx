@@ -158,13 +158,13 @@ export function FileRenameReferenceComparison() {
 			style={{ "--rename-study-zoom": scale } as CSSProperties}
 		>
 			<header className="dock-study-header">
-				<a href="/?view=quick-look-reference">← Back to Quick Look</a>
+				<a href="?view=quick-look-reference">← Back to Quick Look</a>
 				<span>ANYWAY / PLATFORM LAB</span>
 			</header>
 			<div className="dock-study-heading">
 				<p className="dock-study-eyebrow">TAHOE · INLINE RENAME STUDY</p>
 				<h1>A name, in place.</h1>
-				<a href="/?view=folder-list-reference">Compare expandable folders ↗</a>
+				<a href="?view=folder-list-reference">Compare expandable folders ↗</a>
 				<p>
 					The same filename and dimensions beside a native AppKit editor
 					rendered on this Mac.

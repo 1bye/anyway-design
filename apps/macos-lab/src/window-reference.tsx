@@ -231,7 +231,7 @@ export function WindowReferenceComparison() {
 	return (
 		<main className="dock-study window-study" style={sceneStyle}>
 			<header className="dock-study-header">
-				<a href="/?component=window">
+				<a href="?component=window">
 					<ArrowLeft size={15} /> Back to the lab
 				</a>
 				<span>ANYWAY / PLATFORM LAB</span>
@@ -290,8 +290,8 @@ export function WindowReferenceComparison() {
 				</label>
 			</div>
 			<div className="window-study-controls">
-				<a href="/?view=file-list-reference">Compare file lists ↗</a>
-				<a href="/?view=menu-reference">Compare menus ↗</a>
+				<a href="?view=file-list-reference">Compare file lists ↗</a>
+				<a href="?view=menu-reference">Compare menus ↗</a>
 				<label>
 					<input checked={active} onChange={changeActive} type="checkbox" />{" "}
 					Active window

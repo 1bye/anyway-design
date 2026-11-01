@@ -480,7 +480,7 @@ export function ComponentPlayground() {
 				Skip to component
 			</a>
 			<header className="pg-site-header">
-				<a className="pg-brand" href="/">
+				<a className="pg-brand" href="?">
 					<img
 						alt="Anyway"
 						height={52}
@@ -517,7 +517,7 @@ export function ComponentPlayground() {
 				<a
 					aria-current="page"
 					className="pg-top-link"
-					href={`/?component=${entry.id}`}
+					href={`?component=${entry.id}`}
 				>
 					<Layers size={14} />
 					Components
@@ -526,7 +526,7 @@ export function ComponentPlayground() {
 					<a
 						aria-label="Native comparison"
 						className="pg-top-link pg-comparison-link"
-						href={`/?view=${entry.reference}`}
+						href={`?view=${entry.reference}`}
 						title="Native comparison"
 					>
 						<span>Native comparison</span> <ArrowUpRight size={14} />
@@ -546,7 +546,7 @@ export function ComponentPlayground() {
 								(item) => (
 									<a
 										aria-current={entry.id === item.id ? "page" : undefined}
-										href={`/?component=${item.id}`}
+										href={`?component=${item.id}`}
 										key={item.id}
 										onClick={(event) => {
 											if (

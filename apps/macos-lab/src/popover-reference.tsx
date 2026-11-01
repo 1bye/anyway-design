@@ -63,7 +63,7 @@ export function PopoverReferenceComparison() {
 			}
 		>
 			<header className="dock-study-header">
-				<a href="/?component=controls">
+				<a href="?component=controls">
 					<ArrowLeft size={14} /> Platform lab
 				</a>
 				<span>TAHOE / POPOVERS</span>

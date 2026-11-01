@@ -294,7 +294,7 @@ export function ControlsReferenceComparison() {
 	return (
 		<main className="dock-study controls-study" style={style}>
 			<header className="dock-study-header">
-				<a href="/?component=controls">
+				<a href="?component=controls">
 					<ArrowLeft size={15} /> Back to the lab
 				</a>
 				<span>ANYWAY / PLATFORM LAB</span>
@@ -400,7 +400,7 @@ export function ControlsReferenceComparison() {
 			</div>
 			<div className="dock-study-notes">
 				<p>
-					<a href="/?view=input-controls-reference">
+					<a href="?view=input-controls-reference">
 						Compare checkboxes, radios, sliders, and steppers ↗
 					</a>
 				</p>

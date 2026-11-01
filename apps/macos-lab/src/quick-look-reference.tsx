@@ -233,7 +233,7 @@ export function QuickLookReferenceComparison() {
 			}
 		>
 			<header className="dock-study-header">
-				<a href="/?view=file-list-reference">
+				<a href="?view=file-list-reference">
 					<ArrowLeft size={15} /> Back to the file-list study
 				</a>
 				<span>ANYWAY / PLATFORM LAB</span>
@@ -285,7 +285,7 @@ export function QuickLookReferenceComparison() {
 				<button onClick={previewComparison} type="button">
 					Try interactive Quick Look
 				</button>
-				<a href="/?view=file-rename-reference">Compare inline rename ↗</a>
+				<a href="?view=file-rename-reference">Compare inline rename ↗</a>
 			</div>
 			<div className="dock-study-grid">
 				<section className="dock-study-panel">

@@ -110,10 +110,10 @@ export function DockGlassPlayground() {
 	return (
 		<main className="glass-playground">
 			<header>
-				<a href="/?view=dock-reference">
+				<a href="?view=dock-reference">
 					<ArrowLeft size={15} /> Apple comparison
 				</a>
-				<a href="/?component=dock">Back to the lab</a>
+				<a href="?component=dock">Back to the lab</a>
 			</header>
 			<p className="glass-playground-eyebrow">TAHOE · LIVE BACKDROP</p>
 			<h1>Glass that follows the scene.</h1>

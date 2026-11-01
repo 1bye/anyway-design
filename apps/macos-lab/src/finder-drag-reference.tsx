@@ -88,7 +88,7 @@ export function FinderDragReferenceComparison() {
 			style={{ "--drag-study-zoom": Number(zoom) } as CSSProperties}
 		>
 			<header className="dock-study-header">
-				<a href="/?component=finder">
+				<a href="?component=finder">
 					<ArrowLeft size={14} /> Finder playground
 				</a>
 				<span>TAHOE / DRAG & DROP</span>
@@ -168,7 +168,7 @@ export function FinderDragReferenceComparison() {
 					/>{" "}
 					Read only
 				</label>
-				<a href="/?component=finder">Try the full Finder ↗</a>
+				<a href="?component=finder">Try the full Finder ↗</a>
 			</div>
 			<div className="dock-study-grid">
 				<section className="dock-study-panel">
