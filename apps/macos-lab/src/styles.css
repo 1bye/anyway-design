@@ -377,16 +377,6 @@ h1 {
 	width: 960px;
 	height: 490px;
 }
-.finder-tag-dot {
-	display: block;
-	width: 8px;
-	height: 8px;
-	background: #ff302b;
-	border-radius: 50%;
-}
-.finder-tag-work {
-	background: #ff9300;
-}
 .mac-tabs[data-variant="segmented"] {
 	padding-top: 20px;
 }

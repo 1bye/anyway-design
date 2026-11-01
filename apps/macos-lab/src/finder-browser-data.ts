@@ -41,7 +41,7 @@ export function createFinderFiles(now: number): MacFinderFile[] {
 			parentId: "projects",
 			size: 380_000,
 			sizeLabel: "380 KB",
-			tags: [{ color: "#ff302b", label: "Urgent" }],
+			tags: [{ color: "#ff0000", label: "Urgent" }],
 			thumbnail: "/assets/native-quick-look/document-preview.svg",
 		},
 		{
@@ -60,7 +60,7 @@ export function createFinderFiles(now: number): MacFinderFile[] {
 			name: "Tahoe wallpaper.webp",
 			parentId: "downloads",
 			size: 46_482,
-			tags: [{ color: "#f5c300", label: "Vacation" }],
+			tags: [{ color: "#ffc000", label: "Vacation" }],
 			thumbnail: "/assets/clouds.webp",
 		},
 		{
@@ -78,7 +78,7 @@ export function createFinderFiles(now: number): MacFinderFile[] {
 			name: "Ideas.txt",
 			parentId: "desktop",
 			size: 1280,
-			tags: [{ color: "#ff9300", label: "Work" }],
+			tags: [{ color: "#ff8000", label: "Work" }],
 			thumbnail: "/assets/native-file-gallery/notes-thumbnail.png",
 		},
 	];

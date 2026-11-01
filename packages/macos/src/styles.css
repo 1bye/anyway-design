@@ -2065,6 +2065,25 @@
 	min-width: 0;
 }
 
+/* Tahoe Finder uses a 25-device-pixel tag in a 20-point icon column at 2×. */
+.mac-sidebar-tag {
+	display: block;
+	flex: 0 0 12.5px;
+	width: 12.5px;
+	height: 12.5px;
+	background: var(--mac-sidebar-tag-color);
+	border-radius: 50%;
+}
+
+.mac-sidebar-item[data-tag][aria-current="page"] {
+	color: var(--mac-sidebar-tag-color);
+}
+
+:where([data-preset="tahoe"][data-appearance="light"])
+	.mac-sidebar-item[data-tag][aria-current="page"] {
+	background: rgb(0 0 0 / 4%);
+}
+
 .mac-sidebar-icon svg,
 .mac-sidebar-icon .mac-window-symbol {
 	width: 16px;
@@ -5985,6 +6004,9 @@
 }
 [data-preset="tahoe"] .mac-window[data-active="false"] .mac-sidebar-item {
 	color: var(--mac-secondary);
+}
+[data-preset="tahoe"] .mac-window[data-active="false"] .mac-sidebar-tag {
+	opacity: 0.5;
 }
 [data-preset="tahoe"] .mac-window[data-active="false"] .mac-window-heading {
 	opacity: 0.55;

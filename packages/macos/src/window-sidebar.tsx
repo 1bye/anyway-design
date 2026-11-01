@@ -1,9 +1,16 @@
-import { type MouseEvent, type ReactNode, useCallback } from "react";
+import {
+	type CSSProperties,
+	type MouseEvent,
+	type ReactNode,
+	useCallback,
+} from "react";
 
 export interface WindowSidebarItem {
 	icon?: ReactNode;
 	id: string;
 	label: string;
+	/** Renders a Finder tag dot and colors its selected label, instead of an icon. */
+	tagColor?: string;
 }
 
 export interface WindowSidebarGroup {
@@ -45,13 +52,25 @@ export function WindowSidebar({
 							className="mac-sidebar-item"
 							data-finder-location-id={item.id}
 							data-id={item.id}
+							data-tag={item.tagColor ? true : undefined}
 							key={item.id}
 							onClick={select}
+							style={
+								item.tagColor
+									? ({
+											"--mac-sidebar-tag-color": item.tagColor,
+										} as CSSProperties)
+									: undefined
+							}
 							type="button"
 						>
-							{item.icon ? (
+							{item.tagColor || item.icon ? (
 								<span aria-hidden className="mac-sidebar-icon">
-									{item.icon}
+									{item.tagColor ? (
+										<span className="mac-sidebar-tag" />
+									) : (
+										item.icon
+									)}
 								</span>
 							) : null}
 							<span>{item.label}</span>

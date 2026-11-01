@@ -176,6 +176,9 @@ import { WindowToolbarButton, WindowToolbarGroup } from "@anyway-design/macos/wi
 Sidebar groups accept optional headings and React icons; selection is
 controlled and announced with `aria-current`. Toolbar groups are named
 fieldsets, and buttons retain native disabled, keyboard, and click behavior.
+For Finder tags, use `{ id: "work", label: "Work", tagColor: "#ff8000" }`
+instead of an icon. The shared sidebar renders the dot, colors the selected
+label, and dims the dot in an inactive Tahoe window.
 Omit `sidebar` to use the full content width. `active={false}` mutes the chrome
 and traffic lights. Reduced transparency removes the sidebar backdrop blur.
 
@@ -286,7 +289,7 @@ the root folder itself; its ID and name can be anything. Supply thumbnails and
 optional `preview` content through each file for Gallery and Quick Look. No demo assets, file
 contents, or native filesystem access are embedded in this component.
 
-- `sidebarGroups` uses `WindowSidebarGroup[]`, including optional React icons.
+- `sidebarGroups` uses `WindowSidebarGroup[]`, including optional React icons or `tagColor`.
   Item IDs navigate to folders or configured collections. Omit it to list the
   root's immediate enabled folders; pass `[]` for an empty sidebar.
 - `collections` accepts `{ id, label, filter(file) }` virtual locations such as

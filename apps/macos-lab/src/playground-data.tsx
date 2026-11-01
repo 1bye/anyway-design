@@ -56,7 +56,7 @@ const files: MacFileListItem[] = [
 		name: "Agreement for Services.pages",
 		size: 84_000,
 		sizeLabel: "84 KB",
-		tags: [{ color: "#ff9f0a", label: "Work" }],
+		tags: [{ color: "#ff8000", label: "Work" }],
 	},
 ];
 export const PLAYGROUND_FILES = files.map((file) => ({
@@ -166,21 +166,19 @@ export const PLAYGROUND_SIDEBAR = [
 		id: "tags",
 		items: [
 			{
-				icon: <span className="finder-tag-dot" />,
 				id: "urgent",
 				label: "Urgent",
+				tagColor: "#ff0000",
 			},
 			{
-				icon: <span className="finder-tag-dot finder-tag-work" />,
 				id: "work",
 				label: "Work",
+				tagColor: "#ff8000",
 			},
 			{
-				icon: (
-					<span className="finder-tag-dot" style={{ background: "#f5c300" }} />
-				),
 				id: "vacation",
 				label: "Vacation",
+				tagColor: "#ffc000",
 			},
 		],
 		label: "Tags",
