@@ -18,7 +18,7 @@
     {
       "id": "image",
       "source": "NSWorkspace.icon(for:)",
-      "type": "public.image"
+      "type": "public.jpeg"
     },
     {
       "id": "archive",

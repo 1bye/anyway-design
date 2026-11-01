@@ -45,7 +45,12 @@ export interface MacMenuPopupProps extends MenuContentProps {
 	finalFocus?: Menu.Popup.Props["finalFocus"];
 	positionerProps?: Pick<
 		Menu.Positioner.Props,
-		"align" | "side" | "sideOffset" | "collisionAvoidance" | "collisionBoundary"
+		| "align"
+		| "alignOffset"
+		| "side"
+		| "sideOffset"
+		| "collisionAvoidance"
+		| "collisionBoundary"
 	>;
 	variant?: "default" | "menubar";
 }

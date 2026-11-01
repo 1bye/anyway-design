@@ -5,8 +5,10 @@ const FILE_ICONS = {
 		.href,
 	document: new URL("./assets/native-file-icons/document.png", import.meta.url)
 		.href,
-	folder: new URL("./assets/native-file-icons/folder.png", import.meta.url)
-		.href,
+	folder: new URL(
+		"./assets/native-file-icons/folder-preview.png",
+		import.meta.url
+	).href,
 	image: new URL("./assets/native-file-icons/image.png", import.meta.url).href,
 	pdf: new URL("./assets/native-file-icons/pdf.png", import.meta.url).href,
 	text: new URL("./assets/native-file-icons/text.png", import.meta.url).href,

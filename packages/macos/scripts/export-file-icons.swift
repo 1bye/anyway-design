@@ -6,11 +6,14 @@ let app = NSApplication.shared
 app.setActivationPolicy(.prohibited)
 let package = URL(fileURLWithPath: #filePath).deletingLastPathComponent()
   .deletingLastPathComponent()
-let output = package.appendingPathComponent("src/assets/native-file-icons")
+let output =
+  CommandLine.arguments.dropFirst().first.map { URL(fileURLWithPath: $0) }
+  ?? package.appendingPathComponent("src/assets/native-file-icons")
 try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
 let types: [(String, UTType)] = [
   ("folder", .folder), ("document", .data), ("pdf", .pdf),
-  ("image", .image), ("archive", .zip), ("text", .plainText),
+  // The abstract .image type returns a dashed placeholder, not file artwork.
+  ("image", .jpeg), ("archive", .zip), ("text", .plainText),
 ]
 let pixels = 256
 var entries: [[String: String]] = []
@@ -35,15 +38,16 @@ for (name, type) in types {
     operation: .sourceOver, fraction: 1)
   NSGraphicsContext.restoreGraphicsState()
   guard let data = bitmap.bitmapData else { throw CocoaError(.fileReadCorruptFile) }
-  var visible = 0
+  var opaque = 0
   var transparent = 0
   for y in 0..<pixels {
     for x in 0..<pixels {
       let alpha = data[y * bitmap.bytesPerRow + x * 4 + 3]
-      if alpha > 0 { visible += 1 } else { transparent += 1 }
+      if alpha > 200 { opaque += 1 }
+      if alpha == 0 { transparent += 1 }
     }
   }
-  guard visible > 15000, transparent > 100,
+  guard opaque > 15000, transparent > 100,
     let png = bitmap.representation(using: .png, properties: [:]),
     let decoded = NSBitmapImageRep(data: png), decoded.pixelsWide == pixels,
     decoded.pixelsHigh == pixels

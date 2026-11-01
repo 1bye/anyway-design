@@ -24,10 +24,6 @@ const APPLICATION_LIGHT = new URL(
 	"./assets/native-alerts/application-light.png",
 	import.meta.url
 ).href;
-const APPLICATION_DARK = new URL(
-	"./assets/native-alerts/application-dark.png",
-	import.meta.url
-).href;
 const CRITICAL_LIGHT = new URL(
 	"./assets/native-alerts/critical-light.png",
 	import.meta.url
@@ -155,7 +151,7 @@ export function MacAlertPanel({
 									className="mac-alert-icon-dark"
 									height={64}
 									src={
-										severity === "critical" ? CRITICAL_DARK : APPLICATION_DARK
+										severity === "critical" ? CRITICAL_DARK : APPLICATION_LIGHT
 									}
 									width={64}
 								/>

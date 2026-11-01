@@ -2062,6 +2062,7 @@
 	flex: 0 0 16px;
 	align-items: center;
 	justify-content: center;
+	min-width: 0;
 }
 
 .mac-sidebar-icon svg,
@@ -3977,7 +3978,7 @@
 .mac-new-folder-panel[data-active="false"] .mac-text-field:focus-visible {
 	outline: none;
 	border-color: color-mix(in srgb, var(--mac-text) 8%, transparent);
-	box-shadow: none;
+	box-shadow: 0 0 0 1px var(--mac-field-border);
 }
 .mac-new-folder-popup {
 	position: fixed;
@@ -5320,9 +5321,12 @@
 }
 
 .mac-segmented-control {
-	display: inline-flex;
+	display: inline-grid;
+	grid-auto-columns: minmax(0, 1fr);
+	grid-auto-flow: column;
 	gap: 0;
 	align-items: stretch;
+	justify-items: stretch;
 	width: max-content;
 	max-width: 100%;
 	padding: 3px;
@@ -5969,13 +5973,13 @@
 	background: var(--mac-accent);
 }
 
-[data-preset="tahoe"] .mac-sidebar {
+:where([data-preset="tahoe"]) .mac-sidebar {
 	--mac-sidebar-row-height: 32px;
 }
-[data-preset="tahoe"] .mac-sidebar-icon {
+:where([data-preset="tahoe"]) .mac-sidebar-icon {
 	flex-basis: 20px;
 }
-[data-preset="tahoe"] .mac-sidebar-icon .mac-window-symbol {
+:where([data-preset="tahoe"]) .mac-sidebar-icon .mac-window-symbol {
 	width: 20px;
 	height: 20px;
 }

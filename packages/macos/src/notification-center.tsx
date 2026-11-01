@@ -120,7 +120,7 @@ export function MacNotificationCard({
 							disabled: action.disabled || !onAction,
 						}))}
 						onAction={(id) => onAction?.(id, item)}
-						positionerProps={{ align: "end", sideOffset: 4 }}
+						positionerProps={{ align: "end", alignOffset: -20, sideOffset: 4 }}
 						trigger={
 							<button
 								aria-label={`Options for ${item.title ?? item.appName}`}
