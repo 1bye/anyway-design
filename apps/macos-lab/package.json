@@ -24,6 +24,8 @@
     "vite": "^8.1.5"
   },
   "exports": {
-    "./catalog": "./src/playground-catalog.ts"
+    "./catalog": "./src/playground-catalog.ts",
+    "./preview": "./src/docs-preview.tsx",
+    "./examples": "./src/playground-examples.ts"
   }
 }

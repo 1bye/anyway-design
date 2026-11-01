@@ -1,6 +1,7 @@
 import type { AdvancedIndex } from "fumadocs-core/search/server";
 import { PLAYGROUND_ENTRIES } from "macos-lab/catalog";
 import { docsConfig } from "../docs.config";
+import { macosComponentUrl } from "./macos-components";
 
 export const macosSearchIndexes: AdvancedIndex[] = PLAYGROUND_ENTRIES.map(
 	(entry) => ({
@@ -17,6 +18,6 @@ export const macosSearchIndexes: AdvancedIndex[] = PLAYGROUND_ENTRIES.map(
 			headings: [],
 		},
 		title: entry.title,
-		url: `/docs/macos/playground?component=${entry.id}`,
+		url: macosComponentUrl(entry.id),
 	})
 );

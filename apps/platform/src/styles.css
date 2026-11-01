@@ -1,2 +1,77 @@
 @import "tailwindcss";
 @import "@anyway-design/docs/styles.css";
+
+.platform-preview-placeholder {
+	display: grid;
+	place-items: center;
+	min-height: 200px;
+	font-size: 12px;
+	color: var(--color-fd-muted-foreground);
+}
+
+.platform-component-thumbnail {
+	height: 200px;
+	overflow: hidden;
+	background: #f4f4f5;
+}
+
+.platform-component-thumbnail .pg-preview-scroll {
+	height: 200px;
+	min-height: 200px;
+	padding: 0;
+	overflow: hidden;
+}
+
+.platform-component-thumbnail .pg-preview-sizer {
+	align-self: center;
+}
+
+.platform-component-thumbnail .pg-canvas-caption,
+.platform-component-preview .pg-canvas-caption {
+	display: none;
+}
+
+.platform-component-preview {
+	min-height: 300px;
+}
+
+.platform-component-preview .pg-preview-scroll {
+	min-height: 300px;
+	padding: 20px;
+}
+
+.platform-example-tab {
+	min-height: 44px;
+	padding: 8px 16px;
+	font-size: 14px;
+	color: var(--color-fd-muted-foreground);
+	border-radius: 999px;
+}
+
+.platform-example-tab[aria-pressed="true"] {
+	color: var(--color-fd-foreground);
+	background: var(--color-fd-accent);
+}
+
+.platform-property-control {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+	justify-content: space-between;
+	min-width: 0;
+	padding: 6px 8px;
+	font-size: 12px;
+	color: var(--color-fd-muted-foreground);
+	background: var(--color-fd-muted);
+	border-radius: 8px;
+}
+
+.platform-property-control :is(input, select) {
+	width: 55%;
+	min-width: 0;
+	min-height: 36px;
+	padding: 6px 8px;
+	color: var(--color-fd-foreground);
+	background: var(--color-fd-background);
+	border-radius: 6px;
+}

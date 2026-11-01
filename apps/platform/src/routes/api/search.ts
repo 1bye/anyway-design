@@ -7,21 +7,25 @@ import { source } from "../../lib/source";
 const search = createSearchAPI("advanced", {
 	indexes: async () => [
 		...(await Promise.all(
-			source.getPages().map(async (page) => {
-				const data = page.data.structuredData;
-				const structuredData = typeof data === "function" ? await data() : data;
-				if (!structuredData) {
-					throw new Error(`Missing search content for ${page.url}`);
-				}
-				return {
-					id: page.url,
-					title: page.data.title ?? page.url,
-					description: page.data.description,
-					breadcrumbs: [docsConfig.name],
-					url: page.url,
-					structuredData,
-				};
-			})
+			source
+				.getPages()
+				.filter((page) => !page.url.startsWith("/docs/macos/components/"))
+				.map(async (page) => {
+					const data = page.data.structuredData;
+					const structuredData =
+						typeof data === "function" ? await data() : data;
+					if (!structuredData) {
+						throw new Error(`Missing search content for ${page.url}`);
+					}
+					return {
+						id: page.url,
+						title: page.data.title ?? page.url,
+						description: page.data.description,
+						breadcrumbs: [docsConfig.name],
+						url: page.url,
+						structuredData,
+					};
+				})
 		)),
 		...macosSearchIndexes,
 	],

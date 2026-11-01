@@ -1,6 +1,24 @@
 import { constants } from "node:fs";
-import { copyFile, mkdir, readdir } from "node:fs/promises";
+import { copyFile, mkdir, readdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
+
+async function copyAsset(from: string, to: string): Promise<void> {
+	try {
+		await copyFile(from, to, constants.COPYFILE_EXCL);
+	} catch (error) {
+		// Both builds emit the same hashed assets when Platform imports live demos.
+		if (
+			error &&
+			typeof error === "object" &&
+			"code" in error &&
+			error.code === "EEXIST" &&
+			(await readFile(from)).equals(await readFile(to))
+		) {
+			return;
+		}
+		throw error;
+	}
+}
 
 export async function includeLabAssets(
 	source: string,
@@ -17,7 +35,7 @@ export async function includeLabAssets(
 			if (entry.isDirectory()) {
 				await includeLabAssets(from, to);
 			} else {
-				await copyFile(from, to, constants.COPYFILE_EXCL);
+				await copyAsset(from, to);
 			}
 		})
 	);

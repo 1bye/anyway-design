@@ -29,6 +29,9 @@ it("merges lab assets with Platform files and refuses to overwrite collisions", 
 		expect(await readFile(join(destination, "brand/lab.png"), "utf8")).toBe(
 			"Lab logo"
 		);
+		await expect(
+			includeLabAssets(source, destination)
+		).resolves.toBeUndefined();
 		await writeFile(join(source, "brand/lab.png"), "Conflicting logo");
 		await expect(includeLabAssets(source, destination)).rejects.toThrow();
 		expect(await readFile(join(destination, "brand/lab.png"), "utf8")).toBe(

@@ -223,7 +223,8 @@ html:has(.docs-sidebar-dialog[open]) {
 }
 
 /* Prefer pill controls and quiet surfaces; use spacing and tone before borders. */
-.anyway-docs-shell :where(button, select),
+.anyway-docs-shell
+:where(button, select):not(:where([data-component-preview] *)),
 .docs-playground > div,
 .anyway-docs-header a {
 	border-color: transparent;

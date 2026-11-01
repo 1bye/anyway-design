@@ -78,17 +78,22 @@ const WALLPAPER = new Set([
 
 interface PreviewProps extends PlaygroundDemoProps {
 	background: string;
+	canvasHeight?: number;
 	canvasWidth: number;
+	maxHeight?: number;
 	revision: number;
 	zoom: "fit" | "actual";
 }
 export function PlaygroundPreview({
 	background,
 	canvasWidth,
+	canvasHeight: previewHeight,
+	maxHeight,
 	revision,
 	zoom,
 	...props
 }: PreviewProps) {
+	const canvasHeight = previewHeight ?? props.entry.height;
 	const viewport = useRef<HTMLDivElement>(null);
 	const [available, setAvailable] = useState(800);
 	useLayoutEffect(() => {
@@ -105,7 +110,13 @@ export function PlaygroundPreview({
 		return () => observer.disconnect();
 	}, []);
 	const scale =
-		zoom === "actual" ? 1 : Math.min(1, Math.max(0.1, available / canvasWidth));
+		zoom === "actual"
+			? 1
+			: Math.min(
+					1,
+					Math.max(0.1, available / canvasWidth),
+					maxHeight ? maxHeight / canvasHeight : 1
+				);
 	const Demo = DEMOS[props.entry.id];
 	const automatic = WALLPAPER.has(props.entry.id) ? "wallpaper" : "neutral";
 	const surface = background === "auto" ? automatic : background;
@@ -115,7 +126,7 @@ export function PlaygroundPreview({
 				<div
 					className="pg-preview-sizer"
 					style={{
-						height: props.entry.height * scale,
+						height: canvasHeight * scale,
 						width: canvasWidth * scale,
 					}}
 				>
@@ -123,7 +134,7 @@ export function PlaygroundPreview({
 						{...props.environment}
 						className={`pg-canvas pg-canvas-${props.entry.id} pg-surface-${surface}`}
 						style={{
-							height: props.entry.height,
+							height: canvasHeight,
 							transform: `scale(${scale})`,
 							width: canvasWidth,
 						}}
@@ -134,7 +145,7 @@ export function PlaygroundPreview({
 			</div>
 			<div className="pg-canvas-caption">
 				<span>
-					{canvasWidth} × {props.entry.height}
+					{canvasWidth} × {canvasHeight}
 				</span>
 				<span>
 					{Math.round(scale * 100)}% ·{" "}

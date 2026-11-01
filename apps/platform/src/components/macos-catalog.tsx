@@ -1,8 +1,8 @@
 import Link from "fumadocs-core/link";
 import { PLAYGROUND_ENTRIES } from "macos-lab/catalog";
 import { type ChangeEvent, useCallback, useId, useState } from "react";
-
-const groups = [...new Set(PLAYGROUND_ENTRIES.map((entry) => entry.group))];
+import { componentGroups, macosComponentUrl } from "../lib/macos-components";
+import { MacosLivePreview } from "./macos-live-preview";
 
 export function MacosCatalog() {
 	const id = useId();
@@ -33,7 +33,7 @@ export function MacosCatalog() {
 			<p className="my-4 text-fd-muted-foreground text-xs" role="status">
 				{entries.length} of {PLAYGROUND_ENTRIES.length} components
 			</p>
-			{groups.map((group) => {
+			{componentGroups.map((group) => {
 				const items = entries.filter((entry) => entry.group === group);
 				if (items.length === 0) {
 					return null;
@@ -41,26 +41,27 @@ export function MacosCatalog() {
 				return (
 					<section aria-label={group} className="mb-8" key={group}>
 						<h3 className="mb-3 font-medium text-base">{group}</h3>
-						<div className="grid gap-2 sm:grid-cols-2">
+						<div className="grid gap-4 sm:grid-cols-2">
 							{items.map((entry) => (
-								<div className="rounded-xl bg-fd-muted/45 p-4" key={entry.id}>
+								<div
+									className="relative overflow-hidden rounded-2xl bg-fd-muted/45 hover:bg-fd-accent/50"
+									key={entry.id}
+								>
+									<MacosLivePreview compact entry={entry} />
 									<Link
-										className="inline-flex min-h-11 items-center font-medium text-sm underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-fd-ring"
-										href={`/docs/macos/playground?component=${entry.id}`}
+										className="block rounded-2xl p-4 after:absolute after:inset-0 after:rounded-2xl focus-visible:after:outline-2 focus-visible:after:outline-fd-ring"
+										href={macosComponentUrl(entry.id)}
 									>
-										{entry.title}
+										<div>
+											<h4 className="font-medium text-sm">{entry.title}</h4>
+											<p className="mt-2 text-fd-muted-foreground text-sm leading-relaxed">
+												{entry.description}
+											</p>
+											<span className="mt-3 inline-block text-fd-muted-foreground text-xs">
+												Preview & usage ↗
+											</span>
+										</div>
 									</Link>
-									<p className="mt-1 text-fd-muted-foreground text-sm leading-relaxed">
-										{entry.description}
-									</p>
-									{entry.reference ? (
-										<Link
-											className="mt-2 inline-flex min-h-11 items-center text-fd-muted-foreground text-xs underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-fd-ring"
-											href={`/docs/macos/playground?view=${entry.reference}`}
-										>
-											Native comparison ↗
-										</Link>
-									) : null}
 								</div>
 							))}
 						</div>

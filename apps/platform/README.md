@@ -15,7 +15,8 @@ bun run dev:platform
 Open [localhost:3008](http://127.0.0.1:3008).
 
 - `/docs/getting-started`: macOS package and provider setup.
-- `/docs/macos`: searchable component catalog, read directly from macOS Lab.
+- `/docs/macos`: visual, searchable component gallery, read directly from macOS Lab.
+- `/docs/macos/components/switch`: component docs with a live React preview, controls, usage code, and example props.
 - `/docs/macos/playground?component=switch`: live workbench at a component.
 - `/docs/macos/playground?view=toggle-controls-reference`: native comparison.
 - `/macos-lab/index.html`: full-window macOS Lab, including legacy study views.
@@ -30,9 +31,17 @@ metadata, navigation, and welcome actions. The shared docs package supplies
 layout, typography, texture, ink, search UI, recovery states, and controls.
 Platform owns its MDX pages, routes, search index/API, component catalog, and
 workbench host. Global search combines MDX pages with component titles,
-descriptions, and import names, linking results directly to their playgrounds.
+descriptions, and import names, linking results directly to their component pages.
 
-The macOS Lab runs in a same-origin frame so its global CSS, native portals,
+Every catalog entry gets a virtual Fumadocs page and grouped sidebar link from
+`src/lib/macos-components.ts`. Pages render the lab's actual preview components
+directly in React, with local prop and environment controls and generated usage
+code. Gallery thumbnails mount only near the viewport and are inert; interaction
+belongs to the component page. Preview code and styles load on demand. The
+`data-component-preview` boundary preserves native control borders inside the
+docs design. No duplicate per-component MDX files or demo implementations are needed.
+
+The optional full macOS Lab runs in a same-origin frame so its global CSS, native portals,
 keyboard shortcuts, and sample app state remain independent from the docs shell.
 It uses the actual lab source and build; there is no copied second workbench.
 The catalog is exported by the `macos-lab` workspace package. Nested query links

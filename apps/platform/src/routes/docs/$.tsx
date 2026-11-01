@@ -9,12 +9,17 @@ import {
 	DocsPage,
 	DocsTitle,
 } from "fumadocs-ui/layouts/docs/page";
-import { type ComponentProps, Suspense } from "react";
+import { PLAYGROUND_ENTRIES } from "macos-lab/catalog";
+import { type ComponentProps, lazy, Suspense } from "react";
 import collections from "../../../.source/browser";
 import { mdxComponents } from "../../components/mdx";
 import { docsConfig } from "../../docs.config";
 import { readLabSelection } from "../../lib/macos-lab";
 import { source } from "../../lib/source";
+
+const MacosComponentPage = lazy(
+	() => import("../../components/macos-component-page")
+);
 
 const serverLoader = createServerFn({ method: "GET" })
 	.validator((slugs: string[]) => slugs)
@@ -24,6 +29,10 @@ const serverLoader = createServerFn({ method: "GET" })
 			throw notFound();
 		}
 		return {
+			componentId:
+				data.length === 3 && data[0] === "macos" && data[1] === "components"
+					? data[2]
+					: null,
 			path: page.path,
 			title: page.data.title,
 			pageTree: await source.serializePageTree(source.getPageTree()),
@@ -60,7 +69,9 @@ export const Route = createFileRoute("/docs/$")({
 		const data = await serverLoader({
 			data: params._splat?.split("/").filter(Boolean) ?? [],
 		});
-		await clientLoader.preload(data.path);
+		if (!data.componentId) {
+			await clientLoader.preload(data.path);
+		}
 		return data;
 	},
 	head: ({ loaderData }) => ({
@@ -71,10 +82,41 @@ export const Route = createFileRoute("/docs/$")({
 });
 
 function DocRoute() {
-	const { path, pageTree } = useFumadocsLoader(Route.useLoaderData());
+	const data = Route.useLoaderData();
+	const { path, pageTree } = useFumadocsLoader(data);
+	const entry = PLAYGROUND_ENTRIES.find((item) => item.id === data.componentId);
+	if (entry) {
+		return (
+			<DocsShell toc={[]} tree={pageTree}>
+				<DocsPage
+					tabIndex={-1}
+					tableOfContent={{ enabled: false }}
+					tableOfContentPopover={{ enabled: false }}
+				>
+					<DocsTitle>{entry.title}</DocsTitle>
+					<DocsDescription>{entry.description}</DocsDescription>
+					<DocsBody>
+						<Suspense fallback={<DocsLoading />}>
+							<MacosComponentPage entry={entry} key={entry.id} />
+						</Suspense>
+					</DocsBody>
+				</DocsPage>
+			</DocsShell>
+		);
+	}
 	return (
 		<Suspense fallback={<DocsLoading />}>
-			{clientLoader.useContent(path, { tree: pageTree })}
+			<MdxContent path={path} tree={pageTree} />
 		</Suspense>
 	);
+}
+
+function MdxContent({
+	path,
+	tree,
+}: {
+	path: string;
+	tree: ComponentProps<typeof DocsShell>["tree"];
+}) {
+	return clientLoader.useContent(path, { tree });
 }
