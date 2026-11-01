@@ -1748,6 +1748,10 @@
 		0 4px 12px rgb(0 0 0 / 12%);
 }
 
+[data-preset="tahoe"][data-appearance="dark"] .mac-window {
+	border-color: transparent;
+}
+
 [data-preset="tahoe"] .mac-window[data-sidebar="true"] {
 	display: grid;
 	grid-template-rows: var(--mac-window-titlebar-height) minmax(0, 1fr) auto;
@@ -1820,8 +1824,16 @@
 	font-size: 15px;
 }
 
-[data-preset="tahoe"] .mac-window[data-variant="finder"] .mac-window-controls {
+[data-preset="tahoe"]
+	.mac-window[data-variant="finder"][data-sidebar="true"]
+	.mac-window-controls {
 	padding-left: 19px;
+}
+
+[data-preset="tahoe"]
+	.mac-window[data-variant="finder"][data-sidebar="false"]
+	.mac-window-controls {
+	padding-left: 4px;
 }
 
 [data-preset="tahoe"] [data-sidebar="true"] > .mac-window-body {
