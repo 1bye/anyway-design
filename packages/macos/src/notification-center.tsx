@@ -45,18 +45,18 @@ function NotificationContent({
 				{item.icon ?? <WindowSymbol name="info" size={28} />}
 			</span>
 			<span className="mac-notification-copy">
+				{item.timeSensitive ? (
+					<span className="mac-notification-priority">Time Sensitive</span>
+				) : null}
 				<span className="mac-notification-heading">
-					<strong data-time-sensitive={item.timeSensitive || undefined}>
-						{item.timeSensitive ? "Time Sensitive" : item.appName}
+					<strong className="mac-notification-title">
+						{item.title ?? item.appName}
 					</strong>
 					{item.time ? <span>{item.time}</span> : null}
 				</span>
-				{item.title ? (
-					<strong className="mac-notification-title">{item.title}</strong>
-				) : null}
 				<span className="mac-notification-message">{item.body}</span>
 				{stackCount > 1 ? (
-					<span className="mac-notification-count">
+					<span className="mac-notification-count mac-notification-sr-only">
 						{stackCount - 1} more notification{stackCount === 2 ? "" : "s"}
 					</span>
 				) : null}

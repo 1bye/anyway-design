@@ -38,7 +38,7 @@ export const DEMO_NOTIFICATIONS: readonly MacNotification[] = [
 		actions: [{ id: "reply", label: "Reply" }],
 		appId: "messages",
 		appName: "Messages",
-		body: "The new icons are ready to review.",
+		body: "The new icons are ready to review. I’ve updated the toolbar, sidebar, and file previews to match Tahoe more closely. Please check the spacing and selected states before we publish the next version.",
 		icon: (
 			<img
 				alt=""

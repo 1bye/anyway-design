@@ -45,7 +45,7 @@
 .mac-notification-center-panel {
 	display: flex;
 	flex-direction: column;
-	gap: 16px;
+	gap: 8px;
 	min-width: 0;
 	color: var(--mac-text);
 	outline: none;
@@ -83,44 +83,33 @@
 	backdrop-filter: blur(16px);
 }
 .mac-notification-card {
-	--mac-secondary: color-mix(in srgb, var(--mac-text) 72%, transparent);
+	--mac-secondary: rgb(0 0 0 / 60%);
 	position: relative;
 	min-width: 0;
-	background:
-		linear-gradient(
-			145deg,
-			rgb(255 255 255 / 18%),
-			transparent 42%,
-			rgb(255 255 255 / 5%)
-		),
-		color-mix(in srgb, var(--mac-surface) 54%, transparent);
+	color: #222;
+	background: rgb(239 241 243 / 90%);
 	border: 0.5px solid rgb(255 255 255 / 48%);
-	border-radius: 19px;
+	border-radius: 21px;
 	box-shadow:
 		var(--notification-stack-shadow, 0 3px 12px rgb(0 0 0 / 13%)),
 		inset 0 1px 0 rgb(255 255 255 / 65%),
 		inset 0 -1px 0 rgb(255 255 255 / 12%);
-	backdrop-filter: blur(20px) saturate(1.6);
+	backdrop-filter: blur(20px) saturate(1.2);
 }
 .mac-notification-card[data-stacked] {
 	--notification-stack-shadow:
-		0 4px 0 -1px rgb(235 239 246 / 55%), 0 9px 0 -3px rgb(235 239 246 / 35%),
-		0 9px 14px rgb(0 0 0 / 15%);
-	margin-bottom: 7px;
-}
-[data-appearance="dark"] .mac-notification-card[data-stacked] {
-	--notification-stack-shadow:
-		0 4px 0 -1px rgb(62 63 67 / 65%), 0 9px 0 -3px rgb(62 63 67 / 45%),
-		0 9px 14px rgb(0 0 0 / 25%);
+		0 13px 0 -4px rgb(216 221 227 / 90%), 0 24px 0 -8px rgb(200 205 212 / 85%),
+		0 14px 18px rgb(0 0 0 / 15%);
+	margin-bottom: 16px;
 }
 .macos .mac-notification-body {
 	display: flex;
-	gap: 10px;
+	gap: 12px;
 	align-items: center;
 	width: 100%;
 	min-width: 0;
-	min-height: 71px;
-	padding: 12px;
+	min-height: 56px;
+	padding: 12px 14px;
 	font-size: 13px;
 	color: inherit;
 	text-align: left;
@@ -136,8 +125,8 @@
 	height: 32px;
 }
 .mac-notification-icon > img {
-	width: 42px;
-	height: 42px;
+	width: 36px;
+	height: 36px;
 	object-fit: contain;
 }
 .mac-notification-copy {
@@ -149,9 +138,8 @@
 	gap: 8px;
 	align-items: baseline;
 	justify-content: space-between;
-	margin-bottom: 2px;
-	font-size: 12px;
-	line-height: 12px;
+	font-size: 13px;
+	line-height: 16px;
 }
 .mac-notification-heading > span {
 	flex-shrink: 0;
@@ -163,7 +151,8 @@
 	text-overflow: ellipsis;
 	white-space: nowrap;
 }
-.mac-notification-heading [data-time-sensitive] {
+.mac-notification-priority {
+	display: block;
 	font-size: 10px;
 	color: var(--mac-secondary);
 	text-transform: uppercase;
@@ -181,7 +170,16 @@
 	display: -webkit-box;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
-	-webkit-line-clamp: 3;
+	-webkit-line-clamp: 4;
+}
+.mac-notification-sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	clip-path: inset(50%);
 }
 .mac-notification-count {
 	margin-top: 4px;
@@ -213,6 +211,12 @@
 	position: absolute;
 	right: 9px;
 	bottom: 9px;
+	pointer-events: none;
+	opacity: 0;
+}
+.mac-notification-card:is(:hover, :focus-within) .mac-notification-actions {
+	pointer-events: auto;
+	opacity: 1;
 }
 .macos .mac-notification-options {
 	display: flex;
@@ -232,7 +236,8 @@
 .mac-notification-options:hover:not(:disabled) {
 	background: var(--mac-selected);
 }
-.mac-notification-card[data-has-actions] .mac-notification-message {
+.mac-notification-card[data-has-actions]:is(:hover, :focus-within)
+	.mac-notification-message {
 	padding-right: 90px;
 }
 .macos .mac-menu-popup.mac-notification-action-menu {
@@ -303,6 +308,7 @@
 		.mac-notification-group-heading button,
 		.mac-notification-edit
 	) {
+	--mac-secondary: color-mix(in srgb, var(--mac-text) 72%, transparent);
 	color: var(--mac-text);
 	background: var(--mac-surface);
 	backdrop-filter: none;
@@ -317,6 +323,10 @@
 }
 @media (hover: none) {
 	.macos .mac-notification-dismiss {
+		opacity: 1;
+	}
+	.mac-notification-actions {
+		pointer-events: auto;
 		opacity: 1;
 	}
 }
