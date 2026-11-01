@@ -26,6 +26,8 @@ export type {
 export interface MacMenuBarStatusProps {
 	clock?: string;
 	defaultValue?: Partial<MacSystemStatus>;
+	mediaArtist?: string;
+	mediaArtwork?: string;
 	mediaTitle?: string;
 	networks?: readonly MacWiFiNetwork[];
 	notificationCenter?: Omit<MacNotificationCenterProps, "trigger">;
@@ -175,17 +177,19 @@ function SystemSlider({
 	symbol,
 	value,
 	onChange,
+	onOutput,
 }: {
 	label: string;
 	onChange: (value: number) => void;
+	onOutput?: () => void;
 	symbol: WindowSymbolName;
 	value: number;
 }) {
 	return (
-		<label className="mac-control-slider">
+		<div className="mac-control-slider" data-control={label.toLowerCase()}>
 			<strong>{label}</strong>
 			<span>
-				<WindowSymbol name={symbol} />
+				<WindowSymbol name={label === "Sound" ? "speaker-low" : symbol} />
 				<input
 					aria-label={label}
 					max={100}
@@ -196,8 +200,18 @@ function SystemSlider({
 					value={value}
 				/>
 				<WindowSymbol name={symbol} size={23} />
+				{onOutput ? (
+					<button
+						aria-label="Sound output"
+						className="mac-control-output"
+						onClick={onOutput}
+						type="button"
+					>
+						<WindowSymbol name="audio-output" size={20} />
+					</button>
+				) : null}
 			</span>
-		</label>
+		</div>
 	);
 }
 function WiFiNetworkRow({
@@ -289,6 +303,8 @@ export function MacMenuBarStatus({
 	onValueChange,
 	onAction,
 	onSearchSelect,
+	mediaArtist,
+	mediaArtwork,
 	networks = EMPTY_NETWORKS,
 	searchItems = EMPTY_SEARCH,
 	showBatteryPercentage = false,
@@ -478,10 +494,19 @@ export function MacMenuBarStatus({
 						/>
 						<div className="mac-control-playing">
 							<span className="mac-control-album">
-								<WindowSymbol name="speaker" size={24} />
+								{mediaArtwork && mediaTitle ? (
+									<img alt="" height={38} src={mediaArtwork} width={38} />
+								) : (
+									<WindowSymbol name="speaker" size={24} />
+								)}
 							</span>
-							<strong>{mediaTitle ?? "Not Playing"}</strong>
-							<div>
+							<div className="mac-control-media-text">
+								<strong>{mediaTitle ?? "Not Playing"}</strong>
+								{mediaTitle && mediaArtist ? (
+									<small>{mediaArtist}</small>
+								) : null}
+							</div>
+							<div className="mac-control-media-buttons">
 								<button
 									aria-label="Previous track"
 									disabled={!mediaTitle}
@@ -520,14 +545,19 @@ export function MacMenuBarStatus({
 						/>
 						<ControlTile
 							active={state.airDrop}
+							className="mac-control-airdrop"
 							onClick={() => update({ airDrop: !state.airDrop })}
-							subtitle={state.airDrop ? "Everyone" : "Receiving Off"}
+							subtitle={state.airDrop ? "Everyone" : "Off"}
 							symbol="airdrop"
 							title="AirDrop"
 						/>
 						<ControlTile
-							className="mac-control-round"
-							onClick={() => action("stage-manager")}
+							active={state.stageManager}
+							className="mac-control-round mac-control-stage"
+							onClick={() => {
+								update({ stageManager: !state.stageManager });
+								action("stage-manager");
+							}}
 							symbol="stage-manager"
 							title="Stage Manager"
 						/>
@@ -552,9 +582,8 @@ export function MacMenuBarStatus({
 						<ControlTile
 							active={state.focus}
 							onClick={() => update({ focus: !state.focus })}
-							subtitle={state.focus ? "On" : "Off"}
 							symbol="focus"
-							title="Do Not Disturb"
+							title="Focus"
 						/>
 						<SystemSlider
 							label="Display"
@@ -565,6 +594,7 @@ export function MacMenuBarStatus({
 						<SystemSlider
 							label="Sound"
 							onChange={(volume) => update({ volume })}
+							onOutput={() => action("sound-output")}
 							symbol="speaker"
 							value={state.volume}
 						/>

@@ -196,8 +196,7 @@
 .mac-control-backdrop > span {
 	position: absolute;
 	inset: 0;
-	background: rgb(12 22 38 / 13%);
-	backdrop-filter: blur(var(--blur-radius)) saturate(1.08);
+	backdrop-filter: blur(var(--blur-radius));
 	mask-image:
 		linear-gradient(
 			to right,
@@ -217,23 +216,23 @@
 }
 .mac-control-backdrop > span:nth-child(1) {
 	--blur-inset: 24px;
-	--blur-radius: 2px;
+	--blur-radius: 1px;
 }
 .mac-control-backdrop > span:nth-child(2) {
 	--blur-inset: 34px;
-	--blur-radius: 4px;
+	--blur-radius: 2px;
 }
 .mac-control-backdrop > span:nth-child(3) {
 	--blur-inset: 44px;
-	--blur-radius: 8px;
+	--blur-radius: 4px;
 }
 .mac-control-backdrop > span:nth-child(4) {
 	--blur-inset: 54px;
-	--blur-radius: 16px;
+	--blur-radius: 8px;
 }
 .mac-control-backdrop > span:nth-child(5) {
 	--blur-inset: 64px;
-	--blur-radius: 32px;
+	--blur-radius: 16px;
 }
 .mac-control-grid {
 	display: grid;
@@ -253,24 +252,28 @@
 	font-size: 12px;
 	color: white;
 	text-align: left;
-	background: rgb(255 255 255 / 10%);
-	border: 1px solid rgb(220 250 255 / 44%);
+	background: rgb(44 44 46 / 70%);
+	border: 1px solid rgb(255 255 255 / 38%);
 	border-radius: 35px;
 	box-shadow:
-		inset 0 1px 1px rgb(255 255 255 / 28%),
-		0 3px 8px rgb(0 20 80 / 10%);
-	backdrop-filter: blur(20px) saturate(1.5) brightness(0.82);
+		inset 0 1px 2px rgb(255 255 255 / 14%),
+		0 3px 8px rgb(0 0 0 / 12%);
+	backdrop-filter: blur(20px) saturate(1.25);
 }
 .macos .mac-control-tile {
 	grid-column: span 2;
 }
 .mac-control-tile > span:last-child {
 	min-width: 0;
+	overflow: hidden;
 }
 .mac-control-tile strong {
 	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
 	font-size: 14px;
 	font-weight: 600;
+	white-space: nowrap;
 }
 .mac-control-tile small {
 	display: block;
@@ -295,6 +298,19 @@
 	color: #007aff;
 	background: white;
 }
+.mac-control-airdrop:not([data-enabled]) .mac-control-tile-icon {
+	position: relative;
+}
+.mac-control-airdrop:not([data-enabled]) .mac-control-tile-icon::after {
+	position: absolute;
+	width: 25px;
+	height: 2px;
+	content: "";
+	background: white;
+	border-radius: 2px;
+	box-shadow: 0 0 0 1px rgb(90 90 92);
+	transform: rotate(45deg);
+}
 .mac-control-tile:hover {
 	filter: brightness(1.08);
 }
@@ -306,6 +322,33 @@
 }
 .mac-control-round .mac-control-tile-icon {
 	background: transparent;
+}
+.macos .mac-control-round[data-enabled="true"] {
+	color: #387aff;
+	background: white;
+}
+.mac-control-round[data-enabled="true"] .mac-control-tile-icon {
+	color: inherit;
+	background: transparent;
+}
+.mac-control-stage .mac-control-tile-icon {
+	position: relative;
+}
+.mac-control-stage .mac-window-symbol {
+	transform: translateX(3px);
+}
+.mac-control-stage .mac-control-tile-icon::before {
+	position: absolute;
+	top: 9px;
+	left: 3px;
+	width: 3px;
+	height: 3px;
+	content: "";
+	background: currentColor;
+	border-radius: 1px;
+	box-shadow:
+		0 6px currentColor,
+		0 12px currentColor;
 }
 .mac-control-round > span:last-child {
 	display: none;
@@ -334,7 +377,28 @@
 	background: rgb(255 255 255 / 17%);
 	border-radius: 10px;
 }
-.mac-control-playing > div {
+.mac-control-album img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: inherit;
+}
+.mac-control-media-text {
+	width: 100%;
+	min-width: 0;
+}
+.mac-control-media-text :is(strong, small) {
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+.mac-control-media-text small {
+	margin-top: 3px;
+	font-size: 11px;
+	color: rgb(255 255 255 / 65%);
+}
+.mac-control-media-buttons {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
@@ -358,7 +422,7 @@
 	align-items: stretch;
 	justify-content: center;
 	padding: 10px 15px;
-	border-radius: 34px;
+	border-radius: 22px;
 }
 .mac-control-slider strong {
 	font-size: 13px;
@@ -380,21 +444,34 @@
 	background: linear-gradient(
 		to right,
 		currentColor var(--system-slider-value),
-		rgb(0 50 110 / 22%) var(--system-slider-value)
+		rgb(255 255 255 / 23%) var(--system-slider-value)
 	);
 	border-radius: 5px;
 }
 .mac-control-slider input::-webkit-slider-thumb {
-	width: 6px;
-	height: 6px;
+	width: 0;
+	height: 0;
 	appearance: none;
 	background: currentColor;
 	border-radius: 50%;
 }
 .mac-control-slider input::-moz-range-thumb {
-	width: 6px;
-	height: 6px;
+	width: 0;
+	height: 0;
 	background: currentColor;
+	border: 0;
+	border-radius: 50%;
+}
+.macos .mac-control-output {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
+	justify-content: center;
+	width: 28px;
+	height: 28px;
+	padding: 0;
+	color: white;
+	background: rgb(255 255 255 / 25%);
 	border: 0;
 	border-radius: 50%;
 }

@@ -1749,8 +1749,10 @@ focus return. The status buttons support Tab and Left/Right/Home/End. Control
 Center uses separate rounded glass tiles over a shared progressive backdrop blur
 that fades toward the surrounding desktop, with Wi-Fi drill-in, Bluetooth,
 AirDrop, Focus, brightness, volume and optional playback state. Focus adds its
-menu-bar indicator while active. Appearance, Stage Manager, Screen Mirroring,
-Screenshot, Edit Controls, and settings links emit `onAction` callbacks. The clock
+menu-bar indicator while active. Supply `mediaTitle`, `mediaArtist`, and
+`mediaArtwork` to populate the playback tile. Stage Manager uses the optional
+`stageManager` status value. Appearance, Stage Manager, Screen Mirroring,
+Screenshot, Sound output, Edit Controls, and settings links emit `onAction` callbacks. The clock
 emits `notification-center` for the host app to open its notification view.
 
 Use `value: MacSystemStatus` plus `onValueChange` for caller-owned state, or

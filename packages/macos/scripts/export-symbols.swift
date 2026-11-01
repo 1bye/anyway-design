@@ -27,12 +27,14 @@ let symbols: [Symbol] = [
     .init(id: "focus", name: "moon.fill", extent: 13),
     .init(id: "lock", name: "lock.fill", extent: 10),
     .init(id: "speaker", name: "speaker.wave.2.fill", extent: 14),
+    .init(id: "speaker-low", name: "speaker.fill", extent: 14),
+    .init(id: "audio-output", name: "airplay.audio", extent: 14),
     .init(id: "wifi", name: "wifi", extent: 15, weight: .medium),
     .init(id: "wifi-off", name: "wifi.slash", extent: 15),
     .init(id: "airdrop", name: "airdrop", extent: 14, privateGlyph: true),
     .init(id: "layers", name: "square.3.layers.3d", extent: 14),
     .init(id: "appearance", name: "circle.lefthalf.filled", extent: 14),
-    .init(id: "capture", name: "viewfinder", extent: 14),
+    .init(id: "capture", name: "camera.viewfinder", extent: 14),
     .init(id: "mirroring", name: "rectangle.on.rectangle", extent: 14),
     .init(id: "stage-manager", name: "rectangle.leadinghalf.inset.filled", extent: 14),
     .init(id: "play", name: "play.fill", extent: 14),
@@ -161,6 +163,13 @@ func export(_ symbol: Symbol) throws -> [String: Any] {
     try draw(NSImage(cgImage: cropped, size: bounds.size), in: NSRect(
         x: (canvas - width) / 2, y: (canvas - height) / 2, width: width, height: height
     ), on: target)
+    if symbol.id == "airdrop", let data = target.bitmapData {
+        // The private glyph renders at reduced alpha; masks need an opaque peak.
+        let offsets = stride(from: 3, to: target.bytesPerRow * target.pixelsHigh, by: 4)
+        let peak = offsets.map { Int(data[$0]) }.max() ?? 0
+        guard peak > 0 else { throw CocoaError(.fileReadCorruptFile) }
+        for index in offsets { data[index] = UInt8(Int(data[index]) * 255 / peak) }
+    }
     if symbol.id == "battery-fill" {
         // Subtract the matching native outline to retain only AppKit's charge silhouette.
         let outlinePNG = try Data(contentsOf: output.appendingPathComponent("battery-empty.png"))

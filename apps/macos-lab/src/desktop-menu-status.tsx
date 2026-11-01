@@ -73,10 +73,14 @@ export function DesktopMenuStatus({
 		...DEFAULT_SYSTEM_STATUS,
 		batteryLevel: 85,
 		networkId: "studio",
+		playing: true,
 	});
 	return (
 		<MacMenuBarStatus
 			clock="Thu Oct 22  9:41 AM"
+			mediaArtist="Anyway"
+			mediaArtwork="/assets/clouds.webp"
+			mediaTitle="Ambient"
 			networks={NETWORKS}
 			notificationCenter={panel}
 			onAction={onAction}

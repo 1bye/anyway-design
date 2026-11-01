@@ -10,6 +10,7 @@ export interface MacSystemStatus {
 	lowPowerMode: boolean;
 	networkId: string | null;
 	playing: boolean;
+	stageManager?: boolean;
 	volume: number;
 	wifi: boolean;
 }
@@ -41,6 +42,7 @@ export const DEFAULT_SYSTEM_STATUS: MacSystemStatus = {
 	lowPowerMode: false,
 	networkId: null,
 	playing: false,
+	stageManager: false,
 	volume: 50,
 	wifi: true,
 };

@@ -157,6 +157,28 @@
       "weight": 0
     },
     {
+      "extent": 14,
+      "id": "speaker-low",
+      "nativeName": "speaker.fill",
+      "pixelHeight": 64,
+      "pixelWidth": 64,
+      "pointSize": 16,
+      "rendering": "monochrome",
+      "source": "NSImage(systemSymbolName: speaker.fill)",
+      "weight": 0
+    },
+    {
+      "extent": 14,
+      "id": "audio-output",
+      "nativeName": "airplay.audio",
+      "pixelHeight": 64,
+      "pixelWidth": 64,
+      "pointSize": 16,
+      "rendering": "monochrome",
+      "source": "NSImage(systemSymbolName: airplay.audio)",
+      "weight": 0
+    },
+    {
       "extent": 15,
       "id": "wifi",
       "nativeName": "wifi",
@@ -214,12 +236,12 @@
     {
       "extent": 14,
       "id": "capture",
-      "nativeName": "viewfinder",
+      "nativeName": "camera.viewfinder",
       "pixelHeight": 64,
       "pixelWidth": 64,
       "pointSize": 16,
       "rendering": "monochrome",
-      "source": "NSImage(systemSymbolName: viewfinder)",
+      "source": "NSImage(systemSymbolName: camera.viewfinder)",
       "weight": 0
     },
     {
