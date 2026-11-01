@@ -158,7 +158,7 @@ export const PLAYGROUND_ENTRIES: readonly PlaygroundEntry[] = [
 			readOnly,
 		],
 		804,
-		720
+		910
 	),
 	defineEntry(
 		"dock",

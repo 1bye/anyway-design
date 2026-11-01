@@ -1,6 +1,12 @@
-/** biome-ignore-all lint/performance/noJsxPropsBind: The playground reports caller-owned setting changes. */
-import { MacSwitch, MacTextField } from "@anyway-design/macos/controls";
+/** biome-ignore-all lint/performance/noJsxPropsBind: Demo controls report caller-owned setting changes. */
+import {
+	MacButton,
+	MacSwitch,
+	MacTextField,
+} from "@anyway-design/macos/controls";
+import { MacDatePicker } from "@anyway-design/macos/date-picker";
 import { MacPopUpButton } from "@anyway-design/macos/pop-up-button";
+import { MacProgressBar } from "@anyway-design/macos/progress";
 import { MacSegmentedControl } from "@anyway-design/macos/segmented-control";
 import {
 	MacSettings,
@@ -8,28 +14,72 @@ import {
 	type MacSettingsSection,
 } from "@anyway-design/macos/settings";
 import { MacSlider } from "@anyway-design/macos/slider";
-import { MacStepper } from "@anyway-design/macos/stepper";
-import {
-	WindowSymbol,
-	type WindowSymbolName,
-} from "@anyway-design/macos/window-symbol";
-import type { CSSProperties } from "react";
+import { WindowSymbol } from "@anyway-design/macos/window-symbol";
+import { type CSSProperties, useState } from "react";
 import type { PlaygroundDemoProps } from "./playground-catalog";
+import {
+	SETTINGS_DEMO_PAGES,
+	type SettingsDemoField,
+} from "./settings-demo-pages";
 import "./settings-demo.css";
 
-function SettingsIcon({
-	name,
-	color = "#8c8e92",
-}: {
-	name: WindowSymbolName;
-	color?: string;
-}) {
+function SettingsIcon({ name }: { name: string }) {
 	return (
-		<span className="settings-demo-icon" style={{ background: color }}>
-			<WindowSymbol name={name} size={16} />
+		<span className="settings-demo-icon">
+			<span
+				className="settings-demo-glyph"
+				style={{
+					maskImage: `url("/assets/tahoe-settings/symbols/${name}.png")`,
+					WebkitMaskImage: `url("/assets/tahoe-settings/symbols/${name}.png")`,
+				}}
+			/>
 		</span>
 	);
 }
+
+const SYSTEM_SIDEBAR = [
+	["wifi", "Wi-Fi", "wifi", "connectivity"],
+	["bluetooth", "Bluetooth", "bluetooth", "connectivity"],
+	["network", "Network", "network", "connectivity"],
+	["vpn", "VPN", "vpn", "connectivity"],
+	["battery", "Battery", "battery", "connectivity"],
+	["general", "General", "gear", "system"],
+	["accessibility", "Accessibility", "accessibility", "system"],
+	["appearance", "Appearance", "appearance", "system"],
+	["intelligence", "Apple Intelligence & Siri", "intelligence", "system"],
+	["desktop", "Desktop & Dock", "desktop", "system"],
+	["displays", "Displays", "display", "system"],
+	["menu-bar", "Menu Bar", "control-center", "system"],
+	["spotlight", "Spotlight", "search", "system"],
+	["wallpaper", "Wallpaper", "wallpaper", "system"],
+	["notifications", "Notifications", "notifications", "attention"],
+	["sound", "Sound", "speaker", "attention"],
+	["focus", "Focus", "focus", "attention"],
+	["screen-time", "Screen Time", "screen-time", "attention"],
+	["lock-screen", "Lock Screen", "lock", "security"],
+	["privacy", "Privacy & Security", "privacy", "security"],
+] as const;
+
+const GENERAL_CARDS = [
+	[
+		["about", "About", "about"],
+		["software-update", "Software Update", "gear"],
+		["storage", "Storage", "storage"],
+	],
+	[["care", "AppleCare & Warranty", "care"]],
+	[["airdrop", "AirDrop & Continuity", "airdrop"]],
+	[
+		["passwords", "AutoFill & Passwords", "passwords"],
+		["date", "Date & Time", "date"],
+		["language", "Language & Region", "language"],
+		["login", "Login Items & Extensions", "login"],
+		["sharing", "Sharing", "sharing"],
+		["startup", "Startup Disk", "startup"],
+		["time-machine", "Time Machine", "time-machine"],
+	],
+	[["management", "Device Management", "management"]],
+] as const;
+
 interface SettingsExampleProps
 	extends Pick<
 		MacSettingsProps,
@@ -47,439 +97,220 @@ interface SettingsExampleProps
 	readOnly?: boolean;
 	style?: CSSProperties;
 }
+function AppearanceSample({ value, glass }: { value: string; glass: boolean }) {
+	return (
+		<span
+			aria-hidden
+			className="settings-demo-sample"
+			data-glass={glass || undefined}
+			data-look={value}
+		>
+			<span className="settings-demo-sample-selection" />
+			<span className="settings-demo-sample-window">
+				<i />
+				<i />
+				<i />
+			</span>
+		</span>
+	);
+}
+function SettingsField({
+	field,
+	disabled,
+	readOnly,
+	onEvent,
+}: {
+	field: SettingsDemoField;
+	disabled: boolean;
+	readOnly: boolean;
+	onEvent: (message: string) => void;
+}) {
+	const [result, setResult] = useState("");
+	const common = { disabled, readOnly };
+	const report = (value: unknown) => onEvent(`${field.label} → ${value}`);
+	switch (field.kind) {
+		case "switch":
+			return (
+				<MacSwitch
+					{...common}
+					aria-label={field.label}
+					defaultChecked={field.value}
+					label=""
+					onCheckedChange={report}
+				/>
+			);
+		case "select":
+			return (
+				<MacPopUpButton
+					{...common}
+					defaultValue={field.value}
+					items={field.options.map((value) => ({ label: value, value }))}
+					label={field.label}
+					onValueChange={report}
+				/>
+			);
+		case "slider":
+			return (
+				<MacSlider
+					{...common}
+					defaultValue={field.value}
+					label={field.label}
+					max={100}
+					min={0}
+					onValueChange={report}
+				/>
+			);
+		case "text":
+			return (
+				<MacTextField
+					{...common}
+					aria-label={field.label}
+					defaultValue={field.value}
+					onChange={(event) => report(event.currentTarget.value)}
+				/>
+			);
+		case "info":
+			return <span className="settings-demo-value">{field.value}</span>;
+		case "progress":
+			return <MacProgressBar label={field.label} value={field.value} />;
+		case "date":
+			return (
+				<MacDatePicker
+					{...common}
+					defaultValue={field.value}
+					label={field.label}
+					mode={field.mode}
+					onValueChange={report}
+				/>
+			);
+		case "action":
+			return (
+				<div className="settings-demo-action">
+					<MacButton
+						disabled={disabled || readOnly}
+						onClick={() => {
+							setResult(field.result);
+							report(field.result);
+						}}
+					>
+						{field.button}
+					</MacButton>
+					<output aria-live="polite">{result}</output>
+				</div>
+			);
+		case "appearance":
+			return (
+				<MacSegmentedControl
+					{...common}
+					className="settings-demo-image-choices"
+					defaultValue={field.value}
+					items={field.options.map((value) => ({
+						icon: (
+							<>
+								<AppearanceSample
+									glass={field.label === "Liquid Glass"}
+									value={value}
+								/>
+								<span>{value}</span>
+							</>
+						),
+						label: value,
+						value,
+					}))}
+					label={field.label}
+					onValueChange={report}
+				/>
+			);
+		default:
+			return null;
+	}
+}
 export function SettingsExample({
 	onEvent,
 	disabled = false,
 	readOnly = false,
 	...props
 }: SettingsExampleProps) {
-	const common = { disabled, readOnly };
-	const event = (label: string, value: unknown) =>
-		onEvent(`${label} → ${value}`);
-	const toggle = (label: string, value: boolean) => (
-		<MacSwitch
-			{...common}
-			aria-label={label}
-			defaultChecked={value}
-			label=""
-			onCheckedChange={(next) => event(label, next)}
-		/>
-	);
-	const popup = (label: string, value: string, items: string[]) => (
-		<MacPopUpButton
-			{...common}
-			defaultValue={value}
-			items={items.map((item) => ({ label: item, value: item }))}
-			label={label}
-			onValueChange={(next) => event(label, next)}
-		/>
-	);
-	const sections: MacSettingsSection[] = [
-		{
+	const groups = (id: string) =>
+		(SETTINGS_DEMO_PAGES[id] ?? []).map((group, index) => ({
+			id: group.title ?? `${id}-${index}`,
+			items: group.fields.map((field) => ({
+				control: (
+					<SettingsField
+						disabled={disabled}
+						field={field}
+						onEvent={onEvent}
+						readOnly={readOnly}
+					/>
+				),
+				description: field.kind === "switch" ? field.description : undefined,
+				id: field.label,
+				label: field.label,
+			})),
+			title: group.title,
+		}));
+	const sections: MacSettingsSection[] = SYSTEM_SIDEBAR.map(
+		([id, title, icon, sidebarGroup]) => ({
 			description:
-				"Manage your workspace’s overall setup and preferences, such as appearance, notifications, privacy, and more.",
-			groups: [
-				{
-					id: "overview",
-					items: [
-						{
-							icon: <SettingsIcon name="appearance" />,
-							id: "appearance",
-							label: "Appearance",
-							sectionId: "appearance",
-						},
-						{
-							icon: <SettingsIcon name="speaker" />,
-							id: "notifications",
-							label: "Notifications",
-							sectionId: "notifications",
-						},
-						{
-							icon: <SettingsIcon name="lock" />,
-							id: "privacy",
-							label: "Privacy & Security",
-							sectionId: "privacy",
-						},
-					],
-				},
-				{
-					id: "advanced-link",
-					items: [
-						{
-							icon: <SettingsIcon name="gear" />,
-							id: "advanced",
-							label: "Advanced",
-							sectionId: "advanced",
-						},
-					],
-				},
-				{
-					id: "workspace",
-					items: [
-						{
-							control: (
-								<MacTextField
-									{...common}
-									aria-label="Workspace name"
-									defaultValue="Anyway workspace"
-									onChange={(e) =>
-										event("Workspace name", e.currentTarget.value)
-									}
-								/>
-							),
-							description: "Shown in your windows and shared projects.",
-							id: "name",
-							keywords: ["profile", "rename"],
-							label: "Workspace name",
-						},
-						{
-							control: toggle("Open at login", true),
-							description: "Keep your workspace ready when you start your Mac.",
-							id: "launch",
-							keywords: ["startup", "launch", "automatically"],
-							label: "Open at login",
-						},
-					],
-					title: "Workspace",
-				},
-				{
-					description:
-						"Your preferences apply to new documents in this workspace.",
-					id: "files",
-					items: [
-						{
-							control: toggle("Save changes automatically", true),
-							id: "autosave",
-							keywords: ["autosave", "documents"],
-							label: "Save changes automatically",
-						},
-						{
-							control: popup("Default save location", "Documents", [
-								"Documents",
-								"Desktop",
-								"iCloud Drive",
-							]),
-							id: "location",
-							label: "Default save location",
-						},
-						{
-							control: (
-								<MacStepper
-									{...common}
-									defaultValue={10}
-									label="Recent items"
-									max={30}
-									min={0}
-									onValueChange={(next) => event("Recent items", next)}
-								/>
-							),
-							description: "Choose how many documents appear in the File menu.",
-							id: "recent",
-							keywords: ["history"],
-							label: "Recent items",
-						},
-					],
-					title: "Files",
-				},
-			],
-			icon: <SettingsIcon name="gear" />,
-			id: "general",
-			title: "General",
-		},
-		{
-			groups: [
-				{
-					id: "style",
-					items: [
-						{
-							control: (
-								<MacSegmentedControl
-									{...common}
-									className="settings-demo-image-choices"
-									defaultValue="Auto"
-									items={["Auto", "Light", "Dark"].map((value) => ({
-										icon: (
-											<>
-												<img
-													alt=""
-													height={44}
-													src={`/assets/tahoe-settings/Appearance${value}.png`}
-													width={67}
-												/>
-												<span>{value}</span>
-											</>
-										),
-										label: value,
-										value,
-									}))}
-									label="Appearance"
-									onValueChange={(next) => event("Appearance", next)}
-								/>
-							),
-
-							id: "theme",
-							keywords: ["dark", "light", "system"],
-							label: "Appearance",
-						},
-						{
-							control: (
-								<MacSegmentedControl
-									{...common}
-									className="settings-demo-image-choices"
-									defaultValue="Tinted"
-									items={["Clear", "Tinted"].map((value) => ({
-										icon: (
-											<>
-												<img
-													alt=""
-													height={44}
-													src={`/assets/tahoe-settings/Glass${value}.png`}
-													width={67}
-												/>
-												<span>{value}</span>
-											</>
-										),
-										label: value,
-										value,
-									}))}
-									label="Liquid Glass"
-									onValueChange={(next) => event("Liquid Glass", next)}
-								/>
-							),
-							description: "Choose your preferred look for Liquid Glass.",
-							id: "glass",
-							label: "Liquid Glass",
-						},
-					],
-				},
-				{
-					id: "theme",
-					items: [
-						{
-							control: popup("Accent color", "Blue", [
-								"Blue",
-								"Purple",
-								"Green",
-								"Orange",
-							]),
-							id: "accent",
-							label: "Accent color",
-						},
-						{
-							control: toggle("Compact spacing", false),
-							description: "Fit more content into lists and sidebars.",
-							id: "compact",
-							keywords: ["density"],
-							label: "Compact spacing",
-						},
-					],
-					title: "Theme",
-				},
-				{
-					id: "motion",
-					items: [
-						{
-							control: toggle("Reduce motion", false),
-							description: "Use simpler transitions in your workspace.",
-							id: "motion",
-							keywords: ["animations"],
-							label: "Reduce motion",
-						},
-						{
-							control: toggle("Increase contrast", false),
-							id: "contrast",
-							keywords: ["legibility"],
-							label: "Increase contrast",
-						},
-					],
-					title: "Accessibility",
-				},
-			],
-			header: "toolbar",
-			icon: <SettingsIcon name="appearance" />,
-			id: "appearance",
-			keywords: ["theme", "display", "look"],
-			title: "Appearance",
-		},
-		{
-			description: "Stay informed, on your terms.",
-			groups: [
-				{
-					id: "alerts",
-					items: [
-						{
-							control: toggle("Allow notifications", true),
-							id: "allow",
-							label: "Allow notifications",
-						},
-						{
-							control: toggle("Play notification sounds", false),
-							description: "Play a sound when a new notification arrives.",
-							id: "sounds",
-							keywords: ["audio"],
-							label: "Play notification sounds",
-						},
-						{
-							control: (
-								<MacSlider
-									{...common}
-									defaultValue={60}
-									label="Alert volume"
-									max={100}
-									min={0}
-									onValueChange={(next) => event("Alert volume", next)}
-								/>
-							),
-							id: "volume",
-							keywords: ["sound", "audio"],
-							label: "Alert volume",
-						},
-						{
-							control: toggle("Badge app icon", true),
-							description: "Show an unread count in the Dock.",
-							id: "badge",
-							keywords: ["unread", "count", "dock"],
-							label: "Badge app icon",
-						},
-					],
-					title: "Alerts",
-				},
-			],
-			header: "toolbar",
-			icon: <SettingsIcon name="speaker" />,
-			id: "notifications",
-			keywords: ["alerts"],
-			title: "Notifications",
-		},
-		{
-			description: "Control what you share and how you stay protected.",
-			groups: [
-				{
-					id: "privacy",
-					items: [
-						{
-							control: toggle("Share anonymous analytics", false),
-							description: "Help improve the app by sharing usage statistics.",
-							id: "analytics",
-							keywords: ["telemetry", "diagnostics", "tracking"],
-							label: "Share anonymous analytics",
-						},
-						{
-							control: toggle("Show document previews", true),
-							description: "Display document contents in recent items.",
-							id: "previews",
-							keywords: ["sensitive"],
-							label: "Show document previews",
-						},
-					],
-					title: "Privacy",
-				},
-				{
-					id: "security",
-					items: [
-						{
-							control: popup("Lock after inactivity", "5 minutes", [
-								"1 minute",
-								"5 minutes",
-								"15 minutes",
-								"Never",
-							]),
-							id: "lock",
-							label: "Lock after inactivity",
-						},
-						{
-							control: toggle("Require authentication", true),
-							description:
-								"Ask for authentication when reopening your workspace.",
-							id: "unlock",
-							keywords: ["password", "unlock"],
-							label: "Require authentication",
-						},
-					],
-					title: "Security",
-				},
-			],
-			header: "toolbar",
-			icon: <SettingsIcon name="lock" />,
-			id: "privacy",
-			title: "Privacy & Security",
-		},
-		{
-			description: "Fine-tune how your workspace works.",
-			groups: [
-				{
-					id: "sync",
-					items: [
-						{
-							control: toggle("Sync in the background", true),
-							description: "Keep files up to date while the app is idle.",
-							id: "sync",
-							keywords: ["cloud"],
-							label: "Sync in the background",
-						},
-						{
-							control: (
-								<MacStepper
-									{...common}
-									defaultValue={3}
-									label="Concurrent transfers"
-									max={10}
-									min={1}
-									onValueChange={(next) => event("Concurrent transfers", next)}
-								/>
-							),
-							id: "transfers",
-							keywords: ["downloads", "uploads"],
-							label: "Concurrent transfers",
-						},
-					],
-					title: "Performance",
-				},
-				{
-					id: "developer",
-					items: [
-						{
-							control: toggle("Show developer tools", false),
-							id: "debug",
-							keywords: ["debug", "inspector"],
-							label: "Show developer tools",
-						},
-						{
-							control: popup("Log level", "Warnings", [
-								"Errors",
-								"Warnings",
-								"Info",
-								"Debug",
-							]),
-							id: "log",
-							label: "Log level",
-						},
-					],
-					title: "Developer",
-				},
-			],
-			header: "toolbar",
-			icon: <SettingsIcon name="control-center" />,
-			id: "advanced",
-			title: "Advanced",
-		},
-	];
+				id === "general"
+					? "Manage your overall setup and preferences for Mac, such as software updates, device language, AirDrop and more."
+					: undefined,
+			groups:
+				id === "general"
+					? GENERAL_CARDS.map((items) => ({
+							id: items[0][0],
+							items: items.map(([destination, label, name]) => ({
+								icon: <SettingsIcon name={name} />,
+								id: destination,
+								label,
+								sectionId: destination,
+							})),
+						}))
+					: groups(id),
+			header: id === "general" ? "summary" : "toolbar",
+			icon: <SettingsIcon name={icon} />,
+			id,
+			sidebarGroup,
+			title,
+		})
+	);
+	for (const items of GENERAL_CARDS) {
+		for (const [id, title, icon] of items) {
+			sections.push({
+				groups: groups(id),
+				header: "toolbar",
+				icon: <SettingsIcon name={icon} />,
+				id,
+				parentId: "general",
+				sidebar: false,
+				title,
+			});
+		}
+	}
+	sections.push({
+		groups: groups("advanced"),
+		header: "toolbar",
+		id: "advanced",
+		parentId: "general",
+		sidebar: false,
+		title: "Advanced",
+	});
 	return (
 		<MacSettings
 			{...props}
-			onSearchQueryChange={(query) => event("Search", query)}
-			onSectionChange={(id) => event("Section", id)}
+			onSearchQueryChange={(query) => onEvent(`Search → ${query}`)}
+			onSectionChange={(id) => onEvent(`Section → ${id}`)}
 			sections={sections}
 			sidebarHeader={
 				<div className="settings-demo-brand">
-					<WindowSymbol name="person" size={40} />
+					<WindowSymbol name="person" size={38} />
 					<div>
-						<strong>Anyway</strong>
-						<small>Local account</small>
+						<strong>Alex Morgan</strong>
+						<small>Apple Account</small>
 					</div>
 				</div>
 			}
-			title="Anyway Settings"
+			title="System Settings"
 		/>
 	);
 }
@@ -496,7 +327,7 @@ export function SettingsDemo({ values, onEvent }: PlaygroundDemoProps) {
 			readOnly={Boolean(values.readOnly)}
 			searchable={Boolean(values.searchable)}
 			sidebarWidth={Number(values.sidebarWidth)}
-			style={{ height: 640, width: 724 }}
+			style={{ height: 830, width: 724 }}
 		/>
 	);
 }

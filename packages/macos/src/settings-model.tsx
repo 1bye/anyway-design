@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import type { WindowSidebarGroup } from "./window-sidebar";
 
 interface SettingsItemContent {
 	description?: string;
@@ -25,7 +26,35 @@ export interface MacSettingsSection {
 	icon?: ReactNode;
 	id: string;
 	keywords?: readonly string[];
+	/** Sidebar section to keep highlighted while a detail page is open. */
+	parentId?: string;
+	/** Hide a detail page from navigation while keeping it searchable. */
+	sidebar?: boolean;
+	/** Sections sharing a group are displayed together without a heading. */
+	sidebarGroup?: string;
 	title: string;
+}
+export function settingsSidebarGroups(
+	sections: readonly MacSettingsSection[]
+): WindowSidebarGroup[] {
+	const groups = new Map<string, WindowSidebarGroup>();
+	for (const section of sections) {
+		if (section.sidebar === false) {
+			continue;
+		}
+		const id = section.sidebarGroup ?? "sections";
+		let group = groups.get(id);
+		if (!group) {
+			group = { id, items: [] };
+			groups.set(id, group);
+		}
+		group.items.push({
+			icon: section.icon,
+			id: section.id,
+			label: section.title,
+		});
+	}
+	return [...groups.values()];
 }
 export interface MacSettingsMatch {
 	groupId: string;

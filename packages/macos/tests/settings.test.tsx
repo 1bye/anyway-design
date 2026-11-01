@@ -5,12 +5,14 @@ import {
 	type MacSettingsSection,
 	searchSettings,
 	settingsItemKey,
+	settingsSidebarGroups,
 	stepSettingsHistory,
 } from "../src/settings-model";
 
 const HIDDEN_PAGE = /class="mac-settings-page"[^>]*hidden=""/;
 const CURRENT_NOTIFICATIONS =
 	/aria-current="page"[^>]*><span>Notifications<\/span>/;
+const CURRENT_GENERAL = /aria-current="page"[^>]*data-id="general"/;
 
 const sections: readonly MacSettingsSection[] = [
 	{
@@ -73,6 +75,41 @@ const sections: readonly MacSettingsSection[] = [
 		title: "Notifications",
 	},
 ];
+test("sidebar groups preserve order and omit detail pages without removing their destinations", () => {
+	const grouped: MacSettingsSection[] = [
+		{ ...sections[0], sidebarGroup: "system" },
+		{
+			groups: [],
+			id: "about",
+			parentId: "general",
+			sidebar: false,
+			title: "About",
+		},
+		{ ...sections[1], sidebarGroup: "notifications" },
+		{
+			groups: [],
+			id: "appearance",
+			sidebarGroup: "system",
+			title: "Appearance",
+		},
+	];
+	expect(
+		settingsSidebarGroups(grouped).map((group) => ({
+			id: group.id,
+			items: group.items.map((item) => item.id),
+		}))
+	).toEqual([
+		{ id: "system", items: ["general", "appearance"] },
+		{ id: "notifications", items: ["notifications"] },
+	]);
+	const html = renderToStaticMarkup(
+		<MacSettings defaultSection="about" sections={grouped} />
+	);
+	expect(html).toMatch(CURRENT_GENERAL);
+	expect(html).toContain(">About</h2>");
+	expect(html).not.toContain('data-id="about"');
+	expect(settingsSidebarGroups([])).toEqual([]);
+});
 test("settings search matches all words across labels, descriptions, keywords, and section context", () => {
 	expect(
 		searchSettings(sections, "  GENERAL   autoSAVE ").map((m) => m.item.id)

@@ -18,6 +18,7 @@ import {
 	type SettingsHistory,
 	searchSettings,
 	settingsItemKey,
+	settingsSidebarGroups,
 	stepSettingsHistory,
 } from "./settings-model";
 import { MacWindow, type TrafficLightsProps } from "./window";
@@ -416,19 +417,12 @@ export function MacSettings({
 						) : null}
 						<div className="mac-settings-navigation" ref={navigation}>
 							<WindowSidebar
-								groups={[
-									{
-										id: "sections",
-										items: sections.map((section) => ({
-											icon: section.icon,
-											id: section.id,
-											label: section.title,
-										})),
-									},
-								]}
+								groups={settingsSidebarGroups(sections)}
 								label={`${title} sections`}
 								onSelect={navigate}
-								selected={searching ? undefined : current?.id}
+								selected={
+									searching ? undefined : (current?.parentId ?? current?.id)
+								}
 							/>
 						</div>
 						{sidebarFooter ? (

@@ -6,17 +6,27 @@
 	width: 20px;
 	height: 20px;
 	color: white;
+	background-color: #8e8e8f;
 	background-image: linear-gradient(rgb(255 255 255 / 14%), transparent);
 	border-radius: 5px;
 	box-shadow:
 		inset 0 0 0 0.5px rgb(255 255 255 / 25%),
 		0 1px 2px rgb(0 0 0 / 22%);
 }
+.settings-demo-glyph {
+	display: block;
+	width: 100%;
+	height: 100%;
+	background: currentColor;
+	mask-repeat: no-repeat;
+	mask-position: center;
+	mask-size: contain;
+}
 .settings-demo-brand {
 	display: flex;
-	gap: 10px;
+	gap: 8px;
 	align-items: center;
-	padding: 0 0 4px;
+	padding: 0 0 3px;
 }
 .settings-demo-brand > .mac-window-symbol {
 	flex-shrink: 0;
@@ -29,7 +39,7 @@
 	min-width: 0;
 }
 .settings-demo-brand strong {
-	font-size: 13px;
+	font-size: 14px;
 	font-weight: 600;
 }
 .settings-demo-brand small {
@@ -66,12 +76,85 @@
 	border-radius: 5px;
 	box-shadow: none;
 }
-.settings-demo-image-choices img {
+.settings-demo-sample {
+	position: relative;
 	display: block;
 	width: 67px;
 	height: 44px;
+	overflow: hidden;
+	background: linear-gradient(
+		145deg,
+		#b3d7e7 20%,
+		#3ba2dc 45%,
+		#0b4e9a 46%,
+		#76bbec 70%,
+		#206db1
+	);
 	border-radius: 5px;
 	box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
+}
+.settings-demo-sample-selection {
+	position: absolute;
+	top: 9px;
+	left: 4px;
+	width: 34px;
+	height: 12px;
+	background: rgb(64 169 255 / 80%);
+	border: 1px solid rgb(255 255 255 / 80%);
+	border-radius: 4px;
+	box-shadow: 0 2px 5px rgb(0 0 0 / 20%);
+}
+.settings-demo-sample-window {
+	position: absolute;
+	right: -5px;
+	bottom: -4px;
+	display: flex;
+	gap: 3px;
+	width: 55px;
+	height: 23px;
+	padding: 6px;
+	background: #f6f6f8;
+	border: 1px solid rgb(255 255 255 / 70%);
+	border-radius: 5px;
+	box-shadow: 0 0 5px rgb(0 0 0 / 30%);
+}
+.settings-demo-sample-window i {
+	width: 6px;
+	height: 6px;
+	background: #fa6b68;
+	border-radius: 50%;
+}
+.settings-demo-sample-window i:nth-child(2) {
+	background: #ffc329;
+}
+.settings-demo-sample-window i:nth-child(3) {
+	background: #26c948;
+}
+.settings-demo-sample[data-look="Dark"] {
+	filter: brightness(0.6);
+}
+.settings-demo-sample[data-look="Dark"] .settings-demo-sample-window {
+	background: #202124;
+}
+.settings-demo-sample[data-look="Auto"]::after {
+	position: absolute;
+	inset: 0 0 0 50%;
+	content: "";
+	background: rgb(8 12 45 / 60%);
+}
+.settings-demo-sample[data-glass] .settings-demo-sample-window {
+	display: none;
+}
+.settings-demo-sample[data-glass] .settings-demo-sample-selection {
+	inset: 9px 7px;
+	width: auto;
+	height: auto;
+	background: rgb(255 255 255 / 24%);
+	border-radius: 18px;
+	backdrop-filter: blur(3px);
+}
+.settings-demo-sample[data-look="Tinted"] .settings-demo-sample-selection {
+	background: rgb(255 255 255 / 72%);
 }
 .macos
 	.mac-settings
@@ -80,11 +163,34 @@
 	font-weight: 600;
 	color: var(--mac-text);
 }
-.settings-demo-image-choices [data-checked] img {
+.settings-demo-image-choices [data-checked] .settings-demo-sample {
 	outline: 3px solid var(--mac-accent);
 	outline-offset: 1px;
 }
 
 .mac-settings-row:has(.settings-demo-image-choices) {
 	align-items: flex-start;
+}
+.settings-demo-value {
+	color: var(--mac-secondary);
+	text-align: right;
+	overflow-wrap: anywhere;
+}
+.settings-demo-action {
+	display: flex;
+	flex-direction: column;
+	gap: 6px;
+	align-items: flex-end;
+	text-align: right;
+}
+.settings-demo-action output {
+	font-size: 12px;
+	color: var(--mac-secondary);
+}
+.settings-demo-action output:empty {
+	display: none;
+}
+.mac-settings-row-control .mac-progress-bar {
+	width: 190px;
+	max-width: 100%;
 }
