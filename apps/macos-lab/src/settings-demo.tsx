@@ -32,6 +32,8 @@ function SettingsIcon({ name }: { name: string }) {
 				style={
 					{
 						"--settings-icon": `url("/assets/tahoe-settings/icons/${name}.png")`,
+						"--settings-icon-color": `url("/assets/tahoe-settings/icons/color/${name}.png")`,
+						"--settings-icon-color-large": `url("/assets/tahoe-settings/icons/color/${name}-large.png")`,
 						"--settings-icon-large": `url("/assets/tahoe-settings/icons/${name}-large.png")`,
 					} as CSSProperties
 				}
@@ -107,7 +109,9 @@ interface SettingsExampleProps
 		| "sidebarWidth"
 	> {
 	disabled?: boolean;
+	iconAppearance?: "color" | "monochrome";
 	onEvent: (message: string) => void;
+	onIconAppearanceChange?: (value: "color" | "monochrome") => void;
 	readOnly?: boolean;
 	style?: CSSProperties;
 }
@@ -133,15 +137,21 @@ function SettingsField({
 	disabled,
 	readOnly,
 	onEvent,
+	iconAppearance,
+	onIconAppearanceChange,
 }: {
 	field: SettingsDemoField;
 	disabled: boolean;
 	readOnly: boolean;
 	onEvent: (message: string) => void;
+	iconAppearance: "color" | "monochrome";
+	onIconAppearanceChange: (value: "color" | "monochrome") => void;
 }) {
 	const [result, setResult] = useState("");
 	const common = { disabled, readOnly };
 	const report = (value: unknown) => onEvent(`${field.label} → ${value}`);
+	const isIconStyle = field.label === "Icon & widget style";
+	const iconStyle = iconAppearance === "color" ? "Default" : "Clear";
 	switch (field.kind) {
 		case "switch":
 			return (
@@ -160,7 +170,15 @@ function SettingsField({
 					defaultValue={field.value}
 					items={field.options.map((value) => ({ label: value, value }))}
 					label={field.label}
-					onValueChange={report}
+					onValueChange={(value) => {
+						if (isIconStyle) {
+							onIconAppearanceChange(
+								value === "Clear" ? "monochrome" : "color"
+							);
+						}
+						report(value);
+					}}
+					value={isIconStyle ? iconStyle : undefined}
 				/>
 			);
 		case "slider":
@@ -243,8 +261,18 @@ export function SettingsExample({
 	onEvent,
 	disabled = false,
 	readOnly = false,
+	iconAppearance,
+	onIconAppearanceChange,
 	...props
 }: SettingsExampleProps) {
+	const [localIconAppearance, setLocalIconAppearance] = useState<
+		"color" | "monochrome"
+	>("color");
+	const currentIconAppearance = iconAppearance ?? localIconAppearance;
+	const changeIconAppearance = (value: "color" | "monochrome") => {
+		setLocalIconAppearance(value);
+		onIconAppearanceChange?.(value);
+	};
 	const groups = (id: string) =>
 		(SETTINGS_DEMO_PAGES[id] ?? []).map((group, index) => ({
 			id: group.title ?? `${id}-${index}`,
@@ -253,7 +281,9 @@ export function SettingsExample({
 					<SettingsField
 						disabled={disabled}
 						field={field}
+						iconAppearance={currentIconAppearance}
 						onEvent={onEvent}
+						onIconAppearanceChange={changeIconAppearance}
 						readOnly={readOnly}
 					/>
 				),
@@ -312,6 +342,11 @@ export function SettingsExample({
 	return (
 		<MacSettings
 			{...props}
+			className={
+				currentIconAppearance === "monochrome"
+					? "settings-demo-monochrome"
+					: undefined
+			}
 			onSearchQueryChange={(query) => onEvent(`Search → ${query}`)}
 			onSectionChange={(id) => onEvent(`Section → ${id}`)}
 			sections={sections}
@@ -328,14 +363,24 @@ export function SettingsExample({
 		/>
 	);
 }
-export function SettingsDemo({ values, onEvent }: PlaygroundDemoProps) {
+export function SettingsDemo({
+	values,
+	onEvent,
+	onPropertyChange,
+}: PlaygroundDemoProps) {
 	return (
 		<SettingsExample
 			active={Boolean(values.active)}
 			defaultSection={String(values.section)}
 			disabled={Boolean(values.disabled)}
+			iconAppearance={
+				values.iconAppearance === "monochrome" ? "monochrome" : "color"
+			}
 			onClose={() => onEvent("Close requested")}
 			onEvent={onEvent}
+			onIconAppearanceChange={(value) =>
+				onPropertyChange("iconAppearance", value)
+			}
 			onMinimize={() => onEvent("Minimize requested")}
 			onZoom={() => onEvent("Zoom requested")}
 			readOnly={Boolean(values.readOnly)}

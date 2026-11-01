@@ -10,7 +10,7 @@
 	width: 24px;
 	height: 24px;
 	margin: -2px;
-	background: var(--settings-icon) center / contain no-repeat;
+	background: var(--settings-icon-color) center / contain no-repeat;
 }
 .settings-demo-symbol {
 	color: white;
@@ -62,6 +62,12 @@
 	width: 64px;
 	height: 64px;
 	margin: -6px;
+	background-image: var(--settings-icon-color-large);
+}
+.settings-demo-monochrome .settings-demo-native-icon {
+	background-image: var(--settings-icon);
+}
+.settings-demo-monochrome .mac-settings-page-icon .settings-demo-native-icon {
 	background-image: var(--settings-icon-large);
 }
 .mac-settings-page-icon .settings-demo-icon .mac-window-symbol {

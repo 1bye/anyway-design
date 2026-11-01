@@ -338,8 +338,12 @@
 	border: calc(var(--mac-settings-sidebar-inset) + 1px) solid var(--mac-surface);
 	border-radius: inherit;
 }
-[data-preset="tahoe"] .mac-settings .mac-window-controls {
-	padding-left: 18px;
+[data-preset="tahoe"]
+	.mac-settings
+	> .mac-window[data-sidebar]
+	.mac-window-controls {
+	padding-left: 18.5px;
+	transform: translateY(-0.5px);
 }
 .macos .mac-settings .mac-window[data-sidebar] .mac-window-sidebar {
 	padding: 52px 10px 10px;

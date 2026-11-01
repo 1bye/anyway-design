@@ -26,6 +26,12 @@
 
 .macos[data-preset="tahoe"] {
 	--mac-window-radius: 20px;
+	--mac-traffic-close: #ff5c60;
+	--mac-traffic-close-border: #fb1627;
+	--mac-traffic-minimize: #fac800;
+	--mac-traffic-minimize-border: #f8b700;
+	--mac-traffic-zoom: #35c759;
+	--mac-traffic-zoom-border: #00b512;
 	--mac-chrome: rgb(249 249 249 / 79%);
 	--mac-sidebar: rgb(244 244 244 / 63%);
 	--mac-material: rgb(250 250 250 / 70%);
@@ -2098,14 +2104,17 @@
 	border-radius: 50%;
 }
 
-.mac-traffic-close {
+.mac-traffic-lights .mac-traffic-close {
 	background: var(--mac-traffic-close, #ff5f57);
+	border-color: var(--mac-traffic-close-border, rgb(0 0 0 / 12%));
 }
-.mac-traffic-minimize {
+.mac-traffic-lights .mac-traffic-minimize {
 	background: var(--mac-traffic-minimize, #febc2e);
+	border-color: var(--mac-traffic-minimize-border, rgb(0 0 0 / 12%));
 }
-.mac-traffic-zoom {
+.mac-traffic-lights .mac-traffic-zoom {
 	background: var(--mac-traffic-zoom, #28c840);
+	border-color: var(--mac-traffic-zoom-border, rgb(0 0 0 / 12%));
 }
 .mac-traffic-lights svg {
 	position: absolute;
@@ -2127,6 +2136,7 @@
 }
 .mac-traffic-lights[data-active="false"]:not(:hover) button {
 	background: #cdcdcd;
+	border-color: rgb(0 0 0 / 12%);
 }
 [data-appearance="dark"]
 	.mac-traffic-lights[data-active="false"]:not(:hover)

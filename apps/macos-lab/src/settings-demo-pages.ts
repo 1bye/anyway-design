@@ -166,14 +166,7 @@ export const SETTINGS_DEMO_PAGES: Record<string, SettingsDemoGroup[]> = {
 					"Yellow",
 					"Green"
 				),
-				select(
-					"Icon & widget style",
-					"Default",
-					"Default",
-					"Dark",
-					"Clear",
-					"Tinted"
-				),
+				select("Icon & widget style", "Default", "Default", "Clear"),
 				select(
 					"Folder colour",
 					"Automatic",

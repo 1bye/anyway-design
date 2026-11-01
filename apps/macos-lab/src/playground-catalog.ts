@@ -148,6 +148,12 @@ export const PLAYGROUND_ENTRIES: readonly PlaygroundEntry[] = [
 			},
 			{ initial: true, key: "searchable", label: "Search settings" },
 			{
+				initial: "color",
+				key: "iconAppearance",
+				label: "Icon appearance",
+				options: ["color", "monochrome"],
+			},
+			{
 				initial: 224,
 				key: "sidebarWidth",
 				label: "Sidebar width",
