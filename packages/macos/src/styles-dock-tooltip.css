@@ -1,0 +1,143 @@
+.mac-dock-tooltip-surface {
+	display: none;
+}
+
+[data-preset="tahoe"] .mac-dock-tooltip {
+	--dock-tooltip-offset: 18px;
+	--dock-tooltip-material: rgb(230 230 237 / 80%);
+	--dock-tooltip-edge: rgb(255 255 255 / 65%);
+	--dock-tooltip-inset: 0 0 -7px;
+	--dock-tooltip-left: left top;
+	--dock-tooltip-right: right top;
+	--dock-tooltip-center: center top;
+	--dock-tooltip-middle-width: calc(100% - 26px);
+	--dock-tooltip-tail-position: center bottom;
+	--dock-tooltip-tail-size: 24px 8px;
+	--dock-tooltip-tail: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 8'%3E%3Cpath d='M0 0C6 0 8 3 10.5 5.5Q12 7.5 13.5 5.5C16 3 18 0 24 0Z'/%3E%3C/svg%3E");
+	--dock-tooltip-rim-gap-size: 24px 2px;
+	--dock-tooltip-rim-gap-position: center bottom;
+	bottom: calc(
+		var(--dock-size) *
+		var(--dock-scale) +
+		var(--dock-tooltip-offset)
+	);
+	padding: 4px 13px;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 18px;
+	background: transparent;
+	border: 0;
+	border-radius: 0;
+	box-shadow: none;
+	isolation: isolate;
+	backdrop-filter: none;
+}
+
+/* One masked material keeps the pointer and bubble seamless over any backdrop. */
+[data-preset="tahoe"] .mac-dock-tooltip-surface {
+	position: absolute;
+	inset: var(--dock-tooltip-inset);
+	z-index: -1;
+	display: block;
+	background: var(--dock-tooltip-material);
+	backdrop-filter: blur(20px) saturate(1.15);
+	mask:
+		radial-gradient(circle closest-side, #000 99%, transparent 100%)
+		var(--dock-tooltip-left) / 26px 26px no-repeat,
+		radial-gradient(circle closest-side, #000 99%, transparent 100%)
+		var(--dock-tooltip-right) / 26px 26px no-repeat,
+		linear-gradient(#000 0 0) var(--dock-tooltip-center) /
+		var(--dock-tooltip-middle-width) 26px no-repeat,
+		var(--dock-tooltip-tail) var(--dock-tooltip-tail-position) /
+		var(--dock-tooltip-tail-size) no-repeat;
+}
+
+[data-preset="tahoe"] .mac-dock-tooltip::before {
+	position: absolute;
+	inset: 0;
+	content: "";
+	border: 0.75px solid var(--dock-tooltip-edge);
+	border-radius: 13px;
+	mask:
+		linear-gradient(#000 0 0),
+		linear-gradient(#000 0 0) var(--dock-tooltip-rim-gap-position) /
+		var(--dock-tooltip-rim-gap-size) no-repeat;
+	mask-composite: exclude;
+}
+
+[data-preset="tahoe"] .mac-dock-tooltip::after {
+	position: absolute;
+	bottom: -7px;
+	left: calc(50% - 12px);
+	width: 24px;
+	height: 8px;
+	content: "";
+	background:
+		url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 8'%3E%3Cpath d='M0 0C6 0 8 3 10.5 5.5Q12 7.5 13.5 5.5C16 3 18 0 24 0' fill='none' stroke='white' stroke-opacity='.65' stroke-width='.75'/%3E%3C/svg%3E")
+		center / 100% 100% no-repeat;
+}
+
+[data-preset="tahoe"][data-appearance="dark"] .mac-dock-tooltip {
+	--dock-tooltip-material: rgb(58 58 64 / 84%);
+	--dock-tooltip-edge: rgb(255 255 255 / 25%);
+}
+
+[data-preset="tahoe"][data-appearance="dark"] .mac-dock-tooltip::after {
+	opacity: 0.4;
+}
+
+[data-preset="tahoe"][data-reduce-transparency] .mac-dock-tooltip {
+	--dock-tooltip-material: var(--mac-surface);
+	background: transparent;
+}
+
+[data-preset="tahoe"][data-reduce-transparency] .mac-dock-tooltip-surface {
+	backdrop-filter: none;
+}
+
+[data-preset="tahoe"] .mac-dock[data-position="left"] .mac-dock-tooltip {
+	--dock-tooltip-inset: 0 0 0 -7px;
+	--dock-tooltip-left: left 7px top;
+	--dock-tooltip-center: calc(50% + 3.5px) top;
+	--dock-tooltip-middle-width: calc(100% - 33px);
+	--dock-tooltip-tail-position: left center;
+	--dock-tooltip-tail-size: 8px 24px;
+	--dock-tooltip-tail: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 24'%3E%3Cpath d='M8 0C8 6 5 8 2.5 10.5Q.5 12 2.5 13.5C5 16 8 18 8 24Z'/%3E%3C/svg%3E");
+	--dock-tooltip-rim-gap-size: 2px 24px;
+	--dock-tooltip-rim-gap-position: left center;
+	left: calc(var(--dock-size) * var(--dock-scale) + var(--dock-tooltip-offset));
+}
+
+[data-preset="tahoe"] .mac-dock[data-position="right"] .mac-dock-tooltip {
+	--dock-tooltip-inset: 0 -7px 0 0;
+	--dock-tooltip-right: right 7px top;
+	--dock-tooltip-center: calc(50% - 3.5px) top;
+	--dock-tooltip-middle-width: calc(100% - 33px);
+	--dock-tooltip-tail-position: right center;
+	--dock-tooltip-tail-size: 8px 24px;
+	--dock-tooltip-tail: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 24'%3E%3Cpath d='M0 0C0 6 3 8 5.5 10.5Q7.5 12 5.5 13.5C3 16 0 18 0 24Z'/%3E%3C/svg%3E");
+	--dock-tooltip-rim-gap-size: 2px 24px;
+	--dock-tooltip-rim-gap-position: right center;
+	right: calc(
+		var(--dock-size) *
+		var(--dock-scale) +
+		var(--dock-tooltip-offset)
+	);
+}
+
+[data-preset="tahoe"] .mac-dock[data-position="left"] .mac-dock-tooltip::after {
+	top: calc(50% - 4px);
+	bottom: auto;
+	left: -15px;
+	transform: rotate(90deg);
+}
+
+[data-preset="tahoe"]
+	.mac-dock[data-position="right"]
+	.mac-dock-tooltip::after {
+	top: calc(50% - 4px);
+	right: -15px;
+	bottom: auto;
+	left: auto;
+	transform: rotate(-90deg);
+}

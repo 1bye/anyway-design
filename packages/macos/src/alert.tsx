@@ -14,24 +14,18 @@ import {
 	type MacAlertAction,
 	orderedAlertActions,
 } from "./alert-actions";
+import nativeApplicationLight from "./assets/native-alerts/application-light.png";
+import nativeCriticalDark from "./assets/native-alerts/critical-dark.png";
+import nativeCriticalLight from "./assets/native-alerts/critical-light.png";
 import { MacCheckbox, type MacCheckboxProps } from "./checkbox";
 import { MacButton } from "./controls";
 import { useMacOSPortal } from "./environment";
 
 export type { MacAlertAction } from "./alert-actions";
 
-const APPLICATION_LIGHT = new URL(
-	"./assets/native-alerts/application-light.png",
-	import.meta.url
-).href;
-const CRITICAL_LIGHT = new URL(
-	"./assets/native-alerts/critical-light.png",
-	import.meta.url
-).href;
-const CRITICAL_DARK = new URL(
-	"./assets/native-alerts/critical-dark.png",
-	import.meta.url
-).href;
+const APPLICATION_LIGHT = nativeApplicationLight;
+const CRITICAL_LIGHT = nativeCriticalLight;
+const CRITICAL_DARK = nativeCriticalDark;
 
 export interface MacAlertPanelProps {
 	actions: readonly MacAlertAction[];

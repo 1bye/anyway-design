@@ -226,6 +226,35 @@ function isEditable(target: EventTarget) {
 	);
 }
 
+function quickLookContainer(node: HTMLElement, view: Window) {
+	let containingBlock = node.parentElement;
+	while (containingBlock) {
+		const styles = view.getComputedStyle(containingBlock);
+		if (
+			styles.transform !== "none" ||
+			styles.perspective !== "none" ||
+			styles.filter !== "none"
+		) {
+			break;
+		}
+		containingBlock = containingBlock.parentElement;
+	}
+	const bounds = containingBlock?.getBoundingClientRect();
+	const scaleX =
+		bounds && containingBlock?.offsetWidth
+			? bounds.width / containingBlock.offsetWidth
+			: 1;
+	const scaleY =
+		bounds && containingBlock?.offsetHeight
+			? bounds.height / containingBlock.offsetHeight
+			: 1;
+	const centerX = bounds ? bounds.left + bounds.width / 2 : view.innerWidth / 2;
+	const centerY = bounds
+		? bounds.top + bounds.height / 2
+		: view.innerHeight / 2;
+	return { centerX, centerY, scaleX, scaleY };
+}
+
 export function MacQuickLook({
 	items,
 	value,
@@ -255,18 +284,28 @@ export function MacQuickLook({
 			const element = current && getSourceElement?.(current.id);
 			const width = node.offsetWidth;
 			const height = node.offsetHeight;
+			const { centerX, centerY, scaleX, scaleY } = quickLookContainer(
+				node,
+				view
+			);
 			const origin = quickLookTransition(
 				element?.isConnected ? element.getBoundingClientRect() : undefined,
 				{
-					height,
-					width,
-					x: (view.innerWidth - width) / 2,
-					y: (view.innerHeight - height) / 2,
+					height: height * scaleY,
+					width: width * scaleX,
+					x: centerX - (width * scaleX) / 2,
+					y: centerY - (height * scaleY) / 2,
 				},
 				{ height: view.innerHeight, width: view.innerWidth }
 			);
-			node.style.setProperty("--mac-quick-look-from-x", `${origin?.x ?? 0}px`);
-			node.style.setProperty("--mac-quick-look-from-y", `${origin?.y ?? 0}px`);
+			node.style.setProperty(
+				"--mac-quick-look-from-x",
+				`${(origin?.x ?? 0) / scaleX}px`
+			);
+			node.style.setProperty(
+				"--mac-quick-look-from-y",
+				`${(origin?.y ?? 0) / scaleY}px`
+			);
 			node.style.setProperty(
 				"--mac-quick-look-from-scale",
 				`${origin?.scale ?? 1}`

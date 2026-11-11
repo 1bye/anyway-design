@@ -202,7 +202,10 @@ export function Dock({
 								<span className="mac-dock-badge">{item.badge}</span>
 							) : null}
 						</span>
-						<span className="mac-dock-tooltip">{item.label}</span>
+						<span className="mac-dock-tooltip">
+							<span aria-hidden="true" className="mac-dock-tooltip-surface" />
+							{item.label}
+						</span>
 						<span aria-hidden className="mac-dock-dot" />
 					</button>
 				))}

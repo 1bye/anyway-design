@@ -2,6 +2,7 @@
 @import "./styles-desktop.css";
 @import "./styles-settings.css";
 @import "./styles-notification-center.css";
+@import "./styles-dock-tooltip.css";
 
 .macos {
 	--mac-accent: #007aff;

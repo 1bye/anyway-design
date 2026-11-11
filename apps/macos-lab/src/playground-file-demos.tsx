@@ -16,7 +16,13 @@ import { MacFileThumbnail } from "@anyway-design/macos/file-thumbnail";
 import { MacFileGrid } from "@anyway-design/macos/files";
 import { MacQuickLook } from "@anyway-design/macos/quick-look";
 import { WindowSymbol } from "@anyway-design/macos/window-symbol";
-import { type CSSProperties, useEffect, useState } from "react";
+import {
+	type CSSProperties,
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+} from "react";
 import { COLUMN_REFERENCE_ITEMS } from "./file-columns-reference-data";
 import { GALLERY_ACTIONS } from "./file-gallery-reference-data";
 import {
@@ -32,6 +38,19 @@ import {
 import { useFinderFolderCreation } from "./use-finder-folder-creation";
 
 export function FilesDemo({ entry, values, onEvent }: PlaygroundDemoProps) {
+	const browserRef = useRef<HTMLDivElement>(null);
+	const getSourceElement = useCallback((id: string) => {
+		const files =
+			browserRef.current?.querySelectorAll<HTMLElement>("[data-file-id]") ?? [];
+		const file = [...files].find((element) => element.dataset.fileId === id);
+		return (
+			file?.querySelector<HTMLElement>(
+				".mac-file-artwork, .mac-file-list-icon"
+			) ??
+			file ??
+			null
+		);
+	}, []);
 	const nested = entry.id === "folder-list" || entry.id === "file-columns";
 	const [items, setItems] = useState(() => {
 		if (entry.id === "file-columns") {
@@ -156,8 +175,11 @@ export function FilesDemo({ entry, values, onEvent }: PlaygroundDemoProps) {
 					Get Info
 				</MacButton>
 			</div>
-			<div className="pg-file-browser">{browser}</div>
+			<div className="pg-file-browser" ref={browserRef}>
+				{browser}
+			</div>
 			<MacQuickLook
+				getSourceElement={getSourceElement}
 				items={allFiles.map((file) => ({
 					...file,
 					preview:
