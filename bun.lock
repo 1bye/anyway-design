@@ -128,6 +128,7 @@
         "react-dom": "catalog:",
       },
       "devDependencies": {
+        "@cloudflare/vite-plugin": "^1.54.5",
         "@tailwindcss/vite": "^4.3.3",
         "@types/mdx": "^2.0.13",
         "@types/node": "catalog:",
@@ -137,6 +138,7 @@
         "tailwindcss": "catalog:",
         "typescript": "catalog:",
         "vite": "^8.1.5",
+        "wrangler": "^4.129.1",
       },
     },
     "apps/web": {

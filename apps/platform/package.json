@@ -5,6 +5,7 @@
   "scripts": {
     "build": "vite build && bun scripts/include-macos-lab.ts",
     "check-types": "tsc --noEmit",
+    "deploy": "bun run --cwd ../.. build:platform && wrangler deploy",
     "dev": "vite dev --host 127.0.0.1",
     "preview": "vite preview --host 127.0.0.1",
     "test": "bun test"
@@ -23,6 +24,7 @@
     "react-dom": "catalog:"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.54.5",
     "@tailwindcss/vite": "^4.3.3",
     "@types/mdx": "^2.0.13",
     "@types/node": "catalog:",
@@ -31,6 +33,7 @@
     "@vitejs/plugin-react": "^6.0.4",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
-    "vite": "^8.1.5"
+    "vite": "^8.1.5",
+    "wrangler": "^4.129.1"
   }
 }

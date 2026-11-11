@@ -75,6 +75,22 @@ native comparison/back navigation, outer docs search, mobile navigation, and
 an unknown docs route. Check both docs themes and narrow widths. Native fidelity
 limitations remain documented by the original lab and package.
 
-Deployment is not configured. A host must serve `dist/client` static files,
-including `/macos-lab/index.html` and `/assets/`, alongside the TanStack Start
-server for document routes and search. Assets stay on the same origin.
+## Deploy
+
+Platform runs on Cloudflare Workers at <https://platform.anyway.design>.
+Its Wrangler configuration manages the `anyway-platform` worker and custom
+domain in the same account as Plan. Cloudflare provisions the subdomain's DNS
+and TLS. No database or server secrets are required.
+
+From the repository root:
+
+```sh
+bun run --cwd apps/platform wrangler login
+bun run deploy:platform
+```
+
+The deployment command builds the macOS Lab dependency, builds Platform's
+TanStack Start worker, includes the lab and reference assets in `dist/client`,
+then deploys the worker and static files. Docs routes, search, component previews,
+`/macos-lab/index.html`, and `/assets/` stay on the same origin. The existing
+Alchemy deployment for web and MD is separate.

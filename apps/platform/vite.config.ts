@@ -1,3 +1,4 @@
+import { cloudflare } from "@cloudflare/vite-plugin";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import react from "@vitejs/plugin-react";
@@ -8,6 +9,7 @@ import { macosLabDev } from "./tooling/macos-lab.ts";
 export default defineConfig({
 	plugins: [
 		macosLabDev(),
+		cloudflare({ viteEnvironment: { name: "ssr" } }),
 		fumadocsMdx(),
 		tailwindcss(),
 		tanstackStart(),

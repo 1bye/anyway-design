@@ -1,0 +1,9 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "anyway-platform",
+	"account_id": "da10cb03084dc2e79cf781106b8a854d",
+	"main": "@tanstack/react-start/server-entry",
+	"compatibility_date": "2026-09-07",
+	"compatibility_flags": ["nodejs_compat"],
+	"routes": [{ "pattern": "platform.anyway.design", "custom_domain": true }]
+}
