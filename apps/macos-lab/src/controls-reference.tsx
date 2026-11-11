@@ -1,9 +1,5 @@
-import {
-	MacButton,
-	MacSearchField,
-	MacTextField,
-} from "@anyway-design/macos/controls";
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
+import { MacButton, MacSearchField, MacTextField } from "@1bye/macos/controls";
+import { MacOSEnvironment } from "@1bye/macos/environment";
 import { ArrowLeft } from "lucide-react";
 import {
 	type ChangeEvent,

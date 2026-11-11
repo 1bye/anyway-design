@@ -1,6 +1,6 @@
-import { Dock, type DockItem } from "@anyway-design/macos/dock";
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
-import { MacWindow } from "@anyway-design/macos/window";
+import { Dock, type DockItem } from "@1bye/macos/dock";
+import { MacOSEnvironment } from "@1bye/macos/environment";
+import { MacWindow } from "@1bye/macos/window";
 import { ArrowLeft } from "lucide-react";
 import { type ChangeEvent, useCallback, useState } from "react";
 import { DOCK_ITEMS } from "./dock-items";

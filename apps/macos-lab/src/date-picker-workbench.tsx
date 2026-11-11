@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local control workbench callbacks. */
-import { MacButton } from "@anyway-design/macos/controls";
-import { MacDatePicker } from "@anyway-design/macos/date-picker";
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
+import { MacButton } from "@1bye/macos/controls";
+import { MacDatePicker } from "@1bye/macos/date-picker";
+import { MacOSEnvironment } from "@1bye/macos/environment";
 import { type FormEvent, useState } from "react";
 
 export function DatePickerWorkbench({ dark }: { dark: boolean }) {

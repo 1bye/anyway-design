@@ -1,8 +1,8 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local workbench controls. */
-import { MacButton } from "@anyway-design/macos/controls";
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
-import { MacProgressBar, MacSpinner } from "@anyway-design/macos/progress";
-import { MacSlider } from "@anyway-design/macos/slider";
+import { MacButton } from "@1bye/macos/controls";
+import { MacOSEnvironment } from "@1bye/macos/environment";
+import { MacProgressBar, MacSpinner } from "@1bye/macos/progress";
+import { MacSlider } from "@1bye/macos/slider";
 import { useEffect, useState } from "react";
 
 export function ProgressWorkbench({ dark }: { dark: boolean }) {

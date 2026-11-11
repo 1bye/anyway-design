@@ -1,10 +1,10 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local state for the controls workbench. */
-import { MacCheckbox } from "@anyway-design/macos/checkbox";
-import { MacButton } from "@anyway-design/macos/controls";
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
-import { MacRadio, MacRadioGroup } from "@anyway-design/macos/radio";
-import { MacSlider } from "@anyway-design/macos/slider";
-import { MacStepper } from "@anyway-design/macos/stepper";
+import { MacCheckbox } from "@1bye/macos/checkbox";
+import { MacButton } from "@1bye/macos/controls";
+import { MacOSEnvironment } from "@1bye/macos/environment";
+import { MacRadio, MacRadioGroup } from "@1bye/macos/radio";
+import { MacSlider } from "@1bye/macos/slider";
+import { MacStepper } from "@1bye/macos/stepper";
 import { type FormEvent, useState } from "react";
 
 export function InputControlsWorkbench({ dark }: { dark: boolean }) {

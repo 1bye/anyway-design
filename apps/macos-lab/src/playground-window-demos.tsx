@@ -1,14 +1,14 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local interactive playground events. */
-import { MacCheckbox } from "@anyway-design/macos/checkbox";
-import { MacButton } from "@anyway-design/macos/controls";
-import { Dock } from "@anyway-design/macos/dock";
-import type { MacFinderView } from "@anyway-design/macos/finder";
-import { MacContextMenu, MacMenuButton } from "@anyway-design/macos/menu";
-import { AppleMark, MenuBar } from "@anyway-design/macos/menu-bar";
-import { MacPopover, MacPopoverClose } from "@anyway-design/macos/popover";
-import { MacTabs } from "@anyway-design/macos/tabs";
-import { TrafficLights } from "@anyway-design/macos/window";
-import { WindowSymbol } from "@anyway-design/macos/window-symbol";
+import { MacCheckbox } from "@1bye/macos/checkbox";
+import { MacButton } from "@1bye/macos/controls";
+import { Dock } from "@1bye/macos/dock";
+import type { MacFinderView } from "@1bye/macos/finder";
+import { MacContextMenu, MacMenuButton } from "@1bye/macos/menu";
+import { AppleMark, MenuBar } from "@1bye/macos/menu-bar";
+import { MacPopover, MacPopoverClose } from "@1bye/macos/popover";
+import { MacTabs } from "@1bye/macos/tabs";
+import { TrafficLights } from "@1bye/macos/window";
+import { WindowSymbol } from "@1bye/macos/window-symbol";
 import { useLayoutEffect, useRef, useState } from "react";
 import { DesktopMenuStatus } from "./desktop-menu-status";
 import { DOCK_ITEMS } from "./dock-items";

@@ -360,7 +360,7 @@ function PlaygroundSession({
 						/>
 					</div>
 					<div className="pg-code-view" hidden={tab !== "code"}>
-						<p>@anyway-design/macos/{entry.module}</p>
+						<p>@1bye/macos/{entry.module}</p>
 						{copyError ? (
 							<p role="status">
 								Clipboard unavailable. Select and copy the code below.

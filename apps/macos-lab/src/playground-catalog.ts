@@ -1,4 +1,4 @@
-import { NATIVE_SYMBOLS } from "@anyway-design/macos/native-symbols";
+import { NATIVE_SYMBOLS } from "@1bye/macos/native-symbols";
 
 export type PlaygroundValues = Partial<
 	Record<string, string | number | boolean>

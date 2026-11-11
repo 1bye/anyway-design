@@ -1,15 +1,12 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local controls for the native column comparison. */
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
+import { MacOSEnvironment } from "@1bye/macos/environment";
 import {
 	type MacFileColumnItem,
 	MacFileColumns,
-} from "@anyway-design/macos/file-columns";
-import type { MacFileSort } from "@anyway-design/macos/file-list";
-import { flattenFileList } from "@anyway-design/macos/file-list-tree";
-import {
-	MacQuickLook,
-	type MacQuickLookItem,
-} from "@anyway-design/macos/quick-look";
+} from "@1bye/macos/file-columns";
+import type { MacFileSort } from "@1bye/macos/file-list";
+import { flattenFileList } from "@1bye/macos/file-list-tree";
+import { MacQuickLook, type MacQuickLookItem } from "@1bye/macos/quick-look";
 import { ArrowLeft } from "lucide-react";
 import {
 	type CSSProperties,

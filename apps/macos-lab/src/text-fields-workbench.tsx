@@ -1,10 +1,6 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local workbench state and form callbacks. */
-import {
-	MacButton,
-	MacSearchField,
-	MacTextField,
-} from "@anyway-design/macos/controls";
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
+import { MacButton, MacSearchField, MacTextField } from "@1bye/macos/controls";
+import { MacOSEnvironment } from "@1bye/macos/environment";
 import { type FormEvent, useRef, useState } from "react";
 
 export function TextFieldsWorkbench({ dark }: { dark: boolean }) {

@@ -230,9 +230,9 @@ export default function MacosComponentPage({
 			<h2 id="usage">Usage</h2>
 			<p>
 				Import <code>{entry.imports}</code> from{" "}
-				<code>@anyway-design/macos/{entry.module}</code>. Load the shared
-				stylesheet once and wrap the component in <code>MacOSEnvironment</code>.
-				The Code view includes the current props and environment setup.
+				<code>@1bye/macos/{entry.module}</code>. Load the shared stylesheet once
+				and wrap the component in <code>MacOSEnvironment</code>. The Code view
+				includes the current props and environment setup.
 			</p>
 			<h2 id="properties">Properties</h2>
 			{entry.properties.length ? (

@@ -1,4 +1,4 @@
-import { type MacTab, MacTabs } from "@anyway-design/macos/tabs";
+import { type MacTab, MacTabs } from "@1bye/macos/tabs";
 import { useCallback, useRef, useState } from "react";
 import { WindowReferenceFiles } from "./window-reference-files";
 

@@ -1,11 +1,11 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local controls in the rename comparison workbench. */
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
-import { MacFileIcon } from "@anyway-design/macos/file-icons";
-import { MacFileList } from "@anyway-design/macos/file-list";
-import { FileRenameField } from "@anyway-design/macos/file-rename-field";
-import { type MacFile, MacFileGrid } from "@anyway-design/macos/files";
-import { MacContextMenu } from "@anyway-design/macos/menu";
-import { WindowSymbol } from "@anyway-design/macos/window-symbol";
+import { MacOSEnvironment } from "@1bye/macos/environment";
+import { MacFileIcon } from "@1bye/macos/file-icons";
+import { MacFileList } from "@1bye/macos/file-list";
+import { FileRenameField } from "@1bye/macos/file-rename-field";
+import { type MacFile, MacFileGrid } from "@1bye/macos/files";
+import { MacContextMenu } from "@1bye/macos/menu";
+import { WindowSymbol } from "@1bye/macos/window-symbol";
 import {
 	type CSSProperties,
 	type MouseEvent,

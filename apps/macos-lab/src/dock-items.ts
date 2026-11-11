@@ -1,4 +1,4 @@
-import type { DockItem } from "@anyway-design/macos/dock";
+import type { DockItem } from "@1bye/macos/dock";
 
 export const DOCK_ITEMS: DockItem[] = [
 	{ icon: "/assets/finder.webp", id: "finder", label: "Finder", running: true },

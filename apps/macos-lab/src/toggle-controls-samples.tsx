@@ -1,9 +1,9 @@
-import { MacSwitch } from "@anyway-design/macos/controls";
+import { MacSwitch } from "@1bye/macos/controls";
 import {
 	MacSegmentedControl,
 	type MacSegmentedItem,
-} from "@anyway-design/macos/segmented-control";
-import { WindowSymbol } from "@anyway-design/macos/window-symbol";
+} from "@1bye/macos/segmented-control";
+import { WindowSymbol } from "@1bye/macos/window-symbol";
 
 export type ToggleFocus = "normal" | "switch" | "segment";
 export const PERIOD_ITEMS: readonly MacSegmentedItem[] = [

@@ -1,4 +1,4 @@
-import { MacProgressBar, MacSpinner } from "@anyway-design/macos/progress";
+import { MacProgressBar, MacSpinner } from "@1bye/macos/progress";
 
 export const PROGRESS_ROWS = [
 	{ id: "empty", label: "Empty", top: 72, value: 0 },

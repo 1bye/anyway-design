@@ -1,12 +1,48 @@
-# @anyway-design/macos
+# @1bye/macos
 
-React components for browser previews of macOS interfaces. Import each
-component directly and include the stylesheet once:
+Experimental React components inspired by macOS Tahoe and Sequoia. Version
+`0.1.0` is the first release candidate; APIs and visual details may change.
+Design tokens are not yet a stable public API.
+
+## Install and use
+
+After publication:
+
+```sh
+npm install @1bye/macos react@^19.2 react-dom@^19.2
+```
+
+Use React 19.2 or later in the React 19 series, an ESM-capable bundler, and modern
+browsers. Import each component directly and include the stylesheet once. No
+Tailwind configuration, workspace aliases, or TypeScript source compilation is
+required by the installed package.
 
 ```tsx
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
-import { Dock } from "@anyway-design/macos/dock";
-import "@anyway-design/macos/styles.css";
+import { useState } from "react";
+import { MacOSEnvironment } from "@1bye/macos/environment";
+import { MacSwitch } from "@1bye/macos/controls";
+import "@1bye/macos/styles.css";
+
+export function App() {
+  const [enabled, setEnabled] = useState(true);
+  return (
+    <MacOSEnvironment preset="tahoe" appearance="light">
+      <MacSwitch
+        label="Notifications"
+        checked={enabled}
+        onCheckedChange={setEnabled}
+      />
+    </MacOSEnvironment>
+  );
+}
+```
+
+For a desktop composition:
+
+```tsx
+import { MacOSEnvironment } from "@1bye/macos/environment";
+import { Dock } from "@1bye/macos/dock";
+import "@1bye/macos/styles.css";
 
 <MacOSEnvironment preset="tahoe" appearance="light">
   <Dock
@@ -22,6 +58,39 @@ import "@anyway-design/macos/styles.css";
 The environment needs a sized, positioned parent for desktop compositions.
 It owns preset, appearance, accent, reduced transparency, reduced motion,
 and the portal container so menus retain their styles in embedded previews.
+
+## Release preparation
+
+From the repository root:
+
+```sh
+bun install
+bun run build:macos
+bun run --cwd packages/macos test
+bun run --cwd packages/macos check-types
+bun run --cwd packages/macos test:release
+```
+
+From `packages/macos`, `npm pack` runs the build and creates
+`1bye-macos-0.1.0.tgz`. Install that tarball in a separate React app to
+test the exact distribution, rather than linking the workspace package.
+`test:release` automates that flow in a new temporary directory, installs its
+dependencies with npm, verifies every entry point, and type-checks and builds a
+fresh Vite/React app. It prints the directory so the built app can be previewed.
+JavaScript, declarations, bundled CSS, embedded image assets, and third-party
+source notices are included. React, React DOM, and Base UI remain external.
+Tests, source code, exporter scripts, and the lab are excluded from the tarball.
+
+The workspace apps deliberately resolve macOS imports to `src/` for live editing;
+the packed package resolves those same imports to `dist/`.
+
+Original Anyway code is MIT licensed. Apple-exported artwork is separately
+identified in [THIRD_PARTY_NOTICES.md](./THIRD_PARTY_NOTICES.md); the source notes
+do not establish public redistribution permission. Resolve that prerequisite
+before publishing this candidate. Preparing or packing a release does not
+publish it to npm.
+
+## Components
 
 | Import | Components / props |
 | --- | --- |
@@ -71,9 +140,9 @@ Shortcut text is a visual hint, not a registered application keyboard binding.
 Palette entries (`type: "palette"`) accept labeled, checked color choices.
 
 ```tsx
-import { MacMenuButton, MacContextMenu } from "@anyway-design/macos/menu";
-import { WindowSymbol } from "@anyway-design/macos/window-symbol";
-import { WindowToolbarButton } from "@anyway-design/macos/window-toolbar";
+import { MacMenuButton, MacContextMenu } from "@1bye/macos/menu";
+import { WindowSymbol } from "@1bye/macos/window-symbol";
+import { WindowToolbarButton } from "@1bye/macos/window-toolbar";
 
 const items = [
   { id: "copy", label: "Copy", icon: <WindowSymbol name="copy" />, shortcut: "⌘C" },
@@ -130,10 +199,10 @@ with navigation before the title and action groups after it. Sequoia keeps
 the full-width title bar and divided sidebar. The same slots work in both:
 
 ```tsx
-import { MacWindow } from "@anyway-design/macos/window";
-import { WindowSidebar } from "@anyway-design/macos/window-sidebar";
-import { WindowSymbol } from "@anyway-design/macos/window-symbol";
-import { WindowToolbarButton, WindowToolbarGroup } from "@anyway-design/macos/window-toolbar";
+import { MacWindow } from "@1bye/macos/window";
+import { WindowSidebar } from "@1bye/macos/window-sidebar";
+import { WindowSymbol } from "@1bye/macos/window-symbol";
+import { WindowToolbarButton, WindowToolbarGroup } from "@1bye/macos/window-toolbar";
 
 <MacWindow
   variant="finder"
@@ -250,9 +319,9 @@ state. Files and mutations remain caller-owned.
 
 ```tsx
 import { useState } from "react";
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
-import { MacFinder, type MacFinderFile } from "@anyway-design/macos/finder";
-import "@anyway-design/macos/styles.css";
+import { MacOSEnvironment } from "@1bye/macos/environment";
+import { MacFinder, type MacFinderFile } from "@1bye/macos/finder";
+import "@1bye/macos/styles.css";
 
 export function FileBrowser() {
   const [files, setFiles] = useState<MacFinderFile[]>([
@@ -712,7 +781,7 @@ Existing compact Get Info and dialog checkbox styles are unchanged.
 ## File items
 
 ```tsx
-import { MacFileGrid } from "@anyway-design/macos/files";
+import { MacFileGrid } from "@1bye/macos/files";
 
 <MacFileGrid
   label="Project files"
@@ -786,7 +855,7 @@ must be supplied by the caller; the browser does not generate Quick Look preview
 ## File lists
 
 ```tsx
-import { MacFileList, type MacFileListItem } from "@anyway-design/macos/file-list";
+import { MacFileList, type MacFileListItem } from "@1bye/macos/file-list";
 
 const items: MacFileListItem[] = [
   { id: "projects", name: "Projects", kind: "folder" },
@@ -882,7 +951,7 @@ selection spans all columns. Flat items remain supported as root-level rows.
 
 For a preview sequence that matches the visible sorted list, import
 `flattenFileList(items, sort)` and `visibleFileListRows(rows, expandedIds)` from
-`@anyway-design/macos/file-list-tree` and map each result's `file` into Quick
+`@1bye/macos/file-list-tree` and map each result's `file` into Quick
 Look items. The lab demonstrates this with nested previews and inline renaming.
 
 The caller supplies children through props; no native filesystem access,
@@ -892,7 +961,7 @@ is included. `onOpen` still belongs to the caller and is separate from expansion
 ## Quick Look
 
 ```tsx
-import { MacQuickLook, type MacQuickLookItem } from "@anyway-design/macos/quick-look";
+import { MacQuickLook, type MacQuickLookItem } from "@1bye/macos/quick-look";
 
 const items: MacQuickLookItem[] = [
   { id: "photo", name: "Clouds.webp", kind: "image",
@@ -1033,7 +1102,7 @@ rename, and rename undo history are not reproduced by this first pass.
 ## Open / Save dialogs
 
 Import `MacFileDialog` or the embedded `MacFileDialogPanel` from
-`@anyway-design/macos/file-dialog` and render inside `MacOSEnvironment`:
+`@1bye/macos/file-dialog` and render inside `MacOSEnvironment`:
 
 ```tsx
 <MacFileDialog
@@ -1103,7 +1172,7 @@ is available through the optional callback below.
 
 ## Finder column view
 
-`MacFileColumns` from `@anyway-design/macos/file-columns` renders connected
+`MacFileColumns` from `@1bye/macos/file-columns` renders connected
 columns from a nested array of `MacFileColumnItem` (the same file-list fields,
 with optional `children` and preview content):
 
@@ -1155,7 +1224,7 @@ and supplied metadata. Text is escaped and scrolls in a fixed artwork area;
 images fit proportionally, with a native-icon fallback after load failure.
 It does not decode PDFs or other documents. `renderPreview(file)` can render a
 custom preview instead. `MacFileColumnPreview` is also directly importable from
-`@anyway-design/macos/file-column-preview`.
+`@1bye/macos/file-column-preview`.
 
 `active`, `showExtensions`, `label`, `className`, and `style` configure presentation.
 Tahoe dark geometry is compared against real Finder captures in the lab;
@@ -1181,7 +1250,7 @@ follow the current folder path. The lab's `use-finder-folder-creation.ts` is a
 small sample data adapter, not a filesystem implementation.
 
 `fileNewFolderName(items)` and `fileNewFolderError(name, items, excludeId?)` from
-`@anyway-design/macos/file-new-folder` supply Tahoe's `untitled folder`,
+`@1bye/macos/file-new-folder` supply Tahoe's `untitled folder`,
 `untitled folder 2`, … naming, separator/control-character validation, and
 case-insensitive NFC-normalized collision checks against files and folders.
 The optional excluded ID supports inline renaming. Names are not trimmed or
@@ -1211,7 +1280,7 @@ error, refocusing the field for retry. Adapters must recheck names and write
 permissions at persistence time. Without the callback, creation UI is omitted.
 
 `MacNewFolderDialog` and embedded `MacNewFolderPanel` from
-`@anyway-design/macos/new-folder` are also reusable independently. Supply
+`@1bye/macos/new-folder` are also reusable independently. Supply
 `items`, `parentName`, and `onCreate(name)`. The dialog uses `open` and
 `onOpenChange`; the embedded panel uses `onCancel`. `initialName` seeds each
 mount, and `active={false}` reproduces inactive input selection in a reference.
@@ -1220,7 +1289,7 @@ read or write the host filesystem.
 
 ## Finder Gallery view
 
-`MacFileGallery` from `@anyway-design/macos/file-gallery` displays a flat list
+`MacFileGallery` from `@1bye/macos/file-gallery` displays a flat list
 of `MacFileGalleryItem` in the supplied order, with a fitted preview, horizontal
 filmstrip, and optional information pane:
 
@@ -1275,7 +1344,7 @@ management can still affect the comparison.
 
 ## Finder Get Info
 
-`MacGetInfo` and embedded `MacGetInfoPanel` from `@anyway-design/macos/file-info`
+`MacGetInfo` and embedded `MacGetInfoPanel` from `@1bye/macos/file-info`
 share the native 349-point inspector. Supply a `MacFileInfoItem` (the existing
 file-list item plus optional inspector metadata):
 
@@ -1345,8 +1414,8 @@ still differ from native rendering.
 ## Pop-up buttons and editable combo boxes
 
 ```tsx
-import { MacPopUpButton } from "@anyway-design/macos/pop-up-button";
-import { MacComboBox } from "@anyway-design/macos/combo-box";
+import { MacPopUpButton } from "@1bye/macos/pop-up-button";
+import { MacComboBox } from "@1bye/macos/combo-box";
 
 <MacPopUpButton label="Quality" name="quality" defaultValue="automatic"
   items={[
@@ -1397,7 +1466,7 @@ are never used as artwork by the reusable components.
 ### Alerts and confirmations
 
 ```tsx
-import { MacAlert } from "@anyway-design/macos/alert";
+import { MacAlert } from "@1bye/macos/alert";
 
 <MacAlert
   open={confirming}
@@ -1456,7 +1525,7 @@ material, and Sequoia are not calibrated in this pass.
 ### Progress bars and spinners
 
 ```tsx
-import { MacProgressBar, MacSpinner } from "@anyway-design/macos/progress";
+import { MacProgressBar, MacSpinner } from "@1bye/macos/progress";
 
 <MacProgressBar label="Copying files" value={45} max={100} />
 <MacProgressBar label="Checking available space" />
@@ -1500,9 +1569,9 @@ measured from native AppKit frames; motion is a first pass based on roughly
 ### Popovers
 
 ```tsx
-import { MacPopover, MacPopoverClose } from "@anyway-design/macos/popover";
-import { MacButton } from "@anyway-design/macos/controls";
-import { MacCheckbox } from "@anyway-design/macos/checkbox";
+import { MacPopover, MacPopoverClose } from "@1bye/macos/popover";
+import { MacButton } from "@1bye/macos/controls";
+import { MacCheckbox } from "@1bye/macos/checkbox";
 
 <MacPopover title="View Options"
   description="Choose how this folder is displayed."
@@ -1547,7 +1616,7 @@ and Sequoia are not separately calibrated. Tooltips are outside this pass.
 ### Text fields and search fields
 
 ```tsx
-import { MacTextField, MacSearchField } from "@anyway-design/macos/controls";
+import { MacTextField, MacSearchField } from "@1bye/macos/controls";
 
 <MacTextField aria-label="Project name" name="project" defaultValue="Untitled" />
 <MacTextField aria-label="Password preview" type="password" autoComplete="off" />
@@ -1598,8 +1667,8 @@ styling are outside this pass.
 ### Switches and segmented controls
 
 ```tsx
-import { MacSwitch } from "@anyway-design/macos/controls";
-import { MacSegmentedControl } from "@anyway-design/macos/segmented-control";
+import { MacSwitch } from "@1bye/macos/controls";
+import { MacSegmentedControl } from "@1bye/macos/segmented-control";
 
 <MacSwitch label="Notifications" checked={enabled} onCheckedChange={setEnabled} />
 <MacSegmentedControl label="Summary period" name="period" defaultValue="week"
@@ -1670,8 +1739,8 @@ Keep the value's format consistent with its mode; remount an uncontrolled
 picker when switching modes.
 
 ```tsx
-import { MacDatePicker } from "@anyway-design/macos/date-picker";
-import { MacCalendar } from "@anyway-design/macos/calendar";
+import { MacDatePicker } from "@1bye/macos/date-picker";
+import { MacCalendar } from "@1bye/macos/calendar";
 
 <MacDatePicker
   label="Appointment"
@@ -1721,8 +1790,8 @@ remain for a later pass. No native APIs run in the browser.
 ## Tahoe desktop menu bar
 
 ```tsx
-import { MenuBar, AppleMark } from "@anyway-design/macos/menu-bar";
-import { MacMenuBarStatus } from "@anyway-design/macos/menu-bar-status";
+import { MenuBar, AppleMark } from "@1bye/macos/menu-bar";
+import { MacMenuBarStatus } from "@1bye/macos/menu-bar-status";
 
 <MenuBar
   menus={[
@@ -1787,7 +1856,7 @@ Escape/outside dismissal. Pass the same panel props through
 `MacMenuBarStatus.notificationCenter` to connect the menu bar clock.
 
 ```tsx
-import { MacNotificationCenter, type MacNotification } from "@anyway-design/macos/notification-center";
+import { MacNotificationCenter, type MacNotification } from "@1bye/macos/notification-center";
 
 const [notifications, setNotifications] = useState<MacNotification[]>([
   { id: "review", appId: "messages", appName: "Messages",
@@ -1861,8 +1930,8 @@ has a stable `id`, `title`, `defaultFrame: { x, y, width, height }`, and a
 so their existing traffic lights, title, and shadows follow focus.
 
 ```tsx
-import { MacDesktop } from "@anyway-design/macos/desktop";
-import { MacWindow } from "@anyway-design/macos/window";
+import { MacDesktop } from "@1bye/macos/desktop";
+import { MacWindow } from "@1bye/macos/window";
 
 <MacDesktop
   style={{ height: 600 }}
@@ -1922,12 +1991,12 @@ snapping, OS full screen, and native minimize animations are not calibrated here
 ## Settings window
 
 `MacSettings` combines the shared Tahoe window and sidebar with searchable,
-grouped settings. Import it from `@anyway-design/macos/settings` and load the
+grouped settings. Import it from `@1bye/macos/settings` and load the
 package stylesheet inside `MacOSEnvironment`.
 
 ```tsx
-import { MacSettings } from "@anyway-design/macos/settings";
-import { MacSwitch, MacTextField } from "@anyway-design/macos/controls";
+import { MacSettings } from "@1bye/macos/settings";
+import { MacSwitch, MacTextField } from "@1bye/macos/controls";
 
 <MacSettings
   title="My App Settings"

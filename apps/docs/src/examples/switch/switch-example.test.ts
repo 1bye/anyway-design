@@ -9,7 +9,7 @@ describe("copyable switch example", () => {
 			disabled: false,
 			size: "regular",
 		});
-		expect(code).toContain("@anyway-design/macos/styles.css");
+		expect(code).toContain("@1bye/macos/styles.css");
 		expect(code).toContain("<MacOSEnvironment>");
 		expect(code).toContain("defaultChecked={true}");
 		expect(code).not.toContain("\n    disabled");

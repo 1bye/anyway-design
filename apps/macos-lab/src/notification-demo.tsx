@@ -1,11 +1,11 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Demo callbacks update caller-owned notification data. */
-import { MacCheckbox } from "@anyway-design/macos/checkbox";
+import { MacCheckbox } from "@1bye/macos/checkbox";
 import {
 	type MacNotification,
 	MacNotificationCenter,
 	type MacNotificationCenterPanelProps,
 	type MacNotificationWidget,
-} from "@anyway-design/macos/notification-center";
+} from "@1bye/macos/notification-center";
 import { type CSSProperties, useState } from "react";
 import type { PlaygroundDemoProps } from "./playground-catalog";
 import "./notification-demo.css";

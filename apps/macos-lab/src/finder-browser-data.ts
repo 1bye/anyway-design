@@ -1,4 +1,4 @@
-import type { MacFinderFile } from "@anyway-design/macos/finder";
+import type { MacFinderFile } from "@1bye/macos/finder";
 import { PLAYGROUND_FILES } from "./playground-data";
 
 export function createFinderFiles(now: number): MacFinderFile[] {

@@ -1,8 +1,8 @@
 import type {
 	MacFileDialogDirectory,
 	MacFileDialogType,
-} from "@anyway-design/macos/file-dialog";
-import type { MacFileListItem } from "@anyway-design/macos/file-list";
+} from "@1bye/macos/file-dialog";
+import type { MacFileListItem } from "@1bye/macos/file-list";
 import { FOLDER_LIST_REFERENCE_ITEMS } from "./folder-list-reference-data";
 
 function panelFile(item: MacFileListItem): MacFileListItem {

@@ -1,9 +1,9 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local comparison controls and callbacks. */
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
+import { MacOSEnvironment } from "@1bye/macos/environment";
 import {
 	MacNotificationCard,
 	MacNotificationCenterPanel,
-} from "@anyway-design/macos/notification-center";
+} from "@1bye/macos/notification-center";
 import { ArrowLeft } from "lucide-react";
 import { type CSSProperties, useLayoutEffect, useRef, useState } from "react";
 import { REMINDER, useNotificationDemo } from "./notification-demo";

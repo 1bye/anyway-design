@@ -1,12 +1,9 @@
-import type { MacFileGalleryItem } from "@anyway-design/macos/file-gallery";
-import type { MacFileListItem } from "@anyway-design/macos/file-list";
-import type { MacMenuEntry } from "@anyway-design/macos/menu";
-import { NATIVE_SYMBOLS } from "@anyway-design/macos/native-symbols";
-import type { MacQuickLookItem } from "@anyway-design/macos/quick-look";
-import {
-	WindowSymbol,
-	type WindowSymbolName,
-} from "@anyway-design/macos/window-symbol";
+import type { MacFileGalleryItem } from "@1bye/macos/file-gallery";
+import type { MacFileListItem } from "@1bye/macos/file-list";
+import type { MacMenuEntry } from "@1bye/macos/menu";
+import { NATIVE_SYMBOLS } from "@1bye/macos/native-symbols";
+import type { MacQuickLookItem } from "@1bye/macos/quick-look";
+import { WindowSymbol, type WindowSymbolName } from "@1bye/macos/window-symbol";
 
 const files: MacFileListItem[] = [
 	{

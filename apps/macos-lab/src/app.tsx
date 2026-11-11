@@ -1,5 +1,5 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: This small interactive lab intentionally uses local handlers; pointer animation is isolated in the Dock. */
-import type { MacOSAppearance } from "@anyway-design/macos/environment";
+import type { MacOSAppearance } from "@1bye/macos/environment";
 import {
 	ArrowDownToLine,
 	Check,
@@ -190,28 +190,28 @@ function exampleCode(component: ComponentName, settings: SceneSettings) {
 	let state = "";
 	let content = "";
 	if (component === "dock" || component === "desktop") {
-		imports = 'import { Dock } from "@anyway-design/macos/dock";';
+		imports = 'import { Dock } from "@1bye/macos/dock";';
 		content = `<Dock\n        autoHide={${settings.dockAutoHide}}\n        size={${settings.dockSize}}\n        magnification={${settings.magnification}}\n        position="${settings.dockPosition}"\n        items={[\n          { id: "finder", label: "Finder", icon: "/assets/finder.webp", running: true },\n          { id: "safari", label: "Safari", icon: "/assets/safari.webp" },\n          { id: "mail", label: "Mail", icon: "/assets/mail.webp", badge: "2" },\n        ]}\n        onActivate={(id) => setSelected(id)}\n      />\n      <p aria-live="polite">{selected}</p>`;
 		state = '  const [selected, setSelected] = useState("");\n';
 	} else if (component === "menu-bar") {
-		imports = 'import { MenuBar } from "@anyway-design/macos/menu-bar";';
+		imports = 'import { MenuBar } from "@1bye/macos/menu-bar";';
 		content =
 			'<MenuBar\n        menus={[{ id: "file", label: "File", items: [\n          { id: "new", label: "New Window", shortcut: "⌘N" },\n        ] }]}\n        status="Tue 20 Oct 9:41"\n        onAction={(id) => setSelected(id)}\n      />\n      <p aria-live="polite">{selected}</p>';
 		state = '  const [selected, setSelected] = useState("");\n';
 	} else if (component === "window") {
 		imports =
-			'import { MacWindow } from "@anyway-design/macos/window";\nimport { WindowSidebar } from "@anyway-design/macos/window-sidebar";\nimport { WindowSymbol } from "@anyway-design/macos/window-symbol";\nimport { WindowToolbarButton, WindowToolbarGroup } from "@anyway-design/macos/window-toolbar";';
+			'import { MacWindow } from "@1bye/macos/window";\nimport { WindowSidebar } from "@1bye/macos/window-sidebar";\nimport { WindowSymbol } from "@1bye/macos/window-symbol";\nimport { WindowToolbarButton, WindowToolbarGroup } from "@1bye/macos/window-toolbar";';
 		content = `{open ? <MacWindow\n        title={selected}\n        active={${settings.active}}\n        sidebarWidth={165}\n        onClose={() => setOpen(false)}\n        sidebar={<WindowSidebar\n          selected={selected}\n          onSelect={setSelected}\n          groups={[{ id: "favorites", label: "Favorites", items: [\n            { id: "Documents", label: "Documents", icon: <WindowSymbol name="document" /> },\n            { id: "Downloads", label: "Downloads", icon: <WindowSymbol name="downloads" /> },\n          ] }]}\n        />}\n        toolbar={<WindowToolbarGroup label="View">\n          <WindowToolbarButton label="Refresh" onClick={() => setSelected("Documents")}>Refresh</WindowToolbarButton>\n        </WindowToolbarGroup>}\n      >\n        <p>Your application goes here.</p>\n      </MacWindow> : <button onClick={() => setOpen(true)}>Reopen</button>}`;
 		state =
 			'  const [open, setOpen] = useState(true);\n  const [selected, setSelected] = useState("Documents");\n';
 	} else if (component === "tabs") {
-		imports = 'import { MacTabs } from "@anyway-design/macos/tabs";';
+		imports = 'import { MacTabs } from "@1bye/macos/tabs";';
 		state = '  const [tab, setTab] = useState("all");\n';
 		content =
 			'<MacTabs\n        variant="segmented"\n        value={tab}\n        onValueChange={setTab}\n        tabs={[\n          { id: "all", label: "All files", content: <p>All files</p> },\n          { id: "recent", label: "Recent", content: <p>Recent files</p> },\n        ]}\n      />';
 	} else {
 		imports =
-			'import { MacSwitch, MacButton, MacTextField, MacSearchField } from "@anyway-design/macos/controls";';
+			'import { MacSwitch, MacButton, MacTextField, MacSearchField } from "@1bye/macos/controls";';
 		state =
 			'  const [enabled, setEnabled] = useState(true);\n  const [query, setQuery] = useState("");\n';
 		content =
@@ -219,11 +219,11 @@ function exampleCode(component: ComponentName, settings: SceneSettings) {
 	}
 	if (component === "desktop") {
 		imports +=
-			'\nimport { MenuBar } from "@anyway-design/macos/menu-bar";\nimport { MacWindow } from "@anyway-design/macos/window";';
+			'\nimport { MenuBar } from "@1bye/macos/menu-bar";\nimport { MacWindow } from "@1bye/macos/window";';
 		state += "  const [open, setOpen] = useState(true);\n";
 		content = `<MenuBar menus={[{ id: "file", label: "File", items: [{ id: "new", label: "New Window" }] }]} onAction={() => setOpen(true)} />\n      {open ? <MacWindow title="Documents" active={${settings.active}} onClose={() => setOpen(false)} style={{ position: "absolute", top: 60, left: 40, width: 600, height: 280 }}>\n        <p>Your application goes here.</p>\n      </MacWindow> : null}\n      ${content.replace("onActivate={(id) => setSelected(id)}", "onActivate={(id) => { setSelected(id); setOpen(true); }}")}`;
 	}
-	return `import { useState } from "react";\nimport { MacOSEnvironment } from "@anyway-design/macos/environment";\n${imports}\nimport "@anyway-design/macos/styles.css";\n\nexport function Example() {\n${state}  return (\n    <MacOSEnvironment\n      ${environment}\n      style={{ minHeight: 480, padding: 32, background: "#64819b" }}\n    >\n      ${content}\n    </MacOSEnvironment>\n  );\n}`;
+	return `import { useState } from "react";\nimport { MacOSEnvironment } from "@1bye/macos/environment";\n${imports}\nimport "@1bye/macos/styles.css";\n\nexport function Example() {\n${state}  return (\n    <MacOSEnvironment\n      ${environment}\n      style={{ minHeight: 480, padding: 32, background: "#64819b" }}\n    >\n      ${content}\n    </MacOSEnvironment>\n  );\n}`;
 }
 function ReferenceLinks({ component }: { component: ComponentName }) {
 	if (component === "dock") {

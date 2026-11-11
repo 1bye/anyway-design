@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local native comparison controls. */
-import { MacAlert, MacAlertPanel } from "@anyway-design/macos/alert";
-import { MacButton } from "@anyway-design/macos/controls";
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
+import { MacAlert, MacAlertPanel } from "@1bye/macos/alert";
+import { MacButton } from "@1bye/macos/controls";
+import { MacOSEnvironment } from "@1bye/macos/environment";
 import { ArrowLeft } from "lucide-react";
 import {
 	type CSSProperties,

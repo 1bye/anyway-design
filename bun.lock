@@ -22,8 +22,8 @@
     "apps/docs": {
       "name": "docs",
       "dependencies": {
+        "@1bye/macos": "workspace:*",
         "@anyway-design/docs": "workspace:*",
-        "@anyway-design/macos": "workspace:*",
         "@tanstack/react-router": "^1.170.18",
         "@tanstack/react-start": "^1.168.32",
         "fumadocs-core": "16.17.9",
@@ -48,7 +48,7 @@
     "apps/macos-lab": {
       "name": "macos-lab",
       "dependencies": {
-        "@anyway-design/macos": "workspace:*",
+        "@1bye/macos": "workspace:*",
         "@base-ui/react": "^1.6.0",
         "lucide-react": "catalog:",
         "react": "catalog:",
@@ -115,8 +115,8 @@
     "apps/platform": {
       "name": "platform",
       "dependencies": {
+        "@1bye/macos": "workspace:*",
         "@anyway-design/docs": "workspace:*",
-        "@anyway-design/macos": "workspace:*",
         "@tanstack/react-router": "^1.170.18",
         "@tanstack/react-start": "^1.168.32",
         "fumadocs-core": "16.17.9",
@@ -232,15 +232,17 @@
       },
     },
     "packages/macos": {
-      "name": "@anyway-design/macos",
-      "version": "0.0.0",
+      "name": "@1bye/macos",
+      "version": "0.1.0",
       "dependencies": {
         "@base-ui/react": "^1.6.0",
       },
       "devDependencies": {
-        "@types/react": "catalog:",
-        "@types/react-dom": "catalog:",
-        "typescript": "catalog:",
+        "@types/node": "^26.2.0",
+        "@types/react": "^19.2.17",
+        "@types/react-dom": "^19.2.3",
+        "typescript": "^6.0.3",
+        "vite": "^8.1.5",
       },
       "peerDependencies": {
         "react": "^19.2.0",
@@ -296,6 +298,8 @@
     "zod": "^4.4.3",
   },
   "packages": {
+    "@1bye/macos": ["@1bye/macos@workspace:packages/macos"],
+
     "@alcalzone/ansi-tokenize": ["@alcalzone/ansi-tokenize@0.2.5", "", { "dependencies": { "ansi-styles": "^6.2.1", "is-fullwidth-code-point": "^5.0.0" } }, "sha512-3NX/MpTdroi0aKz134A6RC2Gb2iXVECN4QaAXnvCIxxIm3C3AVB1mkUe8NaaiyvOpDfsrqWhYtj+Q6a62RrTsw=="],
 
     "@alchemy.run/cloudflare-runtime": ["@alchemy.run/cloudflare-runtime@2.0.0-beta.72", "", { "dependencies": { "@alchemy.run/node-utils": "0.0.5", "@cloudflare/unenv-preset": "^2.16.0", "@puppeteer/browsers": "^2.10.6", "capnp-es": "^0.0.14", "magic-string": "^0.30.21", "sharp": "^0.34.5", "unenv": "^2.0.0-rc.24", "workerd": "1.20260704.1" }, "peerDependencies": { "@distilled.cloud/cloudflare": "1.0.0-rc.4", "@effect/platform-bun": ">=4.0.0-beta.105 || >=4.0.0", "@effect/platform-node": ">=4.0.0-beta.105 || >=4.0.0", "effect": ">=4.0.0-beta.105 || >=4.0.0", "rolldown": "1.1.5", "vite": "^7.0.0 || ^8.0.0" }, "optionalPeers": ["@effect/platform-bun", "@effect/platform-node", "rolldown", "vite"] }, "sha512-pIkyRfUvBDfI8Rx0+iUB/pcGngDlpEu7dHwljs4eJUXpUEsaAtWwDlqzcx4O0qLw+jLJDPJVgP1q3hlNGz7YHw=="],
@@ -311,8 +315,6 @@
     "@anyway-design/env": ["@anyway-design/env@workspace:packages/env"],
 
     "@anyway-design/infra": ["@anyway-design/infra@workspace:packages/infra"],
-
-    "@anyway-design/macos": ["@anyway-design/macos@workspace:packages/macos"],
 
     "@anyway-design/md": ["@anyway-design/md@workspace:packages/md-cli"],
 

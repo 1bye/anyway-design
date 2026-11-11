@@ -1,8 +1,8 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local workbench callbacks. */
-import { MacComboBox } from "@anyway-design/macos/combo-box";
-import { MacButton } from "@anyway-design/macos/controls";
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
-import { MacPopUpButton } from "@anyway-design/macos/pop-up-button";
+import { MacComboBox } from "@1bye/macos/combo-box";
+import { MacButton } from "@1bye/macos/controls";
+import { MacOSEnvironment } from "@1bye/macos/environment";
+import { MacPopUpButton } from "@1bye/macos/pop-up-button";
 import { useState } from "react";
 import { DESTINATIONS, QUALITY_OPTIONS } from "./selection-controls-samples";
 

@@ -25,6 +25,7 @@
   "scripts": {
     "build": "turbo run build",
     "build:docs": "bun run --cwd apps/docs build",
+    "build:macos": "bun run --cwd packages/macos build",
     "build:md": "bun run --cwd apps/md build",
     "build:plan": "bun run --cwd apps/plan build",
     "build:platform": "turbo run build --filter=platform",

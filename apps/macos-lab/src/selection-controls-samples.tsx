@@ -1,8 +1,5 @@
-import { MacComboBox } from "@anyway-design/macos/combo-box";
-import {
-	MacPopUpButton,
-	type MacPopUpOption,
-} from "@anyway-design/macos/pop-up-button";
+import { MacComboBox } from "@1bye/macos/combo-box";
+import { MacPopUpButton, type MacPopUpOption } from "@1bye/macos/pop-up-button";
 
 export const QUALITY_OPTIONS: readonly MacPopUpOption[] = [
 	{ label: "Automatic", value: "automatic" },

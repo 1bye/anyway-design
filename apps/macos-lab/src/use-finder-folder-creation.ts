@@ -1,8 +1,8 @@
-import type { MacFileListItem } from "@anyway-design/macos/file-list";
+import type { MacFileListItem } from "@1bye/macos/file-list";
 import {
 	fileNewFolderError,
 	fileNewFolderName,
-} from "@anyway-design/macos/file-new-folder";
+} from "@1bye/macos/file-new-folder";
 import { useCallback, useState } from "react";
 import { renameFolderFile } from "./folder-list-reference-data";
 

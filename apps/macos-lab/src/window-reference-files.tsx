@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local handlers for the small file appearance workbench. */
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
-import { type MacFile, MacFileGrid } from "@anyway-design/macos/files";
+import { MacOSEnvironment } from "@1bye/macos/environment";
+import { type MacFile, MacFileGrid } from "@1bye/macos/files";
 import {
 	type ChangeEvent,
 	type CSSProperties,

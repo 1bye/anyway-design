@@ -1,12 +1,12 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local controls for the calibration workbench. */
-import { MacButton } from "@anyway-design/macos/controls";
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
+import { MacButton } from "@1bye/macos/controls";
+import { MacOSEnvironment } from "@1bye/macos/environment";
 import {
 	MacFileDialog,
 	MacFileDialogPanel,
 	type MacFileDialogResult,
-} from "@anyway-design/macos/file-dialog";
-import { WindowSymbol } from "@anyway-design/macos/window-symbol";
+} from "@1bye/macos/file-dialog";
+import { WindowSymbol } from "@1bye/macos/window-symbol";
 import { ArrowLeft } from "lucide-react";
 import {
 	type CSSProperties,

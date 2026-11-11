@@ -1,6 +1,6 @@
-import { MacSwitch } from "@anyway-design/macos/controls";
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
-import "@anyway-design/macos/styles.css";
+import { MacSwitch } from "@1bye/macos/controls";
+import { MacOSEnvironment } from "@1bye/macos/environment";
+import "@1bye/macos/styles.css";
 import { CopyButton } from "@anyway-design/docs/copy-button";
 import { PlaygroundChoice } from "@anyway-design/docs/playground-choice";
 import { Code2, RotateCcw, SlidersHorizontal } from "lucide-react";

@@ -1,5 +1,5 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local comparison controls. */
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
+import { MacOSEnvironment } from "@1bye/macos/environment";
 import { ArrowLeft } from "lucide-react";
 import {
 	type CSSProperties,

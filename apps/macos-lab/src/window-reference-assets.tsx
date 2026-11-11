@@ -1,5 +1,5 @@
-import type { WindowSidebarGroup } from "@anyway-design/macos/window-sidebar";
-import { WindowSymbol } from "@anyway-design/macos/window-symbol";
+import type { WindowSidebarGroup } from "@1bye/macos/window-sidebar";
+import { WindowSymbol } from "@1bye/macos/window-symbol";
 
 export const WINDOW_REFERENCE_SOURCE =
 	"https://support.apple.com/en-euro/guide/mac-help/mchlp2605/26/mac/26";

@@ -22,7 +22,7 @@ Open [localhost:3007](http://localhost:3007).
 - Optional Switch demo: `/docs/components/switch`
 - Search: the search button or Command/Control-K
 
-The switch preview imports `MacSwitch` from `@anyway-design/macos`; size,
+The switch preview imports `MacSwitch` from `@1bye/macos`; size,
 appearance, disabled state, and current value are reflected in its copyable
 example. Reset restores the initial preview. Interactions stay in memory.
 The responsive controls inspector uses `PlaygroundChoice` radio segments for
@@ -90,7 +90,7 @@ To remove the demo from a copy of this app:
 
 1. Delete `content/docs/components/switch.mdx`.
 2. Delete `src/examples/switch/`.
-3. Remove `@anyway-design/macos` from the app’s `package.json` dependencies.
+3. Remove `@1bye/macos` from the app’s `package.json` dependencies.
 4. Run `bun install` at the workspace root to update the lockfile, then build,
    type-check, and test the copy.
 

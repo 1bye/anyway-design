@@ -1,4 +1,4 @@
-import type { DockItem } from "@anyway-design/macos/dock";
+import type { DockItem } from "@1bye/macos/dock";
 
 export const REFERENCE_IMAGE = "/assets/apple-tahoe-reference.jpg";
 export const REFERENCE_SOURCE =

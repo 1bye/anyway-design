@@ -1,4 +1,4 @@
-import type { MacFileListItem } from "@anyway-design/macos/file-list";
+import type { MacFileListItem } from "@1bye/macos/file-list";
 
 export const FOLDER_LIST_REFERENCE_ITEMS: MacFileListItem[] = [
 	{

@@ -1,18 +1,15 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local controls for the file-list calibration page. */
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
+import { MacOSEnvironment } from "@1bye/macos/environment";
 import {
 	MacFileList,
 	type MacFileListItem,
 	type MacFileSort,
-} from "@anyway-design/macos/file-list";
+} from "@1bye/macos/file-list";
 import {
 	flattenFileList,
 	visibleFileListRows,
-} from "@anyway-design/macos/file-list-tree";
-import {
-	MacQuickLook,
-	type MacQuickLookItem,
-} from "@anyway-design/macos/quick-look";
+} from "@1bye/macos/file-list-tree";
+import { MacQuickLook, type MacQuickLookItem } from "@1bye/macos/quick-look";
 import { ArrowLeft } from "lucide-react";
 import {
 	type CSSProperties,

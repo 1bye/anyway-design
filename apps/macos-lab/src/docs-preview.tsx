@@ -1,6 +1,6 @@
 import type { ComponentProps } from "react";
 import { PlaygroundPreview } from "./playground-preview";
-import "@anyway-design/macos/styles.css";
+import "@1bye/macos/styles.css";
 import "./playground.css";
 
 // Reuse the live examples without the standalone lab's navigation or global reset.

@@ -1,5 +1,5 @@
-import { MacCalendar } from "@anyway-design/macos/calendar";
-import { MacDatePicker } from "@anyway-design/macos/date-picker";
+import { MacCalendar } from "@1bye/macos/calendar";
+import { MacDatePicker } from "@1bye/macos/date-picker";
 
 export type DateFocus = "normal" | "focus";
 const ROWS = ["Date", "Time", "Date & time", "Disabled date"];

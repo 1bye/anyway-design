@@ -1,8 +1,8 @@
 import type {
 	MacFileGalleryAction,
 	MacFileGalleryItem,
-} from "@anyway-design/macos/file-gallery";
-import { WindowSymbol } from "@anyway-design/macos/window-symbol";
+} from "@1bye/macos/file-gallery";
+import { WindowSymbol } from "@1bye/macos/window-symbol";
 
 const DETAILS = ["Created", "Modified"].map((label) => ({
 	label,

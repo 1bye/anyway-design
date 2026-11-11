@@ -1,11 +1,11 @@
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
-import { MacWindow } from "@anyway-design/macos/window";
-import { WindowSidebar } from "@anyway-design/macos/window-sidebar";
-import { WindowSymbol } from "@anyway-design/macos/window-symbol";
+import { MacOSEnvironment } from "@1bye/macos/environment";
+import { MacWindow } from "@1bye/macos/window";
+import { WindowSidebar } from "@1bye/macos/window-sidebar";
+import { WindowSymbol } from "@1bye/macos/window-symbol";
 import {
 	WindowToolbarButton,
 	WindowToolbarGroup,
-} from "@anyway-design/macos/window-toolbar";
+} from "@1bye/macos/window-toolbar";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import {
 	type ChangeEvent,

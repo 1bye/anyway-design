@@ -1,4 +1,4 @@
-import { MacFinderToolbar } from "@anyway-design/macos/finder-toolbar";
+import { MacFinderToolbar } from "@1bye/macos/finder-toolbar";
 import type { ComponentProps } from "react";
 import { useFinderMenu } from "./finder-actions";
 

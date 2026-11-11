@@ -1,4 +1,4 @@
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
+import { MacOSEnvironment } from "@1bye/macos/environment";
 import { type ComponentType, useLayoutEffect, useRef, useState } from "react";
 import { DesktopDemo } from "./desktop-demo";
 import { NotificationCenterDemo } from "./notification-demo";

@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local comparison controls. */
-import { MacButton } from "@anyway-design/macos/controls";
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
-import { MacPopover } from "@anyway-design/macos/popover";
+import { MacButton } from "@1bye/macos/controls";
+import { MacOSEnvironment } from "@1bye/macos/environment";
+import { MacPopover } from "@1bye/macos/popover";
 import { ArrowLeft } from "lucide-react";
 import {
 	type CSSProperties,

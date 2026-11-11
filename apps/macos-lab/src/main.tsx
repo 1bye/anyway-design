@@ -27,7 +27,7 @@ import { SelectionControlsReferenceComparison } from "./selection-controls-refer
 import { TextFieldsReferenceComparison } from "./text-fields-reference";
 import { ToggleControlsReferenceComparison } from "./toggle-controls-reference";
 import { WindowReferenceComparison } from "./window-reference";
-import "@anyway-design/macos/styles.css";
+import "@1bye/macos/styles.css";
 import "./styles.css";
 
 const root = document.getElementById("root");

@@ -1,4 +1,4 @@
-import type { MacFileColumnItem } from "@anyway-design/macos/file-columns";
+import type { MacFileColumnItem } from "@1bye/macos/file-columns";
 import { FOLDER_LIST_REFERENCE_ITEMS } from "./folder-list-reference-data";
 
 const DETAILS = ["Created", "Modified", "Last opened"].map((label) => ({

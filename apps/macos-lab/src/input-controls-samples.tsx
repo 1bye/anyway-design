@@ -1,7 +1,7 @@
-import { MacCheckbox } from "@anyway-design/macos/checkbox";
-import { MacRadio, MacRadioGroup } from "@anyway-design/macos/radio";
-import { MacSlider } from "@anyway-design/macos/slider";
-import { MacStepper } from "@anyway-design/macos/stepper";
+import { MacCheckbox } from "@1bye/macos/checkbox";
+import { MacRadio, MacRadioGroup } from "@1bye/macos/radio";
+import { MacSlider } from "@1bye/macos/slider";
+import { MacStepper } from "@1bye/macos/stepper";
 
 export const INPUT_ROWS = [
 	{ id: "checkbox", label: "Checkbox", top: 76 },

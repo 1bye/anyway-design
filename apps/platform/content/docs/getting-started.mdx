@@ -12,12 +12,12 @@ Platform brings Anyway’s component libraries, usage guidance, and live example
 
 ## Use a component
 
-Inside this workspace, add `@anyway-design/macos` as a `workspace:*` dependency of your app. Load its stylesheet once and wrap your interface in `MacOSEnvironment`:
+Inside this workspace, add `@1bye/macos` as a `workspace:*` dependency of your app. Load its stylesheet once and wrap your interface in `MacOSEnvironment`:
 
 ```tsx title="notification-setting.tsx"
-import { MacSwitch } from "@anyway-design/macos/controls";
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
-import "@anyway-design/macos/styles.css";
+import { MacSwitch } from "@1bye/macos/controls";
+import { MacOSEnvironment } from "@1bye/macos/environment";
+import "@1bye/macos/styles.css";
 
 export function NotificationSetting() {
   return (
@@ -28,7 +28,11 @@ export function NotificationSetting() {
 }
 ```
 
-`@anyway-design/macos` is currently a private workspace package. It is not an npm install instruction for an external project.
+The first npm release is being prepared. Until it is published, build and pack
+`packages/macos`, then install the resulting `.tgz` in your React app with
+`npm install /path/to/1bye-macos-0.1.0.tgz`. The tarball includes compiled
+JavaScript, types, styles, and embedded artwork. Inside this repository,
+`workspace:*` keeps the app connected to the local source.
 
 ## Supply the environment
 

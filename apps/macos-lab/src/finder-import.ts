@@ -1,4 +1,4 @@
-import type { MacFinderFile } from "@anyway-design/macos/finder";
+import type { MacFinderFile } from "@1bye/macos/finder";
 
 /** Demo imports stay in memory; callers choose how to decode and persist their own files. */
 export function finderImports(

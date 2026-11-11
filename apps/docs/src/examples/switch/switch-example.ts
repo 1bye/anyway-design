@@ -11,9 +11,9 @@ export function getSwitchExample({
 	disabled,
 	size,
 }: SwitchExampleOptions): string {
-	return `import { MacSwitch } from "@anyway-design/macos/controls";
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
-import "@anyway-design/macos/styles.css";
+	return `import { MacSwitch } from "@1bye/macos/controls";
+import { MacOSEnvironment } from "@1bye/macos/environment";
+import "@1bye/macos/styles.css";
 
 <MacOSEnvironment${appearance === "dark" ? ' appearance="dark"' : ""}>
   <MacSwitch

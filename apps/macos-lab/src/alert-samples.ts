@@ -1,4 +1,4 @@
-import type { MacAlertPanelProps } from "@anyway-design/macos/alert";
+import type { MacAlertPanelProps } from "@1bye/macos/alert";
 
 type AlertSample = Omit<MacAlertPanelProps, "onAction" | "suppression"> & {
 	label: string;

@@ -1,20 +1,16 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Demo controls report caller-owned setting changes. */
-import {
-	MacButton,
-	MacSwitch,
-	MacTextField,
-} from "@anyway-design/macos/controls";
-import { MacDatePicker } from "@anyway-design/macos/date-picker";
-import { MacPopUpButton } from "@anyway-design/macos/pop-up-button";
-import { MacProgressBar } from "@anyway-design/macos/progress";
-import { MacSegmentedControl } from "@anyway-design/macos/segmented-control";
+import { MacButton, MacSwitch, MacTextField } from "@1bye/macos/controls";
+import { MacDatePicker } from "@1bye/macos/date-picker";
+import { MacPopUpButton } from "@1bye/macos/pop-up-button";
+import { MacProgressBar } from "@1bye/macos/progress";
+import { MacSegmentedControl } from "@1bye/macos/segmented-control";
 import {
 	MacSettings,
 	type MacSettingsProps,
 	type MacSettingsSection,
-} from "@anyway-design/macos/settings";
-import { MacSlider } from "@anyway-design/macos/slider";
-import { WindowSymbol } from "@anyway-design/macos/window-symbol";
+} from "@1bye/macos/settings";
+import { MacSlider } from "@1bye/macos/slider";
+import { WindowSymbol } from "@1bye/macos/window-symbol";
 import { type CSSProperties, useState } from "react";
 import type { PlaygroundDemoProps } from "./playground-catalog";
 import {

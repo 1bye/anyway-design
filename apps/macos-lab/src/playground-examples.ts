@@ -24,9 +24,8 @@ const menu =
 	'[{ id: "open", label: "Open", shortcut: "⌘O" }, { id: "copy", label: "Copy", shortcut: "⌘C" }, { id: "paste", label: "Paste", disabled: true }]';
 const periods =
 	'[{ value: "day", label: "Day" }, { value: "week", label: "Week" }, { value: "month", label: "Month", disabled: true }]';
-const buttonImport =
-	'import { MacButton } from "@anyway-design/macos/controls";';
-const fileImport = 'import type { MacFile } from "@anyway-design/macos/files";';
+const buttonImport = 'import { MacButton } from "@1bye/macos/controls";';
+const fileImport = 'import type { MacFile } from "@1bye/macos/files";';
 const EXAMPLES: Record<string, Example> = {
 	button: (v) => ({
 		body:
@@ -84,7 +83,7 @@ const EXAMPLES: Record<string, Example> = {
   { id: "notes", title: "Project notes", defaultFrame: { x: 40, y: 50, width: 440, height: 320 }, draggable: ${v.draggable !== false}, resizable: ${v.resizable !== false}, render: ({ active }) => <MacWindow active={active} title="Project notes"><textarea aria-label="Notes" defaultValue="My next idea" style={{ width: "100%", height: "100%", padding: 20 }} /></MacWindow> },
   { id: "planning", title: "Planning", defaultFrame: { x: 240, y: 180, width: 360, height: 280 }, draggable: ${v.draggable !== false}, resizable: ${v.resizable !== false}, render: ({ active }) => <MacWindow active={active} title="Planning"><p style={{ padding: 20 }}>Design review · 10 AM</p></MacWindow> }
 ]} />`,
-		imports: ['import { MacWindow } from "@anyway-design/macos/window";'],
+		imports: ['import { MacWindow } from "@1bye/macos/window";'],
 	}),
 	"file-icons": (v) => ({
 		body: `<div style={{ display: "flex", gap: 24 }}>
@@ -122,13 +121,13 @@ const EXAMPLES: Record<string, Example> = {
 			Boolean(v.charging) +
 			' }} networks={[{ id: "studio", name: "Studio", secured: true }]} onAction={(id) => console.info(id)} />} />',
 		imports: [
-			'import { MacMenuBarStatus } from "@anyway-design/macos/menu-bar-status";',
+			'import { MacMenuBarStatus } from "@1bye/macos/menu-bar-status";',
 		],
 	}),
 	"notification-center": (v) => ({
 		body: `<MacNotificationCenter defaultOpen={${Boolean(v.defaultOpen)}} notifications={notifications} onDismiss={(ids) => setNotifications(current => current.filter(item => !ids.includes(item.id)))} onAction={(id, item) => console.info(id, item.id)} onOpenNotification={(item) => console.info("Open", item.id)}${v.widgets ? ' widgets={[{ id: "agenda", size: "medium", content: <button type="button" onClick={() => console.info("Open Calendar")} style={{ width: "100%", height: "100%", padding: 16, border: 0, background: "transparent", color: "inherit", textAlign: "left" }}>Thursday, October 22<br />Design review · 10 AM</button> }]}' : ""} trigger={<button type="button" style={{ position: "absolute", top: 8, right: 8 }}>Thu Oct 22 9:41 AM</button>} />`,
 		imports: [
-			'import type { MacNotification } from "@anyway-design/macos/notification-center";',
+			'import type { MacNotification } from "@1bye/macos/notification-center";',
 		],
 		state: `const [notifications, setNotifications] = useState<MacNotification[]>(${v.notifications ? '[{ id: "review", appId: "messages", appName: "Messages", title: "Design team", body: "The new icons are ready to review.", time: "now", actions: [{ id: "reply", label: "Reply" }] }, { id: "meeting", appId: "messages", appName: "Messages", title: "Morgan", body: "Let’s meet at 10." }]' : "[]"});`,
 	}),
@@ -195,7 +194,7 @@ const EXAMPLES: Record<string, Example> = {
 			(v.icons ? "list" : "week") +
 			'" />',
 		imports: v.icons
-			? ['import { WindowSymbol } from "@anyway-design/macos/window-symbol";']
+			? ['import { WindowSymbol } from "@1bye/macos/window-symbol";']
 			: [],
 	}),
 	settings: (v) => ({
@@ -222,10 +221,10 @@ const EXAMPLES: Record<string, Example> = {
   ] }] },
 ]} />`,
 		imports: [
-			'import { WindowSymbol } from "@anyway-design/macos/window-symbol";',
-			'import { MacSwitch, MacTextField } from "@anyway-design/macos/controls";',
-			'import { MacSegmentedControl } from "@anyway-design/macos/segmented-control";',
-			'import { MacStepper } from "@anyway-design/macos/stepper";',
+			'import { WindowSymbol } from "@1bye/macos/window-symbol";',
+			'import { MacSwitch, MacTextField } from "@1bye/macos/controls";',
+			'import { MacSegmentedControl } from "@1bye/macos/segmented-control";',
+			'import { MacStepper } from "@1bye/macos/stepper";',
 		],
 	}),
 	slider: (v) => ({
@@ -325,8 +324,8 @@ function finderExample(values: PlaygroundValues): ExampleFragment {
   style={${style}}
 />`;
 	const imports = [
-		'import { MacFinder } from "@anyway-design/macos/finder";',
-		'import type { MacFinderFile } from "@anyway-design/macos/finder";',
+		'import { MacFinder } from "@1bye/macos/finder";',
+		'import type { MacFinderFile } from "@1bye/macos/finder";',
 	];
 
 	return {
@@ -385,7 +384,7 @@ function fileExample(
 				attrs(values, ["showExtensions"]) +
 				' defaultExpandedIds={["projects"]} />',
 			imports: [
-				'import type { MacFileListItem } from "@anyway-design/macos/file-list";',
+				'import type { MacFileListItem } from "@1bye/macos/file-list";',
 			],
 			state:
 				'const [selected, setSelected] = useState<string[]>([]);\nconst items: MacFileListItem[] = [{ id: "projects", name: "Projects", kind: "folder", children: [{ id: "notes", name: "Notes.txt", kind: "text" }] }];',
@@ -403,7 +402,7 @@ function fileExample(
 				]) +
 				" />",
 			imports: [
-				'import type { MacFileColumnItem } from "@anyway-design/macos/file-columns";',
+				'import type { MacFileColumnItem } from "@1bye/macos/file-columns";',
 			],
 			state:
 				'const [value, setValue] = useState<string | undefined>("projects");\nconst items: MacFileColumnItem[] = [{ id: "projects", name: "Projects", kind: "folder", children: [{ id: "notes", name: "Notes.txt", kind: "text" }] }];',
@@ -564,14 +563,14 @@ export function playgroundExample(
 		throw new Error(`Missing playground example: ${entry.id}`);
 	}
 	const imports = new Set([
-		'import { MacOSEnvironment } from "@anyway-design/macos/environment";',
+		'import { MacOSEnvironment } from "@1bye/macos/environment";',
 		...(entry.module === "environment" ||
 		["window", "toolbar", "sidebar", "finder"].includes(entry.id)
 			? []
 			: [
 					"import { " +
 						entry.imports +
-						' } from "@anyway-design/macos/' +
+						' } from "@1bye/macos/' +
 						entry.module +
 						'";',
 				]),
@@ -580,7 +579,7 @@ export function playgroundExample(
 	if (fragment.state) {
 		imports.add('import { useState } from "react";');
 	}
-	imports.add('import "@anyway-design/macos/styles.css";');
+	imports.add('import "@1bye/macos/styles.css";');
 	return (
 		[...imports]
 			.flatMap((statement) =>

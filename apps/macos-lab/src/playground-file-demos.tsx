@@ -1,21 +1,15 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local Finder playground handlers. */
-import { MacButton } from "@anyway-design/macos/controls";
-import { MacFileColumns } from "@anyway-design/macos/file-columns";
-import { MacFileGallery } from "@anyway-design/macos/file-gallery";
-import {
-	MacFileIcon,
-	MacFolderPreviewIcon,
-} from "@anyway-design/macos/file-icons";
-import {
-	type MacFileInfoChanges,
-	MacGetInfo,
-} from "@anyway-design/macos/file-info";
-import { MacFileList } from "@anyway-design/macos/file-list";
-import { flattenFileList } from "@anyway-design/macos/file-list-tree";
-import { MacFileThumbnail } from "@anyway-design/macos/file-thumbnail";
-import { MacFileGrid } from "@anyway-design/macos/files";
-import { MacQuickLook } from "@anyway-design/macos/quick-look";
-import { WindowSymbol } from "@anyway-design/macos/window-symbol";
+import { MacButton } from "@1bye/macos/controls";
+import { MacFileColumns } from "@1bye/macos/file-columns";
+import { MacFileGallery } from "@1bye/macos/file-gallery";
+import { MacFileIcon, MacFolderPreviewIcon } from "@1bye/macos/file-icons";
+import { type MacFileInfoChanges, MacGetInfo } from "@1bye/macos/file-info";
+import { MacFileList } from "@1bye/macos/file-list";
+import { flattenFileList } from "@1bye/macos/file-list-tree";
+import { MacFileThumbnail } from "@1bye/macos/file-thumbnail";
+import { MacFileGrid } from "@1bye/macos/files";
+import { MacQuickLook } from "@1bye/macos/quick-look";
+import { WindowSymbol } from "@1bye/macos/window-symbol";
 import {
 	type CSSProperties,
 	useCallback,

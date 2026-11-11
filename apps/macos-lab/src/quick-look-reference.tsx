@@ -1,13 +1,13 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local controls for the Quick Look study. */
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
-import { MacFileList, type MacFileSort } from "@anyway-design/macos/file-list";
-import { sortFileList } from "@anyway-design/macos/file-list-sort";
-import { MacFileGrid } from "@anyway-design/macos/files";
+import { MacOSEnvironment } from "@1bye/macos/environment";
+import { MacFileList, type MacFileSort } from "@1bye/macos/file-list";
+import { sortFileList } from "@1bye/macos/file-list-sort";
+import { MacFileGrid } from "@1bye/macos/files";
 import {
 	MacQuickLook,
 	type MacQuickLookItem,
 	MacQuickLookPanel,
-} from "@anyway-design/macos/quick-look";
+} from "@1bye/macos/quick-look";
 import { ArrowLeft } from "lucide-react";
 import {
 	type CSSProperties,

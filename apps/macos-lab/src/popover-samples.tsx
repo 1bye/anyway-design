@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local native fixture controls. */
-import { MacCheckbox } from "@anyway-design/macos/checkbox";
-import { MacButton } from "@anyway-design/macos/controls";
-import { MacPopover, MacPopoverClose } from "@anyway-design/macos/popover";
+import { MacCheckbox } from "@1bye/macos/checkbox";
+import { MacButton } from "@1bye/macos/controls";
+import { MacPopover, MacPopoverClose } from "@1bye/macos/popover";
 import { useState } from "react";
 
 export const POPOVER_SIDES = ["bottom", "top", "right", "left"] as const;

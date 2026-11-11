@@ -1,20 +1,11 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local dialog playground handlers. */
-import { MacAlert, MacAlertPanel } from "@anyway-design/macos/alert";
-import { MacButton } from "@anyway-design/macos/controls";
-import {
-	MacFileDialog,
-	MacFileDialogPanel,
-} from "@anyway-design/macos/file-dialog";
-import { MacGetInfo, MacGetInfoPanel } from "@anyway-design/macos/file-info";
-import type { MacFileListItem } from "@anyway-design/macos/file-list";
-import {
-	MacNewFolderDialog,
-	MacNewFolderPanel,
-} from "@anyway-design/macos/new-folder";
-import {
-	MacQuickLook,
-	MacQuickLookPanel,
-} from "@anyway-design/macos/quick-look";
+import { MacAlert, MacAlertPanel } from "@1bye/macos/alert";
+import { MacButton } from "@1bye/macos/controls";
+import { MacFileDialog, MacFileDialogPanel } from "@1bye/macos/file-dialog";
+import { MacGetInfo, MacGetInfoPanel } from "@1bye/macos/file-info";
+import type { MacFileListItem } from "@1bye/macos/file-list";
+import { MacNewFolderDialog, MacNewFolderPanel } from "@1bye/macos/new-folder";
+import { MacQuickLook, MacQuickLookPanel } from "@1bye/macos/quick-look";
 import { useRef, useState } from "react";
 import { type AlertSampleName, alertSample } from "./alert-samples";
 import { createPanelFolder } from "./create-panel-folder";

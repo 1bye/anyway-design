@@ -1,11 +1,11 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Comparison controls own their demonstration hierarchy. */
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
+import { MacOSEnvironment } from "@1bye/macos/environment";
 import {
 	MacFinder,
 	type MacFinderFile,
 	type MacFinderHandle,
 	type MacFinderView,
-} from "@anyway-design/macos/finder";
+} from "@1bye/macos/finder";
 import { ArrowLeft } from "lucide-react";
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { finderImports } from "./finder-import";

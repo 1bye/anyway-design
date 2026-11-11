@@ -2,6 +2,11 @@
   "name": "macos-lab",
   "private": true,
   "type": "module",
+  "exports": {
+    "./catalog": "./src/playground-catalog.ts",
+    "./preview": "./src/docs-preview.tsx",
+    "./examples": "./src/playground-examples.ts"
+  },
   "scripts": {
     "build": "vite build",
     "check-playground": "bun scripts/check-playground-examples.ts",
@@ -9,7 +14,7 @@
     "dev": "vite --host 127.0.0.1"
   },
   "dependencies": {
-    "@anyway-design/macos": "workspace:*",
+    "@1bye/macos": "workspace:*",
     "@base-ui/react": "^1.6.0",
     "lucide-react": "catalog:",
     "react": "catalog:",
@@ -22,10 +27,5 @@
     "@vitejs/plugin-react": "^6.0.4",
     "typescript": "catalog:",
     "vite": "^8.1.5"
-  },
-  "exports": {
-    "./catalog": "./src/playground-catalog.ts",
-    "./preview": "./src/docs-preview.tsx",
-    "./examples": "./src/playground-examples.ts"
   }
 }

@@ -1,7 +1,4 @@
-import type {
-	MacFileInfoItem,
-	MacGetInfoSection,
-} from "@anyway-design/macos/file-info";
+import type { MacFileInfoItem, MacGetInfoSection } from "@1bye/macos/file-info";
 
 export const INFO_DATE = "Monday, 12 October 2026 at 09:41";
 const WHERE = "Macintosh HD ▸ private ▸ tmp ▸ Anyway-Info-Reference";

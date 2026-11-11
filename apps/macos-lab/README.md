@@ -8,7 +8,7 @@ port 3008. Component/reference links preserve the current document path so both
 standalone and nested hosting work. The `macos-lab/catalog` workspace export
 shares the component list with Platform.
 
-The lab consumes `@anyway-design/macos`, a standalone React workspace package.
+The lab consumes `@1bye/macos`, a standalone React workspace package.
 It includes separate Sequoia and Tahoe presets for the desktop composition,
 menu bar, Dock, window chrome, tabs, buttons, and switches.
 

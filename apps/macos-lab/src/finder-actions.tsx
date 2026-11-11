@@ -2,9 +2,9 @@ import {
 	MacMenuButton,
 	type MacMenuButtonProps,
 	type MacMenuEntry,
-} from "@anyway-design/macos/menu";
-import { WindowSymbol } from "@anyway-design/macos/window-symbol";
-import { WindowToolbarButton } from "@anyway-design/macos/window-toolbar";
+} from "@1bye/macos/menu";
+import { WindowSymbol } from "@1bye/macos/window-symbol";
+import { WindowToolbarButton } from "@1bye/macos/window-toolbar";
 import { useCallback, useState } from "react";
 
 const TAG_COLORS = [

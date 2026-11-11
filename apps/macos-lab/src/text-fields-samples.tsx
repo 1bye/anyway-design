@@ -1,4 +1,4 @@
-import { MacSearchField, MacTextField } from "@anyway-design/macos/controls";
+import { MacSearchField, MacTextField } from "@1bye/macos/controls";
 
 export type FieldFocus = "normal" | "text" | "search";
 const ROWS = [

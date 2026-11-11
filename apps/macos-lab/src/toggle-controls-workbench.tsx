@@ -1,8 +1,8 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local control workbench callbacks. */
-import { MacButton, MacSwitch } from "@anyway-design/macos/controls";
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
-import { MacSegmentedControl } from "@anyway-design/macos/segmented-control";
-import { MacTabs } from "@anyway-design/macos/tabs";
+import { MacButton, MacSwitch } from "@1bye/macos/controls";
+import { MacOSEnvironment } from "@1bye/macos/environment";
+import { MacSegmentedControl } from "@1bye/macos/segmented-control";
+import { MacTabs } from "@1bye/macos/tabs";
 import { type FormEvent, useRef, useState } from "react";
 import {
 	LAYOUT_ITEMS,

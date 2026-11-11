@@ -4,19 +4,15 @@ import {
 	MacSearchField,
 	MacSwitch,
 	MacTextField,
-} from "@anyway-design/macos/controls";
-import { Dock } from "@anyway-design/macos/dock";
+} from "@1bye/macos/controls";
+import { Dock } from "@1bye/macos/dock";
 import {
 	type MacOSAppearance,
 	MacOSEnvironment,
 	type MacOSPreset,
-} from "@anyway-design/macos/environment";
-import {
-	AppleMark,
-	type MacMenu,
-	MenuBar,
-} from "@anyway-design/macos/menu-bar";
-import { MacWindow } from "@anyway-design/macos/window";
+} from "@1bye/macos/environment";
+import { AppleMark, type MacMenu, MenuBar } from "@1bye/macos/menu-bar";
+import { MacWindow } from "@1bye/macos/window";
 import { House, SlidersHorizontal } from "lucide-react";
 import { type CSSProperties, useEffect, useId, useRef, useState } from "react";
 import { DesktopMenuStatus } from "./desktop-menu-status";

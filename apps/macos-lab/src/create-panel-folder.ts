@@ -1,5 +1,5 @@
-import type { MacFileDialogDirectory } from "@anyway-design/macos/file-dialog";
-import { fileNewFolderError } from "@anyway-design/macos/file-new-folder";
+import type { MacFileDialogDirectory } from "@1bye/macos/file-dialog";
+import { fileNewFolderError } from "@1bye/macos/file-new-folder";
 
 export function createPanelFolder(
 	directories: readonly MacFileDialogDirectory[],

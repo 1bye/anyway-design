@@ -1,6 +1,6 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local comparison controls. */
-import type { MacDesktopFrames } from "@anyway-design/macos/desktop";
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
+import type { MacDesktopFrames } from "@1bye/macos/desktop";
+import { MacOSEnvironment } from "@1bye/macos/environment";
 import { ArrowLeft } from "lucide-react";
 import { type CSSProperties, useCallback, useState } from "react";
 import { DESKTOP_DOCUMENTS, DesktopReferenceScene } from "./desktop-demo";

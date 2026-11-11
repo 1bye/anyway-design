@@ -1,20 +1,20 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Interactive component playground handlers. */
-import { MacCalendar } from "@anyway-design/macos/calendar";
-import { MacCheckbox } from "@anyway-design/macos/checkbox";
-import { MacComboBox } from "@anyway-design/macos/combo-box";
+import { MacCalendar } from "@1bye/macos/calendar";
+import { MacCheckbox } from "@1bye/macos/checkbox";
+import { MacComboBox } from "@1bye/macos/combo-box";
 import {
 	MacButton,
 	MacSearchField,
 	MacSwitch,
 	MacTextField,
-} from "@anyway-design/macos/controls";
-import { MacDatePicker } from "@anyway-design/macos/date-picker";
-import { MacPopUpButton } from "@anyway-design/macos/pop-up-button";
-import { MacProgressBar, MacSpinner } from "@anyway-design/macos/progress";
-import { MacRadio, MacRadioGroup } from "@anyway-design/macos/radio";
-import { MacSegmentedControl } from "@anyway-design/macos/segmented-control";
-import { MacSlider } from "@anyway-design/macos/slider";
-import { MacStepper } from "@anyway-design/macos/stepper";
+} from "@1bye/macos/controls";
+import { MacDatePicker } from "@1bye/macos/date-picker";
+import { MacPopUpButton } from "@1bye/macos/pop-up-button";
+import { MacProgressBar, MacSpinner } from "@1bye/macos/progress";
+import { MacRadio, MacRadioGroup } from "@1bye/macos/radio";
+import { MacSegmentedControl } from "@1bye/macos/segmented-control";
+import { MacSlider } from "@1bye/macos/slider";
+import { MacStepper } from "@1bye/macos/stepper";
 import type { ComponentType } from "react";
 import type { PlaygroundDemoProps } from "./playground-catalog";
 import { LAYOUT_ITEMS, PERIOD_ITEMS } from "./toggle-controls-samples";

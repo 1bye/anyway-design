@@ -3,14 +3,14 @@ import {
 	MacDesktop,
 	type MacDesktopFrames,
 	type MacDesktopWindow,
-} from "@anyway-design/macos/desktop";
-import { Dock } from "@anyway-design/macos/dock";
+} from "@1bye/macos/desktop";
+import { Dock } from "@1bye/macos/dock";
 import {
 	type MacOSAppearance,
 	MacOSEnvironment,
-} from "@anyway-design/macos/environment";
-import { MenuBar } from "@anyway-design/macos/menu-bar";
-import { MacWindow } from "@anyway-design/macos/window";
+} from "@1bye/macos/environment";
+import { MenuBar } from "@1bye/macos/menu-bar";
+import { MacWindow } from "@1bye/macos/window";
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { DesktopMenuStatus } from "./desktop-menu-status";
 import { DOCK_ITEMS } from "./dock-items";

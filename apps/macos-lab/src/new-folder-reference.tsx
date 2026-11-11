@@ -1,19 +1,16 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local controls for the native New Folder comparison. */
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
-import { MacFileColumns } from "@anyway-design/macos/file-columns";
+import { MacOSEnvironment } from "@1bye/macos/environment";
+import { MacFileColumns } from "@1bye/macos/file-columns";
 import {
 	MacFileDialog,
 	type MacFileDialogDirectory,
 	type MacFileDialogResult,
-} from "@anyway-design/macos/file-dialog";
-import {
-	MacFileList,
-	type MacFileListItem,
-} from "@anyway-design/macos/file-list";
-import { flattenFileList } from "@anyway-design/macos/file-list-tree";
-import { type MacFile, MacFileGrid } from "@anyway-design/macos/files";
-import { MacContextMenu } from "@anyway-design/macos/menu";
-import { MacNewFolderPanel } from "@anyway-design/macos/new-folder";
+} from "@1bye/macos/file-dialog";
+import { MacFileList, type MacFileListItem } from "@1bye/macos/file-list";
+import { flattenFileList } from "@1bye/macos/file-list-tree";
+import { type MacFile, MacFileGrid } from "@1bye/macos/files";
+import { MacContextMenu } from "@1bye/macos/menu";
+import { MacNewFolderPanel } from "@1bye/macos/new-folder";
 import {
 	type CSSProperties,
 	type MouseEvent,

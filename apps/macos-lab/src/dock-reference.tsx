@@ -1,5 +1,5 @@
-import { Dock } from "@anyway-design/macos/dock";
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
+import { Dock } from "@1bye/macos/dock";
+import { MacOSEnvironment } from "@1bye/macos/environment";
 import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import {
 	type ChangeEvent,

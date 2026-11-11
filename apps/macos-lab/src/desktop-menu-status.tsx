@@ -3,8 +3,8 @@ import {
 	MacMenuBarStatus,
 	type MacSpotlightItem,
 	type MacSystemStatus,
-} from "@anyway-design/macos/menu-bar-status";
-import { DEFAULT_SYSTEM_STATUS } from "@anyway-design/macos/menu-bar-status-model";
+} from "@1bye/macos/menu-bar-status";
+import { DEFAULT_SYSTEM_STATUS } from "@1bye/macos/menu-bar-status-model";
 import { useState } from "react";
 import { useNotificationDemo } from "./notification-demo";
 

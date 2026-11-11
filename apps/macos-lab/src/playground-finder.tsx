@@ -4,7 +4,7 @@ import {
 	type MacFinderCollection,
 	type MacFinderHandle,
 	type MacFinderProps,
-} from "@anyway-design/macos/finder";
+} from "@1bye/macos/finder";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createFinderFiles } from "./finder-browser-data";
 import { finderImports } from "./finder-import";

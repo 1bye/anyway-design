@@ -1,15 +1,12 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local controls for the Get Info workbench. */
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
-import { MacFileColumns } from "@anyway-design/macos/file-columns";
-import { MacFileGallery } from "@anyway-design/macos/file-gallery";
-import {
-	type MacFileInfoChanges,
-	MacGetInfo,
-} from "@anyway-design/macos/file-info";
-import { fileInfoDisplayName } from "@anyway-design/macos/file-info-model";
-import { MacFileList } from "@anyway-design/macos/file-list";
-import { fileNewFolderError } from "@anyway-design/macos/file-new-folder";
-import { MacFileGrid } from "@anyway-design/macos/files";
+import { MacOSEnvironment } from "@1bye/macos/environment";
+import { MacFileColumns } from "@1bye/macos/file-columns";
+import { MacFileGallery } from "@1bye/macos/file-gallery";
+import { type MacFileInfoChanges, MacGetInfo } from "@1bye/macos/file-info";
+import { fileInfoDisplayName } from "@1bye/macos/file-info-model";
+import { MacFileList } from "@1bye/macos/file-list";
+import { fileNewFolderError } from "@1bye/macos/file-new-folder";
+import { MacFileGrid } from "@1bye/macos/files";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { INFO_FILES } from "./file-info-reference-data";
 

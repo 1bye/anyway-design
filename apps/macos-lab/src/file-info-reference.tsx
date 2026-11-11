@@ -1,10 +1,10 @@
 /** biome-ignore-all lint/performance/noJsxPropsBind: Local controls for this interactive comparison. */
-import { MacOSEnvironment } from "@anyway-design/macos/environment";
+import { MacOSEnvironment } from "@1bye/macos/environment";
 import {
 	type MacFileInfoChanges,
 	MacGetInfoPanel,
-} from "@anyway-design/macos/file-info";
-import type { MacFileInfoItem } from "@anyway-design/macos/file-info-model";
+} from "@1bye/macos/file-info";
+import type { MacFileInfoItem } from "@1bye/macos/file-info-model";
 import { ArrowLeft } from "lucide-react";
 import {
 	type CSSProperties,
